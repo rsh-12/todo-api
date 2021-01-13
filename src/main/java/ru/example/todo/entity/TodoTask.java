@@ -16,6 +16,8 @@ import java.util.Date;
 @Table(name = "task")
 public class TodoTask {
 
+    // todo: add JsonView
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")

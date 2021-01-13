@@ -15,6 +15,8 @@ import java.util.List;
 @Table(name = "custom_list")
 public class TodoSection {
 
+    // todo: add JsonView
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
