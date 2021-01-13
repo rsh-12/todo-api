@@ -7,6 +7,7 @@ package ru.example.todo.config;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.AsyncConfigurerSupport;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
@@ -18,14 +19,8 @@ public class AsyncConfig extends AsyncConfigurerSupport {
 
     private static final Logger log = LoggerFactory.getLogger(AsyncConfig.class.getName());
 
-    private final AsyncExceptionHandler asyncExceptionHandler;
-
-    public AsyncConfig(AsyncExceptionHandler exceptionHandler) {
-        this.asyncExceptionHandler = exceptionHandler;
-    }
-
-    @Override
-    public Executor getAsyncExecutor() {
+    @Bean(name = "taskExecutor")
+    public Executor taskExecutor() {
         ThreadPoolTaskExecutor taskExecutor = new ThreadPoolTaskExecutor();
         log.info(">>> taskExecutor created...");
 
@@ -37,8 +32,4 @@ public class AsyncConfig extends AsyncConfigurerSupport {
         return taskExecutor;
     }
 
-    @Override
-    public AsyncUncaughtExceptionHandler getAsyncUncaughtExceptionHandler() {
-        return asyncExceptionHandler;
-    }
 }
