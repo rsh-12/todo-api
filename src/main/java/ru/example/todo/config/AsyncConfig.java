@@ -27,6 +27,8 @@ public class AsyncConfig extends AsyncConfigurerSupport {
     @Override
     public Executor getAsyncExecutor() {
         ThreadPoolTaskExecutor taskExecutor = new ThreadPoolTaskExecutor();
+        log.info(">>> taskExecutor created...");
+
         taskExecutor.setCorePoolSize(2); // sets the core number of threads
         taskExecutor.setMaxPoolSize(5); // sets the maximum allowed number of threads
         taskExecutor.setQueueCapacity(100); // sets the capacity for the ThreadPoolTaskExecutor's BlockingQueue
