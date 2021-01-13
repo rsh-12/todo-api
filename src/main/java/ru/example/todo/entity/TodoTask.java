@@ -5,7 +5,7 @@ package ru.example.todo.entity;
  * */
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -19,7 +19,6 @@ public class TodoTask {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private Long id;
 
     @NotBlank
@@ -47,6 +46,7 @@ public class TodoTask {
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE,
             CascadeType.DETACH, CascadeType.REFRESH})
     @JoinColumn(name = "list_id")
+    @JsonIgnore
     private TodoSection todoSection;
 
     public TodoTask() {
