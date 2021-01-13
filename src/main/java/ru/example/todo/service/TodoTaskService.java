@@ -1,5 +1,5 @@
 package ru.example.todo.service;
 
-public interface TaskService {
+public interface TodoTaskService {
 
 }
