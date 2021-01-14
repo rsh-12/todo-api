@@ -6,6 +6,7 @@ package ru.example.todo.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -19,6 +20,7 @@ public class TodoTask {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private Long id;
 
     @NotBlank
@@ -34,7 +36,7 @@ public class TodoTask {
 
     @Column(name = "completion_date", columnDefinition = "date default current_date")
     @Temporal(TemporalType.DATE)
-    @JsonFormat(pattern = "dd-mm-yyyy")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Yekaterinburg")
     private Date completionDate;
 
     @Column(name = "created_at", columnDefinition = "timestamp default current_timestamp")
@@ -43,10 +45,10 @@ public class TodoTask {
     @Column(name = "updated_at", columnDefinition = "timestamp default current_timestamp")
     private Date updatedAt;
 
+    @JsonIgnore
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE,
             CascadeType.DETACH, CascadeType.REFRESH})
     @JoinColumn(name = "list_id")
-    @JsonIgnore
     private TodoSection todoSection;
 
     public TodoTask() {

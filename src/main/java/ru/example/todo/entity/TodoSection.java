@@ -4,6 +4,7 @@ package ru.example.todo.entity;
  * Time: 4:25 PM
  * */
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
@@ -26,6 +27,7 @@ public class TodoSection {
     @Column(name = "title")
     private String title;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "todoSection")
     List<TodoTask> todoTasks;
 
