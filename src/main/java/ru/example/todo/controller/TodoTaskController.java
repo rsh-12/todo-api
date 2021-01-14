@@ -65,4 +65,10 @@ public class TodoTaskController {
         if (todoTaskService.existsById(id))
             todoTaskService.deleteTaskById(id);
     }
+
+    @PostMapping(consumes = "application/json")
+    @ResponseStatus(code = HttpStatus.CREATED)
+    public void createTask(@RequestBody TodoTask task) {
+        todoTaskService.save(task);
+    }
 }
