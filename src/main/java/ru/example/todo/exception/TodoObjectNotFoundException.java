@@ -4,17 +4,17 @@ package ru.example.todo.exception;
  * Time: 9:48 PM
  * */
 
-public class ObjectNotFoundException extends RuntimeException {
+public class TodoObjectNotFoundException extends RuntimeException {
 
-    public ObjectNotFoundException(String message) {
+    public TodoObjectNotFoundException(String message) {
         super(message);
     }
 
-    public ObjectNotFoundException(String message, Throwable cause) {
+    public TodoObjectNotFoundException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    public ObjectNotFoundException(Throwable cause) {
+    public TodoObjectNotFoundException(Throwable cause) {
         super(cause);
     }
 }
