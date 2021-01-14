@@ -36,7 +36,7 @@ public class TodoTask {
 
     @Column(name = "completion_date", columnDefinition = "date default current_date")
     @Temporal(TemporalType.DATE)
-    @JsonFormat(pattern = "dd-mm-yyyy")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Yekaterinburg")
     private Date completionDate;
 
     @Column(name = "created_at", columnDefinition = "timestamp default current_timestamp")
