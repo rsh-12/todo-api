@@ -10,12 +10,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.example.todo.controller.assembler.TodoTaskModelAssembler;
 import ru.example.todo.entity.TodoTask;
 import ru.example.todo.exception.TodoObjectNotFoundException;
 import ru.example.todo.service.TodoTaskService;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -67,8 +69,11 @@ public class TodoTaskController {
     }
 
     @PostMapping(consumes = "application/json")
-    @ResponseStatus(code = HttpStatus.CREATED)
-    public void createTask(@RequestBody TodoTask task) {
-        todoTaskService.save(task);
+    public ResponseEntity<?> createTask(@RequestBody TodoTask newTask) {
+        if (newTask.getCompletionDate().isBefore(LocalDate.now())) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        todoTaskService.save(newTask);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 }
