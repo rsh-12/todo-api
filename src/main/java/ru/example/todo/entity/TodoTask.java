@@ -7,14 +7,17 @@ package ru.example.todo.entity;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.springframework.hateoas.server.core.Relation;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import java.time.LocalDate;
 import java.util.Date;
 
 @Entity
 @Table(name = "task")
+@Relation(value = "task", collectionRelation = "tasks")
 public class TodoTask {
 
     @Id
@@ -35,15 +38,14 @@ public class TodoTask {
     private boolean starred;
 
     @Column(name = "completion_date", columnDefinition = "date default current_date")
-    @Temporal(TemporalType.DATE)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Yekaterinburg")
-    private Date completionDate;
+    private LocalDate completionDate = LocalDate.now();
 
-    @Column(name = "created_at", columnDefinition = "timestamp default current_timestamp")
-    private Date createdAt;
+    @Column(name = "created_at", columnDefinition = "timestamp default current_timestamp", updatable = false)
+    private Date createdAt = new Date();
 
     @Column(name = "updated_at", columnDefinition = "timestamp default current_timestamp")
-    private Date updatedAt;
+    private Date updatedAt = new Date();
 
     @JsonIgnore
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE,
@@ -58,17 +60,9 @@ public class TodoTask {
         this.title = title;
     }
 
-    public TodoTask(String title, boolean completed, boolean starred) {
+    public TodoTask(String title, LocalDate completionDate) {
         this.title = title;
-        this.completed = completed;
-        this.starred = starred;
-    }
-
-    public TodoTask(String title, boolean completed, boolean starred, TodoSection todoSection) {
-        this.title = title;
-        this.completed = completed;
-        this.starred = starred;
-        this.todoSection = todoSection;
+        this.completionDate = completionDate;
     }
 
     public Long getId() {
@@ -103,11 +97,11 @@ public class TodoTask {
         this.starred = starred;
     }
 
-    public Date getCompletionDate() {
+    public LocalDate getCompletionDate() {
         return completionDate;
     }
 
-    public void setCompletionDate(Date completionDate) {
+    public void setCompletionDate(LocalDate completionDate) {
         this.completionDate = completionDate;
     }
 
