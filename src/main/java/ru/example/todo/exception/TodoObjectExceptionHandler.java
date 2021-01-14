@@ -8,11 +8,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ControllerAdvice
 public class TodoObjectExceptionHandler {
 
     @ExceptionHandler
+    @ResponseStatus(value = HttpStatus.NOT_FOUND)
     public ResponseEntity<CustomErrorResponse> handleException(TodoObjectNotFoundException ex) {
 
         var error = new CustomErrorResponse();
@@ -24,6 +26,7 @@ public class TodoObjectExceptionHandler {
     }
 
     @ExceptionHandler
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     public ResponseEntity<CustomErrorResponse> handleException(Exception ex) {
 
         var error = new CustomErrorResponse();
