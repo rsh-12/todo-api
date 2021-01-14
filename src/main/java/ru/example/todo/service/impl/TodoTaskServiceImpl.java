@@ -53,9 +53,9 @@ public class TodoTaskServiceImpl implements TodoTaskService {
     }
 
     @Override
-    public void save(TodoTask task) {
+    public TodoTask save(TodoTask task) {
         log.info(">>> Create new task");
-        todoTaskRepository.save(task);
+        return todoTaskRepository.save(task);
     }
 
 }
