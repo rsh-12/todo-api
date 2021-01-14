@@ -15,7 +15,7 @@ public class TodoObjectExceptionHandler {
 
     @ExceptionHandler
     @ResponseStatus(value = HttpStatus.NOT_FOUND)
-    public ResponseEntity<CustomErrorResponse> handleException(TodoObjectNotFoundException ex) {
+    public ResponseEntity<CustomErrorResponse> handleException(TodoObjectException ex) {
 
         var error = new CustomErrorResponse();
         error.setStatus(HttpStatus.NOT_FOUND.value());
