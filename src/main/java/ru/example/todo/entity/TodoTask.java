@@ -7,6 +7,7 @@ package ru.example.todo.entity;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.springframework.hateoas.server.core.Relation;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -15,6 +16,7 @@ import java.util.Date;
 
 @Entity
 @Table(name = "task")
+@Relation(value = "task", collectionRelation = "tasks")
 public class TodoTask {
 
     @Id
