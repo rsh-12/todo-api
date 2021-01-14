@@ -7,7 +7,6 @@ import java.util.Optional;
 
 public interface TodoTaskService {
 
-
     List<TodoTask> getAllTasks();
 
     Optional<TodoTask> getTaskById(Long id);
@@ -15,4 +14,6 @@ public interface TodoTaskService {
     void deleteTaskById(Long id);
 
     boolean existsById(Long id);
+
+    void save(TodoTask task);
 }

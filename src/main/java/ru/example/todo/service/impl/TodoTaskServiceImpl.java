@@ -52,4 +52,10 @@ public class TodoTaskServiceImpl implements TodoTaskService {
         return todoTaskRepository.existsById(id);
     }
 
+    @Override
+    public void save(TodoTask task) {
+        log.info(">>> Create new task");
+        todoTaskRepository.save(task);
+    }
+
 }
