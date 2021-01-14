@@ -29,12 +29,6 @@ public class TodoTaskServiceImpl implements TodoTaskService {
         this.todoTaskRepository = todoTaskRepository;
     }
 
-    @Async
-    public CompletableFuture<List<TodoTask>> getAllTodos() {
-        List<TodoTask> todos = todoTaskRepository.findAll();
-        return CompletableFuture.completedFuture(todos);
-    }
-
     @Override
     public List<TodoTask> getAllTasks() {
         return todoTaskRepository.findAll();
