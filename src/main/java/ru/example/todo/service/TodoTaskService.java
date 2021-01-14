@@ -4,12 +4,11 @@ import ru.example.todo.entity.TodoTask;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
 
 public interface TodoTaskService {
 
 
-    List<TodoTask> getListOfAllTodos();
+    List<TodoTask> getAllTasks();
 
-    Optional<TodoTask> getOne(Long id);
+    Optional<TodoTask> getTaskById(Long id);
 }

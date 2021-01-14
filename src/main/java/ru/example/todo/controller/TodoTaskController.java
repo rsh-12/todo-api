@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ru.example.todo.controller.assemblers.TodoTaskModelAssembler;
-import ru.example.todo.exception.TodoTaskNotFoundException;
+import ru.example.todo.controller.assembler.TodoTaskModelAssembler;
+import ru.example.todo.exception.TodoObjectNotFoundException;
 import ru.example.todo.entity.TodoTask;
 import ru.example.todo.service.TodoTaskService;
 
@@ -43,7 +43,7 @@ public class TodoTaskController {
     @GetMapping(produces = "application/json")
     public CollectionModel<EntityModel<TodoTask>> all() {
 
-        List<EntityModel<TodoTask>> todos = todoTaskService.getListOfAllTodos().stream()
+        List<EntityModel<TodoTask>> todos = todoTaskService.getAllTasks().stream()
                 .map(assembler::toModel)
                 .collect(Collectors.toList());
 
@@ -52,8 +52,9 @@ public class TodoTaskController {
 
     @GetMapping("/{id}")
     public EntityModel<TodoTask> one(@PathVariable("id") Long id) {
-        TodoTask todo = todoTaskService.getOne(id).orElseThrow(() ->
-                new TodoTaskNotFoundException(id));
+        TodoTask todo = todoTaskService.getTaskById(id).orElseThrow(() ->
+                new TodoObjectNotFoundException("TodoTask not found: " + id));
+
         return assembler.toModel(todo);
     }
 }

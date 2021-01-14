@@ -1,4 +1,4 @@
-package ru.example.todo.controller.assemblers;
+package ru.example.todo.controller.assembler;
 /*
  * Date: 1/13/21
  * Time: 9:31 PM
