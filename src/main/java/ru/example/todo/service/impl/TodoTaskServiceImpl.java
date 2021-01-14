@@ -7,7 +7,6 @@ package ru.example.todo.service.impl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import ru.example.todo.entity.TodoTask;
 import ru.example.todo.repository.TodoTaskRepository;
@@ -15,7 +14,6 @@ import ru.example.todo.service.TodoTaskService;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
 
 @Service
 public class TodoTaskServiceImpl implements TodoTaskService {
@@ -31,11 +29,14 @@ public class TodoTaskServiceImpl implements TodoTaskService {
 
     @Override
     public List<TodoTask> getAllTasks() {
-        return todoTaskRepository.findAll();
+        List<TodoTask> tasks = todoTaskRepository.findAll();
+        log.info(">>> Get all tasks: {}", tasks.size());
+        return tasks;
     }
 
     @Override
     public Optional<TodoTask> getTaskById(Long id) {
+        log.info(">>> Get task by id: {}", id);
         return todoTaskRepository.findById(id);
     }
 }
