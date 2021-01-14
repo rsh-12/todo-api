@@ -11,4 +11,8 @@ public interface TodoTaskService {
     List<TodoTask> getAllTasks();
 
     Optional<TodoTask> getTaskById(Long id);
+
+    void deleteTaskById(Long id);
+
+    boolean existsById(Long id);
 }

@@ -7,6 +7,7 @@ package ru.example.todo.service.impl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.example.todo.entity.TodoTask;
 import ru.example.todo.repository.TodoTaskRepository;
@@ -29,7 +30,7 @@ public class TodoTaskServiceImpl implements TodoTaskService {
 
     @Override
     public List<TodoTask> getAllTasks() {
-        List<TodoTask> tasks = todoTaskRepository.findAll();
+        List<TodoTask> tasks = todoTaskRepository.findAll(Sort.by("createdAt").descending());
         log.info(">>> Get all tasks: {}", tasks.size());
         return tasks;
     }
@@ -39,4 +40,16 @@ public class TodoTaskServiceImpl implements TodoTaskService {
         log.info(">>> Get task by id: {}", id);
         return todoTaskRepository.findById(id);
     }
+
+    @Override
+    public void deleteTaskById(Long id) {
+        log.info(">>> Delete task by id: {}", id);
+        todoTaskRepository.deleteById(id);
+    }
+
+    @Override
+    public boolean existsById(Long id) {
+        return todoTaskRepository.existsById(id);
+    }
+
 }
