@@ -15,5 +15,5 @@ public interface TodoTaskService {
 
     boolean existsById(Long id);
 
-    void save(TodoTask task);
+    TodoTask save(TodoTask task);
 }
