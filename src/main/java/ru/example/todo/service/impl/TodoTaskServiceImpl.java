@@ -36,12 +36,12 @@ public class TodoTaskServiceImpl implements TodoTaskService {
     }
 
     @Override
-    public List<TodoTask> getListOfAllTodos() {
+    public List<TodoTask> getAllTasks() {
         return todoTaskRepository.findAll();
     }
 
     @Override
-    public Optional<TodoTask> getOne(Long id) {
+    public Optional<TodoTask> getTaskById(Long id) {
         return todoTaskRepository.findById(id);
     }
 }
