@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.example.todo.controller.assembler.TodoTaskModelAssembler;
 import ru.example.todo.entity.TodoTask;
+import ru.example.todo.enums.TaskStatus;
 import ru.example.todo.service.TodoTaskService;
 
 import java.util.List;
@@ -78,28 +79,12 @@ public class TodoTaskController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    // todo: перенести в сервис бизнес-логику
-    // todo: добавить requestParam completed=true, false
-    // update completed field
-    @PostMapping("/complete/{id}")
-    public ResponseEntity<?> setCompleted(@PathVariable Long id) {
-        TodoTask task = todoTaskService.getTaskById(id);
-        task.setCompleted(!task.isCompleted());
-        todoTaskService.save(task);
+    // update task status (completed, starred)
+    @PostMapping(value = "/task/{taskId}", consumes = "application/json")
+    public void setTaskStatus(@PathVariable("taskId") Long taskId,
+                              @RequestParam(value = "completed", required = false) TaskStatus completed,
+                              @RequestParam(value = "starred", required = false) TaskStatus starred) {
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        todoTaskService.setTaskStatus(taskId, completed, starred);
     }
-
-    // todo: перенести в сервис бизнес-логику
-    // todo: добавить requestParam starred=true, false
-    // update starred field
-    @PostMapping("/starred/{id}")
-    public ResponseEntity<?> setStarred(@PathVariable Long id) {
-        TodoTask task = todoTaskService.getTaskById(id);
-        task.setStarred(!task.isStarred());
-        todoTaskService.save(task);
-
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
 }
