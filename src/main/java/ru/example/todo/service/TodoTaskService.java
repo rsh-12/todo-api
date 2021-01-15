@@ -3,17 +3,18 @@ package ru.example.todo.service;
 import ru.example.todo.entity.TodoTask;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface TodoTaskService {
 
     List<TodoTask> getAllTasks();
 
-    Optional<TodoTask> getTaskById(Long id);
+    TodoTask getTaskById(Long id);
 
     void deleteTaskById(Long id);
 
-    boolean existsById(Long id);
+    void save(TodoTask task);
 
-    TodoTask save(TodoTask task);
+    void createTask(TodoTask newTask);
+
+    void updateTask(TodoTask patch, Long id);
 }

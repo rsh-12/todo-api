@@ -10,11 +10,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.example.todo.entity.TodoTask;
+import ru.example.todo.exception.TodoObjectException;
 import ru.example.todo.repository.TodoTaskRepository;
 import ru.example.todo.service.TodoTaskService;
 
+import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class TodoTaskServiceImpl implements TodoTaskService {
@@ -36,26 +37,46 @@ public class TodoTaskServiceImpl implements TodoTaskService {
     }
 
     @Override
-    public Optional<TodoTask> getTaskById(Long id) {
-        log.info(">>> Get task by id: {}", id);
-        return todoTaskRepository.findById(id);
+    public TodoTask getTaskById(Long id) {
+        return todoTaskRepository.findById(id)
+                .orElseThrow(() -> new TodoObjectException("Task not found: " + id));
     }
 
     @Override
     public void deleteTaskById(Long id) {
-        log.info(">>> Delete task by id: {}", id);
-        todoTaskRepository.deleteById(id);
+        if (todoTaskRepository.existsById(id)) {
+            todoTaskRepository.deleteById(id);
+        }
     }
 
     @Override
-    public boolean existsById(Long id) {
-        return todoTaskRepository.existsById(id);
-    }
-
-    @Override
-    public TodoTask save(TodoTask task) {
+    public void save(TodoTask task) {
         log.info(">>> Create new task");
-        return todoTaskRepository.save(task);
+        todoTaskRepository.save(task);
+    }
+
+    @Override
+    public void createTask(TodoTask newTask) {
+        if (newTask.getCompletionDate().isBefore(LocalDate.now())) {
+            throw new TodoObjectException("Invalid completion date!");
+        }
+        todoTaskRepository.save(newTask);
+    }
+
+    @Override
+    public void updateTask(TodoTask patch, Long id) {
+        TodoTask taskFromDB = todoTaskRepository.findById(id)
+                .orElseThrow(() -> new TodoObjectException("Task not found: " + id));
+
+        if (patch.getTitle() != null) taskFromDB.setTitle(patch.getTitle());
+
+        if (patch.getCompletionDate() != null) taskFromDB.setCompletionDate(patch.getCompletionDate());
+
+        if (patch.getCompletionDate() != null && patch.getCompletionDate().isBefore(LocalDate.now())) {
+            throw new TodoObjectException("Something went wrong!");
+        } else {
+            todoTaskRepository.save(taskFromDB);
+        }
     }
 
 }
