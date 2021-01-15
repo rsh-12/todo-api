@@ -10,11 +10,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.example.todo.entity.TodoTask;
+import ru.example.todo.enums.TaskStatus;
 import ru.example.todo.exception.TodoObjectException;
 import ru.example.todo.repository.TodoTaskRepository;
 import ru.example.todo.service.TodoTaskService;
 
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -50,12 +52,6 @@ public class TodoTaskServiceImpl implements TodoTaskService {
     }
 
     @Override
-    public void save(TodoTask task) {
-        log.info(">>> Create new task");
-        todoTaskRepository.save(task);
-    }
-
-    @Override
     public void createTask(TodoTask newTask) {
         if (newTask.getCompletionDate().isBefore(LocalDate.now())) {
             throw new TodoObjectException("Invalid completion date!");
@@ -75,8 +71,29 @@ public class TodoTaskServiceImpl implements TodoTaskService {
         if (patch.getCompletionDate() != null && patch.getCompletionDate().isBefore(LocalDate.now())) {
             throw new TodoObjectException("Something went wrong!");
         } else {
+            taskFromDB.setUpdatedAt(new Date());
             todoTaskRepository.save(taskFromDB);
         }
     }
 
+    @Override
+    public void setTaskStatus(Long taskId, TaskStatus completed, TaskStatus starred) {
+
+
+        TodoTask task = todoTaskRepository.findById(taskId)
+                .orElseThrow(() -> new TodoObjectException("Task not found: " + taskId));
+
+        if (completed != null) task.setCompleted(toABoolean(completed));
+
+        if (starred != null) task.setStarred(toABoolean(starred));
+
+        task.setUpdatedAt(new Date());
+
+        todoTaskRepository.save(task);
+    }
+
+
+    private boolean toABoolean(TaskStatus status) {
+        return Boolean.parseBoolean(status.toString());
+    }
 }
