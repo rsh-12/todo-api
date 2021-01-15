@@ -14,10 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.example.todo.controller.assembler.TodoTaskModelAssembler;
 import ru.example.todo.entity.TodoTask;
-import ru.example.todo.exception.TodoObjectException;
 import ru.example.todo.service.TodoTaskService;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -44,7 +42,8 @@ public class TodoTaskController {
     @GetMapping(produces = "application/json")
     public CollectionModel<EntityModel<TodoTask>> all() {
 
-        List<EntityModel<TodoTask>> todos = todoTaskService.getAllTasks().stream()
+        List<EntityModel<TodoTask>> todos = todoTaskService.getAllTasks()
+                .stream()
                 .map(assembler::toModel)
                 .collect(Collectors.toList());
 
@@ -55,62 +54,49 @@ public class TodoTaskController {
     // get task by id
     @GetMapping(value = "/{id}", produces = "application/json")
     public EntityModel<TodoTask> one(@PathVariable("id") Long id) {
-        TodoTask todo = todoTaskService.getTaskById(id).orElseThrow(() ->
-                new TodoObjectException("Task not found: " + id));
+        TodoTask todo = todoTaskService.getTaskById(id);
         return assembler.toModel(todo);
     }
 
     // delete task by id
     @DeleteMapping("/{id}")
-    @ResponseStatus(code = HttpStatus.NO_CONTENT)
-    public void deleteOne(@PathVariable Long id) {
-        if (todoTaskService.existsById(id))
-            todoTaskService.deleteTaskById(id);
+    public ResponseEntity<?> deleteOne(@PathVariable Long id) {
+        todoTaskService.deleteTaskById(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     // create new task
     @PostMapping(consumes = "application/json")
     public ResponseEntity<?> createTask(@RequestBody TodoTask newTask) {
-        if (newTask.getCompletionDate().isBefore(LocalDate.now())) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-        todoTaskService.save(newTask);
+        todoTaskService.createTask(newTask);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     // update task title or task completion date
     @PatchMapping(value = "/{id}", consumes = "application/json")
-    public TodoTask updateTask(@PathVariable("id") Long id, @RequestBody TodoTask patch) {
-        TodoTask taskFromDB = todoTaskService.getTaskById(id)
-                .orElseThrow(() -> new TodoObjectException("Task not found: " + id));
-
-        if (patch.getTitle() != null) taskFromDB.setTitle(patch.getTitle());
-
-        if (patch.getCompletionDate() != null) taskFromDB.setCompletionDate(patch.getCompletionDate());
-
-        if (patch.getCompletionDate() != null && patch.getCompletionDate().isBefore(LocalDate.now())) {
-            throw new TodoObjectException("Something went wrong!");
-        } else {
-            return todoTaskService.save(taskFromDB);
-        }
+    public ResponseEntity<?> updateTask(@PathVariable("id") Long id, @RequestBody TodoTask patch) {
+        todoTaskService.updateTask(patch, id);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    // todo: перенести в сервис бизнес-логику
+    // todo: добавить requestParam completed=true, false
     // update completed field
     @PostMapping("/complete/{id}")
     public ResponseEntity<?> setCompleted(@PathVariable Long id) {
-        TodoTask task = todoTaskService.getTaskById(id)
-                .orElseThrow(() -> new TodoObjectException("Task not found: " + id));
+        TodoTask task = todoTaskService.getTaskById(id);
         task.setCompleted(!task.isCompleted());
         todoTaskService.save(task);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    // todo: перенести в сервис бизнес-логику
+    // todo: добавить requestParam starred=true, false
     // update starred field
-    @PostMapping("/mark/{id}")
+    @PostMapping("/starred/{id}")
     public ResponseEntity<?> setStarred(@PathVariable Long id) {
-        TodoTask task = todoTaskService.getTaskById(id)
-                .orElseThrow(() -> new TodoObjectException("Task not found: " + id));
+        TodoTask task = todoTaskService.getTaskById(id);
         task.setStarred(!task.isStarred());
         todoTaskService.save(task);
 
