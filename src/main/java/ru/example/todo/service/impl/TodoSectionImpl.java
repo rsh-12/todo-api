@@ -27,12 +27,15 @@ public class TodoSectionImpl implements TodoSectionService {
 
     @Override
     public TodoSection getSectionById(Long sectionId) {
+        log.info(">>> Get section by id: {}", sectionId);
         return todoSectionRepository.findById(sectionId)
                 .orElseThrow(() -> new TodoObjectException("Section not found: " + sectionId));
     }
 
     @Override
     public List<TodoSection> getAllSections() {
-        return todoSectionRepository.findAll();
+        List<TodoSection> sections = todoSectionRepository.findAll();
+        log.info(">>> Get all sections: {}", sections.size());
+        return sections;
     }
 }
