@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.example.todo.controller.assembler.TodoTaskModelAssembler;
 import ru.example.todo.entity.TodoTask;
+import ru.example.todo.enums.TaskDate;
 import ru.example.todo.enums.TaskStatus;
 import ru.example.todo.service.TodoTaskService;
 
@@ -37,15 +38,20 @@ public class TodoTaskController {
 
     // get all tasks
     @GetMapping(produces = "application/json")
-    public CollectionModel<EntityModel<TodoTask>> all() {
+    public CollectionModel<EntityModel<TodoTask>> all(
+            @RequestParam(value = "page", required = false, defaultValue = "0") Integer pageNo,
+            @RequestParam(value = "size", required = false, defaultValue = "10") Integer pageSize,
+            @RequestParam(value = "date", required = false, defaultValue = "ALL") TaskDate date,
+            @RequestParam(value = "sort", required = false, defaultValue = "createdAt") String sort) {
 
-        List<EntityModel<TodoTask>> todos = todoTaskService.getAllTasks()
+        List<EntityModel<TodoTask>> todos = todoTaskService
+                .getAllTasks(pageNo, pageSize, date, sort)
                 .stream()
                 .map(assembler::toModel)
                 .collect(Collectors.toList());
 
         return CollectionModel.of(todos,
-                linkTo(methodOn(TodoTaskController.class).all()).withSelfRel());
+                linkTo(methodOn(TodoTaskController.class).all(pageNo, pageSize, date, sort)).withSelfRel());
     }
 
     // get task by id
@@ -83,4 +89,5 @@ public class TodoTaskController {
 
         todoTaskService.setTaskStatus(taskId, completed, starred);
     }
+
 }
