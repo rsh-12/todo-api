@@ -42,9 +42,11 @@ public class TodoTask {
     private LocalDate completionDate = LocalDate.now();
 
     @Column(name = "created_at", columnDefinition = "timestamp default current_timestamp", updatable = false)
+    @JsonFormat(timezone = "Asia/Yekaterinburg")
     private Date createdAt = new Date();
 
     @Column(name = "updated_at", columnDefinition = "timestamp default current_timestamp")
+    @JsonFormat(timezone = "Asia/Yekaterinburg")
     private Date updatedAt = new Date();
 
     @JsonIgnore
