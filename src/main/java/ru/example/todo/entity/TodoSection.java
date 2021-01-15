@@ -4,8 +4,10 @@ package ru.example.todo.entity;
  * Time: 4:25 PM
  * */
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonView;
+import org.springframework.hateoas.server.core.Relation;
+import ru.example.todo.util.Views;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -14,6 +16,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "custom_list")
+@Relation(value = "section", collectionRelation = "sections")
 public class TodoSection {
 
     @Id
@@ -25,10 +28,11 @@ public class TodoSection {
     @NotBlank
     @Size(min = 2, max = 50, message = "Size must be between 2 and 50")
     @Column(name = "title")
+    @JsonView(value = Views.Public.class)
     private String title;
 
-    @JsonIgnore
     @OneToMany(mappedBy = "todoSection")
+    @JsonView(value = Views.Internal.class)
     List<TodoTask> todoTasks;
 
     public TodoSection() {
@@ -54,6 +58,7 @@ public class TodoSection {
         this.title = title;
     }
 
+    @JsonProperty("tasks")
     public List<TodoTask> getTodoTasks() {
         return todoTasks;
     }
