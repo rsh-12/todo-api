@@ -9,6 +9,7 @@ import org.springframework.hateoas.server.RepresentationModelAssembler;
 import org.springframework.stereotype.Component;
 import ru.example.todo.controller.TodoTaskController;
 import ru.example.todo.entity.TodoTask;
+import ru.example.todo.enums.TaskDate;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
@@ -20,7 +21,7 @@ public class TodoTaskModelAssembler implements RepresentationModelAssembler<Todo
     public EntityModel<TodoTask> toModel(TodoTask todoTask) {
         return EntityModel.of(todoTask,
                 linkTo(methodOn(TodoTaskController.class).one(todoTask.getId())).withSelfRel(),
-                linkTo(methodOn(TodoTaskController.class).all()).withRel("tasks"));
+                linkTo(methodOn(TodoTaskController.class).all(0, 10, TaskDate.ALL, "createdAt")).withRel("tasks"));
     }
 
 }
