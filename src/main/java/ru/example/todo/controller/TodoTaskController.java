@@ -27,8 +27,6 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @RequestMapping("/api/todos")
 public class TodoTaskController {
 
-    private static final Logger log = LoggerFactory.getLogger(TodoTaskController.class.getName());
-
     private final TodoTaskService todoTaskService;
     private final TodoTaskModelAssembler assembler;
 
