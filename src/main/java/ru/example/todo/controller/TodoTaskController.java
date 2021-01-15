@@ -54,8 +54,7 @@ public class TodoTaskController {
     // get task by id
     @GetMapping(value = "/{id}", produces = "application/json")
     public EntityModel<TodoTask> one(@PathVariable("id") Long id) {
-        TodoTask todo = todoTaskService.getTaskById(id);
-        return assembler.toModel(todo);
+        return assembler.toModel(todoTaskService.getTaskById(id));
     }
 
     // delete task by id
