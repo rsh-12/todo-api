@@ -12,6 +12,8 @@ import ru.example.todo.exception.TodoObjectException;
 import ru.example.todo.repository.TodoSectionRepository;
 import ru.example.todo.service.TodoSectionService;
 
+import java.util.List;
+
 @Service
 public class TodoSectionImpl implements TodoSectionService {
 
@@ -26,6 +28,11 @@ public class TodoSectionImpl implements TodoSectionService {
     @Override
     public TodoSection getSectionById(Long sectionId) {
         return todoSectionRepository.findById(sectionId)
-                .orElseThrow(() -> new TodoObjectException("Section not found: {}" + sectionId));
+                .orElseThrow(() -> new TodoObjectException("Section not found: " + sectionId));
+    }
+
+    @Override
+    public List<TodoSection> getAllSections() {
+        return todoSectionRepository.findAll();
     }
 }
