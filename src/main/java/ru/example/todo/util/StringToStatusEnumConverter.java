@@ -7,7 +7,7 @@ package ru.example.todo.util;
 import org.springframework.core.convert.converter.Converter;
 import ru.example.todo.enums.TaskStatus;
 
-public class StringToEnumConverter implements Converter<String, TaskStatus> {
+public class StringToStatusEnumConverter implements Converter<String, TaskStatus> {
 
     @Override
     public TaskStatus convert(String string) {
