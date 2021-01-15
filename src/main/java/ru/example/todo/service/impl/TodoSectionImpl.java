@@ -28,7 +28,7 @@ public class TodoSectionImpl implements TodoSectionService {
     @Override
     public TodoSection getSectionById(Long sectionId) {
         return todoSectionRepository.findById(sectionId)
-                .orElseThrow(() -> new TodoObjectException("Section not found: {}" + sectionId));
+                .orElseThrow(() -> new TodoObjectException("Section not found: " + sectionId));
     }
 
     @Override
