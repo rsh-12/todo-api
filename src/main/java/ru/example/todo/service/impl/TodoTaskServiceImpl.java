@@ -72,13 +72,12 @@ public class TodoTaskServiceImpl implements TodoTaskService {
 
         if (patch.getTitle() != null) taskFromDB.setTitle(patch.getTitle());
 
-        if (patch.getCompletionDate() != null) taskFromDB.setCompletionDate(patch.getCompletionDate());
-
         if (patch.getCompletionDate() != null && patch.getCompletionDate().isBefore(LocalDate.now())) {
             throw new TodoObjectException("Something went wrong!");
         } else {
-            log.info(">>> Update task: {}", id);
+            taskFromDB.setCompletionDate(patch.getCompletionDate());
             taskFromDB.setUpdatedAt(new Date());
+            log.info(">>> Update task: {}", id);
             todoTaskRepository.save(taskFromDB);
         }
     }
