@@ -1,19 +1,21 @@
 package ru.example.todo.service;
 
 import ru.example.todo.entity.TodoTask;
+import ru.example.todo.enums.TaskStatus;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface TodoTaskService {
 
     List<TodoTask> getAllTasks();
 
-    Optional<TodoTask> getTaskById(Long id);
+    TodoTask getTaskById(Long id);
 
     void deleteTaskById(Long id);
 
-    boolean existsById(Long id);
+    void createTask(TodoTask newTask);
 
-    void save(TodoTask task);
+    void updateTask(TodoTask patch, Long id);
+
+    void setTaskStatus(Long taskId, TaskStatus completed, TaskStatus starred);
 }

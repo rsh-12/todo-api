@@ -6,8 +6,8 @@ _Простое рест-приложение, без регистрации и 
 - [x] Get all tasks
 - [x] Get task by id
 - [x] Create task
-- [ ] Update task
-- [ ] Delete task
+- [x] Update task
+- [x] Delete task
 
 * List of tasks
 - [ ] Get list of tasks

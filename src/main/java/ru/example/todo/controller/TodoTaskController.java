@@ -14,10 +14,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.example.todo.controller.assembler.TodoTaskModelAssembler;
 import ru.example.todo.entity.TodoTask;
-import ru.example.todo.exception.TodoObjectNotFoundException;
+import ru.example.todo.enums.TaskStatus;
 import ru.example.todo.service.TodoTaskService;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -44,7 +43,8 @@ public class TodoTaskController {
     @GetMapping(produces = "application/json")
     public CollectionModel<EntityModel<TodoTask>> all() {
 
-        List<EntityModel<TodoTask>> todos = todoTaskService.getAllTasks().stream()
+        List<EntityModel<TodoTask>> todos = todoTaskService.getAllTasks()
+                .stream()
                 .map(assembler::toModel)
                 .collect(Collectors.toList());
 
@@ -55,25 +55,36 @@ public class TodoTaskController {
     // get task by id
     @GetMapping(value = "/{id}", produces = "application/json")
     public EntityModel<TodoTask> one(@PathVariable("id") Long id) {
-        TodoTask todo = todoTaskService.getTaskById(id).orElseThrow(() ->
-                new TodoObjectNotFoundException("Task not found: " + id));
-        return assembler.toModel(todo);
+        return assembler.toModel(todoTaskService.getTaskById(id));
     }
 
     // delete task by id
     @DeleteMapping("/{id}")
-    @ResponseStatus(code = HttpStatus.NO_CONTENT)
-    public void deleteOne(@PathVariable Long id) {
-        if (todoTaskService.existsById(id))
-            todoTaskService.deleteTaskById(id);
+    public ResponseEntity<?> deleteOne(@PathVariable Long id) {
+        todoTaskService.deleteTaskById(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
+    // create new task
     @PostMapping(consumes = "application/json")
     public ResponseEntity<?> createTask(@RequestBody TodoTask newTask) {
-        if (newTask.getCompletionDate().isBefore(LocalDate.now())) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-        todoTaskService.save(newTask);
+        todoTaskService.createTask(newTask);
         return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    // update task title or task completion date
+    @PatchMapping(value = "/{id}", consumes = "application/json")
+    public ResponseEntity<?> updateTask(@PathVariable("id") Long id, @RequestBody TodoTask patch) {
+        todoTaskService.updateTask(patch, id);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    // update task status (completed, starred)
+    @PostMapping(value = "/task/{taskId}", consumes = "application/json")
+    public void setTaskStatus(@PathVariable("taskId") Long taskId,
+                              @RequestParam(value = "completed", required = false) TaskStatus completed,
+                              @RequestParam(value = "starred", required = false) TaskStatus starred) {
+
+        todoTaskService.setTaskStatus(taskId, completed, starred);
     }
 }
