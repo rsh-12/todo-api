@@ -11,7 +11,6 @@ import org.springframework.hateoas.server.core.Relation;
 import ru.example.todo.util.Views;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.util.Date;
@@ -27,7 +26,6 @@ public class TodoTask {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private Long id;
 
-    @NotBlank
     @Size(min = 3, max = 80, message = "Size must be between 3 and 80")
     @Column(name = "title")
     @JsonView(value = Views.Public.class)
@@ -87,7 +85,7 @@ public class TodoTask {
     }
 
     public void setTitle(String title) {
-        this.title = title;
+        this.title = title.trim();
     }
 
     public boolean isCompleted() {
