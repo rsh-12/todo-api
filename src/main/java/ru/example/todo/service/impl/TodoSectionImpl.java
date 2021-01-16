@@ -25,14 +25,34 @@ public class TodoSectionImpl implements TodoSectionService {
         this.todoSectionRepository = todoSectionRepository;
     }
 
+    // get section by id
     @Override
     public TodoSection getSectionById(Long sectionId) {
+        log.info(">>> Get section by id: {}", sectionId);
         return todoSectionRepository.findById(sectionId)
                 .orElseThrow(() -> new TodoObjectException("Section not found: " + sectionId));
     }
 
+    // get all sections
     @Override
     public List<TodoSection> getAllSections() {
-        return todoSectionRepository.findAll();
+        List<TodoSection> sections = todoSectionRepository.findAll();
+        log.info(">>> Get all sections: {}", sections.size());
+        return sections;
+    }
+
+    // delete section by id
+    @Override
+    public void deleteSectionById(long sectionId) {
+        if (todoSectionRepository.existsById(sectionId)) {
+            log.info(">>> Delete section by id: {}", sectionId);
+            todoSectionRepository.deleteById(sectionId);
+        }
+    }
+
+    // create new section
+    @Override
+    public void createSection(TodoSection section) {
+        todoSectionRepository.save(section);
     }
 }
