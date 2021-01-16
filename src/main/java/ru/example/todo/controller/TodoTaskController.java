@@ -54,7 +54,7 @@ public class TodoTaskController {
     @GetMapping(produces = "application/json")
     public CollectionModel<EntityModel<TodoTask>> all(
             @RequestParam(value = "page", required = false, defaultValue = "0") Integer pageNo,
-            @RequestParam(value = "size", required = false, defaultValue = "10") Integer pageSize,
+            @RequestParam(value = "size", required = false, defaultValue = "20") Integer pageSize,
             @RequestParam(value = "date", required = false, defaultValue = "ALL") TaskDate date,
             @RequestParam(value = "sort", required = false, defaultValue = "createdAt") String sort) {
 
