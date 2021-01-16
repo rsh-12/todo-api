@@ -75,6 +75,7 @@ public class TodoSectionController {
     }
 
 
+    // update section title by id
     @PutMapping(value = "/{id}", consumes = "application/json")
     public ResponseEntity<?> updateSection(@PathVariable Long id,
                                            @Valid @RequestBody TodoSection putSection) {
