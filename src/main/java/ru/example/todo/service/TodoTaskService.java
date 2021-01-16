@@ -16,7 +16,6 @@ public interface TodoTaskService {
 
     void createTask(TodoTask newTask);
 
-    void updateTask(TodoTask patch, Long id);
+    void updateTask(Long id, TodoTask patch, TaskStatus completed, TaskStatus starred);
 
-    void setTaskStatus(Long taskId, TaskStatus completed, TaskStatus starred);
 }

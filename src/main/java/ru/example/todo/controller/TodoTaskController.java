@@ -9,20 +9,24 @@ import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import ru.example.todo.controller.assembler.TodoTaskModelAssembler;
 import ru.example.todo.entity.TodoTask;
 import ru.example.todo.enums.TaskDate;
 import ru.example.todo.enums.TaskStatus;
+import ru.example.todo.exception.TodoObjectException;
 import ru.example.todo.service.TodoTaskService;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Pattern;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+import static ru.example.todo.exception.TodoObjectExceptionHandler.getFieldErrorsHandler;
 
 @RestController
 @RequestMapping("/api/todos")
@@ -38,11 +42,19 @@ public class TodoTaskController {
         this.assembler = assembler;
     }
 
+    // ------------------------------------ handles field errors
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler({MethodArgumentNotValidException.class, TodoObjectException.class})
+    public Map<String, String> handleException(MethodArgumentNotValidException ex) {
+        return getFieldErrorsHandler(ex);
+    }
+
+
     // get all tasks
     @GetMapping(produces = "application/json")
     public CollectionModel<EntityModel<TodoTask>> all(
             @RequestParam(value = "page", required = false, defaultValue = "0") Integer pageNo,
-            @RequestParam(value = "size", required = false, defaultValue = "10") Integer pageSize,
+            @RequestParam(value = "size", required = false, defaultValue = "20") Integer pageSize,
             @RequestParam(value = "date", required = false, defaultValue = "ALL") TaskDate date,
             @RequestParam(value = "sort", required = false, defaultValue = "createdAt") String sort) {
 
@@ -77,20 +89,16 @@ public class TodoTaskController {
     }
 
     // update task title or task completion date
+    // or
+    // update task status (completed, starred)
     @PatchMapping(value = "/{id}", consumes = "application/json")
     public ResponseEntity<?> updateTask(@PathVariable("id") Long id,
-                                        @Valid @RequestBody TodoTask patch) {
-        todoTaskService.updateTask(patch, id);
+                                        @Valid @RequestBody(required = false) TodoTask patch,
+                                        @RequestParam(value = "completed", required = false) TaskStatus completed,
+                                        @RequestParam(value = "starred", required = false) TaskStatus starred) {
+        todoTaskService.updateTask(id, patch, completed, starred);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    // update task status (completed, starred)
-    @PostMapping(value = "/task/{taskId}", consumes = "application/json")
-    public void setTaskStatus(@PathVariable("taskId") Long taskId,
-                              @RequestParam(value = "completed", required = false) TaskStatus completed,
-                              @RequestParam(value = "starred", required = false) TaskStatus starred) {
-
-        todoTaskService.setTaskStatus(taskId, completed, starred);
-    }
 
 }

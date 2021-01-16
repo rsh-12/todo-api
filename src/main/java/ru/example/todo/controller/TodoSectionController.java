@@ -10,7 +10,6 @@ import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import ru.example.todo.controller.assembler.TodoSectionModelAssembler;
@@ -19,13 +18,13 @@ import ru.example.todo.service.TodoSectionService;
 import ru.example.todo.util.Views;
 
 import javax.validation.Valid;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+import static ru.example.todo.exception.TodoObjectExceptionHandler.getFieldErrorsHandler;
 
 @RestController
 @RequestMapping("api/sections")
@@ -39,6 +38,14 @@ public class TodoSectionController {
         this.todoSectionService = todoSectionService;
         this.assembler = assembler;
     }
+
+    // ------------------------------------ handles field errors
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public Map<String, String> handleException(MethodArgumentNotValidException ex) {
+        return getFieldErrorsHandler(ex);
+    }
+
 
     //     get all custom sections
     @GetMapping(produces = "application/json")
@@ -75,6 +82,7 @@ public class TodoSectionController {
     }
 
 
+    // update section title by id
     @PutMapping(value = "/{id}", consumes = "application/json")
     public ResponseEntity<?> updateSection(@PathVariable Long id,
                                            @Valid @RequestBody TodoSection putSection) {
@@ -82,18 +90,5 @@ public class TodoSectionController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-
-    // ------------------------------------ displays field errors
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public Map<String, String> handleException(MethodArgumentNotValidException ex) {
-        Map<String, String> errors = new HashMap<>();
-        ex.getBindingResult().getAllErrors().forEach((error) -> {
-            String fieldName = ((FieldError) error).getField();
-            String errorMessage = error.getDefaultMessage();
-            errors.put(fieldName, errorMessage);
-        });
-        return errors;
-    }
 
 }

@@ -42,11 +42,14 @@ public class TodoTaskServiceImpl implements TodoTaskService {
         Pageable page = PageRequest.of(pageNo, pageSize, Sort.by(getSortDirection(sort), getSortAsString(sort)));
 
         if (date.equals(TaskDate.TODAY)) {
+            log.info(">>> Get today's tasks");
             return todoTaskRepository.findAllByCompletionDateEquals(LocalDate.now(), page);
         } else if (date.equals(TaskDate.OVERDUE)) {
+            log.info(">>> Get overdue tasks");
             return todoTaskRepository.findAllByCompletionDateBefore(LocalDate.now(), page);
         }
 
+        log.info(">>> Get default tasks list");
         return todoTaskRepository.findAll(page).getContent();
     }
 
@@ -81,38 +84,34 @@ public class TodoTaskServiceImpl implements TodoTaskService {
 
     // update task by id
     @Override
-    public void updateTask(TodoTask patch, Long id) {
+    public void updateTask(Long id, TodoTask patch, TaskStatus completed, TaskStatus starred) {
 
+        // get task from DB
+        log.info(">>> Get task from DB: id={}", id);
         TodoTask taskFromDB = todoTaskRepository.findById(id)
                 .orElseThrow(() -> new TodoObjectException("Task not found: " + id));
 
-        if (patch.getTitle() != null) taskFromDB.setTitle(patch.getTitle());
+        // update task title or task completion date
+        if (patch != null) {
+            log.info(">>> Update task completionDate field");
+            if (patch.getCompletionDate() != null && !patch.getCompletionDate().isBefore(LocalDate.now()))
+                taskFromDB.setCompletionDate(patch.getCompletionDate());
 
-        if (patch.getCompletionDate() != null && patch.getCompletionDate().isBefore(LocalDate.now())) {
-            throw new TodoObjectException("Something went wrong!");
-        } else {
-            taskFromDB.setCompletionDate(patch.getCompletionDate());
-            taskFromDB.setUpdatedAt(new Date());
-            log.info(">>> Update task: {}", id);
-            todoTaskRepository.save(taskFromDB);
+            log.info(">>> Update task title field");
+            if (patch.getTitle() != null) taskFromDB.setTitle(patch.getTitle());
         }
-    }
 
-    // update task status by id
-    @Override
-    public void setTaskStatus(Long taskId, TaskStatus completed, TaskStatus starred) {
+        // set task status
+        log.info(">>> Update task completed field");
+        if (completed != null) taskFromDB.setCompleted(toABoolean(completed));
+        log.info(">>> Update task starred field");
+        if (starred != null) taskFromDB.setStarred(toABoolean(starred));
 
-        TodoTask task = todoTaskRepository.findById(taskId)
-                .orElseThrow(() -> new TodoObjectException("Task not found: " + taskId));
+        log.info(">>> Update task updatedAt field");
+        taskFromDB.setUpdatedAt(new Date());
 
-        if (completed != null) task.setCompleted(toABoolean(completed));
-
-        if (starred != null) task.setStarred(toABoolean(starred));
-
-        task.setUpdatedAt(new Date());
-
-        log.info(">>> Update task (id={}) status", taskId);
-        todoTaskRepository.save(task);
+        log.info(">>> Save updated task: id={}", id);
+        todoTaskRepository.save(taskFromDB);
     }
 
 

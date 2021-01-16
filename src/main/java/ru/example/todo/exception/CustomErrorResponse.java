@@ -4,10 +4,13 @@ package ru.example.todo.exception;
  * Time: 10:54 AM
  * */
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.util.Date;
 
 public class CustomErrorResponse {
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Yekaterinburg")
     private Date timestamp;
     private int status;
     private String error;

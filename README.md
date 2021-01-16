@@ -12,6 +12,7 @@ _Простое рест-приложение, без регистрации и 
 * List of tasks
 - [x] Get list of tasks
 - [x] Get list by id 
-- [ ] Create list
-- [ ] Update list
-- [ ] Delete list
+- [x] Create list
+- [x] Update list
+- [x] Delete list
+- [ ] Add tasks to the list
