@@ -4,18 +4,30 @@ package ru.example.todo.exception;
  * Time: 10:54 AM
  * */
 
+import java.util.Date;
+
 public class CustomErrorResponse {
 
+    private Date timestamp;
     private int status;
+    private String error;
     private String message;
-    private long timestamp;
 
     public CustomErrorResponse() {
     }
 
-    public CustomErrorResponse(int status, String message, long timestamp) {
+    public CustomErrorResponse(Date timestamp, int status, String error, String message) {
+        this.timestamp = timestamp;
         this.status = status;
+        this.error = error;
         this.message = message;
+    }
+
+    public Date getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(Date timestamp) {
         this.timestamp = timestamp;
     }
 
@@ -27,19 +39,19 @@ public class CustomErrorResponse {
         this.status = status;
     }
 
+    public String getError() {
+        return error;
+    }
+
+    public void setError(String error) {
+        this.error = error;
+    }
+
     public String getMessage() {
         return message;
     }
 
     public void setMessage(String message) {
         this.message = message;
-    }
-
-    public long getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(long timestamp) {
-        this.timestamp = timestamp;
     }
 }
