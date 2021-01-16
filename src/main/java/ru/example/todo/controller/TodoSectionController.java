@@ -39,6 +39,14 @@ public class TodoSectionController {
         this.assembler = assembler;
     }
 
+    // ------------------------------------ handles field errors
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public Map<String, String> handleException(MethodArgumentNotValidException ex) {
+        return getFieldErrorsHandler(ex);
+    }
+
+
     //     get all custom sections
     @GetMapping(produces = "application/json")
     @JsonView(value = Views.Public.class)
@@ -82,12 +90,5 @@ public class TodoSectionController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-
-    // ------------------------------------ displays field errors
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public Map<String, String> handleException(MethodArgumentNotValidException ex) {
-        return getFieldErrorsHandler(ex);
-    }
 
 }
