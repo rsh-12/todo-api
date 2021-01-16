@@ -10,13 +10,18 @@ import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import ru.example.todo.controller.assembler.TodoSectionModelAssembler;
 import ru.example.todo.entity.TodoSection;
 import ru.example.todo.service.TodoSectionService;
 import ru.example.todo.util.Views;
 
+import javax.validation.Valid;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -64,8 +69,31 @@ public class TodoSectionController {
 
     // create new section
     @PostMapping(consumes = "application/json")
-    public ResponseEntity<?> createSection(@RequestBody TodoSection section) {
+    public ResponseEntity<?> createSection(@Valid @RequestBody TodoSection section) {
         todoSectionService.createSection(section);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
+
+
+    @PutMapping(value = "/{id}", consumes = "application/json")
+    public ResponseEntity<?> updateSection(@PathVariable Long id,
+                                           @Valid @RequestBody TodoSection putSection) {
+        todoSectionService.updateSection(id, putSection);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+
+    // ------------------------------------ displays field errors
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public Map<String, String> handleException(MethodArgumentNotValidException ex) {
+        Map<String, String> errors = new HashMap<>();
+        ex.getBindingResult().getAllErrors().forEach((error) -> {
+            String fieldName = ((FieldError) error).getField();
+            String errorMessage = error.getDefaultMessage();
+            errors.put(fieldName, errorMessage);
+        });
+        return errors;
+    }
+
 }
