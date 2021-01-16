@@ -9,4 +9,8 @@ public interface TodoSectionService {
     TodoSection getSectionById(Long sectionId);
 
     List<TodoSection> getAllSections();
+
+    void deleteSectionById(long sectionId);
+
+    void createSection(TodoSection section);
 }
