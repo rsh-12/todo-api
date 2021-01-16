@@ -16,6 +16,8 @@ import ru.example.todo.enums.TaskDate;
 import ru.example.todo.enums.TaskStatus;
 import ru.example.todo.service.TodoTaskService;
 
+import javax.validation.Valid;
+import javax.validation.constraints.Pattern;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -56,7 +58,7 @@ public class TodoTaskController {
 
     // get task by id
     @GetMapping(value = "/{id}", produces = "application/json")
-    public EntityModel<TodoTask> one(@PathVariable("id") Long id) {
+    public EntityModel<TodoTask> one(@PathVariable("id") @Pattern(regexp = "^\\d+$") Long id) {
         return assembler.toModel(todoTaskService.getTaskById(id));
     }
 
@@ -69,14 +71,15 @@ public class TodoTaskController {
 
     // create new task
     @PostMapping(consumes = "application/json")
-    public ResponseEntity<?> createTask(@RequestBody TodoTask newTask) {
+    public ResponseEntity<?> createTask(@Valid @RequestBody TodoTask newTask) {
         todoTaskService.createTask(newTask);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     // update task title or task completion date
     @PatchMapping(value = "/{id}", consumes = "application/json")
-    public ResponseEntity<?> updateTask(@PathVariable("id") Long id, @RequestBody TodoTask patch) {
+    public ResponseEntity<?> updateTask(@PathVariable("id") Long id,
+                                        @Valid @RequestBody TodoTask patch) {
         todoTaskService.updateTask(patch, id);
         return new ResponseEntity<>(HttpStatus.OK);
     }

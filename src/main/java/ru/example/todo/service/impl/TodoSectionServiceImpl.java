@@ -15,13 +15,13 @@ import ru.example.todo.service.TodoSectionService;
 import java.util.List;
 
 @Service
-public class TodoSectionImpl implements TodoSectionService {
+public class TodoSectionServiceImpl implements TodoSectionService {
 
-    private static final Logger log = LoggerFactory.getLogger(TodoSectionImpl.class.getName());
+    private static final Logger log = LoggerFactory.getLogger(TodoSectionServiceImpl.class.getName());
 
     private final TodoSectionRepository todoSectionRepository;
 
-    public TodoSectionImpl(TodoSectionRepository todoSectionRepository) {
+    public TodoSectionServiceImpl(TodoSectionRepository todoSectionRepository) {
         this.todoSectionRepository = todoSectionRepository;
     }
 
@@ -53,6 +53,15 @@ public class TodoSectionImpl implements TodoSectionService {
     // create new section
     @Override
     public void createSection(TodoSection section) {
+        todoSectionRepository.save(section);
+    }
+
+    @Override
+    public void updateSection(Long id, TodoSection putSection) {
+        TodoSection section = todoSectionRepository.findById(id)
+                .orElseThrow(() -> new TodoObjectException(("User not found: " + id)));
+
+        section.setTitle(putSection.getTitle());
         todoSectionRepository.save(section);
     }
 }

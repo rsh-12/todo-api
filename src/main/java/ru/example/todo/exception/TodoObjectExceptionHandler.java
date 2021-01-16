@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import java.util.Date;
+
 @ControllerAdvice
 public class TodoObjectExceptionHandler {
 
@@ -19,9 +21,10 @@ public class TodoObjectExceptionHandler {
     public ResponseEntity<CustomErrorResponse> handleException(TodoObjectException ex) {
 
         var error = new CustomErrorResponse();
+        error.setTimestamp(new Date());
         error.setStatus(HttpStatus.NOT_FOUND.value());
+        error.setError("Not found");
         error.setMessage(ex.getMessage());
-        error.setTimestamp(System.currentTimeMillis());
 
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
@@ -31,9 +34,11 @@ public class TodoObjectExceptionHandler {
     public ResponseEntity<CustomErrorResponse> handleException(Exception ex) {
 
         var error = new CustomErrorResponse();
+        error.setTimestamp(new Date());
         error.setStatus(HttpStatus.BAD_REQUEST.value());
-        error.setMessage("Something went wrong");
-        error.setTimestamp(System.currentTimeMillis());
+        error.setError("Bad Request");
+        error.setMessage(ex.getMessage());
+
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
@@ -42,9 +47,11 @@ public class TodoObjectExceptionHandler {
     public ResponseEntity<CustomErrorResponse> handleException(RuntimeException ex) {
 
         var error = new CustomErrorResponse();
+        error.setTimestamp(new Date());
         error.setStatus(HttpStatus.BAD_REQUEST.value());
-        error.setMessage("Conversation error");
-        error.setTimestamp(System.currentTimeMillis());
+        error.setError("Bad Request");
+        error.setMessage("Conversion error");
+
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 }

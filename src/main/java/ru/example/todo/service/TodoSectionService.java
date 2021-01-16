@@ -13,4 +13,6 @@ public interface TodoSectionService {
     void deleteSectionById(long sectionId);
 
     void createSection(TodoSection section);
+
+    void updateSection(Long id, TodoSection putSection);
 }
