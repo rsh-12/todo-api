@@ -35,6 +35,7 @@ public class TodoTaskServiceImpl implements TodoTaskService {
     }
 
 
+    // get all tasks
     @Override
     public List<TodoTask> getAllTasks(Integer pageNo, Integer pageSize, TaskDate date, String sort) {
 
@@ -49,6 +50,7 @@ public class TodoTaskServiceImpl implements TodoTaskService {
         return todoTaskRepository.findAll(page).getContent();
     }
 
+    // get task by id
     @Override
     public TodoTask getTaskById(Long id) {
         log.info(">>> Get task by id: {}", id);
@@ -56,6 +58,7 @@ public class TodoTaskServiceImpl implements TodoTaskService {
                 .orElseThrow(() -> new TodoObjectException("Task not found: " + id));
     }
 
+    // delete task by id
     @Override
     public void deleteTaskById(Long id) {
         if (todoTaskRepository.existsById(id)) {
@@ -64,6 +67,7 @@ public class TodoTaskServiceImpl implements TodoTaskService {
         }
     }
 
+    // create new task
     @Override
     public void createTask(TodoTask newTask) {
         if (newTask.getCompletionDate().isBefore(LocalDate.now())) {
@@ -75,6 +79,7 @@ public class TodoTaskServiceImpl implements TodoTaskService {
         todoTaskRepository.save(newTask);
     }
 
+    // update task by id
     @Override
     public void updateTask(TodoTask patch, Long id) {
 
@@ -93,6 +98,7 @@ public class TodoTaskServiceImpl implements TodoTaskService {
         }
     }
 
+    // update task status by id
     @Override
     public void setTaskStatus(Long taskId, TaskStatus completed, TaskStatus starred) {
 
@@ -110,6 +116,7 @@ public class TodoTaskServiceImpl implements TodoTaskService {
     }
 
 
+    // --------------------------------------------------------------------------- Helper methods.
     private boolean toABoolean(TaskStatus status) {
         return Boolean.parseBoolean(status.toString());
     }
