@@ -24,7 +24,7 @@ public class TodoObjectExceptionHandler {
         error.setTimestamp(new Date());
         error.setStatus(HttpStatus.NOT_FOUND.value());
         error.setError("Not found");
-        error.setMessage(ex.getMessage());
+        error.setMessage("Something went wrong");
 
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
@@ -37,7 +37,7 @@ public class TodoObjectExceptionHandler {
         error.setTimestamp(new Date());
         error.setStatus(HttpStatus.BAD_REQUEST.value());
         error.setError("Bad Request");
-        error.setMessage(ex.getMessage());
+        error.setMessage("Something went wrong");
 
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
