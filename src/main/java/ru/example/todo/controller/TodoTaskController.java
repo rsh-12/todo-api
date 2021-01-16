@@ -42,6 +42,14 @@ public class TodoTaskController {
         this.assembler = assembler;
     }
 
+    // ------------------------------------ handles field errors
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler({MethodArgumentNotValidException.class, TodoObjectException.class})
+    public Map<String, String> handleException(MethodArgumentNotValidException ex) {
+        return getFieldErrorsHandler(ex);
+    }
+
+
     // get all tasks
     @GetMapping(produces = "application/json")
     public CollectionModel<EntityModel<TodoTask>> all(
@@ -81,27 +89,16 @@ public class TodoTaskController {
     }
 
     // update task title or task completion date
+    // or
+    // update task status (completed, starred)
     @PatchMapping(value = "/{id}", consumes = "application/json")
     public ResponseEntity<?> updateTask(@PathVariable("id") Long id,
-                                        @Valid @RequestBody TodoTask patch) {
-        todoTaskService.updateTask(patch, id);
+                                        @Valid @RequestBody(required = false) TodoTask patch,
+                                        @RequestParam(value = "completed", required = false) TaskStatus completed,
+                                        @RequestParam(value = "starred", required = false) TaskStatus starred) {
+        todoTaskService.updateTask(id, patch, completed, starred);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    // update task status (completed, starred)
-    @PostMapping(value = "/task/{taskId}", consumes = "application/json")
-    public void setTaskStatus(@PathVariable("taskId") Long taskId,
-                              @RequestParam(value = "completed", required = false) TaskStatus completed,
-                              @RequestParam(value = "starred", required = false) TaskStatus starred) {
-
-        todoTaskService.setTaskStatus(taskId, completed, starred);
-    }
-
-    // ------------------------------------ displays field errors
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler({MethodArgumentNotValidException.class, TodoObjectException.class})
-    public Map<String, String> handleException(MethodArgumentNotValidException ex) {
-        return getFieldErrorsHandler(ex);
-    }
 
 }
