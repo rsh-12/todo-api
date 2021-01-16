@@ -63,7 +63,7 @@ public class TodoSectionController {
     }
 
     // create new section
-    @PostMapping()
+    @PostMapping(consumes = "application/json")
     public ResponseEntity<?> createSection(@RequestBody TodoSection section) {
         todoSectionService.createSection(section);
         return new ResponseEntity<>(HttpStatus.CREATED);
