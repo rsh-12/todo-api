@@ -42,11 +42,14 @@ public class TodoTaskServiceImpl implements TodoTaskService {
         Pageable page = PageRequest.of(pageNo, pageSize, Sort.by(getSortDirection(sort), getSortAsString(sort)));
 
         if (date.equals(TaskDate.TODAY)) {
+            log.info(">>> Get today's tasks");
             return todoTaskRepository.findAllByCompletionDateEquals(LocalDate.now(), page);
         } else if (date.equals(TaskDate.OVERDUE)) {
+            log.info(">>> Get overdue tasks");
             return todoTaskRepository.findAllByCompletionDateBefore(LocalDate.now(), page);
         }
 
+        log.info(">>> Get default tasks list");
         return todoTaskRepository.findAll(page).getContent();
     }
 
