@@ -29,7 +29,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import static ru.example.todo.exception.TodoObjectExceptionHandler.getFieldErrorsHandler;
 
 @RestController
-@RequestMapping("/api/todos")
+@RequestMapping("/api/tasks")
 public class TodoTaskController {
 
     private final TodoTaskService todoTaskService;
