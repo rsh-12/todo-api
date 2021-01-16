@@ -8,10 +8,9 @@ import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 import ru.example.todo.controller.assembler.TodoSectionModelAssembler;
 import ru.example.todo.entity.TodoSection;
 import ru.example.todo.service.TodoSectionService;
@@ -56,4 +55,17 @@ public class TodoSectionController {
         return assembler.toModel(todoSectionService.getSectionById(id));
     }
 
+    // delete section by id
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteOne(@PathVariable long id) {
+        todoSectionService.deleteSectionById(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    // create new section
+    @PostMapping()
+    public ResponseEntity<?> createSection(@RequestBody TodoSection section) {
+        todoSectionService.createSection(section);
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
 }
