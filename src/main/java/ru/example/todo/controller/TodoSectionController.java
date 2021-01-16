@@ -37,7 +37,7 @@ public class TodoSectionController {
     }
 
     //     get all custom sections
-    @GetMapping
+    @GetMapping(produces = "application/json")
     @JsonView(value = Views.Public.class)
     public CollectionModel<EntityModel<TodoSection>> all() {
         List<EntityModel<TodoSection>> sections = todoSectionService.getAllSections()
@@ -50,7 +50,7 @@ public class TodoSectionController {
     }
 
     //     get custom section by id
-    @GetMapping(value = "/{id}", consumes = "application/json")
+    @GetMapping(value = "/{id}", produces = "application/json")
     @JsonView(value = Views.Internal.class)
     public EntityModel<TodoSection> one(@PathVariable("id") Long id) {
         return assembler.toModel(todoSectionService.getSectionById(id));
