@@ -1,18 +1,22 @@
 # TodoList
-_Простое рест-приложение, без регистрации и СМС... С общими задачами на всех._
+`Простое рест-приложение, без регистрации и СМС... С общими задачами на всех.`
 
+Ниже будет представлен краткий обзор работы с  ~~нелепой реализацией~~ АПИ :)
 
-*  Task
-- [x] Get all tasks
-- [x] Get task by id
-- [x] Create task
-- [x] Update task
-- [x] Delete task
+---
+Работа с разделами
+-
+**_Разделы будут содержать в себе задачки, реализованы следующие операции:_**
+* [Получить список или 1 объект по ID](/docs/section/section-get.md)
+* [Создать](/docs/section/section-create.md)   
+* [Удалить](/docs/section/section-delete.md) 
+* [Обновить](/docs/section/section-update.md)
+ 
 
-* List of tasks
-- [x] Get list of tasks
-- [x] Get list by id 
-- [x] Create list
-- [x] Update list
-- [x] Delete list
-- [ ] Add tasks to the list
+Работа с задачками
+-
+**_Операции, связанные с задачками:_**
+* [Получить список или 1 объект по ID](/docs/task/task-get.md)
+* [Создать](/docs/task/task-create.md)   
+* [Удалить](/docs/task/task-delete.md) 
+* [Обновить](/docs/task/task-update.md)
