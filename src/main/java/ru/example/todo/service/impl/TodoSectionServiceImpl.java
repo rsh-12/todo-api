@@ -94,7 +94,15 @@ public class TodoSectionServiceImpl implements TodoSectionService {
         List<TodoTask> tasksByIds = todoTaskService.findAllBySetId(tasks);
         log.info(">>> Get tasks list: {}", tasksByIds.size());
 
+        // add or remove
+        defineOperation(flag, section, tasksByIds);
 
+        log.info(">>> Set tasks");
+        todoSectionRepository.save(section);
+    }
+
+    // --------------------------------------------- helper methods
+    private void defineOperation(SetTasks flag, TodoSection section, List<TodoTask> tasksByIds) {
         if (flag.equals(SetTasks.MOVE)) {
             log.info(">>> Add tasks to the section");
             section.setTodoTasks(tasksByIds);
@@ -102,8 +110,5 @@ public class TodoSectionServiceImpl implements TodoSectionService {
             log.info(">>> Remove tasks from the section");
             section.removeTodoTasks(tasksByIds);
         }
-
-        log.info(">>> Set tasks");
-        todoSectionRepository.save(section);
     }
 }

@@ -35,7 +35,6 @@ public class TodoTaskServiceImpl implements TodoTaskService {
         this.todoTaskRepository = todoTaskRepository;
     }
 
-
     // get all tasks
     @Override
     public List<TodoTask> getAllTasks(Integer pageNo, Integer pageSize, TaskDate date, String sort) {
