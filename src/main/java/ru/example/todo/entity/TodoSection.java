@@ -64,7 +64,11 @@ public class TodoSection {
     }
 
     public void setTodoTasks(List<TodoTask> todoTasks) {
-        this.todoTasks = todoTasks;
+        todoTasks.forEach(task -> task.setTodoSection(this));
+    }
+
+    public void removeTodoTasks(List<TodoTask> todoTasks) {
+        todoTasks.forEach(task -> task.setTodoSection(null));
     }
 
     @Override
