@@ -15,4 +15,4 @@ _Простое рест-приложение, без регистрации и 
 - [x] Create list
 - [x] Update list
 - [x] Delete list
-- [ ] Add tasks to the list
+- [x] Add tasks to the list
