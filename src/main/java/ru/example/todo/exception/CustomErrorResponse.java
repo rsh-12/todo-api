@@ -10,7 +10,7 @@ import java.util.Date;
 
 public class CustomErrorResponse {
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Yekaterinburg")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, timezone = "Asia/Yekaterinburg")
     private Date timestamp;
     private int status;
     private String error;

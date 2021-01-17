@@ -23,7 +23,7 @@ public class TodoTask {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+//    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private Long id;
 
     @Size(min = 3, max = 80, message = "Size must be between 3 and 80")

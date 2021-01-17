@@ -21,6 +21,7 @@ import ru.example.todo.service.TodoTaskService;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class TodoTaskServiceImpl implements TodoTaskService {
@@ -33,7 +34,6 @@ public class TodoTaskServiceImpl implements TodoTaskService {
     public TodoTaskServiceImpl(TodoTaskRepository todoTaskRepository) {
         this.todoTaskRepository = todoTaskRepository;
     }
-
 
     // get all tasks
     @Override
@@ -112,6 +112,13 @@ public class TodoTaskServiceImpl implements TodoTaskService {
 
         log.info(">>> Save updated task: id={}", id);
         todoTaskRepository.save(taskFromDB);
+    }
+
+    @Override
+    public List<TodoTask> findAllBySetId(Set<Long> taskIds) {
+        List<TodoTask> tasksByIds = todoTaskRepository.findAllByIdIn(taskIds);
+        log.info(">>> Get tasks by list of ids: {}", tasksByIds.size());
+        return tasksByIds;
     }
 
 
