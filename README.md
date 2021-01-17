@@ -7,10 +7,10 @@
 Работа с разделами
 -
 **_Разделы будут содержать в себе задачки, реализованы следующие операции:_**
-* [Получить список или 1 объект по ID](#get-sections)
-* [Создать](#create-section)   
-* [Удалить](#delete-section) 
-* [Обновить](#update-section)
+* [Получить список или 1 объект по ID](/docs/section/section-get.md)
+* [Создать](/docs/section/section-create.md)   
+* [Удалить](/docs/section/section-delete.md) 
+* [Обновить](/docs/section/section-update.md)
  
 
 Работа с задачками
