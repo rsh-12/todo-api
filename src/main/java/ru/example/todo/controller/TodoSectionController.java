@@ -13,7 +13,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import ru.example.todo.controller.assembler.TodoSectionModelAssembler;
+import ru.example.todo.controller.wrapper.TaskIdsWrapper;
 import ru.example.todo.entity.TodoSection;
+import ru.example.todo.enums.SetTasks;
 import ru.example.todo.service.TodoSectionService;
 import ru.example.todo.util.Views;
 
@@ -84,9 +86,20 @@ public class TodoSectionController {
 
     // update section title by id
     @PutMapping(value = "/{id}", consumes = "application/json")
-    public ResponseEntity<?> updateSection(@PathVariable Long id,
+    public ResponseEntity<?> updateSection(@PathVariable("id") Long sectionId,
                                            @Valid @RequestBody TodoSection putSection) {
-        todoSectionService.updateSection(id, putSection);
+        todoSectionService.updateSection(sectionId, putSection);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    // todo: сомнительное решение v 0.3
+    // add tasks to the list
+    @PostMapping(value = "/tasks/{id}", consumes = "application/json")
+    public ResponseEntity<?> addTasksToList(@PathVariable("id") Long sectionId,
+                                            @RequestBody TaskIdsWrapper wrapper,
+                                            @RequestParam(value = "do") SetTasks flag) {
+
+        todoSectionService.addTasksToList(sectionId, wrapper.tasks, flag);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
