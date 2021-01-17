@@ -94,7 +94,7 @@ public class TodoSectionController {
 
     // todo: сомнительное решение v 0.3
     // add tasks to the list
-    @PostMapping(value = "/tasks/{id}", consumes = "application/json")
+    @PostMapping(value = "/{id}/tasks", consumes = "application/json")
     public ResponseEntity<?> addTasksToList(@PathVariable("id") Long sectionId,
                                             @RequestBody TaskIdsWrapper wrapper,
                                             @RequestParam(value = "do") SetTasks flag) {
