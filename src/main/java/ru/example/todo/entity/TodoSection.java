@@ -55,7 +55,7 @@ public class TodoSection {
     }
 
     public void setTitle(String title) {
-        this.title = title;
+        this.title = title.trim();
     }
 
     @JsonProperty("tasks")
