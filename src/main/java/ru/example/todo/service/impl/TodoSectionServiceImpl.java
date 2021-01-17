@@ -8,11 +8,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import ru.example.todo.entity.TodoSection;
+import ru.example.todo.entity.TodoTask;
+import ru.example.todo.enums.SetTasks;
 import ru.example.todo.exception.TodoObjectException;
 import ru.example.todo.repository.TodoSectionRepository;
 import ru.example.todo.service.TodoSectionService;
+import ru.example.todo.service.TodoTaskService;
 
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class TodoSectionServiceImpl implements TodoSectionService {
@@ -20,9 +24,11 @@ public class TodoSectionServiceImpl implements TodoSectionService {
     private static final Logger log = LoggerFactory.getLogger(TodoSectionServiceImpl.class.getName());
 
     private final TodoSectionRepository todoSectionRepository;
+    private final TodoTaskService todoTaskService;
 
-    public TodoSectionServiceImpl(TodoSectionRepository todoSectionRepository) {
+    public TodoSectionServiceImpl(TodoSectionRepository todoSectionRepository, TodoTaskService todoTaskService) {
         this.todoSectionRepository = todoSectionRepository;
+        this.todoTaskService = todoTaskService;
     }
 
     // get section by id
@@ -56,12 +62,36 @@ public class TodoSectionServiceImpl implements TodoSectionService {
         todoSectionRepository.save(section);
     }
 
+
     @Override
     public void updateSection(Long id, TodoSection putSection) {
+
         TodoSection section = todoSectionRepository.findById(id)
-                .orElseThrow(() -> new TodoObjectException(("User not found: " + id)));
+                .orElseThrow(() -> new TodoObjectException(("Section not found: " + id)));
 
         section.setTitle(putSection.getTitle());
+        todoSectionRepository.save(section);
+    }
+
+    @Override
+    public void addTasksToList(Long sectionId, Set<Long> tasks, SetTasks flag) {
+
+        if (tasks == null) {
+            throw new TodoObjectException("Tasks IDs are required!");
+        }
+
+        TodoSection section = todoSectionRepository.findById(sectionId)
+                .orElseThrow(() -> new TodoObjectException("Section not found: " + sectionId));
+
+        List<TodoTask> tasksByIds = todoTaskService.findAllBySetId(tasks);
+
+        if (flag.equals(SetTasks.MOVE)) {
+            section.setTodoTasks(tasksByIds);
+        } else if (flag.equals(SetTasks.REMOVE)) {
+            section.removeTodoTasks(tasksByIds);
+        }
+
+        log.info(">>> Set tasks");
         todoSectionRepository.save(section);
     }
 }
