@@ -2,8 +2,8 @@
 
 [Главная страница](#)
 
-* **[Получить список или 1 объект по ID](#get-sections)**
-* [Создать]()   
+* **[Получить список или 1 объект по ID](#получить-список-разделов)**
+* [Создать](/docs/section/section-create.md)   
 * [Удалить]() 
 * [Обновить]()
 ---
@@ -43,6 +43,17 @@
             "href": "http://example.com/api/sections"
         }
     }
+}
+```
+- `GET /api/section` - ошибка, **sections должно быть в мн. числе**: `GET /api/sections`:
+###### Ошибка в запросе (404 Not Found)
+```JSON
+{
+    "timestamp": "2021-01-17T09:27:22.618+00:00",
+    "status": 404,
+    "error": "Not Found",
+    "message": "",
+    "path": "/api/section/"
 }
 ```
 
