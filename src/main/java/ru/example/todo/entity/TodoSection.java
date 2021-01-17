@@ -26,7 +26,7 @@ public class TodoSection {
     private Long id;
 
     @NotBlank
-    @Size(min = 2, max = 50, message = "Size must be between 2 and 50")
+    @Size(min = 3, max = 50, message = "Size must be between 3 and 50")
     @Column(name = "title")
     @JsonView(value = Views.Public.class)
     private String title;
