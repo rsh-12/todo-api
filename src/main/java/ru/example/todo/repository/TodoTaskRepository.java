@@ -6,10 +6,13 @@ import ru.example.todo.entity.TodoTask;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
 public interface TodoTaskRepository extends JpaRepository<TodoTask, Long> {
 
     List<TodoTask> findAllByCompletionDateEquals(LocalDate date, Pageable page);
 
     List<TodoTask> findAllByCompletionDateBefore(LocalDate date, Pageable page);
+
+    List<TodoTask> findAllByIdIn(Set<Long> taskId);
 }
