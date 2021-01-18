@@ -73,11 +73,6 @@ public class TodoTaskServiceImpl implements TodoTaskService {
     // create new task
     @Override
     public void createTask(TodoTask newTask) {
-        if (newTask.getCompletionDate().isBefore(LocalDate.now())) {
-            log.warn(">>> Completion date error");
-            throw new TodoObjectException("Invalid completion date!");
-        }
-
         log.info(">>> Create new task");
         todoTaskRepository.save(newTask);
     }
@@ -93,12 +88,7 @@ public class TodoTaskServiceImpl implements TodoTaskService {
 
         // update task title or task completion date
         if (patch != null) {
-            log.info(">>> Update task completionDate field");
-            if (patch.getCompletionDate() != null && !patch.getCompletionDate().isBefore(LocalDate.now()))
-                taskFromDB.setCompletionDate(patch.getCompletionDate());
-
-            log.info(">>> Update task title field");
-            if (patch.getTitle() != null) taskFromDB.setTitle(patch.getTitle());
+            setTitleOrDate(patch, taskFromDB);
         }
 
         // set task status
@@ -113,6 +103,7 @@ public class TodoTaskServiceImpl implements TodoTaskService {
         log.info(">>> Save updated task: id={}", id);
         todoTaskRepository.save(taskFromDB);
     }
+
 
     @Override
     public List<TodoTask> findAllBySetId(Set<Long> taskIds) {
@@ -135,5 +126,13 @@ public class TodoTaskServiceImpl implements TodoTaskService {
     private String getSortAsString(String sort) {
         if (sort.contains(",")) return sort.split(",")[0];
         return sort;
+    }
+
+    private void setTitleOrDate(TodoTask patch, TodoTask taskFromDB) {
+        log.info(">>> Update task completionDate field");
+        if (patch.getCompletionDate() != null) taskFromDB.setCompletionDate(patch.getCompletionDate());
+
+        log.info(">>> Update task title field");
+        if (patch.getTitle() != null) taskFromDB.setTitle(patch.getTitle());
     }
 }
