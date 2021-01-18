@@ -11,6 +11,7 @@ import org.springframework.hateoas.server.core.Relation;
 import ru.example.todo.util.Views;
 
 import javax.persistence.*;
+import javax.validation.constraints.FutureOrPresent;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.util.Date;
@@ -39,6 +40,8 @@ public class TodoTask {
     @JsonView(value = Views.Public.class)
     private boolean starred;
 
+
+    @FutureOrPresent(message = "Invalid date format")
     @Column(name = "completion_date", columnDefinition = "date default current_date")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Yekaterinburg")
     @JsonView(value = Views.Public.class)

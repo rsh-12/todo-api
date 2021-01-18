@@ -9,24 +9,19 @@ import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import ru.example.todo.controller.assembler.TodoTaskModelAssembler;
 import ru.example.todo.entity.TodoTask;
 import ru.example.todo.enums.TaskDate;
 import ru.example.todo.enums.TaskStatus;
-import ru.example.todo.exception.TodoObjectException;
 import ru.example.todo.service.TodoTaskService;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Pattern;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
-import static ru.example.todo.exception.TodoObjectExceptionHandler.getFieldErrorsHandler;
 
 @RestController
 @RequestMapping("/api/tasks")
@@ -41,14 +36,6 @@ public class TodoTaskController {
         this.todoTaskService = todoTaskService;
         this.assembler = assembler;
     }
-
-    // ------------------------------------ handles field errors
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler({MethodArgumentNotValidException.class, TodoObjectException.class})
-    public Map<String, String> handleException(MethodArgumentNotValidException ex) {
-        return getFieldErrorsHandler(ex);
-    }
-
 
     // get all tasks
     @GetMapping(produces = "application/json")
@@ -70,7 +57,7 @@ public class TodoTaskController {
 
     // get task by id
     @GetMapping(value = "/{id}", produces = "application/json")
-    public EntityModel<TodoTask> one(@PathVariable("id") @Pattern(regexp = "^\\d+$") Long id) {
+    public EntityModel<TodoTask> one(@PathVariable("id") Long id) {
         return assembler.toModel(todoTaskService.getTaskById(id));
     }
 
@@ -99,6 +86,4 @@ public class TodoTaskController {
         todoTaskService.updateTask(id, patch, completed, starred);
         return new ResponseEntity<>(HttpStatus.OK);
     }
-
-
 }

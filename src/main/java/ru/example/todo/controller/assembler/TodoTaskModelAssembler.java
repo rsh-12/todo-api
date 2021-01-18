@@ -21,7 +21,7 @@ public class TodoTaskModelAssembler implements RepresentationModelAssembler<Todo
     public EntityModel<TodoTask> toModel(TodoTask todoTask) {
         return EntityModel.of(todoTask,
                 linkTo(methodOn(TodoTaskController.class).one(todoTask.getId())).withSelfRel(),
-                linkTo(methodOn(TodoTaskController.class).all(0, 10, TaskDate.ALL, "createdAt")).withRel("tasks"));
+                linkTo(methodOn(TodoTaskController.class).all(0, 20, TaskDate.ALL, "createdAt")).withRel("tasks"));
     }
 
 }
