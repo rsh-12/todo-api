@@ -26,16 +26,16 @@
  `flag` может принимать значения `starred` и `completed`
  
  Пример:
-> PATCH /api/tasks/id?starred=true&completed=true
+> `PATCH /api/tasks/id?starred=true&completed=true`
 ###### Успешный ответ (200 OK)
 Это отметит задачку как важную и выполненную. Можно передавать и отдельные значения.
 
-> PATCH /api/tasks/id?starred=true
+> `PATCH /api/tasks/id?starred=true`
 
 Порядок не имеет значения. <br>
 <br>
 
-> PATCH /api/tasks/id - пример с валидацией:
+> `PATCH /api/tasks/id - пример с валидацией:`
 ```json
 {
   "title": ""
