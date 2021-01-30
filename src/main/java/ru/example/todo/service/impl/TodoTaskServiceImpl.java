@@ -63,13 +63,9 @@ public class TodoTaskServiceImpl implements TodoTaskService {
 
     // delete task by id
     @Override
-    public boolean deleteTaskById(Long id) {
-
-        if (!todoTaskRepository.existsById(id)) return false;
-
+    public void deleteTaskById(Long id) {
         todoTaskRepository.deleteById(id);
         log.info(">>> Delete task by id: {}", id);
-        return true;
     }
 
     // create new task
