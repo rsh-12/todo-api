@@ -42,9 +42,9 @@ public class TodoSectionController {
     }
 
     //     get all custom sections
-    @ApiOperation()
+    @ApiOperation(value ="", notes = "Finds all lists")
     @GetMapping(produces = "application/json")
-    @JsonView(value = Views.Public.class)
+    @JsonView(Views.Public.class)
     public CollectionModel<EntityModel<TodoSection>> all() {
         List<EntityModel<TodoSection>> sections = todoSectionService.getAllSections()
                 .stream()
@@ -56,7 +56,7 @@ public class TodoSectionController {
     }
 
     //     get custom section by id
-    @ApiOperation()
+    @ApiOperation(value = "list ID - number", notes = "Finds a list by id")
     @GetMapping(value = "/{id}", produces = "application/json")
     @JsonView(value = Views.Internal.class)
     public EntityModel<TodoSection> one(@PathVariable("id") Long id) {
@@ -64,7 +64,7 @@ public class TodoSectionController {
     }
 
     // delete section by id
-    @ApiOperation()
+    @ApiOperation(value = "list ID - number", notes = "Deletes the list by id")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteOne(@PathVariable long id) {
         todoSectionService.deleteSectionById(id);
@@ -72,7 +72,7 @@ public class TodoSectionController {
     }
 
     // create new section
-    @ApiOperation()
+    @ApiOperation(value = "new list", notes = "Creates a new list")
     @PostMapping(consumes = "application/json")
     public ResponseEntity<?> createSection(@Valid @RequestBody TodoSection section) {
         todoSectionService.createSection(section);
@@ -81,7 +81,7 @@ public class TodoSectionController {
 
 
     // update section title by id
-    @ApiOperation()
+    @ApiOperation(value = "list ID - number", notes = "Updates the list by id")
     @PutMapping(value = "/{id}", consumes = "application/json")
     public ResponseEntity<?> updateSection(@PathVariable("id") Long sectionId,
                                            @Valid @RequestBody TodoSection putSection) {
@@ -91,7 +91,7 @@ public class TodoSectionController {
 
     // сомнительное решение v 0.3
     // add tasks to the list
-    @ApiOperation()
+    @ApiOperation(value = "list ID - number, params - ?do=[move|remove]", notes = "Adds a task to the list")
     @PostMapping(value = "/{id}/tasks", consumes = "application/json")
     public ResponseEntity<?> addTasksToList(@PathVariable("id") Long sectionId,
                                             @RequestBody TaskIdsWrapper wrapper,
