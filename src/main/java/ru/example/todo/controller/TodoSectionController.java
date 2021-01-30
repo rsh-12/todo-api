@@ -6,6 +6,7 @@ package ru.example.todo.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
@@ -41,6 +42,7 @@ public class TodoSectionController {
     }
 
     //     get all custom sections
+    @ApiOperation()
     @GetMapping(produces = "application/json")
     @JsonView(value = Views.Public.class)
     public CollectionModel<EntityModel<TodoSection>> all() {
@@ -54,6 +56,7 @@ public class TodoSectionController {
     }
 
     //     get custom section by id
+    @ApiOperation()
     @GetMapping(value = "/{id}", produces = "application/json")
     @JsonView(value = Views.Internal.class)
     public EntityModel<TodoSection> one(@PathVariable("id") Long id) {
@@ -61,6 +64,7 @@ public class TodoSectionController {
     }
 
     // delete section by id
+    @ApiOperation()
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteOne(@PathVariable long id) {
         todoSectionService.deleteSectionById(id);
@@ -68,6 +72,7 @@ public class TodoSectionController {
     }
 
     // create new section
+    @ApiOperation()
     @PostMapping(consumes = "application/json")
     public ResponseEntity<?> createSection(@Valid @RequestBody TodoSection section) {
         todoSectionService.createSection(section);
@@ -76,6 +81,7 @@ public class TodoSectionController {
 
 
     // update section title by id
+    @ApiOperation()
     @PutMapping(value = "/{id}", consumes = "application/json")
     public ResponseEntity<?> updateSection(@PathVariable("id") Long sectionId,
                                            @Valid @RequestBody TodoSection putSection) {
@@ -85,6 +91,7 @@ public class TodoSectionController {
 
     // сомнительное решение v 0.3
     // add tasks to the list
+    @ApiOperation()
     @PostMapping(value = "/{id}/tasks", consumes = "application/json")
     public ResponseEntity<?> addTasksToList(@PathVariable("id") Long sectionId,
                                             @RequestBody TaskIdsWrapper wrapper,

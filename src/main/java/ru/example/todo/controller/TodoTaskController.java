@@ -60,12 +60,14 @@ public class TodoTaskController {
     }
 
     // get task by id
+    @ApiOperation()
     @GetMapping(value = "/{id}", produces = "application/json")
     public EntityModel<TodoTask> one(@PathVariable("id") Long id) {
         return assembler.toModel(todoTaskService.getTaskById(id));
     }
 
     // delete task by id
+    @ApiOperation()
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteOne(@PathVariable Long id) {
         todoTaskService.deleteTaskById(id);
@@ -73,6 +75,7 @@ public class TodoTaskController {
     }
 
     // create new task
+    @ApiOperation()
     @PostMapping(consumes = "application/json")
     public ResponseEntity<?> createTask(@Valid @RequestBody TodoTask newTask) {
         todoTaskService.createTask(newTask);
@@ -82,6 +85,7 @@ public class TodoTaskController {
     // update task title or task completion date
     // or
     // update task status (completed, starred)
+    @ApiOperation()
     @PatchMapping(value = "/{id}", consumes = "application/json")
     public ResponseEntity<?> updateTask(@PathVariable("id") Long id,
                                         @Valid @RequestBody(required = false) TodoTask patch,
