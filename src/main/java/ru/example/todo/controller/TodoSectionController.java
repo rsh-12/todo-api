@@ -5,6 +5,7 @@ package ru.example.todo.controller;
  * */
 
 import com.fasterxml.jackson.annotation.JsonView;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
@@ -25,8 +26,9 @@ import java.util.stream.Collectors;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
+@Api(value = "/api/sections", tags = "Task lists")
 @RestController
-@RequestMapping("api/sections")
+@RequestMapping("/api/sections")
 public class TodoSectionController {
 
     private final TodoSectionService todoSectionService;
