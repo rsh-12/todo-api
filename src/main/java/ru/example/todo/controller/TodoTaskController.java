@@ -73,8 +73,11 @@ public class TodoTaskController {
     @ApiOperation(value = "task ID - number", notes = "Deletes the task by id")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteOne(@PathVariable Long id) {
-        todoTaskService.deleteTaskById(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+
+        boolean isTaskDeleted = todoTaskService.deleteTaskById(id);
+
+        if (isTaskDeleted) return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        else return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     // create new task
