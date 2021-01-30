@@ -4,6 +4,8 @@ package ru.example.todo.controller;
  * Time: 6:35 PM
  * */
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
@@ -23,6 +25,7 @@ import java.util.stream.Collectors;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
+@Api(value = "/api/tasks", tags = "Tasks")
 @RestController
 @RequestMapping("/api/tasks")
 public class TodoTaskController {
@@ -38,6 +41,7 @@ public class TodoTaskController {
     }
 
     // get all tasks
+    @ApiOperation(value = "Finds a list of all tasks")
     @GetMapping(produces = "application/json")
     public CollectionModel<EntityModel<TodoTask>> all(
             @RequestParam(value = "page", required = false, defaultValue = "0") Integer pageNo,
