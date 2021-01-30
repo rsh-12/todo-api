@@ -91,7 +91,7 @@ public class TodoSectionController {
 
     // сомнительное решение v 0.3
     // add tasks to the list
-    @ApiOperation(value = "list ID - number, params - ?do=[move|remove]", notes = "Adds a task to the list")
+    @ApiOperation(value = "list ID - number, params - do=[move|remove]", notes = "Adds a task to the list")
     @PostMapping(value = "/{id}/tasks", consumes = "application/json")
     public ResponseEntity<?> addTasksToList(@PathVariable("id") Long sectionId,
                                             @RequestBody TaskIdsWrapper wrapper,

@@ -41,7 +41,10 @@ public class TodoTaskController {
     }
 
     // get all tasks
-    @ApiOperation(value = "Finds a list of all tasks")
+    @ApiOperation(value = "params - page=[0-9] default=0, " +
+            "size=[0-9] default=20, date=[today|overdue] default=all, " +
+            "sort=[id|title|createdAt|updatedAt|completionDate] default=createdAt,desc",
+            notes = "Finds a list of all tasks")
     @GetMapping(produces = "application/json")
     public CollectionModel<EntityModel<TodoTask>> all(
             @RequestParam(value = "page", required = false, defaultValue = "0") Integer pageNo,
@@ -60,14 +63,14 @@ public class TodoTaskController {
     }
 
     // get task by id
-    @ApiOperation(value = "id", notes = "Finds a task by id")
+    @ApiOperation(value = "task ID - number", notes = "Finds a task by id")
     @GetMapping(value = "/{id}", produces = "application/json")
     public EntityModel<TodoTask> one(@PathVariable("id") Long id) {
         return assembler.toModel(todoTaskService.getTaskById(id));
     }
 
     // delete task by id
-    @ApiOperation(value = "id", notes = "Deletes the task by id")
+    @ApiOperation(value = "task ID - number", notes = "Deletes the task by id")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteOne(@PathVariable Long id) {
         todoTaskService.deleteTaskById(id);
@@ -75,7 +78,7 @@ public class TodoTaskController {
     }
 
     // create new task
-    @ApiOperation(value = "Title", notes = "Creates a new task")
+    @ApiOperation(value = "task - title, [completionDate]", notes = "Creates a new task")
     @PostMapping(consumes = "application/json")
     public ResponseEntity<?> createTask(@Valid @RequestBody TodoTask newTask) {
         todoTaskService.createTask(newTask);
@@ -85,7 +88,8 @@ public class TodoTaskController {
     // update task title or task completion date
     // or
     // update task status (completed, starred)
-    @ApiOperation(value = "id", notes = "Updates the task by id")
+    @ApiOperation(value = "task ID - number, params - completed=[true|false], starred=[true|false]",
+            notes = "Updates the task by id")
     @PatchMapping(value = "/{id}", consumes = "application/json")
     public ResponseEntity<?> updateTask(@PathVariable("id") Long id,
                                         @Valid @RequestBody(required = false) TodoTask patch,
