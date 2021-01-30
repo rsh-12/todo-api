@@ -13,7 +13,7 @@ public interface TodoTaskService {
 
     TodoTask getTaskById(Long id);
 
-    boolean deleteTaskById(Long id);
+    void deleteTaskById(Long id);
 
     void createTask(TodoTask newTask);
 
