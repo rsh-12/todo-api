@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
-@Api(value = "/api/sections", tags = "Task lists")
+@Api(tags = "Task sections")
 @RestController
 @RequestMapping("/api/sections")
 public class TodoSectionController {
@@ -41,8 +41,8 @@ public class TodoSectionController {
         this.assembler = assembler;
     }
 
-    //     get all custom sections
-    @ApiOperation(value ="", notes = "Finds all lists")
+    // get all sections
+    @ApiOperation(value = "List todo sections", notes = "List all todo sections")
     @GetMapping(produces = "application/json")
     @JsonView(Views.Public.class)
     public CollectionModel<EntityModel<TodoSection>> all() {
@@ -55,8 +55,8 @@ public class TodoSectionController {
                 linkTo(methodOn(TodoSectionController.class).all()).withSelfRel());
     }
 
-    //     get custom section by id
-    @ApiOperation(value = "list ID - number", notes = "Finds a list by id")
+    // get custom section by id
+    @ApiOperation(value = "Find section", notes = "Find the Section by ID")
     @GetMapping(value = "/{id}", produces = "application/json")
     @JsonView(value = Views.Internal.class)
     public EntityModel<TodoSection> one(@PathVariable("id") Long id) {
@@ -64,7 +64,7 @@ public class TodoSectionController {
     }
 
     // delete section by id
-    @ApiOperation(value = "list ID - number", notes = "Deletes the list by id")
+    @ApiOperation(value = "Remove section", notes = "It permits to remove a section")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteOne(@PathVariable long id) {
         todoSectionService.deleteSectionById(id);
@@ -72,7 +72,7 @@ public class TodoSectionController {
     }
 
     // create new section
-    @ApiOperation(value = "new list", notes = "Creates a new list")
+    @ApiOperation(value = "Create section", notes = "It permits to create a new section")
     @PostMapping(consumes = "application/json")
     public ResponseEntity<?> createSection(@Valid @RequestBody TodoSection section) {
         todoSectionService.createSection(section);
@@ -81,7 +81,7 @@ public class TodoSectionController {
 
 
     // update section title by id
-    @ApiOperation(value = "list ID - number", notes = "Updates the list by id")
+    @ApiOperation(value = "Update section", notes = "It permits to update a section")
     @PutMapping(value = "/{id}", consumes = "application/json")
     public ResponseEntity<?> updateSection(@PathVariable("id") Long sectionId,
                                            @Valid @RequestBody TodoSection putSection) {
@@ -89,9 +89,8 @@ public class TodoSectionController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    // сомнительное решение v 0.3
     // add tasks to the list
-    @ApiOperation(value = "list ID - number, params - do=[move|remove]", notes = "Adds a task to the list")
+    @ApiOperation(value = "Add tasks to section", notes = "It permits to add tasks to section")
     @PostMapping(value = "/{id}/tasks", consumes = "application/json")
     public ResponseEntity<?> addTasksToList(@PathVariable("id") Long sectionId,
                                             @RequestBody TaskIdsWrapper wrapper,
@@ -100,6 +99,5 @@ public class TodoSectionController {
         todoSectionService.addTasksToList(sectionId, wrapper.tasks, flag);
         return new ResponseEntity<>(HttpStatus.OK);
     }
-
 
 }
