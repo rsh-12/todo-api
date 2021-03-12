@@ -41,7 +41,6 @@ public class TodoTask {
     private boolean starred;
 
 
-    @FutureOrPresent(message = "Invalid date format")
     @Column(name = "completion_date", columnDefinition = "date default current_date")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Yekaterinburg")
     @JsonView(value = Views.Public.class)
