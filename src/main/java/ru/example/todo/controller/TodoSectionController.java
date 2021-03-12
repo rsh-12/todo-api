@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.example.todo.controller.assembler.TodoSectionModelAssembler;
 import ru.example.todo.controller.wrapper.TaskIdsWrapper;
+import ru.example.todo.domain.TodoSectionRequest;
 import ru.example.todo.entity.TodoSection;
 import ru.example.todo.enums.SetTasks;
 import ru.example.todo.service.TodoSectionService;
@@ -74,8 +75,8 @@ public class TodoSectionController {
     // create new section
     @ApiOperation(value = "Create section", notes = "It permits to create a new section")
     @PostMapping(consumes = "application/json")
-    public ResponseEntity<?> createSection(@Valid @RequestBody TodoSection section) {
-        todoSectionService.createSection(section);
+    public ResponseEntity<?> createSection(@Valid @RequestBody TodoSectionRequest sectionRequest) {
+        todoSectionService.createSection(sectionRequest);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
@@ -84,11 +85,12 @@ public class TodoSectionController {
     @ApiOperation(value = "Update section", notes = "It permits to update a section")
     @PutMapping(value = "/{id}", consumes = "application/json")
     public ResponseEntity<?> updateSection(@PathVariable("id") Long sectionId,
-                                           @Valid @RequestBody TodoSection putSection) {
-        todoSectionService.updateSection(sectionId, putSection);
+                                           @Valid @RequestBody TodoSectionRequest sectionRequest) {
+        todoSectionService.updateSection(sectionId, sectionRequest);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    // TODO: исправить метод
     // add tasks to the list
     @ApiOperation(value = "Add tasks to section", notes = "It permits to add tasks to section")
     @PostMapping(value = "/{id}/tasks", consumes = "application/json")

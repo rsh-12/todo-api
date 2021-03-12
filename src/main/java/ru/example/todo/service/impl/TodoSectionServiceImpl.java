@@ -7,6 +7,7 @@ package ru.example.todo.service.impl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import ru.example.todo.domain.TodoSectionRequest;
 import ru.example.todo.entity.TodoSection;
 import ru.example.todo.entity.TodoTask;
 import ru.example.todo.enums.SetTasks;
@@ -58,21 +59,23 @@ public class TodoSectionServiceImpl implements TodoSectionService {
 
     // create new section
     @Override
-    public void createSection(TodoSection section) {
+    public void createSection(TodoSectionRequest sectionRequest) {
+        TodoSection todoSection = new TodoSection();
+        todoSection.setTitle(sectionRequest.getTitle());
         log.info(">>> Create new section");
-        todoSectionRepository.save(section);
+        todoSectionRepository.save(todoSection);
     }
 
 
     // update section title
     @Override
-    public void updateSection(Long id, TodoSection putSection) {
+    public void updateSection(Long id, TodoSectionRequest sectionRequest) {
 
         log.info(">>> Get section by id: {}", id);
         TodoSection section = todoSectionRepository.findById(id)
                 .orElseThrow(() -> new TodoObjectException(("Section not found: " + id)));
 
-        section.setTitle(putSection.getTitle());
+        section.setTitle(sectionRequest.getTitle());
 
         log.info(">>> Save updated section");
         todoSectionRepository.save(section);
