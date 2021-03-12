@@ -1,0 +1,48 @@
+package ru.example.todo.controller;
+/*
+ * Date: 3/12/21
+ * Time: 10:30 PM
+ * */
+
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.web.servlet.MockMvc;
+import ru.example.todo.entity.TodoSection;
+import ru.example.todo.repository.TodoSectionRepository;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+@ActiveProfiles("test")
+@RunWith(SpringRunner.class)
+@AutoConfigureMockMvc
+@SpringBootTest
+public class TodoSectionControllerTest {
+
+    @Autowired
+    private MockMvc mvc;
+
+    @Autowired
+    private TodoSectionRepository repository;
+
+
+    @Before
+    public void createSection() {
+        TodoSection section = new TodoSection("TestSection");
+        repository.save(section);
+    }
+
+    @Test
+    public void testGetSections() throws Exception {
+        mvc.perform(get("/api/sections")
+                .contentType(MediaType.ALL))
+                .andExpect(status().isOk());
+    }
+}
