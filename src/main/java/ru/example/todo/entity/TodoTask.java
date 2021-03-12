@@ -7,6 +7,8 @@ package ru.example.todo.entity;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.hateoas.server.core.Relation;
 import ru.example.todo.util.Views;
 
@@ -49,12 +51,14 @@ public class TodoTask {
     @Column(name = "created_at", columnDefinition = "timestamp default current_timestamp", updatable = false)
     @JsonFormat(timezone = "Asia/Yekaterinburg")
     @JsonView(value = Views.Public.class)
-    private Date createdAt = new Date();
+    @CreationTimestamp
+    private Date createdAt;
 
     @Column(name = "updated_at", columnDefinition = "timestamp default current_timestamp")
     @JsonFormat(timezone = "Asia/Yekaterinburg")
     @JsonView(value = Views.Public.class)
-    private Date updatedAt = new Date();
+    @UpdateTimestamp
+    private Date updatedAt;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE,
