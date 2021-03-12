@@ -1,5 +1,6 @@
 package ru.example.todo.service;
 
+import ru.example.todo.domain.TodoTaskRequest;
 import ru.example.todo.entity.TodoTask;
 import ru.example.todo.enums.TaskDate;
 import ru.example.todo.enums.TaskStatus;
@@ -15,9 +16,9 @@ public interface TodoTaskService {
 
     void deleteTaskById(Long id);
 
-    void createTask(TodoTask newTask);
+    void createTask(TodoTaskRequest todoTaskRequest);
 
-    void updateTask(Long id, TodoTask patch, TaskStatus completed, TaskStatus starred);
+    void updateTask(Long id, TodoTaskRequest todoTaskRequest, TaskStatus completed, TaskStatus starred);
 
     List<TodoTask> findAllBySetId(Set<Long> taskIds);
 

@@ -11,6 +11,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import ru.example.todo.domain.TodoTaskRequest;
 import ru.example.todo.entity.TodoTask;
 import ru.example.todo.enums.TaskDate;
 import ru.example.todo.enums.TaskStatus;
@@ -70,14 +71,19 @@ public class TodoTaskServiceImpl implements TodoTaskService {
 
     // create new task
     @Override
-    public void createTask(TodoTask newTask) {
+    public void createTask(TodoTaskRequest todoTaskRequest) {
+        TodoTask task = new TodoTask();
+        task.setTitle(todoTaskRequest.getTitle());
+        task.setCompletionDate(todoTaskRequest.getCompletionDate());
+
         log.info(">>> Create new task");
-        todoTaskRepository.save(newTask);
+        todoTaskRepository.save(task);
     }
 
     // update task by id
     @Override
-    public void updateTask(Long id, TodoTask patch, TaskStatus completed, TaskStatus starred) {
+    public void updateTask(Long id, TodoTaskRequest todoTaskRequest,
+                           TaskStatus completed, TaskStatus starred) {
 
         // get task from DB
         log.info(">>> Get task from DB: id={}", id);
@@ -85,8 +91,8 @@ public class TodoTaskServiceImpl implements TodoTaskService {
                 .orElseThrow(() -> new TodoObjectException("Task not found: " + id));
 
         // update task title or task completion date
-        if (patch != null) {
-            setTitleOrDate(patch, taskFromDB);
+        if (todoTaskRequest != null) {
+            setTitleOrDate(todoTaskRequest, taskFromDB);
         }
 
         // set task status
@@ -110,7 +116,6 @@ public class TodoTaskServiceImpl implements TodoTaskService {
         return tasksByIds;
     }
 
-
     // --------------------------------------------------------------------------- Helper methods.
     private boolean toABoolean(TaskStatus status) {
         return Boolean.parseBoolean(status.toString());
@@ -126,11 +131,11 @@ public class TodoTaskServiceImpl implements TodoTaskService {
         return sort;
     }
 
-    private void setTitleOrDate(TodoTask patch, TodoTask taskFromDB) {
+    private void setTitleOrDate(TodoTaskRequest request, TodoTask taskFromDB) {
         log.info(">>> Update task completionDate field");
-        if (patch.getCompletionDate() != null) taskFromDB.setCompletionDate(patch.getCompletionDate());
+        if (request.getCompletionDate() != null) taskFromDB.setCompletionDate(request.getCompletionDate());
 
         log.info(">>> Update task title field");
-        if (patch.getTitle() != null) taskFromDB.setTitle(patch.getTitle());
+        if (request.getTitle() != null) taskFromDB.setTitle(request.getTitle());
     }
 }
