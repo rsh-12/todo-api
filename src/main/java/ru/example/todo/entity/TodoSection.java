@@ -4,14 +4,18 @@ package ru.example.todo.entity;
  * Time: 4:25 PM
  * */
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.hateoas.server.core.Relation;
 import ru.example.todo.util.Views;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -31,11 +35,37 @@ public class TodoSection {
     @JsonView(value = Views.Public.class)
     private String title;
 
+    @JsonFormat(timezone = "Asia/Yekaterinburg")
+    @JsonView(value = Views.Public.class)
+    @CreationTimestamp
+    private Date createdAt;
+
+    @JsonFormat(timezone = "Asia/Yekaterinburg")
+    @JsonView(value = Views.Public.class)
+    @UpdateTimestamp
+    private Date updatedAt;
+
     @OneToMany(mappedBy = "todoSection")
     @JsonView(value = Views.Internal.class)
     List<TodoTask> todoTasks;
 
     public TodoSection() {
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public Date getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(Date updatedAt) {
+        this.updatedAt = updatedAt;
     }
 
     public TodoSection(String title) {

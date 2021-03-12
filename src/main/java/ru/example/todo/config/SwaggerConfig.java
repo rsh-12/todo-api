@@ -31,7 +31,7 @@ public class SwaggerConfig {
     private ApiInfo apiInfo() {
         return new ApiInfo("ToDo tasks API",
                 "Study project",
-                "1.1",
+                "1.2",
                 "Free to use",
                 new Contact("RSH-12", "https://github.com/rsh-12", "get_info@bk.ru"),
                 null,
