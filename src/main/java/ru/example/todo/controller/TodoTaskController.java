@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.example.todo.controller.assembler.TodoTaskModelAssembler;
+import ru.example.todo.domain.TodoTaskRequest;
 import ru.example.todo.entity.TodoTask;
 import ru.example.todo.enums.TaskDate;
 import ru.example.todo.enums.TaskStatus;
@@ -77,8 +78,8 @@ public class TodoTaskController {
     // create new task
     @ApiOperation(value = "Create task", notes = "It permits to create a new task")
     @PostMapping(consumes = "application/json")
-    public ResponseEntity<?> createTask(@Valid @RequestBody TodoTask newTask) {
-        todoTaskService.createTask(newTask);
+    public ResponseEntity<?> createTask(@Valid @RequestBody TodoTaskRequest request) {
+        todoTaskService.createTask(request);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
@@ -88,10 +89,11 @@ public class TodoTaskController {
     @ApiOperation(value = "Update task", notes = "It permits to update a task")
     @PatchMapping(value = "/{id}", consumes = "application/json")
     public ResponseEntity<?> updateTask(@PathVariable("id") Long id,
-                                        @Valid @RequestBody(required = false) TodoTask patch,
+                                        @Valid @RequestBody(required = false) TodoTaskRequest request,
                                         @RequestParam(value = "completed", required = false) TaskStatus completed,
                                         @RequestParam(value = "starred", required = false) TaskStatus starred) {
-        todoTaskService.updateTask(id, patch, completed, starred);
+
+        todoTaskService.updateTask(id, request, completed, starred);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }
