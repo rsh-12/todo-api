@@ -70,23 +70,22 @@ public class TodoSectionControllerTest {
 
 
     // delete section
-
     @Test
     public void testDeleteSectionById() throws Exception {
 
-        // get by id 1, returns 200 OK
+        // get by id: returns 200 OK
         mvc.perform(get(API + 1)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk());
 
-        // delete by id 1, returns 204 NO CONTENT
+        // delete by id: returns 204 NO CONTENT
         mvc.perform(delete(API + 1)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent())
                 .andDo(print());
 
-        // get again by id 1, returns 404 NOT FOUND
+        // get again by id: returns 404 NOT FOUND
         mvc.perform(get(API + 1)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
@@ -94,8 +93,33 @@ public class TodoSectionControllerTest {
 
     }
 
-
     // update section
+    @Test
+    public void testUpdateSectionById() throws Exception {
+
+        // get section by id: returns 200 OK
+        mvc.perform(get(API + 1)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("title", is("Important")));
+
+        // update section by id: returns 200 OK
+        mvc.perform(put(API + 1)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(getSectionInJson(1L)))
+                .andExpect(status().isOk())
+                .andDo(print());
+
+        // get section by id, check new title: returns 200 OK
+        mvc.perform(get(API + 1)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("title", is("NewTitle")));
+    }
+
+    private String getSectionInJson(Long id) {
+        return String.format("{\"id\":%d, \"title\":\"NewTitle\"}", id);
+    }
 
     private static String asJsonString(final Object obj) {
         try {
