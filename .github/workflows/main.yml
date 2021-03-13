@@ -1,6 +1,7 @@
 name: DemoEndpoints project CI
 env:
   SPRING_DATASOURCE_URL: jdbc:postgresql://127.0.0.1/todos
+  SPRING_DATASOURCE_SCHEMA: dev
   SPRING_DATASOURCE_USERNAME: postgres
   SPRING_DATASOURCE_PASSWORD: postgres
 
