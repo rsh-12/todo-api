@@ -1,6 +1,6 @@
 name: DemoEndpoints project CI
 env:
-  SPRING_DATASOURCE_URL: jdbc:postgresql://127.0.0.1/postgres
+  SPRING_DATASOURCE_URL: jdbc:postgresql://127.0.0.1/todos
   SPRING_DATASOURCE_USERNAME: postgres
   SPRING_DATASOURCE_PASSWORD: postgres
 
@@ -21,7 +21,7 @@ jobs:
         env:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: postgres
+          POSTGRES_DB: todos
         ports: [ '5432:5432' ]
 
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
