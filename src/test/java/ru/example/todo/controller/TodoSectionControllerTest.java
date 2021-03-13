@@ -25,7 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
-@ActiveProfiles("test")
+//@ActiveProfiles("test")
 @RunWith(SpringRunner.class)
 @AutoConfigureMockMvc
 @SpringBootTest
