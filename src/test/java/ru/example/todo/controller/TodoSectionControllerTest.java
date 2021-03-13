@@ -37,6 +37,8 @@ public class TodoSectionControllerTest {
     @Autowired
     private TodoSectionRepository repository;
 
+    private final static String API = "/api/sections/";
+
     @Before
     public void createSection() {
         TodoSection section = new TodoSection("TestSection");
@@ -45,14 +47,20 @@ public class TodoSectionControllerTest {
 
     @Test
     @DisplayName("Test /api/sections/ returns list of sections and 200 OK")
-    public void testGetSections() throws Exception {
+    public void testGetAllTodoSections() throws Exception {
 
-        mvc.perform(get("/api/sections")
-                .contentType(MediaType.ALL))
+        mvc.perform(get(API)
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("_embedded.sections[0].title", is("TestSection")))
                 .andDo(print())
                 .andReturn();
     }
+
+//    @Test
+//    public void testGetTodoSectionById() throws Exception {
+//
+//        mvc.perform(get(API + 1))
+//    }
 
 }
