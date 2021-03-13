@@ -59,6 +59,7 @@ public class TodoSectionControllerTest {
     }
 
     @Test
+    @DisplayName("Test /api/sections/1 returns the section by ID 1 and 200 OK")
     public void testGetTodoSectionById() throws Exception {
 
         createSection();
