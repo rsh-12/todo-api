@@ -6,8 +6,13 @@ package ru.example.todo.controller;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.runner.RunWith;
+import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -25,6 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringRunner.class)
 @AutoConfigureMockMvc
 @SpringBootTest
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class TodoSectionControllerTest {
 
     @Autowired
@@ -35,7 +41,7 @@ public class TodoSectionControllerTest {
 
     // get all sections
     @Test
-    public void testGetAllTodoSections() throws Exception {
+    public void A_testGetAllTodoSections() throws Exception {
 
         mvc.perform(get(API)
                 .contentType(MediaType.APPLICATION_JSON))
@@ -46,7 +52,7 @@ public class TodoSectionControllerTest {
 
     // get section by ID
     @Test
-    public void testGetTodoSectionById() throws Exception {
+    public void B_testGetTodoSectionById() throws Exception {
 
         mvc.perform(get(API + 1))
                 .andExpect(status().isOk())
@@ -56,7 +62,7 @@ public class TodoSectionControllerTest {
 
     // create new section
     @Test
-    public void testCreateNewSection() throws Exception {
+    public void C_testCreateNewSection() throws Exception {
 
         TodoSection section = new TodoSection();
         section.setTitle("CreatedSection");
@@ -71,7 +77,7 @@ public class TodoSectionControllerTest {
 
     // delete section
     @Test
-    public void testDeleteSectionById() throws Exception {
+    public void D_testDeleteSectionById() throws Exception {
 
         // get by id: returns 200 OK
         mvc.perform(get(API + 1)
@@ -95,23 +101,23 @@ public class TodoSectionControllerTest {
 
     // update section
     @Test
-    public void testUpdateSectionById() throws Exception {
+    public void E_testUpdateSectionById() throws Exception {
 
         // get section by id: returns 200 OK
-        mvc.perform(get(API + 1)
+        mvc.perform(get(API + 2)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("title", is("Important")));
+                .andExpect(jsonPath("title", is("Starred")));
 
         // update section by id: returns 200 OK
-        mvc.perform(put(API + 1)
+        mvc.perform(put(API + 2)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(getSectionInJson(1L)))
                 .andExpect(status().isOk())
                 .andDo(print());
 
         // get section by id, check new title: returns 200 OK
-        mvc.perform(get(API + 1)
+        mvc.perform(get(API + 2)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("title", is("NewTitle")));
