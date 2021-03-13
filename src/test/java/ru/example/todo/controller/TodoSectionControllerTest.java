@@ -58,10 +58,16 @@ public class TodoSectionControllerTest {
                 .andReturn();
     }
 
-//    @Test
-//    public void testGetTodoSectionById() throws Exception {
-//
-//        mvc.perform(get(API + 1))
-//    }
+    @Test
+    public void testGetTodoSectionById() throws Exception {
+
+        createSection();
+
+        mvc.perform(get(API + 1))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("title", is("TestSection")))
+                .andDo(print())
+                .andReturn();
+    }
 
 }
