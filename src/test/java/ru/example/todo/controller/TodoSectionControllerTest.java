@@ -37,21 +37,15 @@ public class TodoSectionControllerTest {
 
     private final static String API = "/api/sections/";
 
-    public void createSection() {
-        TodoSection section = new TodoSection("TestSection");
-        repository.save(section);
-    }
 
     // get all sections
     @Test
     public void testGetAllTodoSections() throws Exception {
 
-        createSection();
-
         mvc.perform(get(API)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("_embedded.sections[0].title", is("TestSection")))
+                .andExpect(jsonPath("_embedded.sections[0].title", is("Important")))
                 .andDo(print());
     }
 
@@ -59,16 +53,13 @@ public class TodoSectionControllerTest {
     @Test
     public void testGetTodoSectionById() throws Exception {
 
-        createSection();
-
         mvc.perform(get(API + 1))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("title", is("TestSection")))
+                .andExpect(jsonPath("title", is("Important")))
                 .andDo(print());
     }
 
     // create new section
-
     @Test
     public void testCreateNewSection() throws Exception {
 
