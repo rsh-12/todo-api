@@ -15,11 +15,9 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.example.todo.entity.TodoSection;
-import ru.example.todo.repository.TodoSectionRepository;
 
 import static org.hamcrest.Matchers.is;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -31,9 +29,6 @@ public class TodoSectionControllerTest {
 
     @Autowired
     private MockMvc mvc;
-
-    @Autowired
-    private TodoSectionRepository repository;
 
     private final static String API = "/api/sections/";
 
@@ -75,6 +70,30 @@ public class TodoSectionControllerTest {
 
 
     // delete section
+
+    @Test
+    public void testDeleteSectionById() throws Exception {
+
+        // get by id 1, returns 200 OK
+        mvc.perform(get(API + 1)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk());
+
+        // delete by id 1, returns 204 NO CONTENT
+        mvc.perform(delete(API + 1)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent())
+                .andDo(print());
+
+        // get again by id 1, returns 404 NOT FOUND
+        mvc.perform(get(API + 1)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isNotFound());
+
+    }
+
 
     // update section
 
