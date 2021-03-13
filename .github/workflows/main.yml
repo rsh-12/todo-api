@@ -4,11 +4,9 @@ env:
   SPRING_DATASOURCE_USERNAME: postgres
   SPRING_DATASOURCE_PASSWORD: postgres
 
-
 on:
   push:
     branches: [ main ]
-
 
 jobs:
   build:
