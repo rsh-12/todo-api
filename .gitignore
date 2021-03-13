@@ -67,7 +67,3 @@ transaction-logs
 secrets.yml
 .gradletasknamecache
 
-#
-run-tests.sh
-src/test/resources/application-test.properties
-src/test/resources/application.properties
