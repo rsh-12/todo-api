@@ -4,7 +4,7 @@ package ru.example.todo.controller;
  * Time: 10:30 PM
  * */
 
-import org.junit.Before;
+
 import org.junit.Test;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.runner.RunWith;
@@ -39,7 +39,6 @@ public class TodoSectionControllerTest {
 
     private final static String API = "/api/sections/";
 
-    @Before
     public void createSection() {
         TodoSection section = new TodoSection("TestSection");
         repository.save(section);
@@ -48,6 +47,8 @@ public class TodoSectionControllerTest {
     @Test
     @DisplayName("Test /api/sections/ returns list of sections and 200 OK")
     public void testGetAllTodoSections() throws Exception {
+
+        createSection();
 
         mvc.perform(get(API)
                 .contentType(MediaType.APPLICATION_JSON))
