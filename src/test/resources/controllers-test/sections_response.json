@@ -1,0 +1,53 @@
+{
+  "_embedded": {
+    "sections": [
+      {
+        "id": 1,
+        "title": "Important",
+        "createdAt": "2021-03-14T08:58:59.588+05:00",
+        "updatedAt": "2021-03-14T09:58:59.588+05:00",
+        "_links": {
+          "self": {
+            "href": "http://localhost/api/sections/1"
+          },
+          "sections": {
+            "href": "http://localhost/api/sections"
+          }
+        }
+      },
+      {
+        "id": 2,
+        "title": "Starred",
+        "createdAt": "2021-03-07T08:58:59.588+05:00",
+        "updatedAt": "2021-03-12T08:58:59.588+05:00",
+        "_links": {
+          "self": {
+            "href": "http://localhost/api/sections/2"
+          },
+          "sections": {
+            "href": "http://localhost/api/sections"
+          }
+        }
+      },
+      {
+        "id": 3,
+        "title": "Later",
+        "createdAt": "2021-02-14T08:58:59.588+05:00",
+        "updatedAt": "2021-03-07T08:58:59.588+05:00",
+        "_links": {
+          "self": {
+            "href": "http://localhost/api/sections/3"
+          },
+          "sections": {
+            "href": "http://localhost/api/sections"
+          }
+        }
+      }
+    ]
+  },
+  "_links": {
+    "self": {
+      "href": "http://localhost/api/sections"
+    }
+  }
+}
