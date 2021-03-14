@@ -13,7 +13,6 @@ import org.springframework.hateoas.server.core.Relation;
 import ru.example.todo.util.Views;
 
 import javax.persistence.*;
-import javax.validation.constraints.FutureOrPresent;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.util.Date;
@@ -23,40 +22,38 @@ import java.util.Date;
 @Relation(value = "task", collectionRelation = "tasks")
 public class TodoTask {
 
+    // @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    // @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private Long id;
 
     @Size(min = 3, max = 80, message = "Size must be between 3 and 80")
-    @Column(name = "title")
     @JsonView(value = Views.Public.class)
     private String title;
 
-    @Column(name = "completed", columnDefinition = "boolean default false")
     @JsonView(value = Views.Public.class)
+    @Column(columnDefinition = "boolean default false")
     private boolean completed;
 
-    @Column(name = "starred", columnDefinition = "boolean default false")
     @JsonView(value = Views.Public.class)
+    @Column(columnDefinition = "boolean default false")
     private boolean starred;
 
-    @Column(name = "completion_date", columnDefinition = "date default current_date")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Yekaterinburg")
     @JsonView(value = Views.Public.class)
+    @Column(columnDefinition = "date default current_date")
     private LocalDate completionDate = LocalDate.now();
 
-    @Column(name = "created_at", columnDefinition = "timestamp default current_timestamp", updatable = false)
     @JsonFormat(timezone = "Asia/Yekaterinburg")
     @JsonView(value = Views.Public.class)
+    @Column(columnDefinition = "timestamp default current_timestamp", updatable = false)
     @CreationTimestamp
     private Date createdAt;
 
-    @Column(name = "updated_at", columnDefinition = "timestamp default current_timestamp")
     @JsonFormat(timezone = "Asia/Yekaterinburg")
     @JsonView(value = Views.Public.class)
     @UpdateTimestamp
+    @Column(columnDefinition = "timestamp default current_timestamp")
     private Date updatedAt;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
