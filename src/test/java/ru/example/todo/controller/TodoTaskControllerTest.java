@@ -14,8 +14,7 @@ import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -107,6 +106,26 @@ public class TodoTaskControllerTest extends AbstractTestContollerClass {
 
         int afterTasksQuantity = getJsonArraySize(TASKS, "_embedded.tasks");
 
-        assertEquals(beforeTasksQuantity , afterTasksQuantity);
+        assertEquals(beforeTasksQuantity, afterTasksQuantity);
+    }
+
+    @Test
+    public void testCreateNewTask() throws Exception {
+        int beforeTasksQuantity = getJsonArraySize(TASKS, "_embedded.tasks");
+
+        final String body = String.format("{\"title\": \"%s\", \"completionDate\": \"%s\"}", "New Title", "2022-12-12");
+
+        mvc.perform(post(TASKS)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(body))
+                .andExpect(status().isCreated());
+
+        int afterTasksQuantity = getJsonArraySize(TASKS, "_embedded.tasks");
+
+        assertEquals(beforeTasksQuantity + 1, afterTasksQuantity);
+
+        mvc.perform(get(TASKS + afterTasksQuantity))
+                .andExpect(status().isOk())
+                .andDo(print());
     }
 }
