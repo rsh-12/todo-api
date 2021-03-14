@@ -51,6 +51,57 @@
             "href": "http://localhost/api/tasks?page=0&size=20&date=ALL&sort=createdAt"
           }
         }
+      },
+      {
+        "id": 4,
+        "title": "Sections task 1",
+        "completed": false,
+        "starred": false,
+        "completionDate": "2021-03-14",
+        "createdAt": "2021-03-14T09:05:10.450+05:00",
+        "updatedAt": "2021-03-14T09:05:10.450+05:00",
+        "_links": {
+          "self": {
+            "href": "http://localhost/api/tasks/4"
+          },
+          "tasks": {
+            "href": "http://localhost/api/tasks?page=0&size=20&date=ALL&sort=createdAt"
+          }
+        }
+      },
+      {
+        "id": 5,
+        "title": "Sections task 2",
+        "completed": false,
+        "starred": false,
+        "completionDate": "2021-03-14",
+        "createdAt": "2021-03-14T09:05:10.450+05:00",
+        "updatedAt": "2021-03-14T09:05:10.450+05:00",
+        "_links": {
+          "self": {
+            "href": "http://localhost/api/tasks/5"
+          },
+          "tasks": {
+            "href": "http://localhost/api/tasks?page=0&size=20&date=ALL&sort=createdAt"
+          }
+        }
+      },
+      {
+        "id": 6,
+        "title": "Sections task 3",
+        "completed": false,
+        "starred": false,
+        "completionDate": "2021-03-14",
+        "createdAt": "2021-03-14T09:05:10.450+05:00",
+        "updatedAt": "2021-03-14T09:05:10.450+05:00",
+        "_links": {
+          "self": {
+            "href": "http://localhost/api/tasks/6"
+          },
+          "tasks": {
+            "href": "http://localhost/api/tasks?page=0&size=20&date=ALL&sort=createdAt"
+          }
+        }
       }
     ]
   },
