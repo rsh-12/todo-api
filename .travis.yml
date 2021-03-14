@@ -11,7 +11,7 @@ cache:
     - $HOME/.m2
 
 script:
-  - ./mvnw test -e
+  - mvn test -e
 
 after_success:
-  - ./mvnw clean test jacoco:report coveralls:report
+  - mvn clean test jacoco:report coveralls:report
