@@ -32,7 +32,7 @@ abstract class AbstractTestContollerClass {
             return mapper.writeValueAsString(obj);
         } catch (Exception e) {
             e.printStackTrace();
-            throw new RuntimeException("Error during converting");
+            throw new RuntimeException("Conversion error");
         }
     }
 }
