@@ -45,4 +45,9 @@ abstract class AbstractTestContollerClass {
         MvcResult beforeResult = mvc.perform(get(api)).andExpect(status().isOk()).andReturn();
         return JsonPath.read(beforeResult.getResponse().getContentAsString(), jsonPath + ".length()");
     }
+
+    protected int getJsonArraySize(String api, String jsonPath, String arg) throws Exception {
+        MvcResult beforeResult = mvc.perform(get(api).param(arg)).andExpect(status().isOk()).andReturn();
+        return JsonPath.read(beforeResult.getResponse().getContentAsString(), jsonPath + ".length()");
+    }
 }
