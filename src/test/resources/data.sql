@@ -9,8 +9,8 @@ values (1, 'Read a book', false, false, current_timestamp,
         current_timestamp, DATEADD('MINUTE', 40, current_timestamp), 1),
 
        (2, 'Create a presentation', false, false, current_timestamp,
-        DATEADD('MONTH', -2, current_timestamp), current_timestamp, 2),
+        DATEADD('WEEK', -3, current_timestamp), DATEADD('DAY', -3, current_timestamp), 2),
 
        (3, 'Write a letter', false, false, current_timestamp,
-        DATEADD('WEEK', -3, current_timestamp), DATEADD('WEEK', -1, current_timestamp), 3);
+        DATEADD('MONTH', -2, current_timestamp), DATEADD('WEEK', -1, current_timestamp), 3);
 
