@@ -6,9 +6,14 @@ package ru.example.todo.controller;
 
 import org.junit.Test;
 import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.ResultActions;
+
+import java.time.LocalDate;
 
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -25,17 +30,35 @@ public class TodoTaskControllerTest extends AbstractTestContollerClass {
          * */
         mvc.perform(get(TASKS)
                 .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
                 .andExpect(status().isOk());
 
         mvc.perform(get(TASKS)
                 .contentType(MediaType.APPLICATION_JSON)
                 .param("date", "today"))
+                .andDo(print())
                 .andExpect(status().isOk());
 
         mvc.perform(get(TASKS)
                 .contentType(MediaType.APPLICATION_JSON)
                 .param("date", "overdue"))
+                .andDo(print())
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    public void testGetTodaysTasks() throws Exception {
+        int size = getJsonArraySize(TASKS, "_embedded.tasks", "date", "today");
+        assertTrue(size > 0);
+
+        ResultActions actions = mvc.perform(get(TASKS).param("date", "today")).andDo(print());
+
+        String today = LocalDate.now().toString();
+        for (int i = 0; i < size; i++) {
+            actions = actions.andExpect(jsonPath(String.format("_embedded.tasks[%d].completionDate", i),
+                    is(today)));
+        }
+
     }
 
     @Test
