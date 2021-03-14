@@ -109,11 +109,19 @@ public class TodoSectionControllerTest extends AbstractTestContollerClass {
         return String.format("{\"id\":%d, \"title\":\"%s\"}", id, title);
     }
 
+    // get section by non-existent id: returns 404 NOT FOUND
     @Test
     public void testSectionByIdNotFound() throws Exception {
         mvc.perform(get(SECTIONS + 100)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is4xxClientError())
                 .andExpect(status().isNotFound());
+    }
+
+    // delete section by non-existent id: returns 204 NO CONTENT
+    @Test
+    public void testDeleteSectionByNoneExistentId() throws Exception {
+        mvc.perform(delete(SECTIONS + 100))
+                .andExpect(status().isNoContent());
     }
 }
