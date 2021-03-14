@@ -10,6 +10,7 @@ import org.springframework.test.web.servlet.ResultActions;
 
 import java.time.LocalDate;
 
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -55,10 +56,8 @@ public class TodoTaskControllerTest extends AbstractTestContollerClass {
 
         String today = LocalDate.now().toString();
         for (int i = 0; i < size; i++) {
-            actions = actions.andExpect(jsonPath(String.format("_embedded.tasks[%d].completionDate", i),
-                    is(today)));
+            actions.andExpect(jsonPath(String.format("_embedded.tasks[%d].completionDate", i), is(today)));
         }
-
     }
 
     @Test
@@ -68,5 +67,15 @@ public class TodoTaskControllerTest extends AbstractTestContollerClass {
         mvc.perform(get(TASKS + TASK_ID))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("id", is(TASK_ID)));
+    }
+
+    @Test
+    public void testGetTaskById_NotFound() throws Exception {
+        final int TASK_ID = 100;
+
+        mvc.perform(get(TASKS + TASK_ID))
+                .andExpect(status().isNotFound())
+                .andDo(print())
+                .andExpect(jsonPath("message", containsString("Task not found")));
     }
 }
