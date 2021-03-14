@@ -94,7 +94,7 @@ public class TodoSectionControllerTest extends AbstractTestContollerClass {
         // update section by id: returns 200 OK
         mvc.perform(put(SECTIONS + 2)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(getSectionInJson(2L)))
+                .content(getSectionInJson(2L, "NewTitle")))
                 .andExpect(status().isOk())
                 .andDo(print());
 
@@ -105,8 +105,8 @@ public class TodoSectionControllerTest extends AbstractTestContollerClass {
                 .andExpect(jsonPath("title", is("NewTitle")));
     }
 
-    private String getSectionInJson(Long id) {
-        return String.format("{\"id\":%d, \"title\":\"NewTitle\"}", id);
+    private String getSectionInJson(Long id, String title) {
+        return String.format("{\"id\":%d, \"title\":\"%s\"}", id, title);
     }
 
     @Test
