@@ -45,9 +45,14 @@ public class TodoSection {
     @UpdateTimestamp
     private Date updatedAt;
 
-    @OneToMany(mappedBy = "todoSection")
+    @OneToMany(mappedBy = "todoSection", cascade = {CascadeType.PERSIST})
     @JsonView(value = Views.Internal.class)
     List<TodoTask> todoTasks;
+
+    @PreRemove
+    private void preRemove() {
+        todoTasks.forEach(task->task.setTodoSection(null));
+    }
 
     public TodoSection() {
     }
