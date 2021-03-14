@@ -1,0 +1,17 @@
+language: java
+
+jdk: openjdk11
+
+env:
+  global:
+    - TOKEN=TOKEN
+
+cache:
+  directories:
+    - $HOME/.m2
+
+script:
+  - ./mvnw test -e
+
+after_success:
+  - ./mvnw clean test jacoco:report coveralls:report
