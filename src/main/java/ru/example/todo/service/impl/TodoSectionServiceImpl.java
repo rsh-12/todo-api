@@ -85,7 +85,7 @@ public class TodoSectionServiceImpl implements TodoSectionService {
     @Override
     public void addTasksToList(Long sectionId, Set<Long> tasks, SetTasks flag) {
 
-        if (tasks == null) {
+        if (tasks == null || tasks.isEmpty()) {
             log.error(">>> Tasks IDs are emtpy");
             throw new TodoObjectException("Tasks IDs are required!");
         }
