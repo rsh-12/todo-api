@@ -39,12 +39,15 @@ public class TodoSectionControllerTest extends AbstractTestContollerClass {
     // get section by ID
     @Test
     public void B_testGetTodoSectionById() throws Exception {
-        mvc.perform(get(SECTIONS + 1))
+        final int SECTION_ID = 1;
+
+        mvc.perform(get(SECTIONS + SECTION_ID))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("title", is("Important")))
                 .andDo(print());
     }
 
+    // todo: add additional checks
     // create new section
     @Test
     public void C_testCreateNewSection() throws Exception {
@@ -63,21 +66,22 @@ public class TodoSectionControllerTest extends AbstractTestContollerClass {
     // delete section
     @Test
     public void D_testDeleteSectionById() throws Exception {
+        final int SECTION_ID = 1;
 
         // get by id: returns 200 OK
-        mvc.perform(get(SECTIONS + 1)
+        mvc.perform(get(SECTIONS + SECTION_ID)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk());
 
         // delete by id: returns 204 NO CONTENT
-        mvc.perform(delete(SECTIONS + 1)
+        mvc.perform(delete(SECTIONS + SECTION_ID)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent())
                 .andDo(print());
 
         // get again by id: returns 404 NOT FOUND
-        mvc.perform(get(SECTIONS + 1)
+        mvc.perform(get(SECTIONS + SECTION_ID)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isNotFound());
@@ -86,22 +90,23 @@ public class TodoSectionControllerTest extends AbstractTestContollerClass {
     // update section
     @Test
     public void E_testUpdateSectionById() throws Exception {
+        final int SECTION_ID = 2;
 
         // get section by id: returns 200 OK
-        mvc.perform(get(SECTIONS + 2)
+        mvc.perform(get(SECTIONS + SECTION_ID)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("title", is("Starred")));
 
         // update section by id: returns 200 OK
-        mvc.perform(put(SECTIONS + 2)
+        mvc.perform(put(SECTIONS + SECTION_ID)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(getSectionInJson(2L, "NewTitle")))
                 .andExpect(status().isOk())
                 .andDo(print());
 
         // get section by id, check new title: returns 200 OK
-        mvc.perform(get(SECTIONS + 2)
+        mvc.perform(get(SECTIONS + SECTION_ID)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("title", is("NewTitle")));
@@ -114,24 +119,31 @@ public class TodoSectionControllerTest extends AbstractTestContollerClass {
     // get section by non-existent id: returns 404 NOT FOUND
     @Test
     public void testSectionByIdNotFound() throws Exception {
-        mvc.perform(get(SECTIONS + 100)
+        final int SECTION_ID = 100;
+
+        mvc.perform(get(SECTIONS + SECTION_ID)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is4xxClientError())
                 .andExpect(status().isNotFound());
     }
 
+    // todo: add additional checks
     // delete section by non-existent id: returns 204 NO CONTENT
     @Test
     public void testDeleteSectionByNoneExistentId() throws Exception {
-        mvc.perform(delete(SECTIONS + 100))
+        final int SECTION_ID = 100;
+
+        mvc.perform(delete(SECTIONS + SECTION_ID))
                 .andExpect(status().isNoContent());
     }
 
     @Test
     public void testUpdateSectionByNoneExistentId() throws Exception {
-        mvc.perform(put(SECTIONS + 100)
+        final int SECTION_ID = 100;
+
+        mvc.perform(put(SECTIONS + SECTION_ID)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(getSectionInJson(100L, "New title")))
+                .content(getSectionInJson((long) SECTION_ID, "New title")))
                 .andExpect(status().is4xxClientError())
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("message", containsString("Section not found")));
@@ -139,35 +151,61 @@ public class TodoSectionControllerTest extends AbstractTestContollerClass {
 
     @Test
     public void testUpdateSectionById_InvalidData() throws Exception {
-        mvc.perform(put(SECTIONS + 3)
+        final int SECTION_ID = 3;
+
+        mvc.perform(put(SECTIONS + SECTION_ID)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(getSectionInJson(3L, "T")))
+                .content(getSectionInJson((long) SECTION_ID, "T")))
                 .andExpect(status().is4xxClientError())
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("title", containsInAnyOrder("Size must be between 3 and 50")));
     }
 
+    // add tasks to the section
     @Test
     public void testAddTasks() throws Exception {
 
-        TaskIdsWrapper wrapper = new TaskIdsWrapper();
-        wrapper.tasks = new HashSet<>() {{ addAll(Set.of(4L, 5L, 6L)); }};
+        final int SECTION_ID = 3;
 
-        mvc.perform(get(SECTIONS + 3))
+        // request body
+        TaskIdsWrapper wrapper = new TaskIdsWrapper();
+        wrapper.tasks = new HashSet<>() {{
+            addAll(Set.of(4L, 5L, 6L));
+        }};
+
+        mvc.perform(get(SECTIONS + SECTION_ID))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("tasks", hasSize(1))); // already exists 1 task
 
-        mvc.perform(post(SECTIONS + 3 + "/tasks")
+        mvc.perform(post(SECTIONS + SECTION_ID + "/tasks")
                 .contentType(MediaType.APPLICATION_JSON)
                 .param("do", "move")
                 .content(asJsonString(wrapper)))
                 .andExpect(status().is2xxSuccessful())
                 .andExpect(status().isOk());
 
-        mvc.perform(get(SECTIONS + 3))
+        mvc.perform(get(SECTIONS + SECTION_ID))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("tasks", hasSize(4))); // 1 + new 3
+                .andExpect(jsonPath("tasks", hasSize(1 + wrapper.tasks.size()))); // 1 + new 3
+    }
 
+    // remove task(s) from the section
 
+    @Test
+    public void testRemoveTaskFromSection() throws Exception {
+
+        final int TASK_ID = 2, SECTION_ID = 2;
+
+        mvc.perform(get(SECTIONS + SECTION_ID))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andExpect(jsonPath("tasks", hasSize(1))) // already exists 1 task
+                .andExpect(jsonPath("tasks[0].id", is(TASK_ID))); // already exists 1 task
+
+        // request body
+        TaskIdsWrapper wrapper = new TaskIdsWrapper();
+        wrapper.tasks = new HashSet<>() {{
+            add((long) TASK_ID);
+        }};
     }
 }
