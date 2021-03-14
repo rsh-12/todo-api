@@ -1,18 +1,16 @@
 language: java
-sudo: true
-dist: trusty
-jdk: oraclejdk11
+sudo: required
+dist: xenial
+jdk:
+  - openjdk11
 
-#before_install:
-#  - chmod +x mvnw
-#
 env:
   global:
     - TOKEN=TOKEN
 
 cache:
   directories:
-    - $HOME/.m2
+    - $HOME/.m2/repository
 
 script:
   - ./mvnw test -e
