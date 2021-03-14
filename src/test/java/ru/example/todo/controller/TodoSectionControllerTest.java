@@ -261,4 +261,22 @@ public class TodoSectionControllerTest extends AbstractTestContollerClass {
                 .andExpect(status().is4xxClientError())
                 .andExpect(jsonPath("message", containsString("Tasks IDs are required!")));
     }
+
+    @Test
+    public void testAddTasks_SectionNotFound() throws Exception {
+        final int SECTION_ID = 100;
+
+        // request body
+        TaskIdsWrapper wrapper = new TaskIdsWrapper();
+        wrapper.tasks = new HashSet<>() {{
+            add(4L);
+        }};
+
+        mvc.perform(post(SECTIONS + SECTION_ID + "/tasks")
+                .contentType(MediaType.APPLICATION_JSON)
+                .param("do", "remove")
+                .content(asJsonString(wrapper)))
+                .andExpect(status().is4xxClientError())
+                .andExpect(jsonPath("message", containsString("Section not found")));
+    }
 }
