@@ -12,7 +12,9 @@ import java.time.LocalDate;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -77,5 +79,19 @@ public class TodoTaskControllerTest extends AbstractTestContollerClass {
                 .andExpect(status().isNotFound())
                 .andDo(print())
                 .andExpect(jsonPath("message", containsString("Task not found")));
+    }
+
+    @Test
+    public void testDeleteTaskById() throws Exception {
+        final int TASK_ID = 2;
+
+        int beforeTasksQuantity = getJsonArraySize(TASKS, "_embedded.tasks");
+
+        mvc.perform(delete(TASKS + TASK_ID))
+                .andExpect(status().isNoContent());
+
+        int afterTasksQuantity = getJsonArraySize(TASKS, "_embedded.tasks");
+
+        assertEquals(beforeTasksQuantity - 1, afterTasksQuantity);
     }
 }
