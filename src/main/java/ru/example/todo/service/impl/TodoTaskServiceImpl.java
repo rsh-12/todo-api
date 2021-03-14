@@ -65,8 +65,12 @@ public class TodoTaskServiceImpl implements TodoTaskService {
     // delete task by id
     @Override
     public void deleteTaskById(Long id) {
+        if (!todoTaskRepository.existsById(id)) {
+            throw new TodoObjectException("Task not found: " + id);
+        }
+
         todoTaskRepository.deleteById(id);
-        log.info(">>> Delete task by id: {}", id);
+        log.info("The task with id={} was deleted successfully", id);
     }
 
     // create new task
