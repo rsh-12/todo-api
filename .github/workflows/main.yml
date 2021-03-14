@@ -1,5 +1,6 @@
 name: DemoEndpoints project CI
-#env:
+env:
+  TOKEN: ''
 #  SPRING_DATASOURCE_URL: jdbc:postgresql://127.0.0.1/todos
 #  SPRING_DATASOURCE_USERNAME: postgres
 #  SPRING_DATASOURCE_PASSWORD: postgres
@@ -31,4 +32,4 @@ jobs:
         with:
           java-version: 11.0.9
       - name: Run test classes
-        run: mvn test -e
+        run: ./mvnw test -e
