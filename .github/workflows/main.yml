@@ -32,4 +32,4 @@ jobs:
         with:
           java-version: 11.0.9
       - name: Run test classes
-        run: ./mvnw test -e
+        run: mvn test
