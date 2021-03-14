@@ -24,7 +24,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Test data:
  * Important, Starred, Later
  * */
-
 public class TodoSectionControllerTest extends AbstractTestContollerClass {
 
     // get all sections
@@ -133,7 +132,6 @@ public class TodoSectionControllerTest extends AbstractTestContollerClass {
                 .andExpect(status().isNotFound());
     }
 
-    // todo: add additional checks
     // delete section by non-existent id: returns 204 NO CONTENT
     @Test
     public void testDeleteSectionByNoneExistentId() throws Exception {
@@ -177,7 +175,6 @@ public class TodoSectionControllerTest extends AbstractTestContollerClass {
     // add tasks to the section
     @Test
     public void testAddTasks() throws Exception {
-
         final int SECTION_ID = 3;
 
         // request body
@@ -186,7 +183,7 @@ public class TodoSectionControllerTest extends AbstractTestContollerClass {
             addAll(Set.of(4L, 5L, 6L));
         }};
 
-        int beforeTasksQuantity = getJsonArraySize(SECTIONS + String.valueOf(SECTION_ID), "tasks");
+        int beforeTasksQuantity = getJsonArraySize(SECTIONS + SECTION_ID, "tasks");
 
         mvc.perform(post(SECTIONS + SECTION_ID + "/tasks")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -195,20 +192,20 @@ public class TodoSectionControllerTest extends AbstractTestContollerClass {
                 .andExpect(status().is2xxSuccessful())
                 .andExpect(status().isOk());
 
-        int afterTasksQuantity = getJsonArraySize(SECTIONS + String.valueOf(SECTION_ID), "tasks");
+        int afterTasksQuantity = getJsonArraySize(SECTIONS + SECTION_ID, "tasks");
 
         assertEquals(beforeTasksQuantity + wrapper.tasks.size(), afterTasksQuantity);
     }
 
     // remove task(s) from the section
 
-/*
     @Test
     public void testRemoveTaskFromSection() throws Exception {
 
         final int TASK_ID = 2, SECTION_ID = 2;
 
-        int beforeTasksQuantity = getJsonArraySize(SECTIONS + String.valueOf(SECTION_ID), "tasks");
+        int beforeTasksQuantity = getJsonArraySize(SECTIONS + SECTION_ID, "tasks");
+        System.out.println("beforeTasksQuantity = " + beforeTasksQuantity);
 
         // request body
         TaskIdsWrapper wrapper = new TaskIdsWrapper();
@@ -216,5 +213,4 @@ public class TodoSectionControllerTest extends AbstractTestContollerClass {
             add((long) TASK_ID);
         }};
     }
-*/
 }
