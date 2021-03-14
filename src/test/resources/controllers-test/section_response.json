@@ -1,0 +1,25 @@
+{
+  "id": 1,
+  "title": "Important",
+  "createdAt": "2021-03-14T18:39:28.529+05:00",
+  "updatedAt": "2021-03-14T19:39:28.529+05:00",
+  "tasks": [
+    {
+      "id": 1,
+      "title": "Read a book",
+      "completed": false,
+      "starred": false,
+      "completionDate": "2021-03-14",
+      "createdAt": "2021-03-14T18:39:28.548+05:00",
+      "updatedAt": "2021-03-14T19:19:28.548+05:00"
+    }
+  ],
+  "_links": {
+    "self": {
+      "href": "http://localhost/api/sections/1"
+    },
+    "sections": {
+      "href": "http://localhost/api/sections"
+    }
+  }
+}

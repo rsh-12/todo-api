@@ -1,0 +1,17 @@
+{
+  "id": 1,
+  "title": "Read a book",
+  "completed": false,
+  "starred": false,
+  "completionDate": "2021-03-14",
+  "createdAt": "2021-03-14T18:42:40.157+05:00",
+  "updatedAt": "2021-03-14T19:22:40.157+05:00",
+  "_links": {
+    "self": {
+      "href": "http://localhost/api/tasks/1"
+    },
+    "tasks": {
+      "href": "http://localhost/api/tasks?page=0&size=20&date=ALL&sort=createdAt"
+    }
+  }
+}
