@@ -4,6 +4,8 @@ package ru.example.todo.domain;
  * Time: 6:52 PM
  * */
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import javax.validation.constraints.FutureOrPresent;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
@@ -25,7 +27,7 @@ public class TodoTaskRequest {
         this.title = title;
     }
 
-
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Yekaterinburg")
     public LocalDate getCompletionDate() {
         return completionDate;
     }
