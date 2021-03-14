@@ -229,4 +229,20 @@ public class TodoSectionControllerTest extends AbstractTestContollerClass {
 
         assertEquals(beforeTasksQuantity - wrapper.tasks.size(), afterTasksQuantity);
     }
+
+    @Test
+    public void testAddTasksEmptySet() throws Exception {
+        final int SECTION_ID = 3;
+
+        TaskIdsWrapper wrapper = new TaskIdsWrapper();
+        wrapper.tasks = new HashSet<>();
+
+        mvc.perform(post(SECTIONS + SECTION_ID + "/tasks")
+                .contentType(MediaType.APPLICATION_JSON)
+                .param("do", "move")
+                .content(asJsonString(wrapper)))
+                .andDo(print())
+                .andExpect(status().is4xxClientError())
+                .andExpect(jsonPath("message", containsString("Tasks IDs are required!")));
+    }
 }
