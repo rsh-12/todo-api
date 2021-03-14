@@ -94,4 +94,19 @@ public class TodoTaskControllerTest extends AbstractTestContollerClass {
 
         assertEquals(beforeTasksQuantity - 1, afterTasksQuantity);
     }
+
+    @Test
+    public void testDeleteTaskById_NotFound() throws Exception {
+        final int TASK_ID = 100;
+
+        int beforeTasksQuantity = getJsonArraySize(TASKS, "_embedded.tasks");
+
+        mvc.perform(delete(TASKS + TASK_ID))
+                .andExpect(status().is4xxClientError())
+                .andExpect(jsonPath("message", containsString("Task not found")));
+
+        int afterTasksQuantity = getJsonArraySize(TASKS, "_embedded.tasks");
+
+        assertEquals(beforeTasksQuantity , afterTasksQuantity);
+    }
 }
