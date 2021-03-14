@@ -7,7 +7,11 @@ package ru.example.todo.controller;
 
 import org.junit.Test;
 import org.springframework.http.MediaType;
+import ru.example.todo.controller.wrapper.TaskIdsWrapper;
 import ru.example.todo.entity.TodoSection;
+
+import java.util.HashSet;
+import java.util.Set;
 
 import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -25,7 +29,6 @@ public class TodoSectionControllerTest extends AbstractTestContollerClass {
     // get all sections
     @Test
     public void A_testGetAllTodoSections() throws Exception {
-
         mvc.perform(get(SECTIONS)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -36,7 +39,6 @@ public class TodoSectionControllerTest extends AbstractTestContollerClass {
     // get section by ID
     @Test
     public void B_testGetTodoSectionById() throws Exception {
-
         mvc.perform(get(SECTIONS + 1))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("title", is("Important")))
@@ -143,5 +145,29 @@ public class TodoSectionControllerTest extends AbstractTestContollerClass {
                 .andExpect(status().is4xxClientError())
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("title", containsInAnyOrder("Size must be between 3 and 50")));
+    }
+
+    @Test
+    public void testAddTasks() throws Exception {
+
+        TaskIdsWrapper wrapper = new TaskIdsWrapper();
+        wrapper.tasks = new HashSet<>() {{ addAll(Set.of(4L, 5L, 6L)); }};
+
+        mvc.perform(get(SECTIONS + 3))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("tasks", hasSize(1))); // already exists 1 task
+
+        mvc.perform(post(SECTIONS + 3 + "/tasks")
+                .contentType(MediaType.APPLICATION_JSON)
+                .param("do", "move")
+                .content(asJsonString(wrapper)))
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(status().isOk());
+
+        mvc.perform(get(SECTIONS + 3))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("tasks", hasSize(4))); // 1 + new 3
+
+
     }
 }
