@@ -134,4 +134,14 @@ public class TodoSectionControllerTest extends AbstractTestContollerClass {
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("message", containsString("Section not found")));
     }
+
+    @Test
+    public void testUpdateSectionById_InvalidData() throws Exception {
+        mvc.perform(put(SECTIONS + 3)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(getSectionInJson(3L, "T")))
+                .andExpect(status().is4xxClientError())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("title", containsInAnyOrder("Size must be between 3 and 50")));
+    }
 }
