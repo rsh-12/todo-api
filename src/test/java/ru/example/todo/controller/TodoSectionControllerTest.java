@@ -9,7 +9,7 @@ import org.junit.Test;
 import org.springframework.http.MediaType;
 import ru.example.todo.entity.TodoSection;
 
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -123,5 +123,15 @@ public class TodoSectionControllerTest extends AbstractTestContollerClass {
     public void testDeleteSectionByNoneExistentId() throws Exception {
         mvc.perform(delete(SECTIONS + 100))
                 .andExpect(status().isNoContent());
+    }
+
+    @Test
+    public void testUpdateSectionByNoneExistentId() throws Exception {
+        mvc.perform(put(SECTIONS + 100)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(getSectionInJson(100L, "New title")))
+                .andExpect(status().is4xxClientError())
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("message", containsString("Section not found")));
     }
 }
