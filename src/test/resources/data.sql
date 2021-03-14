@@ -8,9 +8,19 @@ insert into task(id, title, completed, starred, completion_date, created_at, upd
 values (1, 'Read a book', false, false, current_timestamp,
         current_timestamp, DATEADD('MINUTE', 40, current_timestamp), 1),
 
-       (2, 'Create a presentation', false, false, current_timestamp,
+       (2, 'Create a presentation', false, true, current_timestamp,
         DATEADD('WEEK', -3, current_timestamp), DATEADD('DAY', -3, current_timestamp), 2),
 
-       (3, 'Write a letter', false, false, current_timestamp,
-        DATEADD('MONTH', -2, current_timestamp), DATEADD('WEEK', -1, current_timestamp), 3);
+       (3, 'Write a letter', true, false, current_timestamp,
+        DATEADD('MONTH', -2, current_timestamp), DATEADD('WEEK', -1, current_timestamp), 3),
+
+       --- for testing some sections methods
+       (4, 'Section task 1', false, false, current_timestamp,
+        current_timestamp, current_timestamp, null),
+
+       (5, 'Section task 2', false, false, current_timestamp,
+        current_timestamp, current_timestamp, null),
+
+       (6, 'Seciton task 3', false, false, current_timestamp,
+        current_timestamp, current_timestamp, null);
 
