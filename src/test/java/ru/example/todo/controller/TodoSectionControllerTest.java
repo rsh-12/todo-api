@@ -199,7 +199,6 @@ public class TodoSectionControllerTest extends AbstractTestContollerClass {
     }
 
     // remove task(s) from the section
-
     @Test
     public void testRemoveTaskFromSection() throws Exception {
 
