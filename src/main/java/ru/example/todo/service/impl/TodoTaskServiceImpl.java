@@ -43,21 +43,21 @@ public class TodoTaskServiceImpl implements TodoTaskService {
         Pageable page = PageRequest.of(pageNo, pageSize, Sort.by(getSortDirection(sort), getSortAsString(sort)));
 
         if (date.equals(TaskDate.TODAY)) {
-            log.info(">>> Get today's tasks");
+            log.info("Get today's tasks");
             return todoTaskRepository.findAllByCompletionDateEquals(LocalDate.now(), page);
         } else if (date.equals(TaskDate.OVERDUE)) {
-            log.info(">>> Get overdue tasks");
+            log.info("Get overdue tasks");
             return todoTaskRepository.findAllByCompletionDateBefore(LocalDate.now(), page);
         }
 
-        log.info(">>> Get default tasks list");
+        log.info("Get all tasks");
         return todoTaskRepository.findAll(page).getContent();
     }
 
     // get task by id
     @Override
     public TodoTask getTaskById(Long id) {
-        log.info(">>> Get task by id: {}", id);
+        log.info("Get the task by id: {}", id);
         return todoTaskRepository.findById(id)
                 .orElseThrow(() -> new TodoObjectException("Task not found: " + id));
     }
@@ -80,7 +80,7 @@ public class TodoTaskServiceImpl implements TodoTaskService {
         task.setTitle(todoTaskRequest.getTitle());
         task.setCompletionDate(todoTaskRequest.getCompletionDate());
 
-        log.info(">>> Create new task");
+        log.info("Create a new task");
         todoTaskRepository.save(task);
     }
 
@@ -90,7 +90,7 @@ public class TodoTaskServiceImpl implements TodoTaskService {
                            TaskStatus completed, TaskStatus starred) {
 
         // get task from DB
-        log.info(">>> Get task from DB: id={}", id);
+        log.info("Get the task from DB: id={}", id);
         TodoTask taskFromDB = todoTaskRepository.findById(id)
                 .orElseThrow(() -> new TodoObjectException("Task not found: " + id));
 
@@ -100,15 +100,16 @@ public class TodoTaskServiceImpl implements TodoTaskService {
         }
 
         // set task status
-        log.info(">>> Update task completed field");
+        log.info("Update task 'completed' field");
         if (completed != null) taskFromDB.setCompleted(toABoolean(completed));
-        log.info(">>> Update task starred field");
+
+        log.info("Update task 'starred' field");
         if (starred != null) taskFromDB.setStarred(toABoolean(starred));
 
-        log.info(">>> Update task updatedAt field");
+        log.info("Update task 'updatedAt' field");
         taskFromDB.setUpdatedAt(new Date());
 
-        log.info(">>> Save updated task: id={}", id);
+        log.info("Save the updated task: id={}", id);
         todoTaskRepository.save(taskFromDB);
     }
 
@@ -116,7 +117,7 @@ public class TodoTaskServiceImpl implements TodoTaskService {
     @Override
     public List<TodoTask> findAllBySetId(Set<Long> taskIds) {
         List<TodoTask> tasksByIds = todoTaskRepository.findAllByIdIn(taskIds);
-        log.info(">>> Get tasks by list of ids: {}", tasksByIds.size());
+        log.info("Get tasks by set of ids: {}", tasksByIds.size());
         return tasksByIds;
     }
 
@@ -136,10 +137,10 @@ public class TodoTaskServiceImpl implements TodoTaskService {
     }
 
     private void setTitleOrDate(TodoTaskRequest request, TodoTask taskFromDB) {
-        log.info(">>> Update task completionDate field");
+        log.info("Update task 'completionDate' field");
         if (request.getCompletionDate() != null) taskFromDB.setCompletionDate(request.getCompletionDate());
 
-        log.info(">>> Update task title field");
+        log.info("Update task 'title' field");
         if (request.getTitle() != null) taskFromDB.setTitle(request.getTitle());
     }
 }
