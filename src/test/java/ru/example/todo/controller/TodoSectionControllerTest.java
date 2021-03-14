@@ -16,7 +16,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
-public class TodoSectionControllerTest extends AbstractContollerClass {
+public class TodoSectionControllerTest extends AbstractTestContollerClass {
 
     // get all sections
     @Test
@@ -105,4 +105,11 @@ public class TodoSectionControllerTest extends AbstractContollerClass {
         return String.format("{\"id\":%d, \"title\":\"NewTitle\"}", id);
     }
 
+    @Test
+    public void testSectionByIdNotFound() throws Exception {
+        mvc.perform(get(SECTIONS + 100)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().is4xxClientError())
+                .andExpect(status().isNotFound());
+    }
 }
