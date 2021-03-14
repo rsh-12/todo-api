@@ -5,10 +5,8 @@ package ru.example.todo.controller;
  * */
 
 
-import com.jayway.jsonpath.JsonPath;
 import org.junit.Test;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MvcResult;
 import ru.example.todo.controller.wrapper.TaskIdsWrapper;
 import ru.example.todo.entity.TodoSection;
 
@@ -57,10 +55,7 @@ public class TodoSectionControllerTest extends AbstractTestContollerClass {
         TodoSection section = new TodoSection();
         section.setTitle("CreatedSection");
 
-        MvcResult beforeResult = mvc.perform(get(SECTIONS)).andExpect(status().isOk()).andReturn();
-
-        int beforeQuantity = JsonPath.read(beforeResult.getResponse().getContentAsString(),
-                "_embedded.sections.length()");
+        int beforeSectionsQuantity = getJsonArraySize(SECTIONS, "_embedded.sections");
 
         mvc.perform(post(SECTIONS)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -68,12 +63,9 @@ public class TodoSectionControllerTest extends AbstractTestContollerClass {
                 .andExpect(status().isCreated())
                 .andDo(print());
 
-        MvcResult afterResult = mvc.perform(get(SECTIONS)).andExpect(status().isOk()).andReturn();
+        int afterSectionsQuantity = getJsonArraySize(SECTIONS, "_embedded.sections");
 
-        int afterQuantity = JsonPath.read(afterResult.getResponse().getContentAsString(),
-                "_embedded.sections.length()");
-
-        assertEquals(beforeQuantity + 1, afterQuantity);
+        assertEquals(beforeSectionsQuantity + 1, afterSectionsQuantity);
     }
 
 
@@ -147,9 +139,16 @@ public class TodoSectionControllerTest extends AbstractTestContollerClass {
     public void testDeleteSectionByNoneExistentId() throws Exception {
         final int SECTION_ID = 100;
 
+        int beforeSectionsQuantity = getJsonArraySize(SECTIONS, "_embedded.sections");
+
         mvc.perform(delete(SECTIONS + SECTION_ID))
                 .andExpect(status().isNoContent());
+
+        int afterSectionsQuantity = getJsonArraySize(SECTIONS, "_embedded.sections");
+
+        assertEquals(beforeSectionsQuantity, afterSectionsQuantity);
     }
+
 
     @Test
     public void testUpdateSectionByNoneExistentId() throws Exception {
@@ -187,9 +186,7 @@ public class TodoSectionControllerTest extends AbstractTestContollerClass {
             addAll(Set.of(4L, 5L, 6L));
         }};
 
-        mvc.perform(get(SECTIONS + SECTION_ID))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("tasks", hasSize(1))); // already exists 1 task
+        int beforeTasksQuantity = getJsonArraySize(SECTIONS + String.valueOf(SECTION_ID), "tasks");
 
         mvc.perform(post(SECTIONS + SECTION_ID + "/tasks")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -198,23 +195,20 @@ public class TodoSectionControllerTest extends AbstractTestContollerClass {
                 .andExpect(status().is2xxSuccessful())
                 .andExpect(status().isOk());
 
-        mvc.perform(get(SECTIONS + SECTION_ID))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("tasks", hasSize(1 + wrapper.tasks.size()))); // 1 + new 3
+        int afterTasksQuantity = getJsonArraySize(SECTIONS + String.valueOf(SECTION_ID), "tasks");
+
+        assertEquals(beforeTasksQuantity + wrapper.tasks.size(), afterTasksQuantity);
     }
 
     // remove task(s) from the section
 
+/*
     @Test
     public void testRemoveTaskFromSection() throws Exception {
 
         final int TASK_ID = 2, SECTION_ID = 2;
 
-        mvc.perform(get(SECTIONS + SECTION_ID))
-                .andExpect(status().isOk())
-                .andDo(print())
-                .andExpect(jsonPath("tasks", hasSize(1))) // already exists 1 task
-                .andExpect(jsonPath("tasks[0].id", is(TASK_ID))); // already exists 1 task
+        int beforeTasksQuantity = getJsonArraySize(SECTIONS + String.valueOf(SECTION_ID), "tasks");
 
         // request body
         TaskIdsWrapper wrapper = new TaskIdsWrapper();
@@ -222,4 +216,5 @@ public class TodoSectionControllerTest extends AbstractTestContollerClass {
             add((long) TASK_ID);
         }};
     }
+*/
 }
