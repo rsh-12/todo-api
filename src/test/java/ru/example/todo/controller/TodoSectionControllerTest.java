@@ -5,8 +5,10 @@ package ru.example.todo.controller;
  * */
 
 
+import com.jayway.jsonpath.JsonPath;
 import org.junit.Test;
 import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MvcResult;
 import ru.example.todo.controller.wrapper.TaskIdsWrapper;
 import ru.example.todo.entity.TodoSection;
 
@@ -14,6 +16,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -47,7 +50,6 @@ public class TodoSectionControllerTest extends AbstractTestContollerClass {
                 .andDo(print());
     }
 
-    // todo: add additional checks
     // create new section
     @Test
     public void C_testCreateNewSection() throws Exception {
@@ -55,11 +57,23 @@ public class TodoSectionControllerTest extends AbstractTestContollerClass {
         TodoSection section = new TodoSection();
         section.setTitle("CreatedSection");
 
+        MvcResult beforeResult = mvc.perform(get(SECTIONS)).andExpect(status().isOk()).andReturn();
+
+        int beforeQuantity = JsonPath.read(beforeResult.getResponse().getContentAsString(),
+                "_embedded.sections.length()");
+
         mvc.perform(post(SECTIONS)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(section)))
                 .andExpect(status().isCreated())
                 .andDo(print());
+
+        MvcResult afterResult = mvc.perform(get(SECTIONS)).andExpect(status().isOk()).andReturn();
+
+        int afterQuantity = JsonPath.read(afterResult.getResponse().getContentAsString(),
+                "_embedded.sections.length()");
+
+        assertEquals(beforeQuantity + 1, afterQuantity);
     }
 
 
