@@ -65,4 +65,5 @@ transaction-logs
 .flattened-pom.xml
 secrets.yml
 .gradletasknamecache
-
+#
+run-report-tests.sh
