@@ -207,10 +207,26 @@ public class TodoSectionControllerTest extends AbstractTestContollerClass {
         int beforeTasksQuantity = getJsonArraySize(SECTIONS + SECTION_ID, "tasks");
         System.out.println("beforeTasksQuantity = " + beforeTasksQuantity);
 
+        assertEquals(1, beforeTasksQuantity);
+
+        mvc.perform(get(SECTIONS + TASK_ID))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("tasks[0].id", is(TASK_ID)));
+
         // request body
         TaskIdsWrapper wrapper = new TaskIdsWrapper();
         wrapper.tasks = new HashSet<>() {{
             add((long) TASK_ID);
         }};
+
+        mvc.perform(post(SECTIONS + SECTION_ID + "/tasks")
+                .contentType(MediaType.APPLICATION_JSON)
+                .param("do", "remove")
+                .content(asJsonString(wrapper)))
+                .andExpect(status().isOk());
+
+        int afterTasksQuantity = getJsonArraySize(SECTIONS + SECTION_ID, "tasks");
+
+        assertEquals(beforeTasksQuantity - wrapper.tasks.size(), afterTasksQuantity);
     }
 }
