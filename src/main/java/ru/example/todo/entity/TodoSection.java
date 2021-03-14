@@ -19,29 +19,29 @@ import java.util.Date;
 import java.util.List;
 
 @Entity
-@Table(name = "custom_list")
+@Table(name = "section")
 @Relation(value = "section", collectionRelation = "sections")
 public class TodoSection {
 
+    // @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private Long id;
 
     @NotBlank
     @Size(min = 3, max = 50, message = "Size must be between 3 and 50")
-    @Column(name = "title")
     @JsonView(value = Views.Public.class)
     private String title;
 
     @JsonFormat(timezone = "Asia/Yekaterinburg")
     @JsonView(value = Views.Public.class)
+    @Column(columnDefinition = "timestamp default current_timestamp", updatable = false)
     @CreationTimestamp
     private Date createdAt;
 
     @JsonFormat(timezone = "Asia/Yekaterinburg")
     @JsonView(value = Views.Public.class)
+    @Column(columnDefinition = "timestamp default current_timestamp")
     @UpdateTimestamp
     private Date updatedAt;
 
