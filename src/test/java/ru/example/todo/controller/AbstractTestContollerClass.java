@@ -18,7 +18,7 @@ import org.springframework.test.web.servlet.MockMvc;
 @AutoConfigureMockMvc
 @SpringBootTest
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-abstract class AbstractContollerClass {
+abstract class AbstractTestContollerClass {
 
     protected final static String SECTIONS = "/api/sections/";
     protected final static String TASKS = "/api/tasks/";
