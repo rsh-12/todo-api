@@ -5,20 +5,8 @@ package ru.example.todo.controller;
  * */
 
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.FixMethodOrder;
 import org.junit.Test;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.TestMethodOrder;
-import org.junit.runner.RunWith;
-import org.junit.runners.MethodSorters;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.servlet.MockMvc;
 import ru.example.todo.entity.TodoSection;
 
 import static org.hamcrest.Matchers.is;
@@ -27,23 +15,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@RunWith(SpringRunner.class)
-@AutoConfigureMockMvc
-@SpringBootTest
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class TodoSectionControllerTest {
 
-    @Autowired
-    private MockMvc mvc;
-
-    private final static String API = "/api/sections/";
-
+public class TodoSectionControllerTest extends AbstractContollerClass {
 
     // get all sections
     @Test
     public void A_testGetAllTodoSections() throws Exception {
 
-        mvc.perform(get(API)
+        mvc.perform(get(SECTIONS)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("_embedded.sections[0].title", is("Important")))
@@ -54,7 +33,7 @@ public class TodoSectionControllerTest {
     @Test
     public void B_testGetTodoSectionById() throws Exception {
 
-        mvc.perform(get(API + 1))
+        mvc.perform(get(SECTIONS + 1))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("title", is("Important")))
                 .andDo(print());
@@ -67,7 +46,7 @@ public class TodoSectionControllerTest {
         TodoSection section = new TodoSection();
         section.setTitle("CreatedSection");
 
-        mvc.perform(post(API)
+        mvc.perform(post(SECTIONS)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(section)))
                 .andExpect(status().isCreated())
@@ -80,23 +59,22 @@ public class TodoSectionControllerTest {
     public void D_testDeleteSectionById() throws Exception {
 
         // get by id: returns 200 OK
-        mvc.perform(get(API + 1)
+        mvc.perform(get(SECTIONS + 1)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk());
 
         // delete by id: returns 204 NO CONTENT
-        mvc.perform(delete(API + 1)
+        mvc.perform(delete(SECTIONS + 1)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent())
                 .andDo(print());
 
         // get again by id: returns 404 NOT FOUND
-        mvc.perform(get(API + 1)
+        mvc.perform(get(SECTIONS + 1)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isNotFound());
-
     }
 
     // update section
@@ -104,20 +82,20 @@ public class TodoSectionControllerTest {
     public void E_testUpdateSectionById() throws Exception {
 
         // get section by id: returns 200 OK
-        mvc.perform(get(API + 2)
+        mvc.perform(get(SECTIONS + 2)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("title", is("Starred")));
 
         // update section by id: returns 200 OK
-        mvc.perform(put(API + 2)
+        mvc.perform(put(SECTIONS + 2)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(getSectionInJson(1L)))
+                .content(getSectionInJson(2L)))
                 .andExpect(status().isOk())
                 .andDo(print());
 
         // get section by id, check new title: returns 200 OK
-        mvc.perform(get(API + 2)
+        mvc.perform(get(SECTIONS + 2)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("title", is("NewTitle")));
@@ -127,13 +105,4 @@ public class TodoSectionControllerTest {
         return String.format("{\"id\":%d, \"title\":\"NewTitle\"}", id);
     }
 
-    private static String asJsonString(final Object obj) {
-        try {
-            final ObjectMapper mapper = new ObjectMapper();
-            return mapper.writeValueAsString(obj);
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException("Error during converting");
-        }
-    }
 }
