@@ -39,6 +39,8 @@ public class TodoTaskTest {
     public void testGetTaskById() {
         final Long TASK_ID = 1L;
 
+        assertTrue(repository.existsById(TASK_ID));
+
         TodoTask task = repository.findById(TASK_ID)
                 .orElseThrow(() -> new TodoObjectException("Task not found"));
 
@@ -109,5 +111,17 @@ public class TodoTaskTest {
     }
 
 
-    // z_delete all*
+    // delete all
+    @Test
+    public void testDeleteAllTasks() {
+
+        int beforeTasksQuantity = repository.findAll().size();
+        assertTrue(beforeTasksQuantity != 0);
+
+        repository.deleteAll();
+        entityManager.flush();
+
+        int aftterTasksQuantity = repository.findAll().size();
+        assertEquals(0, aftterTasksQuantity);
+    }
 }
