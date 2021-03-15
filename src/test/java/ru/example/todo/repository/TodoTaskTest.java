@@ -34,6 +34,17 @@ public class TodoTaskTest {
         assertEquals(6, tasks.size());
     }
 
+    // get by id
+    @Test
+    public void testGetTaskById() {
+        final Long TASK_ID = 1L;
+
+        TodoTask task = repository.findById(TASK_ID)
+                .orElseThrow(() -> new TodoObjectException("Task not found"));
+
+        assertEquals(TASK_ID, task.getId());
+        assertEquals("Read a book", task.getTitle());
+    }
 
     // create one
     // update by id
