@@ -9,7 +9,8 @@ cache:
     - $HOME/.m2/repository
 
 script:
-  - ./mvnw test -e
-
-after_success:
   - ./mvnw clean test jacoco:report coveralls:report
+#  - ./mvnw test -e
+
+#after_success:
+#  - ./mvnw clean test jacoco:report coveralls:report
