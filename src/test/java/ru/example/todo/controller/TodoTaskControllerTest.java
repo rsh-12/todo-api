@@ -52,10 +52,10 @@ public class TodoTaskControllerTest extends AbstractTestContollerClass {
 
     @Test
     public void testGetTodaysTasks() throws Exception {
-        int size = getJsonArraySize(TASKS, "_embedded.tasks", "date", "today");
+        int size = getJsonArraySize(TASKS, "_embedded.tasks", "date", TaskDate.TODAY.name());
         assertTrue(size > 0);
 
-        ResultActions actions = mvc.perform(get(TASKS).param("date", "today")).andDo(print());
+        ResultActions actions = mvc.perform(get(TASKS).param("date", TaskDate.TODAY.name())).andDo(print());
 
         String today = LocalDate.now().toString();
         for (int i = 0; i < size; i++) {
