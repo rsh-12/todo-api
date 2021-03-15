@@ -131,6 +131,17 @@ public class TodoTaskControllerTest extends AbstractTestContollerClass {
     }
 
     @Test
+    public void testUpdateTask_NotFound() throws Exception {
+        final int TASK_ID = 100;
+
+        mvc.perform(patch(TASKS + TASK_ID)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().is4xxClientError())
+                .andExpect(jsonPath("message", containsString("Task not found")));
+    }
+
+
+    @Test
     public void testUpdateTask_Title() throws Exception {
         final int TASK_ID = 3;
         final String body = String.format("{\"title\": \"%s\"}", "New title");
