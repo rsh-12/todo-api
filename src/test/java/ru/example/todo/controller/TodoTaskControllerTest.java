@@ -7,6 +7,7 @@ package ru.example.todo.controller;
 import org.junit.Test;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
+import ru.example.todo.enums.TaskStatus;
 
 import java.time.LocalDate;
 
@@ -146,5 +147,25 @@ public class TodoTaskControllerTest extends AbstractTestContollerClass {
         mvc.perform(get(TASKS + TASK_ID))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("title", containsString("New title")));
+    }
+
+
+    @Test
+    public void testUpdateTask_Completed() throws Exception {
+        final int TASK_ID = 3;
+
+        mvc.perform(get(TASKS + TASK_ID))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andExpect(jsonPath("completed", is(false)));
+
+        mvc.perform(patch(TASKS + TASK_ID)
+                .contentType(MediaType.APPLICATION_JSON)
+                .param("completed", TaskStatus.TRUE.name()))
+                .andExpect(status().isOk());
+
+        mvc.perform(get(TASKS + TASK_ID))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("completed", is(true)));
     }
 }
