@@ -46,7 +46,27 @@ public class TodoTaskTest {
         assertEquals("Read a book", task.getTitle());
     }
 
-    // create one
+    // create new task
+    @Test
+    public void testCreateTask() {
+        TodoTask task = new TodoTask();
+        task.setTitle("New task title");
+
+        int beforeTasksQuantity = repository.findAll().size();
+
+        entityManager.persistAndFlush(task);
+
+        int afterTasksQuantity = repository.findAll().size();
+
+        assertEquals(beforeTasksQuantity + 1, afterTasksQuantity);
+
+        TodoTask taskFromDB = repository.findById(task.getId())
+                .orElseThrow(() -> new TodoObjectException("Task not found"));
+
+        assertEquals(task.getTitle(), taskFromDB.getTitle());
+    }
+
+
     // update by id
     // delete by id
     // z_delete all*
