@@ -1,5 +1,5 @@
 [![Build Status](https://travis-ci.com/rsh-12/demo-rest-endpoints.svg?branch=main)](https://travis-ci.com/rsh-12/demo-rest-endpoints)
-[![Coverage Status](https://coveralls.io/repos/github/rsh-12/demo-rest-endpoints/badge.svg?branch=main&kill_cache=1)](https://coveralls.io/github/rsh-12/demo-rest-endpoints?branch=main)
+<a href='https://coveralls.io/github/rsh-12/demo-rest-endpoints?branch=main'><img src='https://coveralls.io/repos/github/rsh-12/demo-rest-endpoints/badge.svg?branch=main' alt='Coverage Status' /></a>
 
 # TodoList
 
