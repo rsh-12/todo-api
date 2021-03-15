@@ -164,7 +164,6 @@ public class TodoTaskControllerTest extends AbstractTestContollerClass {
     @Test
     public void testUpdateTask_CompletionDate() throws Exception {
         final int TASK_ID = 5;
-
         final String newCompletionDate = "2022-12-12";
         final String body = String.format("{\"completionDate\": \"%s\"}", newCompletionDate);
 
@@ -225,13 +224,32 @@ public class TodoTaskControllerTest extends AbstractTestContollerClass {
     @Test
     public void testUpdateTask_AllInOne() throws Exception {
         final int TASK_ID = 4;
+        final String newTitle = "New title";
+        final String newCompletionDate = "2022-12-12";
+
+        final String body = String.format("{\"title\": \"%s\",\"completionDate\": \"%s\"}",
+                newTitle, newCompletionDate);
 
         mvc.perform(get(TASKS + TASK_ID))
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(jsonPath("title", containsString("Section task")))
                 .andExpect(jsonPath("completed", is(false)))
-                .andExpect(jsonPath("starred", is(false)));
+                .andExpect(jsonPath("starred", is(false)))
+                .andExpect(jsonPath("completionDate", containsString(LocalDate.now().toString())));
 
+        mvc.perform(patch(TASKS + TASK_ID)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(body)
+                .param("completed", TaskStatus.TRUE.name())
+                .param("starred", TaskStatus.TRUE.name()));
+
+        mvc.perform(get(TASKS + TASK_ID))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andExpect(jsonPath("title", containsString(newTitle)))
+                .andExpect(jsonPath("completed", is(true)))
+                .andExpect(jsonPath("starred", is(true)))
+                .andExpect(jsonPath("completionDate", containsString(newCompletionDate)));
     }
 }
