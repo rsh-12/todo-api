@@ -7,6 +7,7 @@ package ru.example.todo.controller;
 import org.junit.Test;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
+import ru.example.todo.enums.TaskDate;
 import ru.example.todo.enums.TaskStatus;
 
 import java.time.LocalDate;
@@ -38,13 +39,13 @@ public class TodoTaskControllerTest extends AbstractTestContollerClass {
 
         mvc.perform(get(TASKS)
                 .contentType(MediaType.APPLICATION_JSON)
-                .param("date", "today"))
+                .param("date", TaskDate.TODAY.name()))
                 .andDo(print())
                 .andExpect(status().isOk());
 
         mvc.perform(get(TASKS)
                 .contentType(MediaType.APPLICATION_JSON)
-                .param("date", "overdue"))
+                .param("date", TaskDate.OVERDUE.name()))
                 .andDo(print())
                 .andExpect(status().isOk());
     }
