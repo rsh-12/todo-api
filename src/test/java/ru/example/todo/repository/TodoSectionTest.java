@@ -17,8 +17,7 @@ import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
 @DataJpaTest
@@ -50,8 +49,7 @@ public class TodoSectionTest {
         section.setCreatedAt(new Timestamp(date.getTime()));
         section.setUpdatedAt(new Timestamp(date.getTime()));
 
-        entityManager.persist(section);
-        entityManager.flush();
+        entityManager.persistAndFlush(section);
 
         TodoSection sectionFromDB = repository.findById(section.getId())
                 .orElseThrow(() -> new TodoObjectException("Not found"));
@@ -67,6 +65,18 @@ public class TodoSectionTest {
 
         List<TodoSection> sections = repository.findAll();
         assertEquals(0, sections.size());
+    }
+
+    @Test
+    public void testDeleteSectionById() {
+        final Long SECTION_ID = 3L;
+
+        assertTrue(repository.existsById(SECTION_ID));
+
+        repository.deleteById(SECTION_ID);
+        entityManager.flush();
+
+        assertFalse(repository.existsById(SECTION_ID));
     }
 
     @Test
