@@ -5,7 +5,6 @@ package ru.example.todo.repository;
  * */
 
 import org.junit.Test;
-import org.junit.jupiter.api.Order;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -13,6 +12,10 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.junit4.SpringRunner;
 import ru.example.todo.entity.TodoSection;
 import ru.example.todo.exception.TodoObjectException;
+
+import java.sql.Timestamp;
+import java.util.Date;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
@@ -27,15 +30,25 @@ public class TodoSectionTest {
     private TestEntityManager entityManager;
 
     @Test
+    public void testGetAllSections() {
+        List<TodoSection> sections = repository.findAll();
+        assertEquals(3, sections.size());
+    }
+
+    @Test
     public void testGetSectionById() {
         TodoSection section = repository.findById(1L).orElseThrow(() -> new TodoObjectException("Not found"));
-        // There are already 4 sections in the database, and one them is "Important"
         assertEquals(section.getTitle(), "Important");
     }
 
     @Test
     public void testCreateNewSection() {
         TodoSection section = new TodoSection("Tomorrow");
+
+        Date date = new Date();
+        section.setCreatedAt(new Timestamp(date.getTime()));
+        section.setUpdatedAt(new Timestamp(date.getTime()));
+
         entityManager.persist(section);
         entityManager.flush();
 
