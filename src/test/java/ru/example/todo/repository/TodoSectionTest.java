@@ -58,4 +58,13 @@ public class TodoSectionTest {
         assert sectionFromDB != null;
         assertEquals(section.getTitle(), sectionFromDB.getTitle());
     }
+
+    @Test
+    public void testDeleteAllSections() {
+        repository.deleteAll();
+        entityManager.flush();
+
+        List<TodoSection> sections = repository.findAll();
+        assertEquals(0, sections.size());
+    }
 }
