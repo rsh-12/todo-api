@@ -15,7 +15,7 @@ import ru.example.todo.exception.TodoObjectException;
 
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
 @DataJpaTest
@@ -72,6 +72,8 @@ public class TodoTaskTest {
         final Long TASK_ID = 1L;
         final String newTitle = "Take a walk";
 
+        assertTrue(repository.existsById(TASK_ID));
+
         TodoTask task = repository.findById(TASK_ID)
                 .orElseThrow(() -> new TodoObjectException("Task not found"));
 
@@ -88,5 +90,24 @@ public class TodoTaskTest {
 
 
     // delete by id
+    @Test
+    public void testDeleteTask() {
+        final Long TASK_ID = 2L;
+
+        assertTrue(repository.existsById(TASK_ID));
+
+        int beforeTasksQuantity = repository.findAll().size();
+
+        repository.deleteById(TASK_ID);
+        entityManager.flush();
+
+        assertFalse(repository.existsById(TASK_ID));
+
+        int afterTasksQuantity = repository.findAll().size();
+
+        assertEquals(beforeTasksQuantity - 1, afterTasksQuantity);
+    }
+
+
     // z_delete all*
 }
