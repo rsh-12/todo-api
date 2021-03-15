@@ -179,4 +179,23 @@ public class TodoTaskControllerTest extends AbstractTestContollerClass {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("completed", is(true)));
     }
+
+    @Test
+    public void testUpdateTask_Starred() throws Exception {
+        final int TASK_ID = 3;
+
+        mvc.perform(get(TASKS + TASK_ID))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andExpect(jsonPath("starred", is(false)));
+
+        mvc.perform(patch(TASKS + TASK_ID)
+                .contentType(MediaType.APPLICATION_JSON)
+                .param("starred", TaskStatus.TRUE.name()))
+                .andExpect(status().isOk());
+
+        mvc.perform(get(TASKS + TASK_ID))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("starred", is(true)));
+    }
 }
