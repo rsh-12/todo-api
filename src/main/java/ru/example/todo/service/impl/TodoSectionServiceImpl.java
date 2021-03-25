@@ -7,11 +7,10 @@ package ru.example.todo.service.impl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import ru.example.todo.dto.TodoSectionDto;
 import ru.example.todo.entity.TodoSection;
 import ru.example.todo.entity.TodoTask;
 import ru.example.todo.enums.SetTasks;
-import ru.example.todo.exception.TodoObjectException;
+import ru.example.todo.exception.CustomException;
 import ru.example.todo.repository.TodoSectionRepository;
 import ru.example.todo.service.TodoSectionService;
 import ru.example.todo.service.TodoTaskService;
@@ -37,7 +36,7 @@ public class TodoSectionServiceImpl implements TodoSectionService {
     public TodoSection getSectionById(Long sectionId) {
         log.info("Get the section by id: {}", sectionId);
         return todoSectionRepository.findById(sectionId)
-                .orElseThrow(() -> new TodoObjectException("Section not found: " + sectionId));
+                .orElseThrow(() -> new CustomException("Section not found: " + sectionId));
     }
 
     // get all sections
@@ -71,7 +70,7 @@ public class TodoSectionServiceImpl implements TodoSectionService {
 
         log.info("Get the section by id: {}", id);
         TodoSection section = todoSectionRepository.findById(id)
-                .orElseThrow(() -> new TodoObjectException(("Section not found: " + id)));
+                .orElseThrow(() -> new CustomException(("Section not found: " + id)));
 
         section.setTitle(sectionDto.getTitle());
 
@@ -84,12 +83,12 @@ public class TodoSectionServiceImpl implements TodoSectionService {
     public void addTasksToList(Long sectionId, Set<Long> tasks, SetTasks flag) {
 
         if (tasks == null || tasks.isEmpty()) {
-            throw new TodoObjectException("Tasks IDs are required!");
+            throw new CustomException("Tasks IDs are required!");
         }
 
         log.info("Get the section by id: {}", sectionId);
         TodoSection section = todoSectionRepository.findById(sectionId)
-                .orElseThrow(() -> new TodoObjectException("Section not found: " + sectionId));
+                .orElseThrow(() -> new CustomException("Section not found: " + sectionId));
 
         List<TodoTask> tasksByIds = todoTaskService.findAllBySetId(tasks);
         log.info("Get tasks list size: {}", tasksByIds.size());

@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 import ru.example.todo.entity.TodoTask;
 import ru.example.todo.enums.TaskDate;
 import ru.example.todo.enums.TaskStatus;
-import ru.example.todo.exception.TodoObjectException;
+import ru.example.todo.exception.CustomException;
 import ru.example.todo.repository.TodoTaskRepository;
 import ru.example.todo.service.TodoTaskService;
 
@@ -58,14 +58,14 @@ public class TodoTaskServiceImpl implements TodoTaskService {
     public TodoTask getTaskById(Long id) {
         log.info("Get the task by id: {}", id);
         return todoTaskRepository.findById(id)
-                .orElseThrow(() -> new TodoObjectException("Task not found: " + id));
+                .orElseThrow(() -> new CustomException("Task not found: " + id));
     }
 
     // delete task by id
     @Override
     public void deleteTaskById(Long id) {
         if (!todoTaskRepository.existsById(id)) {
-            throw new TodoObjectException("Task not found: " + id);
+            throw new CustomException("Task not found: " + id);
         }
 
         todoTaskRepository.deleteById(id);
@@ -87,7 +87,7 @@ public class TodoTaskServiceImpl implements TodoTaskService {
         // get task from DB
         log.info("Get the task from DB: id={}", id);
         TodoTask taskFromDB = todoTaskRepository.findById(id)
-                .orElseThrow(() -> new TodoObjectException("Task not found: " + id));
+                .orElseThrow(() -> new CustomException("Task not found: " + id));
 
         // update task title or task completion date
         if (task != null) {
