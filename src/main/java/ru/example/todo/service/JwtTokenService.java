@@ -11,7 +11,7 @@ public interface JwtTokenService {
 
     String buildAccessToken(String username, Set<Role> roles);
 
-    String buildAccessToken(String username);
+    RefreshToken buildRefreshToken(String username);
 
     Authentication getAuthentication(String token);
 
