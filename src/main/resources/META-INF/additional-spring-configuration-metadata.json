@@ -1,0 +1,19 @@
+{
+  "properties": [
+    {
+      "name": "token.refresh_validity",
+      "type": "java.lang.String",
+      "description": "Refresh token validity in milliseconds."
+    },
+    {
+      "name": "token.access_validity",
+      "type": "java.lang.String",
+      "description": "Access token validity in milliseconds."
+    },
+    {
+      "name": "token.secret",
+      "type": "java.lang.String",
+      "description": "JWT secret key."
+    }
+  ]
+}
