@@ -6,6 +6,7 @@ package ru.example.todo.controller;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
@@ -13,7 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.example.todo.controller.assembler.TodoTaskModelAssembler;
-import ru.example.todo.domain.TodoTaskRequest;
+import ru.example.todo.dto.TodoTaskDto;
 import ru.example.todo.entity.TodoTask;
 import ru.example.todo.enums.TaskDate;
 import ru.example.todo.enums.TaskStatus;
@@ -33,12 +34,14 @@ public class TodoTaskController {
 
     private final TodoTaskService todoTaskService;
     private final TodoTaskModelAssembler assembler;
+    private final ModelMapper modelMapper;
 
 
     @Autowired
-    public TodoTaskController(TodoTaskService todoTaskService, TodoTaskModelAssembler assembler) {
+    public TodoTaskController(TodoTaskService todoTaskService, TodoTaskModelAssembler assembler, ModelMapper modelMapper) {
         this.todoTaskService = todoTaskService;
         this.assembler = assembler;
+        this.modelMapper = modelMapper;
     }
 
     // get all tasks
@@ -78,8 +81,8 @@ public class TodoTaskController {
     // create new task
     @ApiOperation(value = "Create task", notes = "It permits to create a new task")
     @PostMapping(consumes = "application/json")
-    public ResponseEntity<?> createTask(@Valid @RequestBody TodoTaskRequest request) {
-        todoTaskService.createTask(request);
+    public ResponseEntity<?> createTask(@Valid @RequestBody TodoTaskDto taskDto) {
+        todoTaskService.createTask(modelMapper.map(taskDto, TodoTask.class));
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
@@ -89,11 +92,11 @@ public class TodoTaskController {
     @ApiOperation(value = "Update task", notes = "It permits to update a task")
     @PatchMapping(value = "/{id}", consumes = "application/json")
     public ResponseEntity<?> updateTask(@PathVariable("id") Long id,
-                                        @Valid @RequestBody(required = false) TodoTaskRequest request,
+                                        @Valid @RequestBody(required = false) TodoTaskDto taskDto,
                                         @RequestParam(value = "completed", required = false) TaskStatus completed,
                                         @RequestParam(value = "starred", required = false) TaskStatus starred) {
 
-        todoTaskService.updateTask(id, request, completed, starred);
+        todoTaskService.updateTask(id, modelMapper.map(taskDto, TodoTask.class), completed, starred);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

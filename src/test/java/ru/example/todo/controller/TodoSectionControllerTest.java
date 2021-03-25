@@ -8,8 +8,7 @@ package ru.example.todo.controller;
 import org.junit.Test;
 import org.springframework.http.MediaType;
 import ru.example.todo.controller.wrapper.TaskIdsWrapper;
-import ru.example.todo.domain.TodoSectionRequest;
-import ru.example.todo.entity.TodoSection;
+import ru.example.todo.dto.TodoSectionDto;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -52,7 +51,7 @@ public class TodoSectionControllerTest extends AbstractTestContollerClass {
     @Test
     public void C_testCreateNewSection() throws Exception {
 
-        TodoSectionRequest section = new TodoSectionRequest();
+        TodoSectionDto section = new TodoSectionDto();
         section.setTitle("CreatedSection");
 
         int beforeSectionsQuantity = getJsonArraySize(SECTIONS, "_embedded.sections");

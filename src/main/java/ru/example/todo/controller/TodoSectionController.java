@@ -7,6 +7,7 @@ package ru.example.todo.controller;
 import com.fasterxml.jackson.annotation.JsonView;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
@@ -15,7 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.example.todo.controller.assembler.TodoSectionModelAssembler;
 import ru.example.todo.controller.wrapper.TaskIdsWrapper;
-import ru.example.todo.domain.TodoSectionRequest;
+import ru.example.todo.dto.TodoSectionDto;
 import ru.example.todo.entity.TodoSection;
 import ru.example.todo.enums.SetTasks;
 import ru.example.todo.service.TodoSectionService;
@@ -35,11 +36,13 @@ public class TodoSectionController {
 
     private final TodoSectionService todoSectionService;
     private final TodoSectionModelAssembler assembler;
+    private final ModelMapper modelMapper;
 
     @Autowired
-    public TodoSectionController(TodoSectionService todoSectionService, TodoSectionModelAssembler assembler) {
+    public TodoSectionController(TodoSectionService todoSectionService, TodoSectionModelAssembler assembler, ModelMapper modelMapper) {
         this.todoSectionService = todoSectionService;
         this.assembler = assembler;
+        this.modelMapper = modelMapper;
     }
 
     // get all sections
@@ -75,8 +78,8 @@ public class TodoSectionController {
     // create new section
     @ApiOperation(value = "Create section", notes = "It permits to create a new section")
     @PostMapping(consumes = "application/json")
-    public ResponseEntity<?> createSection(@Valid @RequestBody TodoSectionRequest sectionRequest) {
-        todoSectionService.createSection(sectionRequest);
+    public ResponseEntity<?> createSection(@Valid @RequestBody TodoSectionDto sectionDto) {
+        todoSectionService.createSection(modelMapper.map(sectionDto, TodoSection.class));
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
@@ -85,8 +88,8 @@ public class TodoSectionController {
     @ApiOperation(value = "Update section", notes = "It permits to update a section")
     @PutMapping(value = "/{id}", consumes = "application/json")
     public ResponseEntity<?> updateSection(@PathVariable("id") Long sectionId,
-                                           @Valid @RequestBody TodoSectionRequest sectionRequest) {
-        todoSectionService.updateSection(sectionId, sectionRequest);
+                                           @Valid @RequestBody TodoSectionDto sectionDto) {
+        todoSectionService.updateSection(sectionId, modelMapper.map(sectionDto, TodoSection.class));
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

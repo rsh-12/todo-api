@@ -1,6 +1,6 @@
 package ru.example.todo.service;
 
-import ru.example.todo.domain.TodoSectionRequest;
+import ru.example.todo.dto.TodoSectionDto;
 import ru.example.todo.entity.TodoSection;
 import ru.example.todo.enums.SetTasks;
 
@@ -15,9 +15,9 @@ public interface TodoSectionService {
 
     void deleteSectionById(long sectionId);
 
-    void createSection(TodoSectionRequest sectionRequest);
+    void createSection(TodoSection section);
 
-    void updateSection(Long id, TodoSectionRequest sectionRequest);
+    void updateSection(Long id, TodoSection section);
 
     void addTasksToList(Long sectionId, Set<Long> tasks, SetTasks flag);
 }

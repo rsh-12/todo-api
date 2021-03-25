@@ -11,7 +11,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import ru.example.todo.domain.TodoTaskRequest;
 import ru.example.todo.entity.TodoTask;
 import ru.example.todo.enums.TaskDate;
 import ru.example.todo.enums.TaskStatus;
@@ -75,18 +74,14 @@ public class TodoTaskServiceImpl implements TodoTaskService {
 
     // create new task
     @Override
-    public void createTask(TodoTaskRequest todoTaskRequest) {
-        TodoTask task = new TodoTask();
-        task.setTitle(todoTaskRequest.getTitle());
-        task.setCompletionDate(todoTaskRequest.getCompletionDate());
-
+    public void createTask(TodoTask task) {
         log.info("Create a new task");
         todoTaskRepository.save(task);
     }
 
     // update task by id
     @Override
-    public void updateTask(Long id, TodoTaskRequest todoTaskRequest,
+    public void updateTask(Long id, TodoTask task,
                            TaskStatus completed, TaskStatus starred) {
 
         // get task from DB
@@ -95,8 +90,8 @@ public class TodoTaskServiceImpl implements TodoTaskService {
                 .orElseThrow(() -> new TodoObjectException("Task not found: " + id));
 
         // update task title or task completion date
-        if (todoTaskRequest != null) {
-            setTitleOrDate(todoTaskRequest, taskFromDB);
+        if (task != null) {
+            setTitleOrDate(task, taskFromDB);
         }
 
         // set task status
@@ -136,11 +131,11 @@ public class TodoTaskServiceImpl implements TodoTaskService {
         return sort;
     }
 
-    private void setTitleOrDate(TodoTaskRequest request, TodoTask taskFromDB) {
+    private void setTitleOrDate(TodoTask taskDto, TodoTask taskFromDB) {
         log.info("Update task 'completionDate' field");
-        if (request.getCompletionDate() != null) taskFromDB.setCompletionDate(request.getCompletionDate());
+        if (taskDto.getCompletionDate() != null) taskFromDB.setCompletionDate(taskDto.getCompletionDate());
 
         log.info("Update task 'title' field");
-        if (request.getTitle() != null) taskFromDB.setTitle(request.getTitle());
+        if (taskDto.getTitle() != null) taskFromDB.setTitle(taskDto.getTitle());
     }
 }
