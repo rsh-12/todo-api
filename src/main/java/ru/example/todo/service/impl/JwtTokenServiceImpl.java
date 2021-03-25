@@ -60,19 +60,18 @@ public class JwtTokenServiceImpl implements JwtTokenService {
     @Override
     public String buildAccessToken(String username, Set<Role> roles) {
 
-        Claims claims = Jwts.claims().setSubject(username);
+        Claims claims = Jwts.claims();
+        claims.put("username", username);
         claims.put("auth", roles.stream()
                 .map(role -> new SimpleGrantedAuthority(role.getAuthority()))
                 .collect(Collectors.toList()));
 
-        Date now = new Date();
-        Date validity = new Date(now.getTime() + tokenProperties.getAccessTokenValidity());
+        Date validity = new Date(System.currentTimeMillis() + tokenProperties.getAccessTokenValidity());
 
         return Jwts.builder()
                 .setClaims(claims)
                 .setExpiration(validity)
                 .signWith(secretKey, SignatureAlgorithm.HS256)
-                .setHeaderParam("e-x-p", validity)
                 .compact();
     }
 
@@ -91,7 +90,8 @@ public class JwtTokenServiceImpl implements JwtTokenService {
                 .username(username)
                 .build();
 
-        return tokenStore.save(refreshToken);
+        tokenStore.save(refreshToken);
+        return refreshToken;
     }
 
 
