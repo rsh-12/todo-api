@@ -11,7 +11,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.junit4.SpringRunner;
 import ru.example.todo.entity.TodoSection;
-import ru.example.todo.exception.TodoObjectException;
+import ru.example.todo.exception.CustomException;
 
 import java.sql.Timestamp;
 import java.util.Date;
@@ -37,7 +37,7 @@ public class TodoSectionTest {
 
     @Test
     public void testGetSectionById() {
-        TodoSection section = repository.findById(1L).orElseThrow(() -> new TodoObjectException("Not found"));
+        TodoSection section = repository.findById(1L).orElseThrow(() -> new CustomException("Not found"));
         assertEquals(section.getTitle(), "Important");
     }
 
@@ -52,7 +52,7 @@ public class TodoSectionTest {
         entityManager.persistAndFlush(section);
 
         TodoSection sectionFromDB = repository.findById(section.getId())
-                .orElseThrow(() -> new TodoObjectException("Not found"));
+                .orElseThrow(() -> new CustomException("Not found"));
 
         assert sectionFromDB != null;
         assertEquals(section.getTitle(), sectionFromDB.getTitle());
@@ -82,7 +82,7 @@ public class TodoSectionTest {
     @Test
     public void testUpdateSectionById() {
         TodoSection section = repository.findById(2L)
-                .orElseThrow(() -> new TodoObjectException("Section not found"));
+                .orElseThrow(() -> new CustomException("Section not found"));
 
         assertNotEquals("New title", section.getTitle());
 
@@ -92,7 +92,7 @@ public class TodoSectionTest {
         entityManager.persistAndFlush(section);
 
         TodoSection updatedSection = repository.findById(2L)
-                .orElseThrow(() -> new TodoObjectException("Section not found"));
+                .orElseThrow(() -> new CustomException("Section not found"));
 
         assertEquals("New title", updatedSection.getTitle());
     }

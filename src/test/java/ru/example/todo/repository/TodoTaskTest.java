@@ -11,7 +11,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.junit4.SpringRunner;
 import ru.example.todo.entity.TodoTask;
-import ru.example.todo.exception.TodoObjectException;
+import ru.example.todo.exception.CustomException;
 
 import java.util.List;
 
@@ -42,7 +42,7 @@ public class TodoTaskTest {
         assertTrue(repository.existsById(TASK_ID));
 
         TodoTask task = repository.findById(TASK_ID)
-                .orElseThrow(() -> new TodoObjectException("Task not found"));
+                .orElseThrow(() -> new CustomException("Task not found"));
 
         assertEquals(TASK_ID, task.getId());
         assertEquals("Read a book", task.getTitle());
@@ -63,7 +63,7 @@ public class TodoTaskTest {
         assertEquals(beforeTasksQuantity + 1, afterTasksQuantity);
 
         TodoTask taskFromDB = repository.findById(task.getId())
-                .orElseThrow(() -> new TodoObjectException("Task not found"));
+                .orElseThrow(() -> new CustomException("Task not found"));
 
         assertEquals(task.getTitle(), taskFromDB.getTitle());
     }
@@ -77,7 +77,7 @@ public class TodoTaskTest {
         assertTrue(repository.existsById(TASK_ID));
 
         TodoTask task = repository.findById(TASK_ID)
-                .orElseThrow(() -> new TodoObjectException("Task not found"));
+                .orElseThrow(() -> new CustomException("Task not found"));
 
         assertEquals("Read a book", task.getTitle());
 
@@ -85,7 +85,7 @@ public class TodoTaskTest {
         entityManager.persistAndFlush(task);
 
         TodoTask updatedTask = repository.findById(TASK_ID)
-                .orElseThrow(() -> new TodoObjectException("Task not found"));
+                .orElseThrow(() -> new CustomException("Task not found"));
 
         assertEquals(newTitle, updatedTask.getTitle());
     }
