@@ -4,9 +4,6 @@ package ru.example.todo.exception;
  * Time: 10:42 AM
  * */
 
-import org.springframework.boot.web.error.ErrorAttributeOptions;
-import org.springframework.boot.web.servlet.error.DefaultErrorAttributes;
-import org.springframework.boot.web.servlet.error.ErrorAttributes;
 import org.springframework.core.convert.ConversionFailedException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -39,17 +36,6 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(errorsMap.isEmpty() ? ex : errorsMap, headers, status);
     }
 
-    public ErrorAttributes errorAttributes() {
-        // Hide exception field in the return object
-        return new DefaultErrorAttributes() {
-            @Override
-            public Map<String, Object> getErrorAttributes(WebRequest webRequest, ErrorAttributeOptions options) {
-                Map<String, Object> errorAttributes = super.getErrorAttributes(webRequest, options);
-                errorAttributes.remove("exception");
-                return errorAttributes;
-            }
-        };
-    }
 
     @ExceptionHandler
     @ResponseStatus(value = HttpStatus.NOT_FOUND)
