@@ -29,9 +29,6 @@ public class TodoTaskControllerTest extends AbstractTestContollerClass {
 
     @Test
     public void testGetAllTasks_WithAndWithoutParams() throws Exception {
-        /*
-         * param "day" == completionDate
-         * */
         mvc.perform(get(TASKS)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
@@ -141,7 +138,6 @@ public class TodoTaskControllerTest extends AbstractTestContollerClass {
                 .andExpect(jsonPath("message", containsString("Task not found")));
     }
 
-
     @Test
     public void testUpdateTask_Title() throws Exception {
         final int TASK_ID = 3;
@@ -181,7 +177,6 @@ public class TodoTaskControllerTest extends AbstractTestContollerClass {
                 .andExpect(jsonPath("completionDate", containsString(newCompletionDate)));
 
     }
-
 
     @Test
     public void testUpdateTask_Completed() throws Exception {

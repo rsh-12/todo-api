@@ -50,8 +50,9 @@ public class TodoSection {
     List<TodoTask> todoTasks;
 
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.DETACH,
-            CascadeType.PERSIST, CascadeType.REFRESH}, fetch = FetchType.LAZY)
+            CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinColumn(name = "user_id")
+//    @JsonView(value = Views.Internal.class)
     private User user;
 
     @PreRemove
