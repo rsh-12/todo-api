@@ -44,16 +44,16 @@ public class TodoTask {
     @Column(columnDefinition = "date default current_date")
     private LocalDate completionDate = LocalDate.now();
 
+    // @Column(columnDefinition = "timestamp default current_timestamp", updatable = false)
     @JsonFormat(timezone = "Asia/Yekaterinburg")
     @JsonView(value = Views.Public.class)
-    @Column(columnDefinition = "timestamp default current_timestamp", updatable = false)
     @CreationTimestamp
     private Date createdAt;
 
+    // @Column(columnDefinition = "timestamp default current_timestamp")
     @JsonFormat(timezone = "Asia/Yekaterinburg")
     @JsonView(value = Views.Public.class)
     @UpdateTimestamp
-    @Column(columnDefinition = "timestamp default current_timestamp")
     private Date updatedAt;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)

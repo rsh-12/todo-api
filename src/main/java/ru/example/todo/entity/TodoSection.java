@@ -33,15 +33,15 @@ public class TodoSection {
     @JsonView(value = Views.Public.class)
     private String title;
 
+    // @Column(columnDefinition = "timestamp default current_timestamp", updatable = false)
     @JsonFormat(timezone = "Asia/Yekaterinburg")
     @JsonView(value = Views.Public.class)
-    @Column(columnDefinition = "timestamp default current_timestamp", updatable = false)
     @CreationTimestamp
     private Date createdAt;
 
+    // @Column(columnDefinition = "timestamp default current_timestamp")
     @JsonFormat(timezone = "Asia/Yekaterinburg")
     @JsonView(value = Views.Public.class)
-    @Column(columnDefinition = "timestamp default current_timestamp")
     @UpdateTimestamp
     private Date updatedAt;
 
