@@ -1,5 +1,6 @@
 package ru.example.todo.service;
 
+import ru.example.todo.dto.UserDto;
 import ru.example.todo.entity.User;
 
 import javax.servlet.http.HttpServletRequest;
@@ -7,7 +8,7 @@ import java.util.Map;
 
 public interface UserService {
 
-    String login(String username, String password);
+    String login(UserDto userDto);
 
     Map<String, String> register(String username, String password);
 
