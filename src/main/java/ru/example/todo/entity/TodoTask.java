@@ -62,6 +62,10 @@ public class TodoTask {
     @JoinColumn(name = "list_id")
     private TodoSection todoSection;
 
+    @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE,
+            CascadeType.PERSIST, CascadeType.REFRESH}, fetch = FetchType.LAZY)
+    private User user;
+
     public TodoTask() {
     }
 
@@ -136,6 +140,14 @@ public class TodoTask {
 
     public void setTodoSection(TodoSection todoSection) {
         this.todoSection = todoSection;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     @Override

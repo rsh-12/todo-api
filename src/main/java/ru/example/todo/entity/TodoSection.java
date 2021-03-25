@@ -49,9 +49,14 @@ public class TodoSection {
     @JsonView(value = Views.Internal.class)
     List<TodoTask> todoTasks;
 
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.DETACH,
+            CascadeType.PERSIST, CascadeType.REFRESH}, fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
     @PreRemove
     private void preRemove() {
-        todoTasks.forEach(task->task.setTodoSection(null));
+        todoTasks.forEach(task -> task.setTodoSection(null));
     }
 
     public TodoSection() {
@@ -104,6 +109,14 @@ public class TodoSection {
 
     public void removeTodoTasks(List<TodoTask> todoTasks) {
         todoTasks.forEach(task -> task.setTodoSection(null));
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     @Override
