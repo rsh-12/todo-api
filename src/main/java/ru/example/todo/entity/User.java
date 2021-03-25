@@ -28,8 +28,9 @@ public class User {
     @Column(nullable = false, unique = true)
     private String username;
 
+    // todo set min=8
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @Size(min = 8, message = "Password is required")
+    @Size(min = 4, message = "Password is required")
     private String password;
 
     @JsonFormat(timezone = "Asia/Yekaterinburg")
