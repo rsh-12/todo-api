@@ -21,9 +21,8 @@ public class InMemoryTokenStore implements TokenStore {
     }
 
     @Override
-    public RefreshToken save(RefreshToken refreshToken) {
-        RefreshToken token = tokenStore.put(refreshToken.getId(), refreshToken);
-        return token;
+    public void save(RefreshToken refreshToken) {
+        tokenStore.put(refreshToken.getId(), refreshToken);
     }
 
     @Override
