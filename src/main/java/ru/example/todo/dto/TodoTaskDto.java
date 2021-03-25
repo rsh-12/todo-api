@@ -1,4 +1,4 @@
-package ru.example.todo.domain;
+package ru.example.todo.dto;
 /*
  * Date: 3/12/21
  * Time: 6:52 PM
@@ -10,7 +10,7 @@ import javax.validation.constraints.FutureOrPresent;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
 
-public class TodoTaskRequest {
+public class TodoTaskDto {
 
     @Size(min = 3, max = 80, message = "Size must be between 3 and 80")
     private String title;

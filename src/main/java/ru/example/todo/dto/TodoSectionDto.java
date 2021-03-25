@@ -1,4 +1,4 @@
-package ru.example.todo.domain;
+package ru.example.todo.dto;
 /*
  * Date: 3/12/21
  * Time: 5:46 PM
@@ -7,7 +7,7 @@ package ru.example.todo.domain;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
-public class TodoSectionRequest {
+public class TodoSectionDto {
 
     @NotBlank
     @Size(min = 3, max = 50, message = "Size must be between 3 and 50")
