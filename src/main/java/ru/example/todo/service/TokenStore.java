@@ -6,7 +6,7 @@ public interface TokenStore {
 
     RefreshToken findById(String tokenId);
 
-    RefreshToken save(RefreshToken refreshToken);
+    void save(RefreshToken refreshToken);
 
     void deleteById(String tokenId);
 
