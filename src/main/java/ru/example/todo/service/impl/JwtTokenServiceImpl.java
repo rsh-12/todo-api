@@ -6,6 +6,7 @@ package ru.example.todo.service.impl;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+import ru.example.todo.config.properties.TokenProperties;
 import ru.example.todo.entity.RefreshToken;
 import ru.example.todo.entity.Role;
 import ru.example.todo.service.JwtTokenService;
@@ -15,6 +16,12 @@ import java.util.Set;
 
 @Service
 public class JwtTokenServiceImpl implements JwtTokenService {
+
+    private final TokenProperties tokenProperties;
+
+    public JwtTokenServiceImpl(TokenProperties tokenProperties) {
+        this.tokenProperties = tokenProperties;
+    }
 
     @Override
     public String buildAccessToken(String username, Set<Role> roles) {
