@@ -36,7 +36,6 @@ public class TodoTaskController {
     private final TodoTaskModelAssembler assembler;
     private final ModelMapper modelMapper;
 
-
     @Autowired
     public TodoTaskController(TodoTaskService todoTaskService, TodoTaskModelAssembler assembler, ModelMapper modelMapper) {
         this.todoTaskService = todoTaskService;
@@ -96,7 +95,7 @@ public class TodoTaskController {
                                         @RequestParam(value = "completed", required = false) TaskStatus completed,
                                         @RequestParam(value = "starred", required = false) TaskStatus starred) {
 
-        todoTaskService.updateTask(id, modelMapper.map(taskDto, TodoTask.class), completed, starred);
+        todoTaskService.updateTask(id, taskDto, completed, starred);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

@@ -18,7 +18,7 @@ public interface TodoTaskService {
 
     void createTask(TodoTask task);
 
-    void updateTask(Long id, TodoTask task, TaskStatus completed, TaskStatus starred);
+    void updateTask(Long id, TodoTaskDto task, TaskStatus completed, TaskStatus starred);
 
     List<TodoTask> findAllBySetId(Set<Long> taskIds);
 

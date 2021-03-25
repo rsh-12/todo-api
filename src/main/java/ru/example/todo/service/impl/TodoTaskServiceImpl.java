@@ -4,6 +4,7 @@ package ru.example.todo.service.impl;
  * Time: 6:16 PM
  * */
 
+import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import ru.example.todo.dto.TodoTaskDto;
 import ru.example.todo.entity.TodoTask;
 import ru.example.todo.enums.TaskDate;
 import ru.example.todo.enums.TaskStatus;
@@ -29,10 +31,12 @@ public class TodoTaskServiceImpl implements TodoTaskService {
     private static final Logger log = LoggerFactory.getLogger(TodoTaskServiceImpl.class.getName());
 
     private final TodoTaskRepository todoTaskRepository;
+    private final ModelMapper modelMapper;
 
     @Autowired
-    public TodoTaskServiceImpl(TodoTaskRepository todoTaskRepository) {
+    public TodoTaskServiceImpl(TodoTaskRepository todoTaskRepository, ModelMapper modelMapper) {
         this.todoTaskRepository = todoTaskRepository;
+        this.modelMapper = modelMapper;
     }
 
     // get all tasks
@@ -79,9 +83,16 @@ public class TodoTaskServiceImpl implements TodoTaskService {
         todoTaskRepository.save(task);
     }
 
+    @Override
+    public List<TodoTask> findAllBySetId(Set<Long> taskIds) {
+        List<TodoTask> tasksByIds = todoTaskRepository.findAllByIdIn(taskIds);
+        log.info("Get tasks by set of ids: {}", tasksByIds.size());
+        return tasksByIds;
+    }
+
     // update task by id
     @Override
-    public void updateTask(Long id, TodoTask task,
+    public void updateTask(Long id, TodoTaskDto task,
                            TaskStatus completed, TaskStatus starred) {
 
         // get task from DB
@@ -108,12 +119,12 @@ public class TodoTaskServiceImpl implements TodoTaskService {
         todoTaskRepository.save(taskFromDB);
     }
 
+    private void setTitleOrDate(TodoTaskDto taskDto, TodoTask taskFromDB) {
+        log.info("Update task 'completionDate' field");
+        if (taskDto.getCompletionDate() != null) taskFromDB.setCompletionDate(taskDto.getCompletionDate());
 
-    @Override
-    public List<TodoTask> findAllBySetId(Set<Long> taskIds) {
-        List<TodoTask> tasksByIds = todoTaskRepository.findAllByIdIn(taskIds);
-        log.info("Get tasks by set of ids: {}", tasksByIds.size());
-        return tasksByIds;
+        log.info("Update task 'title' field");
+        if (taskDto.getTitle() != null) taskFromDB.setTitle(taskDto.getTitle());
     }
 
     // --------------------------------------------------------------------------- Helper methods.
@@ -131,11 +142,4 @@ public class TodoTaskServiceImpl implements TodoTaskService {
         return sort;
     }
 
-    private void setTitleOrDate(TodoTask taskDto, TodoTask taskFromDB) {
-        log.info("Update task 'completionDate' field");
-        if (taskDto.getCompletionDate() != null) taskFromDB.setCompletionDate(taskDto.getCompletionDate());
-
-        log.info("Update task 'title' field");
-        if (taskDto.getTitle() != null) taskFromDB.setTitle(taskDto.getTitle());
-    }
 }
