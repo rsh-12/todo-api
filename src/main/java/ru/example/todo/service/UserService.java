@@ -10,7 +10,7 @@ public interface UserService {
 
     String login(UserDto userDto);
 
-    Map<String, String> register(String username, String password);
+    String register(User user);
 
     Map<String, String> refreshToken(String token);
 
