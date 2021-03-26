@@ -93,7 +93,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Map<String, String> refreshToken(String token) {
+    public String refreshToken(String token) {
         return null;
     }
 
