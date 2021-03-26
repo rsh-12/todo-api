@@ -21,7 +21,7 @@ import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
 @DataJpaTest
-public class TodoSectionTest {
+public class TodoSectionRepositoryTest {
 
     @Autowired
     private TodoSectionRepository repository;
