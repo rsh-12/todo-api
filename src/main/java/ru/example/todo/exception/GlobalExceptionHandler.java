@@ -38,30 +38,29 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
 
     @ExceptionHandler
-    @ResponseStatus(value = HttpStatus.NOT_FOUND)
     public ResponseEntity<CustomErrorResponse> handleException(CustomException ex) {
 
         var error = new CustomErrorResponse();
         error.setTimestamp(new Date());
-        error.setStatus(HttpStatus.NOT_FOUND.value());
-        error.setError("Not found");
+        error.setStatus(ex.getHttpStatus().value());
+        error.setError("Something went wrong");
         error.setMessage(ex.getMessage());
 
-        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(error, ex.getHttpStatus());
     }
 
-    @ExceptionHandler
-    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
-    public ResponseEntity<CustomErrorResponse> handleException(Exception ex) {
-
-        var error = new CustomErrorResponse();
-        error.setTimestamp(new Date());
-        error.setStatus(HttpStatus.BAD_REQUEST.value());
-        error.setError("Bad Request");
-        error.setMessage(ex.getMessage());
-
-        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
-    }
+//    @ExceptionHandler
+//    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+//    public ResponseEntity<CustomErrorResponse> handleException(CustomException ex) {
+//
+//        var error = new CustomErrorResponse();
+//        error.setTimestamp(new Date());
+//        error.setStatus(HttpStatus.BAD_REQUEST.value());
+//        error.setError("Bad Request");
+//        error.setMessage(ex.getMessage());
+//
+//        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+//    }
 
     @ExceptionHandler(ConversionFailedException.class)
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
