@@ -4,10 +4,20 @@ package ru.example.todo.exception;
  * Time: 9:48 PM
  * */
 
+import org.springframework.http.HttpStatus;
+
 public class CustomException extends RuntimeException {
+
+    private String message;
+    private HttpStatus httpStatus;
 
     public CustomException(String message) {
         super(message);
+    }
+
+    public CustomException(String message, HttpStatus httpStatus) {
+        this.message = message;
+        this.httpStatus = httpStatus;
     }
 
     public CustomException(String message, Throwable cause) {
@@ -18,4 +28,12 @@ public class CustomException extends RuntimeException {
         super(cause);
     }
 
+    @Override
+    public String getMessage() {
+        return message;
+    }
+
+    public HttpStatus getHttpStatus() {
+        return httpStatus;
+    }
 }
