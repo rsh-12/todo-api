@@ -4,11 +4,13 @@ package ru.example.todo.service.impl;
  * Time: 1:15 PM
  * */
 
+import org.springframework.scheduling.annotation.Async;
 import ru.example.todo.entity.RefreshToken;
 import ru.example.todo.service.TokenStore;
 
 import java.util.Date;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class InMemoryTokenStore implements TokenStore {
@@ -21,8 +23,16 @@ public class InMemoryTokenStore implements TokenStore {
     }
 
     @Override
-    public void save(RefreshToken refreshToken) {
+    @Async
+    public CompletableFuture<Void> save(RefreshToken refreshToken) {
+
+        tokenStore.values().stream()
+                .filter(token -> token.getUsername().equals(refreshToken.getUsername()))
+                .forEach(token -> tokenStore.remove(token.getId()));
+
         tokenStore.put(refreshToken.getId(), refreshToken);
+
+        return CompletableFuture.allOf();
     }
 
     @Override
@@ -35,5 +45,9 @@ public class InMemoryTokenStore implements TokenStore {
         tokenStore.values().stream()
                 .filter(token -> token.getExpiryTime().before(new Date(System.currentTimeMillis())))
                 .forEach(token -> tokenStore.remove(token.getId()));
+    }
+
+    public Map<String, RefreshToken> getTokenStore() {
+        return tokenStore;
     }
 }
