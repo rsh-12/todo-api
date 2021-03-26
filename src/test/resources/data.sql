@@ -24,3 +24,10 @@ values (1, 'Read a book', false, false, DATEADD('WEEK', +1, current_timestamp),
        (6, 'Seciton task 3', false, false, current_timestamp,
         current_timestamp, current_timestamp, null);
 
+insert into app_user(username, password, created_at)
+values ('admin@mail.com', '$2a$10$YamL9ghddJL6OLQcSpYb1uPkno8Pw64/jyVCkK1nZDKoE2T.ZrdFC', current_timestamp),
+       ('client@mail.com', '$2a$10$ByBjnv4AAlFwtu2NT2N6puUcUZwh2lMmV0gSKv7ZQ6vKfNqTRTJTi', current_timestamp);
+
+insert into user_roles(roles, user_id)
+VALUES (1, 1),
+       (0, 2);
