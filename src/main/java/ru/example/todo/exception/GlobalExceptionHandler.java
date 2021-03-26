@@ -40,27 +40,20 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler
     public ResponseEntity<CustomErrorResponse> handleException(CustomException ex) {
 
+        HttpStatus exHttpStatus = ex.getHttpStatus();
+
+        if (exHttpStatus == null) {
+            exHttpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+        }
+
         var error = new CustomErrorResponse();
         error.setTimestamp(new Date());
-        error.setStatus(ex.getHttpStatus().value());
+        error.setStatus(exHttpStatus.value());
         error.setError("Something went wrong");
         error.setMessage(ex.getMessage());
 
-        return new ResponseEntity<>(error, ex.getHttpStatus());
+        return new ResponseEntity<>(error, exHttpStatus);
     }
-
-//    @ExceptionHandler
-//    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
-//    public ResponseEntity<CustomErrorResponse> handleException(CustomException ex) {
-//
-//        var error = new CustomErrorResponse();
-//        error.setTimestamp(new Date());
-//        error.setStatus(HttpStatus.BAD_REQUEST.value());
-//        error.setError("Bad Request");
-//        error.setMessage(ex.getMessage());
-//
-//        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
-//    }
 
     @ExceptionHandler(ConversionFailedException.class)
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
