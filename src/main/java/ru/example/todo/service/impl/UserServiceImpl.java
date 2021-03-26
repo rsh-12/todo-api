@@ -82,7 +82,7 @@ public class UserServiceImpl implements UserService {
     public String register(User user) {
 
         if (userRepository.existsByUsername(user.getUsername())) {
-            throw new CustomException("Username already in use", HttpStatus.FORBIDDEN);
+            throw new CustomException("Username already in use", HttpStatus.BAD_REQUEST);
         }
 
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));

@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import ru.example.todo.dto.TodoTaskDto;
 import ru.example.todo.entity.TodoTask;
@@ -62,14 +63,14 @@ public class TodoTaskServiceImpl implements TodoTaskService {
     public TodoTask getTaskById(Long id) {
         log.info("Get the task by id: {}", id);
         return todoTaskRepository.findById(id)
-                .orElseThrow(() -> new CustomException("Task not found: " + id));
+                .orElseThrow(() -> new CustomException("Task not found: " + id, HttpStatus.NOT_FOUND));
     }
 
     // delete task by id
     @Override
     public void deleteTaskById(Long id) {
         if (!todoTaskRepository.existsById(id)) {
-            throw new CustomException("Task not found: " + id);
+            throw new CustomException("Task not found: " + id, HttpStatus.NOT_FOUND);
         }
 
         todoTaskRepository.deleteById(id);
@@ -98,7 +99,7 @@ public class TodoTaskServiceImpl implements TodoTaskService {
         // get task from DB
         log.info("Get the task from DB: id={}", id);
         TodoTask taskFromDB = todoTaskRepository.findById(id)
-                .orElseThrow(() -> new CustomException("Task not found: " + id));
+                .orElseThrow(() -> new CustomException("Task not found: " + id, HttpStatus.NOT_FOUND));
 
         // update task title or task completion date
         if (task != null) {

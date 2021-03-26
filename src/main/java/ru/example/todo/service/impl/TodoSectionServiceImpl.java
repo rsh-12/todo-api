@@ -71,7 +71,7 @@ public class TodoSectionServiceImpl implements TodoSectionService {
 
         log.info("Get the section by id: {}", id);
         TodoSection section = todoSectionRepository.findById(id)
-                .orElseThrow(() -> new CustomException(("Section not found: " + id)));
+                .orElseThrow(() -> new CustomException("Section not found: " + id, HttpStatus.NOT_FOUND));
 
         section.setTitle(sectionDto.getTitle());
 
@@ -84,12 +84,12 @@ public class TodoSectionServiceImpl implements TodoSectionService {
     public void addTasksToList(Long sectionId, Set<Long> tasks, SetTasks flag) {
 
         if (tasks == null || tasks.isEmpty()) {
-            throw new CustomException("Tasks IDs are required!");
+            throw new CustomException("Tasks IDs are required!", HttpStatus.BAD_REQUEST);
         }
 
         log.info("Get the section by id: {}", sectionId);
         TodoSection section = todoSectionRepository.findById(sectionId)
-                .orElseThrow(() -> new CustomException("Section not found: " + sectionId));
+                .orElseThrow(() -> new CustomException("Section not found: " + sectionId, HttpStatus.NOT_FOUND));
 
         List<TodoTask> tasksByIds = todoTaskService.findAllBySetId(tasks);
         log.info("Get tasks list size: {}", tasksByIds.size());
