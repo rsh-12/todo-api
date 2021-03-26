@@ -27,6 +27,7 @@ abstract class AbstractTestContollerClass {
 
     protected final static String SECTIONS = "/api/sections/";
     protected final static String TASKS = "/api/tasks/";
+    protected final static String USERS = "/api/users/";
 
     @Autowired
     protected MockMvc mvc;
