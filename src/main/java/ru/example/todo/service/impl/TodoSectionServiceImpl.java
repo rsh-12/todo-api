@@ -6,6 +6,7 @@ package ru.example.todo.service.impl;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import ru.example.todo.entity.TodoSection;
 import ru.example.todo.entity.TodoTask;
@@ -36,7 +37,7 @@ public class TodoSectionServiceImpl implements TodoSectionService {
     public TodoSection getSectionById(Long sectionId) {
         log.info("Get the section by id: {}", sectionId);
         return todoSectionRepository.findById(sectionId)
-                .orElseThrow(() -> new CustomException("Section not found: " + sectionId));
+                .orElseThrow(() -> new CustomException("Section not found: " + sectionId, HttpStatus.NOT_FOUND));
     }
 
     // get all sections
