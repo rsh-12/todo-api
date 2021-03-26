@@ -123,7 +123,7 @@ public class TodoSectionControllerTest extends AbstractTestContollerClass {
 
     // get section by non-existent id: returns 404 NOT FOUND
     @Test
-    public void testSectionByIdNotFound() throws Exception {
+    public void testSectionById_NotFound() throws Exception {
         final int SECTION_ID = 100;
 
         mvc.perform(get(SECTIONS + SECTION_ID)
