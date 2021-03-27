@@ -5,13 +5,14 @@ package ru.example.todo.controller;
  * */
 
 import org.modelmapper.ModelMapper;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import ru.example.todo.dto.UserDto;
 import ru.example.todo.entity.User;
 import ru.example.todo.service.UserService;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 @RestController
@@ -36,5 +37,17 @@ public class UserController {
     public ResponseEntity<String> register(@Valid @RequestBody UserDto userDto) {
         String register = userService.register(modelMapper.map(userDto, User.class));
         return ResponseEntity.ok(register);
+    }
+
+    @PostMapping(value = "/token", produces = "application/json")
+    public ResponseEntity<String> refreshToken(HttpServletRequest request) {
+        String tokens = userService.refreshToken(request.getHeader("token"));
+        return ResponseEntity.ok(tokens);
+    }
+
+    @GetMapping(value = "/test")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
+    public String testMethod() {
+        return "OK";
     }
 }
