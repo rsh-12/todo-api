@@ -39,7 +39,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
             }
         } catch (CustomException ex) {
             SecurityContextHolder.clearContext();
-            httpServletResponse.sendError(HttpStatus.BAD_REQUEST.value(), "Invalied token");
+            httpServletResponse.sendError(HttpStatus.BAD_REQUEST.value(), "Invalid token");
             return;
         }
 
