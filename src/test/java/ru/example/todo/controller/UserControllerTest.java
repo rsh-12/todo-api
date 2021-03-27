@@ -34,8 +34,8 @@ public class UserControllerTest extends AbstractTestContollerClass {
                 .andReturn().getResponse().getContentAsString();
 
         assertTrue(response.contains("access_token"));
-        assertTrue(response.contains("access_token_exp"));
         assertTrue(response.contains("refresh_token"));
-        assertTrue(response.contains("refresh_token_exp"));
+        assertTrue(response.contains("token_type"));
+        assertTrue(response.contains("expires"));
     }
 }
