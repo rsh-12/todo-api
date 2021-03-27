@@ -73,9 +73,9 @@ public class UserServiceImpl implements UserService {
         RefreshToken refreshToken = jwtTokenService.buildRefreshToken(user.getUsername());
 
         body.put("access_token", accessToken);
-        body.put("access_token_exp", String.valueOf(tokenProperties.getAccessTokenValidity()));
         body.put("refresh_token", refreshToken.getId());
-        body.put("refresh_token_exp", String.valueOf(tokenProperties.getRefreshTokenValidity()));
+        body.put("token_type", "Bearer");
+        body.put("expires", String.valueOf(tokenProperties.getAccessTokenValidity()));
 
         try {
             return new ObjectMapper().writeValueAsString(body);
