@@ -63,7 +63,7 @@ public class JwtTokenServiceImpl implements JwtTokenService {
 
         return Jwts.builder()
                 .setClaims(claims)
-                .setExpiration(getValidity(tokenProperties))
+                .setExpiration(getValidity(tokenProperties.getAccessTokenValidity()))
                 .signWith(getSecretKey())
                 .compact();
     }
@@ -77,7 +77,7 @@ public class JwtTokenServiceImpl implements JwtTokenService {
 
         RefreshToken refreshToken = new RefreshToken.Builder()
                 .id(RandomStringUtils.randomAlphanumeric(64))
-                .expiryTime(getValidity(tokenProperties))
+                .expiryTime(getValidity(tokenProperties.getRefreshTokenValidity()))
                 .username(username)
                 .build();
 
@@ -85,9 +85,9 @@ public class JwtTokenServiceImpl implements JwtTokenService {
         return refreshToken;
     }
 
-    private static Date getValidity(TokenProperties tokenProperties) {
+    private static Date getValidity(long millis) {
         Date now = new Date();
-        return new Date(now.getTime() + tokenProperties.getAccessTokenValidity());
+        return new Date(now.getTime() + millis);
     }
 
 
@@ -138,6 +138,12 @@ public class JwtTokenServiceImpl implements JwtTokenService {
 
     @Override
     public boolean isValidRefreshToken(RefreshToken refreshToken) {
+
+        Jwts.parserBuilder()
+                .setSigningKey(getSecretKey())
+                .build()
+                .parseClaimsJws(refreshToken.getId());
+
         return !now().isAfter(refreshToken.getExpiryTime().toInstant());
     }
 
