@@ -40,13 +40,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
                 .mvcMatchers("/api/users/login").permitAll()
                 .mvcMatchers("/api/users/register").permitAll()
+                .mvcMatchers("/api/users/token").permitAll()
                 .anyRequest().authenticated();
 
         http.apply(new JwtTokenFilterConfigurer(jwtTokenService));
     }
 
     @Override
-    public void configure(WebSecurity web) throws Exception {
+    public void configure(WebSecurity web) {
         web.ignoring()
                 .mvcMatchers("/v2/api-docs")
                 .mvcMatchers("/swagger-resources/**")//
