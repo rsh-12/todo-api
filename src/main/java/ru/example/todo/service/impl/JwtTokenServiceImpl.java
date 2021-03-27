@@ -138,12 +138,6 @@ public class JwtTokenServiceImpl implements JwtTokenService {
 
     @Override
     public boolean isValidRefreshToken(RefreshToken refreshToken) {
-
-        Jwts.parserBuilder()
-                .setSigningKey(getSecretKey())
-                .build()
-                .parseClaimsJws(refreshToken.getId());
-
         return !now().isAfter(refreshToken.getExpiryTime().toInstant());
     }
 
