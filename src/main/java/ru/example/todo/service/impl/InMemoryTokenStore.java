@@ -18,7 +18,7 @@ public class InMemoryTokenStore implements TokenStore {
     private final Map<String, RefreshToken> tokenStore = new ConcurrentHashMap<>();
 
     @Override
-    public RefreshToken findById(String tokenId) {
+    public RefreshToken find(String tokenId) {
         return tokenStore.get(tokenId);
     }
 

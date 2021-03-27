@@ -6,7 +6,7 @@ import java.util.concurrent.CompletableFuture;
 
 public interface TokenStore {
 
-    RefreshToken findById(String tokenId);
+    RefreshToken find(String token);
 
     CompletableFuture<Void> save(RefreshToken refreshToken);
 
