@@ -7,7 +7,6 @@ package ru.example.todo.service.impl;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.http.HttpStatus;
@@ -44,18 +43,11 @@ public class JwtTokenServiceImpl implements JwtTokenService {
     private final UserRepository userRepository;
     private final TokenStore tokenStore;
 
-    private SecretKey secretKey;
-
     public JwtTokenServiceImpl(TokenProperties tokenProperties, UserDetailsServiceImpl userDetailsService, UserRepository userRepository, TokenStore tokenStore) {
         this.tokenProperties = tokenProperties;
         this.userDetailsService = userDetailsService;
         this.userRepository = userRepository;
         this.tokenStore = tokenStore;
-    }
-
-    @PostConstruct
-    protected void init() {
-        secretKey = Keys.hmacShaKeyFor(tokenProperties.getSecret().getBytes(StandardCharsets.UTF_8));
     }
 
     @Override
@@ -68,11 +60,12 @@ public class JwtTokenServiceImpl implements JwtTokenService {
                 .collect(Collectors.toList()));
 
         Date validity = new Date(System.currentTimeMillis() + tokenProperties.getAccessTokenValidity());
+        SecretKey secretKey = getSecretKey();
 
         return Jwts.builder()
                 .setClaims(claims)
                 .setExpiration(validity)
-                .signWith(secretKey, SignatureAlgorithm.HS256)
+                .signWith(secretKey)
                 .compact();
     }
 
@@ -98,7 +91,8 @@ public class JwtTokenServiceImpl implements JwtTokenService {
 
     @Override
     public Authentication getAuthentication(String token) {
-        UserDetails userDetails = userDetailsService.loadUserByUsername(getUsername(token));
+        String username = getUsername(token);
+        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
         return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
     }
 
@@ -114,9 +108,11 @@ public class JwtTokenServiceImpl implements JwtTokenService {
 
     @Override
     public boolean validateToken(String token) {
+        SecretKey secretKey = getSecretKey();
         try {
             Jwts.parserBuilder()
-                    .setSigningKey(secretKey).build()
+                    .setSigningKey(secretKey)
+                    .build()
                     .parseClaimsJws(token);
             return true;
         } catch (JwtException | IllegalArgumentException ex) {
@@ -124,9 +120,14 @@ public class JwtTokenServiceImpl implements JwtTokenService {
         }
     }
 
+    @PostConstruct
+    private SecretKey getSecretKey() {
+        return Keys.hmacShaKeyFor(tokenProperties.getSecret().getBytes(StandardCharsets.UTF_8));
+    }
+
     @Override
-    public RefreshToken findRefreshTokenById(String tokenId) {
-        return tokenStore.findById(tokenId);
+    public RefreshToken findRefreshToken(String token) {
+        return tokenStore.find(token);
     }
 
     @Override
@@ -140,10 +141,13 @@ public class JwtTokenServiceImpl implements JwtTokenService {
     }
 
     private String getUsername(String token) {
-        return Jwts.parserBuilder()
+        SecretKey secretKey = getSecretKey();
+
+        Claims claims = Jwts.parserBuilder()
                 .setSigningKey(secretKey)
                 .build()
                 .parseClaimsJws(token)
-                .getBody().getSubject();
+                .getBody();
+        return String.valueOf(claims.get("username"));
     }
 }
