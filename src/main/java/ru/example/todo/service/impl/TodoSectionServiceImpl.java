@@ -34,26 +34,26 @@ public class TodoSectionServiceImpl implements TodoSectionService {
 
     // get section by id
     @Override
-    public TodoSection getSectionById(Long sectionId) {
+    public TodoSection getSectionById(Long userId, Long sectionId) {
         log.info("Get the section by id: {}", sectionId);
-        return todoSectionRepository.findById(sectionId)
+        return todoSectionRepository.findByUserIdAndId(userId, sectionId)
                 .orElseThrow(() -> new CustomException("Section not found: " + sectionId, HttpStatus.NOT_FOUND));
     }
 
     // get all sections
     @Override
-    public List<TodoSection> getAllSections() {
-        List<TodoSection> sections = todoSectionRepository.findAll();
+    public List<TodoSection> getAllSections(Long userId) {
+        List<TodoSection> sections = todoSectionRepository.findAllByUserId(userId);
         log.info("Get all sections: {}", sections.size());
         return sections;
     }
 
     // delete section by id
     @Override
-    public void deleteSectionById(long sectionId) {
+    public void deleteSectionById(Long userId, Long sectionId) {
         if (todoSectionRepository.existsById(sectionId)) {
             log.info("Delete the section by id: {}", sectionId);
-            todoSectionRepository.deleteById(sectionId);
+            todoSectionRepository.deleteByIdAndUserId(userId, sectionId);
         }
     }
 
@@ -64,16 +64,15 @@ public class TodoSectionServiceImpl implements TodoSectionService {
         todoSectionRepository.save(section);
     }
 
-
     // update section title
     @Override
-    public void updateSection(Long id, TodoSection sectionDto) {
+    public void updateSection(Long userId, Long sectionId, TodoSection section) {
 
-        log.info("Get the section by id: {}", id);
-        TodoSection section = todoSectionRepository.findById(id)
-                .orElseThrow(() -> new CustomException("Section not found: " + id, HttpStatus.NOT_FOUND));
+        log.info("Get the section by id: {}", sectionId);
+        TodoSection sectionFromBd = todoSectionRepository.findByUserIdAndId(userId, sectionId)
+                .orElseThrow(() -> new CustomException("Section not found: " + sectionId, HttpStatus.NOT_FOUND));
 
-        section.setTitle(sectionDto.getTitle());
+        sectionFromBd.setTitle(section.getTitle());
 
         log.info("Save an updated section");
         todoSectionRepository.save(section);
@@ -81,17 +80,17 @@ public class TodoSectionServiceImpl implements TodoSectionService {
 
     // add to or remove from the task section
     @Override
-    public void addTasksToList(Long sectionId, Set<Long> tasks, SetTasks flag) {
+    public void addTasksToList(Long userId, Long sectionId, Set<Long> tasks, SetTasks flag) {
 
         if (tasks == null || tasks.isEmpty()) {
             throw new CustomException("Tasks IDs are required!", HttpStatus.BAD_REQUEST);
         }
 
         log.info("Get the section by id: {}", sectionId);
-        TodoSection section = todoSectionRepository.findById(sectionId)
+        TodoSection section = todoSectionRepository.findByUserIdAndId(userId, sectionId)
                 .orElseThrow(() -> new CustomException("Section not found: " + sectionId, HttpStatus.NOT_FOUND));
 
-        List<TodoTask> tasksByIds = todoTaskService.findAllBySetId(tasks);
+        List<TodoTask> tasksByIds = todoTaskService.findAllBySetId(tasks, userId);
         log.info("Get tasks list size: {}", tasksByIds.size());
 
         // add or remove
