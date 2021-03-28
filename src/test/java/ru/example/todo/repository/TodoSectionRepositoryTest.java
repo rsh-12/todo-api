@@ -34,8 +34,17 @@ public class TodoSectionRepositoryTest {
     @Autowired
     private TestEntityManager entityManager;
 
-//    void deleteByIdAndUserId(Long sectionId, Long userId);
+    @Test
+    public void testDeleteByIdAndUserId() {
+        TodoSection beforeDeleting = repository.findByUserIdAndId(ADMIN_ID, SECTIONS[0]).orElse(null);
+        assertNotNull(beforeDeleting);
 
+        repository.deleteByIdAndUserId(SECTIONS[0], ADMIN_ID);
+        entityManager.flush();
+
+        TodoSection afterDeleting = repository.findByUserIdAndId(ADMIN_ID, SECTIONS[0]).orElse(null);
+        assertNull(afterDeleting);
+    }
 
     @Test
     public void testFindByUserIdAndId() {
