@@ -31,7 +31,7 @@ public class UserRepositoryTest {
     private TestEntityManager entityManager;
 
     @Test
-    public void testGetAllSections() {
+    public void testGetAllUsers() {
         List<User> users = repository.findAll();
         assertEquals(2, users.size());
     }
@@ -50,11 +50,31 @@ public class UserRepositoryTest {
         assertNotNull(client);
         assertEquals(CLIENT_USERNAME, client.getUsername());
     }
-    
+
     @Test
     public void testExistsByUsername() {
         assertTrue(repository.existsByUsername(ADMIN_USERNAME));
         assertTrue(repository.existsByUsername(CLIENT_USERNAME));
-        assertFalse(repository.existsByUsername("John"));
+        assertFalse(repository.existsByUsername("john@mail.com"));
     }
+
+    // create user
+    @Test
+    public void testCreateUser() {
+        User user = createUser();
+
+        assertFalse(repository.existsByUsername(user.getUsername()));
+        entityManager.persistAndFlush(user);
+        assertTrue(repository.existsByUsername(user.getUsername()));
+    }
+
+    private User createUser() {
+        User user = new User();
+        user.setUsername("harry@mail.com");
+        user.setPassword("secretpassword12345");
+        return user;
+    }
+
+    // update user
+    // delete user
 }
