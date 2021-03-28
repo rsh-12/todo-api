@@ -20,6 +20,6 @@ public interface TodoTaskService {
 
     void updateTask(Long id, TodoTaskDto task, TaskStatus completed, TaskStatus starred);
 
-    List<TodoTask> findAllBySetId(Set<Long> taskIds);
+    List<TodoTask> findAllBySetId(Set<Long> taskIds, Long userId);
 
 }
