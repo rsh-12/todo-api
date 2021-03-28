@@ -38,6 +38,21 @@ public class TodoSectionRepositoryTest {
 
 
     @Test
+    public void testFindByUserIdAndId() {
+        TodoSection s1 = repository.findByUserIdAndId(ADMIN_ID, SECTIONS[0]).orElse(null);
+        TodoSection s2 = repository.findByUserIdAndId(ADMIN_ID, SECTIONS[2]).orElse(null);
+        TodoSection s3 = repository.findByUserIdAndId(ADMIN_ID, SECTIONS[1]).orElse(null);
+
+        assertNotNull(s1);
+        assertEquals("Important", s1.getTitle());
+
+        assertNotNull(s2);
+        assertEquals("Later", s2.getTitle());
+
+        assertNull(s3);
+    }
+
+    @Test
     public void testFindAllByUserId() {
         List<TodoSection> adminSections = repository.findAllByUserId(ADMIN_ID);
         List<TodoSection> userSections = repository.findAllByUserId(USER_ID);
