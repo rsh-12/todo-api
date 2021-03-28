@@ -42,39 +42,39 @@ public class TodoTaskServiceImpl implements TodoTaskService {
 
     // get all tasks
     @Override
-    public List<TodoTask> getAllTasks(Integer pageNo, Integer pageSize, TaskDate date, String sort) {
+    public List<TodoTask> getAllTasks(Long userId, Integer pageNo, Integer pageSize, TaskDate date, String sort) {
 
         Pageable page = PageRequest.of(pageNo, pageSize, Sort.by(getSortDirection(sort), getSortAsString(sort)));
 
         if (date.equals(TaskDate.TODAY)) {
             log.info("Get today's tasks");
-            return todoTaskRepository.findAllByCompletionDateEquals(LocalDate.now(), page);
+            return todoTaskRepository.findAllByCompletionDateEqualsAndUserId(LocalDate.now(), page, userId);
         } else if (date.equals(TaskDate.OVERDUE)) {
             log.info("Get overdue tasks");
-            return todoTaskRepository.findAllByCompletionDateBefore(LocalDate.now(), page);
+            return todoTaskRepository.findAllByCompletionDateBeforeAndUserId(LocalDate.now(), page, userId);
         }
 
         log.info("Get all tasks");
-        return todoTaskRepository.findAll(page).getContent();
+        return todoTaskRepository.findAllByUserId(userId, page).getContent();
     }
 
     // get task by id
     @Override
-    public TodoTask getTaskById(Long id) {
-        log.info("Get the task by id: {}", id);
-        return todoTaskRepository.findById(id)
-                .orElseThrow(() -> new CustomException("Task not found: " + id, HttpStatus.NOT_FOUND));
+    public TodoTask getTaskById(Long userId, Long taskId) {
+        log.info("Get the task by id: {}", taskId);
+        return todoTaskRepository.findByIdAndUserId(taskId, userId)
+                .orElseThrow(() -> new CustomException("Task not found: " + taskId, HttpStatus.NOT_FOUND));
     }
 
     // delete task by id
     @Override
-    public void deleteTaskById(Long id) {
-        if (!todoTaskRepository.existsById(id)) {
-            throw new CustomException("Task not found: " + id, HttpStatus.NOT_FOUND);
+    public void deleteTaskById(Long userId, Long taskId) {
+        if (!todoTaskRepository.existsById(taskId)) {
+            throw new CustomException("Task not found: " + taskId, HttpStatus.NOT_FOUND);
         }
 
-        todoTaskRepository.deleteById(id);
-        log.info("The task with id={} was deleted successfully", id);
+        todoTaskRepository.deleteByIdAndUserId(taskId, userId);
+        log.info("The task with id={} was deleted successfully", taskId);
     }
 
     // create new task
@@ -93,13 +93,13 @@ public class TodoTaskServiceImpl implements TodoTaskService {
 
     // update task by id
     @Override
-    public void updateTask(Long id, TodoTaskDto task,
+    public void updateTask(Long userId, Long taskId, TodoTaskDto task,
                            TaskStatus completed, TaskStatus starred) {
 
         // get task from DB
-        log.info("Get the task from DB: id={}", id);
-        TodoTask taskFromDB = todoTaskRepository.findById(id)
-                .orElseThrow(() -> new CustomException("Task not found: " + id, HttpStatus.NOT_FOUND));
+        log.info("Get the task from DB: id={}", taskId);
+        TodoTask taskFromDB = todoTaskRepository.findByIdAndUserId(taskId, userId)
+                .orElseThrow(() -> new CustomException("Task not found: " + taskId, HttpStatus.NOT_FOUND));
 
         // update task title or task completion date
         if (task != null) {
@@ -116,7 +116,7 @@ public class TodoTaskServiceImpl implements TodoTaskService {
         log.info("Update task 'updatedAt' field");
         taskFromDB.setUpdatedAt(new Date());
 
-        log.info("Save the updated task: id={}", id);
+        log.info("Save the updated task: id={}", taskId);
         todoTaskRepository.save(taskFromDB);
     }
 
