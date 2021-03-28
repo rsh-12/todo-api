@@ -14,8 +14,7 @@ import ru.example.todo.entity.User;
 
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 // todo update tests
 @RunWith(SpringRunner.class)
@@ -51,8 +50,11 @@ public class UserRepositoryTest {
         assertNotNull(client);
         assertEquals(CLIENT_USERNAME, client.getUsername());
     }
-
-
-//    boolean existsByUsername(String username);
-
+    
+    @Test
+    public void testExistsByUsername() {
+        assertTrue(repository.existsByUsername(ADMIN_USERNAME));
+        assertTrue(repository.existsByUsername(CLIENT_USERNAME));
+        assertFalse(repository.existsByUsername("John"));
+    }
 }
