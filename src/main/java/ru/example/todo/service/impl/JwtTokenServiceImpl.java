@@ -7,9 +7,9 @@ package ru.example.todo.service.impl;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -44,18 +44,12 @@ public class JwtTokenServiceImpl implements JwtTokenService {
     private final UserRepository userRepository;
     private final TokenStore tokenStore;
 
-    private SecretKey secretKey;
-
-    public JwtTokenServiceImpl(TokenProperties tokenProperties, UserDetailsServiceImpl userDetailsService, UserRepository userRepository, TokenStore tokenStore) {
+    public JwtTokenServiceImpl(TokenProperties tokenProperties, UserDetailsServiceImpl userDetailsService,
+                               UserRepository userRepository, TokenStore tokenStore) {
         this.tokenProperties = tokenProperties;
         this.userDetailsService = userDetailsService;
         this.userRepository = userRepository;
         this.tokenStore = tokenStore;
-    }
-
-    @PostConstruct
-    protected void init() {
-        secretKey = Keys.hmacShaKeyFor(tokenProperties.getSecret().getBytes(StandardCharsets.UTF_8));
     }
 
     @Override
@@ -67,12 +61,10 @@ public class JwtTokenServiceImpl implements JwtTokenService {
                 .map(role -> new SimpleGrantedAuthority(role.getAuthority()))
                 .collect(Collectors.toList()));
 
-        Date validity = new Date(System.currentTimeMillis() + tokenProperties.getAccessTokenValidity());
-
         return Jwts.builder()
                 .setClaims(claims)
-                .setExpiration(validity)
-                .signWith(secretKey, SignatureAlgorithm.HS256)
+                .setExpiration(getValidity(tokenProperties.getAccessTokenValidity()))
+                .signWith(getSecretKey())
                 .compact();
     }
 
@@ -83,11 +75,9 @@ public class JwtTokenServiceImpl implements JwtTokenService {
             throw new UsernameNotFoundException("User not found: " + username);
         }
 
-        Date validity = new Date(System.currentTimeMillis() + tokenProperties.getRefreshTokenValidity());
-
         RefreshToken refreshToken = new RefreshToken.Builder()
                 .id(RandomStringUtils.randomAlphanumeric(64))
-                .expiryTime(validity)
+                .expiryTime(getValidity(tokenProperties.getRefreshTokenValidity()))
                 .username(username)
                 .build();
 
@@ -95,10 +85,16 @@ public class JwtTokenServiceImpl implements JwtTokenService {
         return refreshToken;
     }
 
+    private static Date getValidity(long millis) {
+        Date now = new Date();
+        return new Date(now.getTime() + millis);
+    }
+
 
     @Override
     public Authentication getAuthentication(String token) {
-        UserDetails userDetails = userDetailsService.loadUserByUsername(getUsername(token));
+        String username = getUsername(token);
+        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
         return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
     }
 
@@ -106,7 +102,7 @@ public class JwtTokenServiceImpl implements JwtTokenService {
     public String resolveToken(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
 
-        if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
+        if (bearerToken != null && StringUtils.startsWithIgnoreCase(bearerToken, "Bearer ")) {
             return bearerToken.substring(7);
         }
         return null;
@@ -116,7 +112,8 @@ public class JwtTokenServiceImpl implements JwtTokenService {
     public boolean validateToken(String token) {
         try {
             Jwts.parserBuilder()
-                    .setSigningKey(secretKey).build()
+                    .setSigningKey(getSecretKey())
+                    .build()
                     .parseClaimsJws(token);
             return true;
         } catch (JwtException | IllegalArgumentException ex) {
@@ -124,9 +121,14 @@ public class JwtTokenServiceImpl implements JwtTokenService {
         }
     }
 
+    @PostConstruct
+    private SecretKey getSecretKey() {
+        return Keys.hmacShaKeyFor(tokenProperties.getSecret().getBytes(StandardCharsets.UTF_8));
+    }
+
     @Override
-    public RefreshToken findRefreshTokenById(String tokenId) {
-        return tokenStore.findById(tokenId);
+    public RefreshToken findRefreshToken(String token) {
+        return tokenStore.find(token);
     }
 
     @Override
@@ -140,10 +142,13 @@ public class JwtTokenServiceImpl implements JwtTokenService {
     }
 
     private String getUsername(String token) {
-        return Jwts.parserBuilder()
-                .setSigningKey(secretKey)
+
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(getSecretKey())
                 .build()
                 .parseClaimsJws(token)
-                .getBody().getSubject();
+                .getBody();
+
+        return String.valueOf(claims.get("username"));
     }
 }

@@ -42,7 +42,9 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final TokenProperties tokenProperties;
 
-    public UserServiceImpl(JwtTokenService jwtTokenService, UserRepository userRepository, TokenProperties tokenProperties) {
+    public UserServiceImpl(JwtTokenService jwtTokenService,
+                           UserRepository userRepository,
+                           TokenProperties tokenProperties) {
         this.jwtTokenService = jwtTokenService;
         this.userRepository = userRepository;
         this.tokenProperties = tokenProperties;
@@ -58,12 +60,12 @@ public class UserServiceImpl implements UserService {
                     userDto.getUsername(), userDto.getPassword()));
 
             return buildResponseBody(user);
-        } catch (AuthenticationException | JsonProcessingException ex) {
+        } catch (AuthenticationException ex) {
             throw new CustomException("Invalid username/password", HttpStatus.BAD_REQUEST);
         }
     }
 
-    private String buildResponseBody(User user) throws JsonProcessingException {
+    private String buildResponseBody(User user) {
 
         Map<String, String> body = new LinkedHashMap<>();
 
@@ -71,11 +73,16 @@ public class UserServiceImpl implements UserService {
         RefreshToken refreshToken = jwtTokenService.buildRefreshToken(user.getUsername());
 
         body.put("access_token", accessToken);
-        body.put("access_token_exp", String.valueOf(tokenProperties.getAccessTokenValidity()));
         body.put("refresh_token", refreshToken.getId());
-        body.put("refresh_token_exp", String.valueOf(tokenProperties.getRefreshTokenValidity()));
+        body.put("token_type", "Bearer");
+        body.put("expires", String.valueOf(tokenProperties.getAccessTokenValidity()));
 
-        return new ObjectMapper().writeValueAsString(body);
+        try {
+            return new ObjectMapper().writeValueAsString(body);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        throw new CustomException("Error while building response", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @Override
@@ -93,8 +100,18 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Map<String, String> refreshToken(String token) {
-        return null;
+    public String refreshToken(String token) {
+        RefreshToken oldRefreshToken = jwtTokenService.findRefreshToken(token);
+
+        if (oldRefreshToken == null || !jwtTokenService.isValidRefreshToken(oldRefreshToken)) {
+            throw new CustomException(
+                    "Refresh token is not valid or expired, please, try to log in",
+                    HttpStatus.BAD_REQUEST);
+        }
+        User user = userRepository.findByUsername(oldRefreshToken.getUsername())
+                .orElseThrow(() -> new CustomException("Refresk token owner not find", HttpStatus.BAD_REQUEST));
+
+        return buildResponseBody(user);
     }
 
     @Override

@@ -4,7 +4,6 @@ import ru.example.todo.dto.UserDto;
 import ru.example.todo.entity.User;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Map;
 
 public interface UserService {
 
@@ -12,7 +11,7 @@ public interface UserService {
 
     String register(User user);
 
-    Map<String, String> refreshToken(String token);
+    String refreshToken(String token);
 
     String deleteUser(String username);
 

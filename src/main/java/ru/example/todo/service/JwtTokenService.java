@@ -19,7 +19,7 @@ public interface JwtTokenService {
 
     boolean validateToken(String token);
 
-    RefreshToken findRefreshTokenById(String tokenId);
+    RefreshToken findRefreshToken(String token);
 
     void removeOldRefreshTokenById(String tokenId);
 
