@@ -61,20 +61,43 @@ public class UserRepositoryTest {
     // create user
     @Test
     public void testCreateUser() {
-        User user = createUser();
+        User user = createUser("harry@mail.com");
 
         assertFalse(repository.existsByUsername(user.getUsername()));
         entityManager.persistAndFlush(user);
         assertTrue(repository.existsByUsername(user.getUsername()));
     }
 
-    private User createUser() {
+    private User createUser(String username) {
         User user = new User();
-        user.setUsername("harry@mail.com");
+        user.setUsername(username);
         user.setPassword("secretpassword12345");
         return user;
     }
 
+    private User createAndSaveUser() {
+        User user = createUser("ola@mail.com");
+        return entityManager.persistAndFlush(user);
+    }
+
     // update user
+    @Test
+    public void testUpdateUser() {
+        String username = "ola@mail.com";
+        String newUsername = "newOla@mail.com";
+        createAndSaveUser();
+
+        assertTrue(repository.existsByUsername(username));
+        User user = repository.findByUsername(username).orElse(null);
+        assertNotNull(user);
+
+        user.setUsername(newUsername);
+        entityManager.persistAndFlush(user);
+
+        User updatedUser = repository.findByUsername(newUsername).orElse(null);
+        assertNotNull(updatedUser);
+        assertEquals(newUsername, updatedUser.getUsername());
+    }
+
     // delete user
 }
