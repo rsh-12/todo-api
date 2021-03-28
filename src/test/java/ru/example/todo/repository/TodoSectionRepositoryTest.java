@@ -26,14 +26,13 @@ public class TodoSectionRepositoryTest {
 
     private static final Long ADMIN_ID = 1L;
     private static final Long USER_ID = 2L;
+    private static final Long[] SECTIONS = new Long[]{1L, 2L, 3L};
 
     @Autowired
     private TodoSectionRepository repository;
 
     @Autowired
     private TestEntityManager entityManager;
-
-//    Optional<TodoSection> findByUserIdAndId(Long userId, Long sectionId);
 
 //    void deleteByIdAndUserId(Long sectionId, Long userId);
 
