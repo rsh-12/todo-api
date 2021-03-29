@@ -7,8 +7,11 @@ package ru.example.todo.controller;
 
 import org.junit.Test;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.test.context.support.WithUserDetails;
 import ru.example.todo.controller.wrapper.TaskIdsWrapper;
 import ru.example.todo.dto.TodoSectionDto;
+import ru.example.todo.security.UserDetailsImpl;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -24,10 +27,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Test data:
  * Important, Starred, Later
  * */
+// todo update tests
 public class TodoSectionControllerTest extends AbstractTestContollerClass {
 
     // get all sections
     @Test
+    @WithUserDetails("admin@mail.com")
     public void A_testGetAllTodoSections() throws Exception {
         mvc.perform(get(SECTIONS)
                 .contentType(MediaType.APPLICATION_JSON))
