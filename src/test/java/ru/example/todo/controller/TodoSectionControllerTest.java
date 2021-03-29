@@ -29,10 +29,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * */
 // todo update tests
 public class TodoSectionControllerTest extends AbstractTestContollerClass {
+    private static final String ADMIN = "admin@mail.com";
+    private static final String USER = "client@mail.com";
 
     // get all sections
     @Test
-    @WithUserDetails("admin@mail.com")
+    @WithUserDetails(ADMIN)
     public void A_testGetAllTodoSections() throws Exception {
         mvc.perform(get(SECTIONS)
                 .contentType(MediaType.APPLICATION_JSON))
@@ -43,6 +45,7 @@ public class TodoSectionControllerTest extends AbstractTestContollerClass {
 
     // get section by ID
     @Test
+    @WithUserDetails(ADMIN)
     public void B_testGetTodoSectionById() throws Exception {
         final int SECTION_ID = 1;
 
