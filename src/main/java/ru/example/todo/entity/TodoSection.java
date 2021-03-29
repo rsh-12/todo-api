@@ -52,7 +52,7 @@ public class TodoSection {
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.DETACH,
             CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinColumn(name = "user_id")
-//    @JsonView(value = Views.Internal.class)
+    @JsonView(value = Views.Internal.class)
     private User user;
 
     @PreRemove
