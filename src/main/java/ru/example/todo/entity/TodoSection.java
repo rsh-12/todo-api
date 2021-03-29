@@ -5,6 +5,7 @@ package ru.example.todo.entity;
  * */
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.hibernate.annotations.CreationTimestamp;
@@ -52,7 +53,7 @@ public class TodoSection {
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.DETACH,
             CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinColumn(name = "user_id")
-    @JsonView(value = Views.Internal.class)
+    @JsonIgnore
     private User user;
 
     @PreRemove
