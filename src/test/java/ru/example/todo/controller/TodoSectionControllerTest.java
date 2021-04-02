@@ -7,11 +7,9 @@ package ru.example.todo.controller;
 
 import org.junit.Test;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.test.context.support.WithUserDetails;
 import ru.example.todo.controller.wrapper.TaskIdsWrapper;
 import ru.example.todo.dto.TodoSectionDto;
-import ru.example.todo.security.UserDetailsImpl;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -57,6 +55,7 @@ public class TodoSectionControllerTest extends AbstractTestContollerClass {
 
     // create new section
     @Test
+    @WithUserDetails(ADMIN)
     public void C_testCreateNewSection() throws Exception {
 
         TodoSectionDto section = new TodoSectionDto();
