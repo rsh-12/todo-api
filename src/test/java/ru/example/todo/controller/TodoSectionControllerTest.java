@@ -59,7 +59,7 @@ public class TodoSectionControllerTest extends AbstractTestContollerClass {
     public void C_testCreateNewSection() throws Exception {
 
         TodoSectionDto section = new TodoSectionDto();
-        section.setTitle("CreatedSection");
+        section.setTitle("Created Section");
 
         int beforeSectionsQuantity = getJsonArraySize(SECTIONS, "_embedded.sections");
 
@@ -67,6 +67,11 @@ public class TodoSectionControllerTest extends AbstractTestContollerClass {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(section)))
                 .andExpect(status().isCreated())
+                .andDo(print());
+
+        mvc.perform(get(SECTIONS + 4))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("title", is("Created Section")))
                 .andDo(print());
 
         int afterSectionsQuantity = getJsonArraySize(SECTIONS, "_embedded.sections");
