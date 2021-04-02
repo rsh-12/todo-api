@@ -13,6 +13,7 @@ import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import ru.example.todo.controller.assembler.TodoSectionModelAssembler;
@@ -68,6 +69,9 @@ public class TodoSectionController {
     @JsonView(value = Views.Internal.class)
     public EntityModel<TodoSection> one(@AuthenticationPrincipal UserDetailsImpl uds, @PathVariable("id") Long sectonId) {
         return assembler.toModel(todoSectionService.getSectionById(uds.getId(), sectonId));
+
+//        return assembler.toModel(modelMapper.map(
+//                todoSectionService.getSectionById(uds.getId(), sectonId), TodoSection.class));
     }
 
     // delete section by id
@@ -81,8 +85,11 @@ public class TodoSectionController {
     // create new section
     @ApiOperation(value = "Create section", notes = "It permits to create a new section")
     @PostMapping(consumes = "application/json")
-    public ResponseEntity<?> createSection(@Valid @RequestBody TodoSectionDto sectionDto) {
-        todoSectionService.createSection(modelMapper.map(sectionDto, TodoSection.class));
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
+    public ResponseEntity<?> createSection(
+            @AuthenticationPrincipal UserDetailsImpl uds,
+            @Valid @RequestBody TodoSectionDto sectionDto) {
+        todoSectionService.createSection(sectionDto, uds.getId());
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
