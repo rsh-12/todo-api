@@ -7,12 +7,16 @@ package ru.example.todo.service.impl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import ru.example.todo.dto.TodoSectionDto;
 import ru.example.todo.entity.TodoSection;
 import ru.example.todo.entity.TodoTask;
+import ru.example.todo.entity.User;
 import ru.example.todo.enums.SetTasks;
 import ru.example.todo.exception.CustomException;
 import ru.example.todo.repository.TodoSectionRepository;
+import ru.example.todo.repository.UserRepository;
 import ru.example.todo.service.TodoSectionService;
 import ru.example.todo.service.TodoTaskService;
 
@@ -26,18 +30,23 @@ public class TodoSectionServiceImpl implements TodoSectionService {
 
     private final TodoSectionRepository todoSectionRepository;
     private final TodoTaskService todoTaskService;
+    private final UserRepository userRepository;
 
-    public TodoSectionServiceImpl(TodoSectionRepository todoSectionRepository, TodoTaskService todoTaskService) {
+    public TodoSectionServiceImpl(TodoSectionRepository todoSectionRepository,
+                                  TodoTaskService todoTaskService, UserRepository userRepository) {
         this.todoSectionRepository = todoSectionRepository;
         this.todoTaskService = todoTaskService;
+        this.userRepository = userRepository;
     }
 
     // get section by id
     @Override
     public TodoSection getSectionById(Long userId, Long sectionId) {
         log.info("Get the section by id: {}", sectionId);
-        return todoSectionRepository.findByUserIdAndId(userId, sectionId)
+        TodoSection section = todoSectionRepository.findByUserIdAndId(userId, sectionId)
                 .orElseThrow(() -> new CustomException("Section not found: " + sectionId, HttpStatus.NOT_FOUND));
+//        return modelMapper.map(section, TodoSectionDto.class);
+        return section;
     }
 
     // get all sections
@@ -59,7 +68,18 @@ public class TodoSectionServiceImpl implements TodoSectionService {
 
     // create new section
     @Override
-    public void createSection(TodoSection section) {
+    public void createSection(TodoSectionDto sectionDto, Long userId) {
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UsernameNotFoundException("Username not found"));
+
+        TodoSection section = new TodoSection();
+        if (sectionDto.getTitle() == null) {
+            throw new CustomException("Title cannot be empty", HttpStatus.BAD_REQUEST);
+        }
+
+        section.setUser(user);
+        section.setTitle(sectionDto.getTitle());
         log.info("Create a new section");
         todoSectionRepository.save(section);
     }
