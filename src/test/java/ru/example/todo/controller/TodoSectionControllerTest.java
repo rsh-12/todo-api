@@ -149,13 +149,14 @@ public class TodoSectionControllerTest extends AbstractTestContollerClass {
 
     // delete section by non-existent id: returns 204 NO CONTENT
     @Test
+    @WithUserDetails(USER)
     public void testDeleteSectionByNoneExistentId() throws Exception {
         final int SECTION_ID = 100;
 
         int beforeSectionsQuantity = getJsonArraySize(SECTIONS, "_embedded.sections");
 
         mvc.perform(delete(SECTIONS + SECTION_ID))
-                .andExpect(status().isNoContent());
+                .andExpect(status().isNotFound());
 
         int afterSectionsQuantity = getJsonArraySize(SECTIONS, "_embedded.sections");
 
