@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import ru.example.todo.dto.TodoSectionDto;
+import ru.example.todo.entity.Role;
 import ru.example.todo.entity.TodoSection;
 import ru.example.todo.entity.TodoTask;
 import ru.example.todo.entity.User;
@@ -60,10 +61,23 @@ public class TodoSectionServiceImpl implements TodoSectionService {
     // delete section by id
     @Override
     public void deleteSectionById(Long userId, Long sectionId) {
-        if (todoSectionRepository.existsById(sectionId)) {
-            log.info("Delete the section by id: {}", sectionId);
-            todoSectionRepository.deleteByIdAndUserId(userId, sectionId);
+
+        TodoSection section = todoSectionRepository.findById(sectionId)
+                .orElseThrow(() -> new CustomException("Section not found", HttpStatus.NOT_FOUND));
+
+        if (section.getUser() != null && section.getUser().getId().equals(userId)) {
+            todoSectionRepository.delete(section);
+        } else {
+            User user = userRepository.findById(userId)
+                    .orElseThrow(() -> new CustomException("User not found", HttpStatus.INTERNAL_SERVER_ERROR));
+
+            if (user.getRoles().contains(Role.ROLE_ADMIN)) {
+                todoSectionRepository.delete(section);
+            } else {
+                throw new CustomException("Forbidden", HttpStatus.FORBIDDEN);
+            }
         }
+
     }
 
     // create new section
