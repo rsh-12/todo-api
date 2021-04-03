@@ -107,14 +107,15 @@ public class TodoSectionControllerTest extends AbstractTestContollerClass {
 
     // update section
     @Test
+    @WithUserDetails(ADMIN)
     public void E_testUpdateSectionById() throws Exception {
-        final int SECTION_ID = 2;
+        final int SECTION_ID = 3;
 
         // get section by id: returns 200 OK
         mvc.perform(get(SECTIONS + SECTION_ID)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("title", is("Starred")));
+                .andExpect(jsonPath("title", is("Later")));
 
         // update section by id: returns 200 OK
         mvc.perform(put(SECTIONS + SECTION_ID)
