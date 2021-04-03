@@ -65,20 +65,10 @@ public class TodoSectionServiceImpl implements TodoSectionService {
         TodoSection section = todoSectionRepository.findById(sectionId)
                 .orElseThrow(() -> new CustomException("Section not found", HttpStatus.NOT_FOUND));
 
-        if (section.getUser() != null && section.getUser().getId().equals(userId)) {
-            todoSectionRepository.delete(section);
-        } else {
-            User user = userRepository.findById(userId)
-                    .orElseThrow(() -> new CustomException("User not found", HttpStatus.INTERNAL_SERVER_ERROR));
-
-            if (user.getRoles().contains(Role.ROLE_ADMIN)) {
-                todoSectionRepository.delete(section);
-            } else {
-                throw new CustomException("Forbidden", HttpStatus.FORBIDDEN);
-            }
-        }
-
+        validateArgs(userId, section);
     }
+
+
 
     // create new section
     @Override
@@ -100,16 +90,47 @@ public class TodoSectionServiceImpl implements TodoSectionService {
 
     // update section title
     @Override
-    public void updateSection(Long userId, Long sectionId, TodoSection section) {
+    public void updateSection(Long userId, Long sectionId, TodoSectionDto sectionDto) {
 
-        log.info("Get the section by id: {}", sectionId);
-        TodoSection sectionFromBd = todoSectionRepository.findByUserIdAndId(userId, sectionId)
+        // get a section by id
+        TodoSection section = todoSectionRepository.findById(sectionId)
                 .orElseThrow(() -> new CustomException("Section not found: " + sectionId, HttpStatus.NOT_FOUND));
 
-        sectionFromBd.setTitle(section.getTitle());
+        validateArgs(userId, sectionDto, section);
 
-        log.info("Save an updated section");
         todoSectionRepository.save(section);
+    }
+
+    
+
+    private void validateArgs(Long userId, TodoSectionDto sectionDto, TodoSection section) {
+        if (section.getUser() != null && section.getUser().getId().equals(userId)) {
+            section.setTitle(sectionDto.getTitle());
+        } else {
+            User user = userRepository.findById(userId)
+                    .orElseThrow(() -> new CustomException("User not found", HttpStatus.INTERNAL_SERVER_ERROR));
+
+            if (user.getRoles().contains(Role.ROLE_ADMIN)) {
+                section.setTitle(sectionDto.getTitle());
+            } else {
+                throw new CustomException("Forbidden", HttpStatus.FORBIDDEN);
+            }
+        }
+    }
+
+    private void validateArgs(Long userId, TodoSection section) {
+        if (section.getUser() != null && section.getUser().getId().equals(userId)) {
+            todoSectionRepository.delete(section);
+        } else {
+            User user = userRepository.findById(userId)
+                    .orElseThrow(() -> new CustomException("User not found", HttpStatus.INTERNAL_SERVER_ERROR));
+
+            if (user.getRoles().contains(Role.ROLE_ADMIN)) {
+                todoSectionRepository.delete(section);
+            } else {
+                throw new CustomException("Forbidden", HttpStatus.FORBIDDEN);
+            }
+        }
     }
 
     // add to or remove from the task section
