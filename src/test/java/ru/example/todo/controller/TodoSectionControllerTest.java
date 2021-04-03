@@ -82,6 +82,7 @@ public class TodoSectionControllerTest extends AbstractTestContollerClass {
 
     // delete section
     @Test
+    @WithUserDetails(ADMIN)
     public void D_testDeleteSectionById() throws Exception {
         final int SECTION_ID = 1;
 
