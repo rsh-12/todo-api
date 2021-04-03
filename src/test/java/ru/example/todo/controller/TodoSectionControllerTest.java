@@ -165,13 +165,13 @@ public class TodoSectionControllerTest extends AbstractTestContollerClass {
 
 
     @Test
+    @WithUserDetails(USER)
     public void testUpdateSectionByNoneExistentId() throws Exception {
         final int SECTION_ID = 100;
 
         mvc.perform(put(SECTIONS + SECTION_ID)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(getSectionInJson((long) SECTION_ID, "New title")))
-                .andExpect(status().is4xxClientError())
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("message", containsString("Section not found")));
     }
