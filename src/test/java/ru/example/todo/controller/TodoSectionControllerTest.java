@@ -137,6 +137,7 @@ public class TodoSectionControllerTest extends AbstractTestContollerClass {
 
     // get section by non-existent id: returns 404 NOT FOUND
     @Test
+    @WithUserDetails(USER)
     public void testSectionById_NotFound() throws Exception {
         final int SECTION_ID = 100;
 
