@@ -17,7 +17,7 @@ public interface TodoSectionService {
 
     void createSection(TodoSectionDto sectionDto, Long userId);
 
-    void updateSection(Long userId, Long sectionId, TodoSection section);
+    void updateSection(Long userId, Long sectionId, TodoSectionDto sectionDto);
 
     void addTasksToList(Long userId, Long sectionId, Set<Long> tasks, SetTasks flag);
 }
