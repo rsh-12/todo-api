@@ -101,7 +101,7 @@ public class TodoSectionController {
             @AuthenticationPrincipal UserDetailsImpl uds,
             @PathVariable("id") Long sectionId,
             @Valid @RequestBody TodoSectionDto sectionDto) {
-        todoSectionService.updateSection(uds.getId(), sectionId, modelMapper.map(sectionDto, TodoSection.class));
+        todoSectionService.updateSection(uds.getId(), sectionId, sectionDto);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
