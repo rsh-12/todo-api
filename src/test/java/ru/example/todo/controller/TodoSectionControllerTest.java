@@ -247,6 +247,7 @@ public class TodoSectionControllerTest extends AbstractTestContollerClass {
     }
 
     @Test
+    @WithUserDetails(ADMIN)
     public void testAddTasksEmptySet() throws Exception {
         final int SECTION_ID = 3;
 
