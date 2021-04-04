@@ -39,6 +39,7 @@ public class User {
     private Date createdAt;
 
     @ElementCollection(fetch = FetchType.EAGER)
+    @Enumerated(EnumType.STRING)
     private Set<Role> roles;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user",
