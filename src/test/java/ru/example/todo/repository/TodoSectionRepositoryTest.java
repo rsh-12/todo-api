@@ -19,15 +19,58 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
+// todo update tests
 @RunWith(SpringRunner.class)
 @DataJpaTest
 public class TodoSectionRepositoryTest {
+
+    private static final Long ADMIN_ID = 1L;
+    private static final Long USER_ID = 2L;
+    private static final Long[] SECTIONS = new Long[]{1L, 2L, 3L};
 
     @Autowired
     private TodoSectionRepository repository;
 
     @Autowired
     private TestEntityManager entityManager;
+
+    @Test
+    public void testDeleteByIdAndUserId() {
+        TodoSection beforeDeleting = repository.findByUserIdAndId(ADMIN_ID, SECTIONS[0]).orElse(null);
+        assertNotNull(beforeDeleting);
+
+        repository.deleteByIdAndUserId(SECTIONS[0], ADMIN_ID);
+        entityManager.flush();
+
+        TodoSection afterDeleting = repository.findByUserIdAndId(ADMIN_ID, SECTIONS[0]).orElse(null);
+        assertNull(afterDeleting);
+    }
+
+    @Test
+    public void testFindByUserIdAndId() {
+        TodoSection s1 = repository.findByUserIdAndId(ADMIN_ID, SECTIONS[0]).orElse(null);
+        TodoSection s2 = repository.findByUserIdAndId(ADMIN_ID, SECTIONS[2]).orElse(null);
+        TodoSection s3 = repository.findByUserIdAndId(ADMIN_ID, SECTIONS[1]).orElse(null);
+
+        assertNotNull(s1);
+        assertEquals("Important", s1.getTitle());
+
+        assertNotNull(s2);
+        assertEquals("Later", s2.getTitle());
+
+        assertNull(s3);
+    }
+
+    @Test
+    public void testFindAllByUserId() {
+        List<TodoSection> adminSections = repository.findAllByUserId(ADMIN_ID);
+        List<TodoSection> userSections = repository.findAllByUserId(USER_ID);
+
+        assertEquals(2, adminSections.size());
+        assertEquals(1, userSections.size());
+
+        assertEquals("Starred", userSections.get(0).getTitle());
+    }
 
     @Test
     public void testGetAllSections() {

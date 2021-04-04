@@ -13,10 +13,8 @@ public interface UserService {
 
     String refreshToken(String token);
 
-    String deleteUser(String username);
+    void deleteUser(Long userId);
 
     User getUser(String username);
-
-    User whoAmI(HttpServletRequest request);
 
 }

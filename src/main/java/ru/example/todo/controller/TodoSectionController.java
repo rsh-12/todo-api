@@ -13,12 +13,15 @@ import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import ru.example.todo.controller.assembler.TodoSectionModelAssembler;
 import ru.example.todo.controller.wrapper.TaskIdsWrapper;
 import ru.example.todo.dto.TodoSectionDto;
 import ru.example.todo.entity.TodoSection;
 import ru.example.todo.enums.SetTasks;
+import ru.example.todo.security.UserDetailsImpl;
 import ru.example.todo.service.TodoSectionService;
 import ru.example.todo.util.Views;
 
@@ -49,37 +52,44 @@ public class TodoSectionController {
     @ApiOperation(value = "List todo sections", notes = "List all todo sections")
     @GetMapping(produces = "application/json")
     @JsonView(Views.Public.class)
-    public CollectionModel<EntityModel<TodoSection>> all() {
-        List<EntityModel<TodoSection>> sections = todoSectionService.getAllSections()
+    public CollectionModel<EntityModel<TodoSection>> all(@AuthenticationPrincipal UserDetailsImpl uds) {
+
+        List<EntityModel<TodoSection>> sections = todoSectionService.getAllSections(uds)
                 .stream()
                 .map(assembler::toModel)
                 .collect(Collectors.toList());
 
         return CollectionModel.of(sections,
-                linkTo(methodOn(TodoSectionController.class).all()).withSelfRel());
+                linkTo(methodOn(TodoSectionController.class).all(uds)).withSelfRel());
     }
 
     // get custom section by id
     @ApiOperation(value = "Find section", notes = "Find the Section by ID")
     @GetMapping(value = "/{id}", produces = "application/json")
     @JsonView(value = Views.Internal.class)
-    public EntityModel<TodoSection> one(@PathVariable("id") Long id) {
-        return assembler.toModel(todoSectionService.getSectionById(id));
+    public EntityModel<TodoSection> one(@AuthenticationPrincipal UserDetailsImpl uds,
+                                        @PathVariable("id") Long sectonId) {
+
+        return assembler.toModel(todoSectionService.getSectionById(uds, sectonId));
     }
 
     // delete section by id
     @ApiOperation(value = "Remove section", notes = "It permits to remove a section")
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteOne(@PathVariable long id) {
-        todoSectionService.deleteSectionById(id);
+    public ResponseEntity<?> deleteOne(@AuthenticationPrincipal UserDetailsImpl uds,
+                                       @PathVariable("id") Long sectionId) {
+        todoSectionService.deleteSectionById(uds, sectionId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     // create new section
     @ApiOperation(value = "Create section", notes = "It permits to create a new section")
     @PostMapping(consumes = "application/json")
-    public ResponseEntity<?> createSection(@Valid @RequestBody TodoSectionDto sectionDto) {
-        todoSectionService.createSection(modelMapper.map(sectionDto, TodoSection.class));
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
+    public ResponseEntity<?> createSection(
+            @AuthenticationPrincipal UserDetailsImpl uds,
+            @Valid @RequestBody TodoSectionDto sectionDto) {
+        todoSectionService.createSection(sectionDto, uds);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
@@ -87,21 +97,24 @@ public class TodoSectionController {
     // update section title by id
     @ApiOperation(value = "Update section", notes = "It permits to update a section")
     @PutMapping(value = "/{id}", consumes = "application/json")
-    public ResponseEntity<?> updateSection(@PathVariable("id") Long sectionId,
-                                           @Valid @RequestBody TodoSectionDto sectionDto) {
-        todoSectionService.updateSection(sectionId, modelMapper.map(sectionDto, TodoSection.class));
+    public ResponseEntity<?> updateSection(
+            @AuthenticationPrincipal UserDetailsImpl uds,
+            @PathVariable("id") Long sectionId,
+            @Valid @RequestBody TodoSectionDto sectionDto) {
+        todoSectionService.updateSection(uds.getId(), sectionId, sectionDto);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    // TODO: исправить метод
     // add tasks to the list
     @ApiOperation(value = "Add tasks to section", notes = "It permits to add tasks to section")
     @PostMapping(value = "/{id}/tasks", consumes = "application/json")
-    public ResponseEntity<?> addTasksToList(@PathVariable("id") Long sectionId,
-                                            @RequestBody TaskIdsWrapper wrapper,
-                                            @RequestParam(value = "do") SetTasks flag) {
+    public ResponseEntity<?> addTasksToList(
+            @AuthenticationPrincipal UserDetailsImpl uds,
+            @PathVariable("id") Long sectionId,
+            @RequestBody TaskIdsWrapper wrapper,
+            @RequestParam(value = "do") SetTasks flag) {
 
-        todoSectionService.addTasksToList(sectionId, wrapper.tasks, flag);
+        todoSectionService.addTasksToList(uds.getId(), sectionId, wrapper.tasks, flag);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

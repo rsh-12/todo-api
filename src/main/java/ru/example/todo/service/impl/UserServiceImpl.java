@@ -24,7 +24,6 @@ import ru.example.todo.repository.UserRepository;
 import ru.example.todo.service.JwtTokenService;
 import ru.example.todo.service.UserService;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -115,17 +114,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String deleteUser(String username) {
-        return null;
+    public void deleteUser(Long userId) {
+        userRepository.deleteById(userId);
     }
 
     @Override
     public User getUser(String username) {
-        return null;
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new CustomException("Username not found", HttpStatus.NOT_FOUND));
     }
 
-    @Override
-    public User whoAmI(HttpServletRequest request) {
-        return null;
-    }
 }
