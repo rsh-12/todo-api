@@ -54,7 +54,7 @@ public class TodoSectionController {
     @JsonView(Views.Public.class)
     public CollectionModel<EntityModel<TodoSection>> all(@AuthenticationPrincipal UserDetailsImpl uds) {
 
-        List<EntityModel<TodoSection>> sections = todoSectionService.getAllSections(uds.getId())
+        List<EntityModel<TodoSection>> sections = todoSectionService.getAllSections(uds)
                 .stream()
                 .map(assembler::toModel)
                 .collect(Collectors.toList());
@@ -67,18 +67,18 @@ public class TodoSectionController {
     @ApiOperation(value = "Find section", notes = "Find the Section by ID")
     @GetMapping(value = "/{id}", produces = "application/json")
     @JsonView(value = Views.Internal.class)
-    public EntityModel<TodoSection> one(@AuthenticationPrincipal UserDetailsImpl uds, @PathVariable("id") Long sectonId) {
-        return assembler.toModel(todoSectionService.getSectionById(uds.getId(), sectonId));
+    public EntityModel<TodoSection> one(@AuthenticationPrincipal UserDetailsImpl uds,
+                                        @PathVariable("id") Long sectonId) {
 
-//        return assembler.toModel(modelMapper.map(
-//                todoSectionService.getSectionById(uds.getId(), sectonId), TodoSection.class));
+        return assembler.toModel(todoSectionService.getSectionById(uds, sectonId));
     }
 
     // delete section by id
     @ApiOperation(value = "Remove section", notes = "It permits to remove a section")
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteOne(@AuthenticationPrincipal UserDetailsImpl uds, @PathVariable("id") Long sectionId) {
-        todoSectionService.deleteSectionById(uds.getId(), sectionId);
+    public ResponseEntity<?> deleteOne(@AuthenticationPrincipal UserDetailsImpl uds,
+                                       @PathVariable("id") Long sectionId) {
+        todoSectionService.deleteSectionById(uds, sectionId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
@@ -89,7 +89,7 @@ public class TodoSectionController {
     public ResponseEntity<?> createSection(
             @AuthenticationPrincipal UserDetailsImpl uds,
             @Valid @RequestBody TodoSectionDto sectionDto) {
-        todoSectionService.createSection(sectionDto, uds.getId());
+        todoSectionService.createSection(sectionDto, uds);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
