@@ -82,9 +82,9 @@ public class TodoTaskControllerTest extends AbstractTestContollerClass {
     }
 
     @Test
-    @WithUserDetails(USER)
+    @WithUserDetails(ADMIN)
     public void testDeleteTaskById() throws Exception {
-        final int TASK_ID = 2;
+        final int TASK_ID = 6;
 
         int beforeTasksQuantity = getJsonArraySize(TASKS, "_embedded.tasks");
 
