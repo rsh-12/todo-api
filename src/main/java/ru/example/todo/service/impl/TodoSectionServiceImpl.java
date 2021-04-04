@@ -18,6 +18,7 @@ import ru.example.todo.enums.SetTasks;
 import ru.example.todo.exception.CustomException;
 import ru.example.todo.repository.TodoSectionRepository;
 import ru.example.todo.repository.UserRepository;
+import ru.example.todo.security.UserDetailsImpl;
 import ru.example.todo.service.TodoSectionService;
 import ru.example.todo.service.TodoTaskService;
 
@@ -42,48 +43,43 @@ public class TodoSectionServiceImpl implements TodoSectionService {
 
     // get section by id
     @Override
-    public TodoSection getSectionById(Long userId, Long sectionId) {
+    public TodoSection getSectionById(UserDetailsImpl uds, Long sectionId) {
         log.info("Get the section by id: {}", sectionId);
-        TodoSection section = todoSectionRepository.findByUserIdAndId(userId, sectionId)
+        return todoSectionRepository.findByUserIdAndId(uds.getId(), sectionId)
                 .orElseThrow(() -> new CustomException("Section not found: " + sectionId, HttpStatus.NOT_FOUND));
-//        return modelMapper.map(section, TodoSectionDto.class);
-        return section;
     }
 
     // get all sections
     @Override
-    public List<TodoSection> getAllSections(Long userId) {
-        List<TodoSection> sections = todoSectionRepository.findAllByUserId(userId);
+    public List<TodoSection> getAllSections(UserDetailsImpl uds) {
+
+        List<TodoSection> sections = todoSectionRepository.findAllByUserId(uds.getId());
         log.info("Get all sections: {}", sections.size());
         return sections;
     }
 
+    // todo uds
     // delete section by id
     @Override
-    public void deleteSectionById(Long userId, Long sectionId) {
+    public void deleteSectionById(UserDetailsImpl uds, Long sectionId) {
 
         TodoSection section = todoSectionRepository.findById(sectionId)
                 .orElseThrow(() -> new CustomException("Section not found", HttpStatus.NOT_FOUND));
 
-        validateArgs(userId, section);
+        validateArgs(uds, section);
     }
-
 
 
     // create new section
     @Override
-    public void createSection(TodoSectionDto sectionDto, Long userId) {
+    public void createSection(TodoSectionDto sectionDto, UserDetailsImpl uds) {
 
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UsernameNotFoundException("Username not found"));
+        User user = uds.getUser();
 
         TodoSection section = new TodoSection();
-        if (sectionDto.getTitle() == null) {
-            throw new CustomException("Title cannot be empty", HttpStatus.BAD_REQUEST);
-        }
-
         section.setUser(user);
         section.setTitle(sectionDto.getTitle());
+
         log.info("Create a new section");
         todoSectionRepository.save(section);
     }
@@ -101,7 +97,6 @@ public class TodoSectionServiceImpl implements TodoSectionService {
         todoSectionRepository.save(section);
     }
 
-    
 
     private void validateArgs(Long userId, TodoSectionDto sectionDto, TodoSection section) {
         if (section.getUser() != null && section.getUser().getId().equals(userId)) {
@@ -118,13 +113,13 @@ public class TodoSectionServiceImpl implements TodoSectionService {
         }
     }
 
-    private void validateArgs(Long userId, TodoSection section) {
-        if (section.getUser() != null && section.getUser().getId().equals(userId)) {
+    private void validateArgs(UserDetailsImpl uds, TodoSection section) {
+
+        User user = uds.getUser();
+
+        if (section.getUser() != null && section.getUser().equals(user)) {
             todoSectionRepository.delete(section);
         } else {
-            User user = userRepository.findById(userId)
-                    .orElseThrow(() -> new CustomException("User not found", HttpStatus.INTERNAL_SERVER_ERROR));
-
             if (user.getRoles().contains(Role.ROLE_ADMIN)) {
                 todoSectionRepository.delete(section);
             } else {
