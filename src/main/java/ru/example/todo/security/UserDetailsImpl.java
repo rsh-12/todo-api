@@ -57,4 +57,7 @@ public class UserDetailsImpl implements UserDetails {
         return user.getId();
     }
 
+    public User getUser() {
+        return user;
+    }
 }
