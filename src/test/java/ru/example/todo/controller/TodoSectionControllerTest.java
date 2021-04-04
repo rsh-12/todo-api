@@ -264,6 +264,7 @@ public class TodoSectionControllerTest extends AbstractTestContollerClass {
     }
 
     @Test
+    @WithUserDetails(ADMIN)
     public void testAddTasks_Null() throws Exception {
         final int SECTION_ID = 3;
 
@@ -280,6 +281,7 @@ public class TodoSectionControllerTest extends AbstractTestContollerClass {
     }
 
     @Test
+    @WithUserDetails(ADMIN)
     public void testAddTasks_SectionNotFound() throws Exception {
         final int SECTION_ID = 100;
 
