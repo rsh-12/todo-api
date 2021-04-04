@@ -215,9 +215,10 @@ public class TodoSectionControllerTest extends AbstractTestContollerClass {
 
     // remove task(s) from the section
     @Test
+    @WithUserDetails(ADMIN)
     public void testRemoveTaskFromSection() throws Exception {
 
-        final int TASK_ID = 2, SECTION_ID = 2;
+        final int TASK_ID = 3, SECTION_ID = 3;
 
         int beforeTasksQuantity = getJsonArraySize(SECTIONS + SECTION_ID, "tasks");
         System.out.println("beforeTasksQuantity = " + beforeTasksQuantity);
