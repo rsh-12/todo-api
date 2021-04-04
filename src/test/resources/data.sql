@@ -25,11 +25,11 @@ values (1, 'Read a book', false, false, DATEADD('WEEK', +1, current_timestamp),
 
        --- for testing some sections methods
        (4, 'Section task 1', false, false, current_timestamp,
-        current_timestamp, current_timestamp, null, 1),
+        current_timestamp, current_timestamp, null, null),
 
        (5, 'Section task 2', false, false, current_timestamp,
         current_timestamp, current_timestamp, null, 2),
 
        (6, 'Seciton task 3', false, false, current_timestamp,
-        current_timestamp, current_timestamp, null, 1);
+        current_timestamp, current_timestamp, null, null);
 
