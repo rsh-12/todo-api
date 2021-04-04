@@ -27,8 +27,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * */
 // todo update tests
 public class TodoSectionControllerTest extends AbstractTestContollerClass {
-    private static final String ADMIN = "admin@mail.com";
-    private static final String USER = "client@mail.com";
 
     // get all sections
     @Test
