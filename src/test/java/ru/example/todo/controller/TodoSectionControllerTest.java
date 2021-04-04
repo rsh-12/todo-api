@@ -184,19 +184,19 @@ public class TodoSectionControllerTest extends AbstractTestContollerClass {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(getSectionInJson((long) SECTION_ID, "T")))
                 .andExpect(status().is4xxClientError())
-                .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("title", containsInAnyOrder("Size must be between 3 and 50")));
     }
 
     // add tasks to the section
     @Test
+    @WithUserDetails(ADMIN)
     public void testAddTasks() throws Exception {
         final int SECTION_ID = 3;
 
         // request body
         TaskIdsWrapper wrapper = new TaskIdsWrapper();
         wrapper.tasks = new HashSet<>() {{
-            addAll(Set.of(4L, 5L, 6L));
+            addAll(Set.of(4L, 6L));
         }};
 
         int beforeTasksQuantity = getJsonArraySize(SECTIONS + SECTION_ID, "tasks");
