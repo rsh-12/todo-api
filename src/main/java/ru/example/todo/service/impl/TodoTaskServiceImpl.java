@@ -15,10 +15,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import ru.example.todo.dto.TodoTaskDto;
 import ru.example.todo.entity.TodoTask;
+import ru.example.todo.entity.User;
 import ru.example.todo.enums.TaskDate;
 import ru.example.todo.enums.TaskStatus;
 import ru.example.todo.exception.CustomException;
 import ru.example.todo.repository.TodoTaskRepository;
+import ru.example.todo.security.UserDetailsImpl;
 import ru.example.todo.service.TodoTaskService;
 
 import java.time.LocalDate;
@@ -79,8 +81,9 @@ public class TodoTaskServiceImpl implements TodoTaskService {
 
     // create new task
     @Override
-    public void createTask(TodoTask task) {
+    public void createTask(UserDetailsImpl uds, TodoTask task) {
         log.info("Create a new task");
+        task.setUser(uds.getUser());
         todoTaskRepository.save(task);
     }
 

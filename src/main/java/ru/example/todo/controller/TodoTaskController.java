@@ -87,8 +87,10 @@ public class TodoTaskController {
     // create new task
     @ApiOperation(value = "Create task", notes = "It permits to create a new task")
     @PostMapping(consumes = "application/json")
-    public ResponseEntity<?> createTask(@Valid @RequestBody TodoTaskDto taskDto) {
-        todoTaskService.createTask(modelMapper.map(taskDto, TodoTask.class));
+    public ResponseEntity<?> createTask(
+            @AuthenticationPrincipal UserDetailsImpl uds,
+            @Valid @RequestBody TodoTaskDto taskDto) {
+        todoTaskService.createTask(uds, modelMapper.map(taskDto, TodoTask.class));
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
