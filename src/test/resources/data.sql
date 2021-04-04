@@ -2,9 +2,9 @@ insert into app_user(username, password, created_at)
 values ('admin@mail.com', '$2a$10$YamL9ghddJL6OLQcSpYb1uPkno8Pw64/jyVCkK1nZDKoE2T.ZrdFC', current_timestamp),
        ('client@mail.com', '$2a$10$ByBjnv4AAlFwtu2NT2N6puUcUZwh2lMmV0gSKv7ZQ6vKfNqTRTJTi', current_timestamp);
 
-insert into user_roles(user_id, role)
-VALUES (1, 'ADMIN'),
-       (2, 'USER');
+insert into user_roles(user_id, roles)
+VALUES (1, 'ROLE_ADMIN'),
+       (2, 'ROLE_USER');
 
 
 insert into section(id, title, created_at, updated_at, user_id)
@@ -25,11 +25,11 @@ values (1, 'Read a book', false, false, DATEADD('WEEK', +1, current_timestamp),
 
        --- for testing some sections methods
        (4, 'Section task 1', false, false, current_timestamp,
-        current_timestamp, current_timestamp, null, null),
+        current_timestamp, current_timestamp, null, 1),
 
        (5, 'Section task 2', false, false, current_timestamp,
         current_timestamp, current_timestamp, null, 2),
 
        (6, 'Seciton task 3', false, false, current_timestamp,
-        current_timestamp, current_timestamp, null, null);
+        current_timestamp, current_timestamp, null, 1);
 
