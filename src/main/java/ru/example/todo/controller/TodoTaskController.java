@@ -56,7 +56,7 @@ public class TodoTaskController {
             @RequestParam(value = "sort", required = false, defaultValue = "createdAt") String sort) {
 
         List<EntityModel<TodoTask>> todos = todoTaskService
-                .getAllTasks(uds.getId(), pageNo, pageSize, date, sort)
+                .getAllTasks(uds.getUser(), pageNo, pageSize, date, sort)
                 .stream()
                 .map(assembler::toModel)
                 .collect(Collectors.toList());
@@ -71,7 +71,7 @@ public class TodoTaskController {
     public EntityModel<TodoTask> one(
             @AuthenticationPrincipal UserDetailsImpl uds,
             @PathVariable("id") Long taskId) {
-        return assembler.toModel(todoTaskService.getTaskById(uds.getId(), taskId));
+        return assembler.toModel(todoTaskService.getTaskById(uds.getUser(), taskId));
     }
 
     // delete task by id
@@ -80,7 +80,7 @@ public class TodoTaskController {
     public ResponseEntity<?> deleteOne(
             @AuthenticationPrincipal UserDetailsImpl uds,
             @PathVariable("id") Long taskId) {
-        todoTaskService.deleteTaskById(uds.getId(), taskId);
+        todoTaskService.deleteTaskById(uds.getUser(), taskId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
@@ -90,7 +90,7 @@ public class TodoTaskController {
     public ResponseEntity<?> createTask(
             @AuthenticationPrincipal UserDetailsImpl uds,
             @Valid @RequestBody TodoTaskDto taskDto) {
-        todoTaskService.createTask(uds, modelMapper.map(taskDto, TodoTask.class));
+        todoTaskService.createTask(uds.getUser(), modelMapper.map(taskDto, TodoTask.class));
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
@@ -106,7 +106,7 @@ public class TodoTaskController {
             @RequestParam(value = "completed", required = false) TaskStatus completed,
             @RequestParam(value = "starred", required = false) TaskStatus starred) {
 
-        todoTaskService.updateTask(uds.getId(), taskId, taskDto, completed, starred);
+        todoTaskService.updateTask(uds.getUser(), taskId, taskDto, completed, starred);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }
