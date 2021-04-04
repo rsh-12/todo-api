@@ -5,6 +5,7 @@ package ru.example.todo.entity;
  * */
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -40,10 +41,16 @@ public class User {
     @ElementCollection(fetch = FetchType.EAGER)
     private Set<Role> roles;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "user")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user",
+            cascade = {CascadeType.REFRESH, CascadeType.DETACH,
+                    CascadeType.REMOVE, CascadeType.MERGE})
+    @JsonIgnore
     private Set<TodoSection> todoSections;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "user")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user",
+            cascade = {CascadeType.REFRESH, CascadeType.DETACH,
+                    CascadeType.REMOVE, CascadeType.MERGE})
+    @JsonIgnore
     private List<TodoTask> todoTasks;
 
     public User() {
@@ -118,6 +125,7 @@ public class User {
         return "User{" +
                 "id=" + id +
                 ", username='" + username + '\'' +
+                ", roles=" + roles +
                 '}';
     }
 }
