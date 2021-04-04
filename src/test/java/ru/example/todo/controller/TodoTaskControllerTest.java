@@ -6,6 +6,7 @@ package ru.example.todo.controller;
 
 import org.junit.Test;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.ResultActions;
 import ru.example.todo.enums.TaskDate;
 import ru.example.todo.enums.TaskStatus;
@@ -21,14 +22,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-/*
- * Test data:
- * Read a book, Create a presentation, Write a letter
- * */
 // todo update tests
 public class TodoTaskControllerTest extends AbstractTestContollerClass {
 
     @Test
+    @WithUserDetails(ADMIN)
     public void testGetAllTasks_WithAndWithoutParams() throws Exception {
         mvc.perform(get(TASKS)
                 .contentType(MediaType.APPLICATION_JSON))
@@ -49,6 +47,7 @@ public class TodoTaskControllerTest extends AbstractTestContollerClass {
     }
 
     @Test
+    @WithUserDetails(ADMIN)
     public void testGetTodaysTasks() throws Exception {
         int size = getJsonArraySize(TASKS, "_embedded.tasks", "date", TaskDate.TODAY.name());
         assertTrue(size > 0);
@@ -62,8 +61,9 @@ public class TodoTaskControllerTest extends AbstractTestContollerClass {
     }
 
     @Test
+    @WithUserDetails(USER)
     public void testGetTaskById() throws Exception {
-        final int TASK_ID = 1;
+        final int TASK_ID = 2;
 
         mvc.perform(get(TASKS + TASK_ID))
                 .andExpect(status().isOk())
@@ -71,6 +71,7 @@ public class TodoTaskControllerTest extends AbstractTestContollerClass {
     }
 
     @Test
+    @WithUserDetails(USER)
     public void testGetTaskById_NotFound() throws Exception {
         final int TASK_ID = 100;
 
@@ -81,6 +82,7 @@ public class TodoTaskControllerTest extends AbstractTestContollerClass {
     }
 
     @Test
+    @WithUserDetails(USER)
     public void testDeleteTaskById() throws Exception {
         final int TASK_ID = 2;
 
