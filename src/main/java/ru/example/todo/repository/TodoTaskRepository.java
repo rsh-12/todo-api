@@ -16,7 +16,7 @@ public interface TodoTaskRepository extends JpaRepository<TodoTask, Long> {
 
     List<TodoTask> findAllByCompletionDateBeforeAndUserId(LocalDate date, Pageable page, Long userId);
 
-    List<TodoTask> findAllByIdInAndUserId(Set<Long> taskId, Long userId);
+    List<TodoTask> findAllByIdInAndUserId(Set<Long> taskIds, Long userId);
 
     Page<TodoTask> findAllByUserId(Long userId, Pageable pageable);
 

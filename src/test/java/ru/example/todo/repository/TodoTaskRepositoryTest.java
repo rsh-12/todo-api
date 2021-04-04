@@ -32,7 +32,7 @@ public class TodoTaskRepositoryTest {
     @Test
     public void getAllTasks() {
         List<TodoTask> tasks = repository.findAll();
-        assertEquals(6, tasks.size());
+        assertEquals(7, tasks.size());
     }
 
     // get by id

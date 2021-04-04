@@ -27,8 +27,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * */
 // todo update tests
 public class TodoSectionControllerTest extends AbstractTestContollerClass {
-    private static final String ADMIN = "admin@mail.com";
-    private static final String USER = "client@mail.com";
 
     // get all sections
     @Test
@@ -69,7 +67,7 @@ public class TodoSectionControllerTest extends AbstractTestContollerClass {
                 .andExpect(status().isCreated())
                 .andDo(print());
 
-        mvc.perform(get(SECTIONS + 4))
+        mvc.perform(get(SECTIONS + 5))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("title", is("Created Section")))
                 .andDo(print());
@@ -215,16 +213,17 @@ public class TodoSectionControllerTest extends AbstractTestContollerClass {
 
     // remove task(s) from the section
     @Test
+    @WithUserDetails(ADMIN)
     public void testRemoveTaskFromSection() throws Exception {
 
-        final int TASK_ID = 2, SECTION_ID = 2;
+        final int TASK_ID = 10, SECTION_ID = 4;
 
         int beforeTasksQuantity = getJsonArraySize(SECTIONS + SECTION_ID, "tasks");
         System.out.println("beforeTasksQuantity = " + beforeTasksQuantity);
 
         assertEquals(1, beforeTasksQuantity);
 
-        mvc.perform(get(SECTIONS + TASK_ID))
+        mvc.perform(get(SECTIONS + SECTION_ID))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("tasks[0].id", is(TASK_ID)));
 
@@ -246,6 +245,7 @@ public class TodoSectionControllerTest extends AbstractTestContollerClass {
     }
 
     @Test
+    @WithUserDetails(ADMIN)
     public void testAddTasksEmptySet() throws Exception {
         final int SECTION_ID = 3;
 
@@ -262,6 +262,7 @@ public class TodoSectionControllerTest extends AbstractTestContollerClass {
     }
 
     @Test
+    @WithUserDetails(ADMIN)
     public void testAddTasks_Null() throws Exception {
         final int SECTION_ID = 3;
 
@@ -278,6 +279,7 @@ public class TodoSectionControllerTest extends AbstractTestContollerClass {
     }
 
     @Test
+    @WithUserDetails(ADMIN)
     public void testAddTasks_SectionNotFound() throws Exception {
         final int SECTION_ID = 100;
 

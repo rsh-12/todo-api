@@ -7,7 +7,6 @@ package ru.example.todo.controller;
 import com.fasterxml.jackson.annotation.JsonView;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
@@ -39,13 +38,12 @@ public class TodoSectionController {
 
     private final TodoSectionService todoSectionService;
     private final TodoSectionModelAssembler assembler;
-    private final ModelMapper modelMapper;
 
     @Autowired
-    public TodoSectionController(TodoSectionService todoSectionService, TodoSectionModelAssembler assembler, ModelMapper modelMapper) {
+    public TodoSectionController(TodoSectionService todoSectionService,
+                                 TodoSectionModelAssembler assembler) {
         this.todoSectionService = todoSectionService;
         this.assembler = assembler;
-        this.modelMapper = modelMapper;
     }
 
     // get all sections
@@ -54,7 +52,7 @@ public class TodoSectionController {
     @JsonView(Views.Public.class)
     public CollectionModel<EntityModel<TodoSection>> all(@AuthenticationPrincipal UserDetailsImpl uds) {
 
-        List<EntityModel<TodoSection>> sections = todoSectionService.getAllSections(uds)
+        List<EntityModel<TodoSection>> sections = todoSectionService.getAllSections(uds.getUser())
                 .stream()
                 .map(assembler::toModel)
                 .collect(Collectors.toList());
@@ -70,7 +68,7 @@ public class TodoSectionController {
     public EntityModel<TodoSection> one(@AuthenticationPrincipal UserDetailsImpl uds,
                                         @PathVariable("id") Long sectonId) {
 
-        return assembler.toModel(todoSectionService.getSectionById(uds, sectonId));
+        return assembler.toModel(todoSectionService.getSectionById(uds.getUser(), sectonId));
     }
 
     // delete section by id
@@ -78,7 +76,7 @@ public class TodoSectionController {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteOne(@AuthenticationPrincipal UserDetailsImpl uds,
                                        @PathVariable("id") Long sectionId) {
-        todoSectionService.deleteSectionById(uds, sectionId);
+        todoSectionService.deleteSectionById(uds.getUser(), sectionId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
@@ -86,10 +84,9 @@ public class TodoSectionController {
     @ApiOperation(value = "Create section", notes = "It permits to create a new section")
     @PostMapping(consumes = "application/json")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
-    public ResponseEntity<?> createSection(
-            @AuthenticationPrincipal UserDetailsImpl uds,
-            @Valid @RequestBody TodoSectionDto sectionDto) {
-        todoSectionService.createSection(sectionDto, uds);
+    public ResponseEntity<?> createSection(@AuthenticationPrincipal UserDetailsImpl uds,
+                                           @Valid @RequestBody TodoSectionDto sectionDto) {
+        todoSectionService.createSection(uds.getUser(), sectionDto);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
@@ -97,22 +94,21 @@ public class TodoSectionController {
     // update section title by id
     @ApiOperation(value = "Update section", notes = "It permits to update a section")
     @PutMapping(value = "/{id}", consumes = "application/json")
-    public ResponseEntity<?> updateSection(
-            @AuthenticationPrincipal UserDetailsImpl uds,
-            @PathVariable("id") Long sectionId,
-            @Valid @RequestBody TodoSectionDto sectionDto) {
-        todoSectionService.updateSection(uds.getId(), sectionId, sectionDto);
+    public ResponseEntity<?> updateSection(@AuthenticationPrincipal UserDetailsImpl uds,
+                                           @PathVariable("id") Long sectionId,
+                                           @Valid @RequestBody TodoSectionDto sectionDto) {
+
+        todoSectionService.updateSection(uds.getUser(), sectionId, sectionDto);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     // add tasks to the list
     @ApiOperation(value = "Add tasks to section", notes = "It permits to add tasks to section")
     @PostMapping(value = "/{id}/tasks", consumes = "application/json")
-    public ResponseEntity<?> addTasksToList(
-            @AuthenticationPrincipal UserDetailsImpl uds,
-            @PathVariable("id") Long sectionId,
-            @RequestBody TaskIdsWrapper wrapper,
-            @RequestParam(value = "do") SetTasks flag) {
+    public ResponseEntity<?> addTasksToList(@AuthenticationPrincipal UserDetailsImpl uds,
+                                            @PathVariable("id") Long sectionId,
+                                            @RequestBody TaskIdsWrapper wrapper,
+                                            @RequestParam(value = "do") SetTasks flag) {
 
         todoSectionService.addTasksToList(uds.getId(), sectionId, wrapper.tasks, flag);
         return new ResponseEntity<>(HttpStatus.OK);

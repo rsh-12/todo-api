@@ -6,6 +6,7 @@ package ru.example.todo.controller;
 
 import org.junit.Test;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.ResultActions;
 import ru.example.todo.enums.TaskDate;
 import ru.example.todo.enums.TaskStatus;
@@ -21,14 +22,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-/*
- * Test data:
- * Read a book, Create a presentation, Write a letter
- * */
 // todo update tests
 public class TodoTaskControllerTest extends AbstractTestContollerClass {
 
     @Test
+    @WithUserDetails(ADMIN)
     public void testGetAllTasks_WithAndWithoutParams() throws Exception {
         mvc.perform(get(TASKS)
                 .contentType(MediaType.APPLICATION_JSON))
@@ -49,6 +47,7 @@ public class TodoTaskControllerTest extends AbstractTestContollerClass {
     }
 
     @Test
+    @WithUserDetails(ADMIN)
     public void testGetTodaysTasks() throws Exception {
         int size = getJsonArraySize(TASKS, "_embedded.tasks", "date", TaskDate.TODAY.name());
         assertTrue(size > 0);
@@ -62,8 +61,9 @@ public class TodoTaskControllerTest extends AbstractTestContollerClass {
     }
 
     @Test
+    @WithUserDetails(USER)
     public void testGetTaskById() throws Exception {
-        final int TASK_ID = 1;
+        final int TASK_ID = 2;
 
         mvc.perform(get(TASKS + TASK_ID))
                 .andExpect(status().isOk())
@@ -71,6 +71,7 @@ public class TodoTaskControllerTest extends AbstractTestContollerClass {
     }
 
     @Test
+    @WithUserDetails(USER)
     public void testGetTaskById_NotFound() throws Exception {
         final int TASK_ID = 100;
 
@@ -81,8 +82,9 @@ public class TodoTaskControllerTest extends AbstractTestContollerClass {
     }
 
     @Test
+    @WithUserDetails(ADMIN)
     public void testDeleteTaskById() throws Exception {
-        final int TASK_ID = 2;
+        final int TASK_ID = 6;
 
         int beforeTasksQuantity = getJsonArraySize(TASKS, "_embedded.tasks");
 
@@ -95,6 +97,7 @@ public class TodoTaskControllerTest extends AbstractTestContollerClass {
     }
 
     @Test
+    @WithUserDetails(USER)
     public void testDeleteTaskById_NotFound() throws Exception {
         final int TASK_ID = 100;
 
@@ -110,6 +113,7 @@ public class TodoTaskControllerTest extends AbstractTestContollerClass {
     }
 
     @Test
+    @WithUserDetails(USER)
     public void testCreateNewTask() throws Exception {
         int beforeTasksQuantity = getJsonArraySize(TASKS, "_embedded.tasks");
 
@@ -124,12 +128,13 @@ public class TodoTaskControllerTest extends AbstractTestContollerClass {
 
         assertEquals(beforeTasksQuantity + 1, afterTasksQuantity);
 
-        mvc.perform(get(TASKS + afterTasksQuantity))
+        mvc.perform(get(TASKS + 11))
                 .andExpect(status().isOk())
                 .andDo(print());
     }
 
     @Test
+    @WithUserDetails(USER)
     public void testUpdateTask_NotFound() throws Exception {
         final int TASK_ID = 100;
 
@@ -140,13 +145,14 @@ public class TodoTaskControllerTest extends AbstractTestContollerClass {
     }
 
     @Test
+    @WithUserDetails(USER)
     public void testUpdateTask_Title() throws Exception {
-        final int TASK_ID = 3;
+        final int TASK_ID = 2;
         final String body = String.format("{\"title\": \"%s\"}", "New title");
 
         mvc.perform(get(TASKS + TASK_ID))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("title", containsString("Write a letter")));
+                .andExpect(jsonPath("title", containsString("Create a presentation")));
 
         mvc.perform(patch(TASKS + TASK_ID)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -159,6 +165,7 @@ public class TodoTaskControllerTest extends AbstractTestContollerClass {
     }
 
     @Test
+    @WithUserDetails(USER)
     public void testUpdateTask_CompletionDate() throws Exception {
         final int TASK_ID = 5;
         final String newCompletionDate = "2022-12-12";
@@ -180,8 +187,9 @@ public class TodoTaskControllerTest extends AbstractTestContollerClass {
     }
 
     @Test
+    @WithUserDetails(USER)
     public void testUpdateTask_Completed() throws Exception {
-        final int TASK_ID = 3;
+        final int TASK_ID = 2;
 
         mvc.perform(get(TASKS + TASK_ID))
                 .andExpect(status().isOk())
@@ -199,6 +207,7 @@ public class TodoTaskControllerTest extends AbstractTestContollerClass {
     }
 
     @Test
+    @WithUserDetails(ADMIN)
     public void testUpdateTask_Starred() throws Exception {
         final int TASK_ID = 3;
 
@@ -218,6 +227,7 @@ public class TodoTaskControllerTest extends AbstractTestContollerClass {
     }
 
     @Test
+    @WithUserDetails(ADMIN)
     public void testUpdateTask_AllInOne() throws Exception {
         final int TASK_ID = 4;
         final String newTitle = "New title";

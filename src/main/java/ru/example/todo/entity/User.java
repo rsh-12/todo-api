@@ -39,6 +39,7 @@ public class User {
     private Date createdAt;
 
     @ElementCollection(fetch = FetchType.EAGER)
+    @Enumerated(EnumType.STRING)
     private Set<Role> roles;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user",
@@ -118,6 +119,24 @@ public class User {
 
     public void setTodoSections(Set<TodoSection> todoSections) {
         this.todoSections = todoSections;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        User user = (User) o;
+
+        if (id != null ? !id.equals(user.id) : user.id != null) return false;
+        return username != null ? username.equals(user.username) : user.username == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (username != null ? username.hashCode() : 0);
+        return result;
     }
 
     @Override
