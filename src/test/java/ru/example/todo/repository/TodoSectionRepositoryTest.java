@@ -19,7 +19,6 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
-// todo update tests
 @RunWith(SpringRunner.class)
 @DataJpaTest
 public class TodoSectionRepositoryTest {
@@ -66,7 +65,7 @@ public class TodoSectionRepositoryTest {
         List<TodoSection> adminSections = repository.findAllByUserId(ADMIN_ID);
         List<TodoSection> userSections = repository.findAllByUserId(USER_ID);
 
-        assertEquals(2, adminSections.size());
+        assertEquals(3, adminSections.size());
         assertEquals(1, userSections.size());
 
         assertEquals("Starred", userSections.get(0).getTitle());
@@ -75,7 +74,7 @@ public class TodoSectionRepositoryTest {
     @Test
     public void testGetAllSections() {
         List<TodoSection> sections = repository.findAll();
-        assertEquals(3, sections.size());
+        assertEquals(4, sections.size());
     }
 
     @Test
