@@ -6,11 +6,14 @@ package ru.example.todo.controller;
 
 import org.junit.Test;
 import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.ResultActions;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 import static org.hamcrest.Matchers.containsString;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -30,8 +33,7 @@ public class UserControllerTest extends AbstractTestContollerClass {
     // Login: success
     @Test
     public void testLogin() throws Exception {
-
-        String body = requestBody("admin@mail.com", "admin");
+        String body = requestBody(ADMIN, "admin");
 
         String response = mvc.perform(post(USERS + "login")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -71,7 +73,23 @@ public class UserControllerTest extends AbstractTestContollerClass {
                 .andExpect(jsonPath("message", containsString("Invalid username/password")));
     }
 
-// Register: success
+    // Register: success
+    @Test
+    public void testRegister() throws Exception {
+        String body = requestBody("newUsername@mail.com", "newPassword");
+
+        MvcResult result = mvc.perform(post(USERS + "register")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(body))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andReturn();
+
+        String response = result.getResponse().getContentAsString();
+        assertEquals("ok", response);
+    }
+
+
     // Register: fail
     // Token: success
     // Token: fail
