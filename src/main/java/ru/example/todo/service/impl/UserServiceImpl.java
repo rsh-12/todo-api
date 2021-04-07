@@ -51,12 +51,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public String login(UserDto userDto) {
-        try {
-            User user = userRepository.findByUsername(userDto.getUsername())
-                    .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
-            authManager.authenticate(new UsernamePasswordAuthenticationToken(
-                    userDto.getUsername(), userDto.getPassword()));
+        User user = userRepository.findByUsername(userDto.getUsername())
+                .orElseThrow(() -> new CustomException("Invalid username/password", HttpStatus.NOT_FOUND));
+
+        try {
+            authManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(userDto.getUsername(), userDto.getPassword()));
 
             return buildResponseBody(user);
         } catch (AuthenticationException ex) {
@@ -115,6 +116,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void deleteUser(Long userId) {
+        if (!userRepository.existsById(userId)) {
+            throw new CustomException("User not found: " + userId, HttpStatus.NOT_FOUND);
+        }
         userRepository.deleteById(userId);
     }
 
