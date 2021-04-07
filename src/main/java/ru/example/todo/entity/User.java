@@ -10,7 +10,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
-import javax.validation.constraints.Email;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.util.Date;
 import java.util.List;
@@ -24,7 +24,8 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Email
+    @Pattern(regexp = "^[a-z]{2,}@[a-z]{2,5}\\.(ru|com)",
+            flags = Pattern.Flag.CASE_INSENSITIVE, message = "Not a valid email address")
     @Size(min = 4, max = 127, message = "Email is required: minimum 4 characters")
     @Column(nullable = false, unique = true)
     private String username;
