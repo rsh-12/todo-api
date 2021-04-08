@@ -90,9 +90,8 @@ public class UserControllerTest extends AbstractTestContollerClass {
     }
 
     // Register: fail
-
     @Test
-    public void testRegister_NotValid() throws Exception {
+    public void testRegister_InvalidUsername() throws Exception {
         String body = requestBody("notValidUsername", "password");
 
         mvc.perform(post(USERS + "register")
@@ -101,6 +100,18 @@ public class UserControllerTest extends AbstractTestContollerClass {
                 .andDo(print())
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("username", containsInAnyOrder("Not a valid email address")));
+    }
+
+    @Test
+    public void testRegister_InvalidPassword() throws Exception {
+        String body = requestBody("username@mail.com", "1");
+
+        mvc.perform(post(USERS + "register")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(body))
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("password", containsInAnyOrder("Password is required")));
     }
 
     // Token: success
