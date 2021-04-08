@@ -51,7 +51,7 @@ public class UserControllerTest extends AbstractTestContollerClass {
     // Login: fail
     @Test
     public void testLogin_NotFound() throws Exception {
-        String body = requestBody("usernameNotExists", "client");
+        String body = requestBody("usernameNotExists@mail.com", "client");
 
         mvc.perform(post(USERS + "login")
                 .contentType(MediaType.APPLICATION_JSON)
