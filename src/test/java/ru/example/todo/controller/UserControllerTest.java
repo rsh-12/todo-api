@@ -7,11 +7,11 @@ package ru.example.todo.controller;
 import org.junit.Test;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.ResultActions;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -89,8 +89,20 @@ public class UserControllerTest extends AbstractTestContollerClass {
         assertEquals("ok", response);
     }
 
-
     // Register: fail
+
+    @Test
+    public void testRegister_NotValid() throws Exception {
+        String body = requestBody("notValidUsername", "password");
+
+        mvc.perform(post(USERS + "register")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(body))
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("username", containsInAnyOrder("Not a valid email address")));
+    }
+
     // Token: success
     // Token: fail
     // Delete user: success
