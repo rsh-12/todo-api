@@ -6,6 +6,7 @@ package ru.example.todo.controller;
 
 import org.junit.Test;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.MvcResult;
 
 import java.util.LinkedHashMap;
@@ -15,6 +16,7 @@ import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -116,6 +118,19 @@ public class UserControllerTest extends AbstractTestContollerClass {
 
     // Token: success
     // Token: fail
+
     // Delete user: success
+    @Test
+    @WithUserDetails(ADMIN)
+    public void testDeleteUser() throws Exception {
+        final int USER_ID = 4;
+
+        mvc.perform(delete(USERS + USER_ID))
+                .andExpect(status().isNoContent());
+
+        mvc.perform(delete(USERS + USER_ID))
+                .andExpect(status().isNotFound());
+    }
+
     // Delete user:  fail
 }
