@@ -11,7 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.example.todo.config.properties.TokenProperties;
@@ -109,7 +108,7 @@ public class UserServiceImpl implements UserService {
                     HttpStatus.BAD_REQUEST);
         }
         User user = userRepository.findByUsername(oldRefreshToken.getUsername())
-                .orElseThrow(() -> new CustomException("Refresk token owner not find", HttpStatus.BAD_REQUEST));
+                .orElseThrow(() -> new CustomException("Refresh token owner not found", HttpStatus.BAD_REQUEST));
 
         return buildResponseBody(user);
     }
