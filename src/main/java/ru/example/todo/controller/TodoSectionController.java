@@ -50,6 +50,7 @@ public class TodoSectionController {
     @ApiOperation(value = "List todo sections", notes = "List all todo sections")
     @GetMapping(produces = "application/json")
     @JsonView(Views.Public.class)
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     public CollectionModel<EntityModel<TodoSection>> all(@AuthenticationPrincipal UserDetailsImpl uds) {
 
         List<EntityModel<TodoSection>> sections = todoSectionService.getAllSections(uds.getUser())
@@ -65,6 +66,7 @@ public class TodoSectionController {
     @ApiOperation(value = "Find section", notes = "Find the Section by ID")
     @GetMapping(value = "/{id}", produces = "application/json")
     @JsonView(value = Views.Internal.class)
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     public EntityModel<TodoSection> one(@AuthenticationPrincipal UserDetailsImpl uds,
                                         @PathVariable("id") Long sectonId) {
 
@@ -74,6 +76,7 @@ public class TodoSectionController {
     // delete section by id
     @ApiOperation(value = "Remove section", notes = "It permits to remove a section")
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     public ResponseEntity<?> deleteOne(@AuthenticationPrincipal UserDetailsImpl uds,
                                        @PathVariable("id") Long sectionId) {
         todoSectionService.deleteSectionById(uds.getUser(), sectionId);
@@ -94,6 +97,7 @@ public class TodoSectionController {
     // update section title by id
     @ApiOperation(value = "Update section", notes = "It permits to update a section")
     @PutMapping(value = "/{id}", consumes = "application/json")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     public ResponseEntity<?> updateSection(@AuthenticationPrincipal UserDetailsImpl uds,
                                            @PathVariable("id") Long sectionId,
                                            @Valid @RequestBody TodoSectionDto sectionDto) {
@@ -105,6 +109,7 @@ public class TodoSectionController {
     // add tasks to the list
     @ApiOperation(value = "Add tasks to section", notes = "It permits to add tasks to section")
     @PostMapping(value = "/{id}/tasks", consumes = "application/json")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     public ResponseEntity<?> addTasksToList(@AuthenticationPrincipal UserDetailsImpl uds,
                                             @PathVariable("id") Long sectionId,
                                             @RequestBody TaskIdsWrapper wrapper,

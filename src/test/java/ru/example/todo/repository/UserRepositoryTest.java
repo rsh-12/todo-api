@@ -9,8 +9,10 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.http.HttpStatus;
 import org.springframework.test.context.junit4.SpringRunner;
 import ru.example.todo.entity.User;
+import ru.example.todo.exception.CustomException;
 
 import java.util.List;
 
@@ -33,7 +35,7 @@ public class UserRepositoryTest {
     @Test
     public void testGetAllUsers() {
         List<User> users = repository.findAll();
-        assertEquals(2, users.size());
+        assertEquals(4, users.size());
     }
 
     @Test
@@ -100,4 +102,18 @@ public class UserRepositoryTest {
     }
 
     // delete user
+    @Test
+    public void testDeleteUser() {
+        String username = "client2@mail.com";
+
+        assertTrue(repository.existsByUsername(username));
+
+        User user = repository.findByUsername(username)
+                .orElseThrow(() -> new CustomException("User not found", HttpStatus.NOT_FOUND));
+
+        repository.delete(user);
+        entityManager.flush();
+
+        assertFalse(repository.existsByUsername(username));
+    }
 }

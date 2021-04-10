@@ -12,6 +12,7 @@ import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import ru.example.todo.controller.assembler.TodoTaskModelAssembler;
@@ -48,6 +49,7 @@ public class TodoTaskController {
     // get all tasks
     @ApiOperation(value = "List tasks", notes = "List all tasks")
     @GetMapping(produces = "application/json")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     public CollectionModel<EntityModel<TodoTask>> all(
             @AuthenticationPrincipal UserDetailsImpl uds,
             @RequestParam(value = "page", required = false, defaultValue = "0") Integer pageNo,
@@ -68,6 +70,7 @@ public class TodoTaskController {
     // get task by id
     @ApiOperation(value = "Find task", notes = "Find the task by ID")
     @GetMapping(value = "/{id}", produces = "application/json")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     public EntityModel<TodoTask> one(
             @AuthenticationPrincipal UserDetailsImpl uds,
             @PathVariable("id") Long taskId) {
@@ -77,6 +80,7 @@ public class TodoTaskController {
     // delete task by id
     @ApiOperation(value = "Remove task", notes = "It permits to remove a task")
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     public ResponseEntity<?> deleteOne(
             @AuthenticationPrincipal UserDetailsImpl uds,
             @PathVariable("id") Long taskId) {
@@ -87,6 +91,7 @@ public class TodoTaskController {
     // create new task
     @ApiOperation(value = "Create task", notes = "It permits to create a new task")
     @PostMapping(consumes = "application/json")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     public ResponseEntity<?> createTask(
             @AuthenticationPrincipal UserDetailsImpl uds,
             @Valid @RequestBody TodoTaskDto taskDto) {
@@ -99,6 +104,7 @@ public class TodoTaskController {
     // update task status (completed, starred)
     @ApiOperation(value = "Update task", notes = "It permits to update a task")
     @PatchMapping(value = "/{id}", consumes = "application/json")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     public ResponseEntity<?> updateTask(
             @AuthenticationPrincipal UserDetailsImpl uds,
             @PathVariable("id") Long taskId,

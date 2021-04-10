@@ -1,15 +1,18 @@
 [![Build Status](https://travis-ci.com/rsh-12/demo-rest-endpoints.svg?branch=main)](https://travis-ci.com/rsh-12/demo-rest-endpoints)
 <a href='https://coveralls.io/github/rsh-12/demo-rest-endpoints?branch=main'><img src='https://coveralls.io/repos/github/rsh-12/demo-rest-endpoints/badge.svg?branch=main' alt='Coverage Status' /></a>
 
+# `DEPRECATED!`
+
 # TodoList
 
 > ## SWAGGER: com.example`/swagger-ui/`
 
-`Простое рест-приложение, без регистрации и СМС... С общими задачами на всех.`
 
 Ниже будет представлен краткий обзор работы с  ~~нелепой реализацией~~ АПИ :)
 
 ---
+
+
 Работа с разделами
 -
 **_Разделы будут содержать в себе задачки, реализованы следующие операции:_**

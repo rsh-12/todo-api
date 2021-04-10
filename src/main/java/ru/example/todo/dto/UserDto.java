@@ -4,9 +4,21 @@ package ru.example.todo.dto;
  * Time: 10:24 AM
  * */
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+
 public class UserDto {
 
+    @Pattern(regexp = "^[a-z]{2,}@[a-z]{2,5}\\.(ru|com)",
+            flags = Pattern.Flag.CASE_INSENSITIVE,
+            message = "Not a valid email address")
+    @Size(min = 4, max = 127, message = "Email is required: minimum 4 characters")
     private String username;
+
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @Size(min = 4, message = "Password is required")
     private String password;
 
     public String getUsername() {
