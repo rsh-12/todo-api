@@ -133,4 +133,15 @@ public class UserControllerTest extends AbstractTestContollerClass {
     }
 
     // Delete user:  fail
+    @Test
+    @WithUserDetails(USER)
+    public void testDeleteUser_Forbidden() throws Exception {
+        final int USER_ID = 4;
+
+        mvc.perform(delete(USERS + USER_ID))
+                .andDo(print())
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("message", containsString("Not enough permissions")));
+
+    }
 }
