@@ -116,9 +116,6 @@ public class UserControllerTest extends AbstractTestContollerClass {
                 .andExpect(jsonPath("password", containsInAnyOrder("Password is required")));
     }
 
-    // Token: success
-    // Token: fail
-
     // Delete user: success
     @Test
     @WithUserDetails(ADMIN)
@@ -144,4 +141,19 @@ public class UserControllerTest extends AbstractTestContollerClass {
                 .andExpect(jsonPath("message", containsString("Not enough permissions")));
 
     }
+
+    // Token: fail
+    @Test
+    public void testRefreshTokens_Fail() throws Exception {
+
+        mvc.perform(post(USERS + "token")
+                .header("token", "non-existent-token"))
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("message",
+                        containsString("Refresh token is not valid or expired, please, try to log in")));
+    }
+
+
+    // Token: success
 }
