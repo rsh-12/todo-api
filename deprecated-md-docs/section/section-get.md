@@ -2,10 +2,10 @@
 
 [Главная страница документации](/README.md)
 
-* **[Получить список или 1 объект по ID](/docs/section/section-get.md)**
-* [Создать](/docs/section/section-create.md)   
-* [Удалить](/docs/section/section-delete.md) 
-* [Обновить](/docs/section/section-update.md)
+* **[Получить список или 1 объект по ID](/deprecated-md-docs/section/section-get.md)**
+* [Создать](/deprecated-md-docs/section/section-create.md)   
+* [Удалить](/deprecated-md-docs/section/section-delete.md) 
+* [Обновить](/deprecated-md-docs/section/section-update.md)
 ---
 ## Получить список разделов
 > `GET /api/sections` вернет список разделов:
