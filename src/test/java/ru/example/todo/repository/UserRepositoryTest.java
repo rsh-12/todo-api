@@ -5,12 +5,8 @@ package ru.example.todo.repository;
  * */
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.http.HttpStatus;
-import org.springframework.test.context.junit4.SpringRunner;
 import ru.example.todo.entity.User;
 import ru.example.todo.exception.CustomException;
 
@@ -18,19 +14,11 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
-// todo update tests
-@RunWith(SpringRunner.class)
-@DataJpaTest
-public class UserRepositoryTest {
 
-    private final static String ADMIN_USERNAME = "admin@mail.com";
-    private final static String CLIENT_USERNAME = "client@mail.com";
+public class UserRepositoryTest extends AbstractRepositoryClass {
 
     @Autowired
     private UserRepository repository;
-
-    @Autowired
-    private TestEntityManager entityManager;
 
     @Test
     public void testGetAllUsers() {
@@ -70,17 +58,6 @@ public class UserRepositoryTest {
         assertTrue(repository.existsByUsername(user.getUsername()));
     }
 
-    private User createUser(String username) {
-        User user = new User();
-        user.setUsername(username);
-        user.setPassword("secretpassword12345");
-        return user;
-    }
-
-    private User createAndSaveUser() {
-        User user = createUser("ola@mail.com");
-        return entityManager.persistAndFlush(user);
-    }
 
     // update user
     @Test
