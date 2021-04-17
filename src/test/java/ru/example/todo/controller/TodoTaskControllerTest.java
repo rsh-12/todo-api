@@ -23,7 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 // todo update tests
-public class TodoTaskControllerTest extends AbstractTestContollerClass {
+public class TodoTaskControllerTest extends AbstractContollerClass {
 
     @Test
     @WithUserDetails(ADMIN)

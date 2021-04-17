@@ -23,7 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 // todo update tests
-public class UserControllerTest extends AbstractTestContollerClass {
+public class UserControllerTest extends AbstractContollerClass {
 
     private String requestBody(String username, String password) {
         Map<String, String> body = new LinkedHashMap<>();
