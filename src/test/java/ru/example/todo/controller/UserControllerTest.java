@@ -153,7 +153,4 @@ public class UserControllerTest extends AbstractTestContollerClass {
                 .andExpect(jsonPath("message",
                         containsString("Refresh token is not valid or expired, please, try to log in")));
     }
-
-
-    // Token: success
 }
