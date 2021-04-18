@@ -4,9 +4,10 @@
 # TodoList
 
 ...
-> **Swagger:**
-> ###### com.example`/swagger-ui/`
+
+## **Swagger:**
+> ### com.example`/swagger-ui/`
 
 
-
-
+---
+Learn more on the project's [website](https://rsh-12.github.io/demo-rest-endpoints/)
