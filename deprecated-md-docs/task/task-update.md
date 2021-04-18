@@ -2,10 +2,10 @@
 
 [Главная страница документации](/README.md)
 
-* [Получить список или 1 объект по ID](/docs/task/task-get.md)
-* [Создать](/docs/task/task-create.md)   
-* [Удалить](/docs/task/task-delete.md) 
-* **[Обновить](/docs/task/task-update.md)**
+* [Получить список или 1 объект по ID](/deprecated-md-docs/task/task-get.md)
+* [Создать](/deprecated-md-docs/task/task-create.md)   
+* [Удалить](/deprecated-md-docs/task/task-delete.md) 
+* **[Обновить](/deprecated-md-docs/task/task-update.md)**
 ---
 
 ## Обновить задачку по ID 

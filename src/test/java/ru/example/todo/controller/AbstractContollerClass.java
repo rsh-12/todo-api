@@ -23,7 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-abstract class AbstractTestContollerClass {
+abstract class AbstractContollerClass {
 
     protected final static String SECTIONS = "/api/sections/";
     protected final static String TASKS = "/api/tasks/";

@@ -5,11 +5,7 @@ package ru.example.todo.repository;
  * */
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
-import org.springframework.test.context.junit4.SpringRunner;
 import ru.example.todo.entity.TodoTask;
 import ru.example.todo.exception.CustomException;
 
@@ -17,16 +13,11 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
-// todo update tests
-@RunWith(SpringRunner.class)
-@DataJpaTest
-public class TodoTaskRepositoryTest {
+
+public class TodoTaskRepositoryTest extends AbstractRepositoryClass {
 
     @Autowired
     private TodoTaskRepository repository;
-
-    @Autowired
-    private TestEntityManager entityManager;
 
     // get all
     @Test
@@ -91,7 +82,6 @@ public class TodoTaskRepositoryTest {
         assertEquals(newTitle, updatedTask.getTitle());
     }
 
-
     // delete by id
     @Test
     public void testDeleteTask() {
@@ -110,7 +100,6 @@ public class TodoTaskRepositoryTest {
 
         assertEquals(beforeTasksQuantity - 1, afterTasksQuantity);
     }
-
 
     // delete all
     @Test

@@ -26,7 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Important, Starred, Later
  * */
 // todo update tests
-public class TodoSectionControllerTest extends AbstractTestContollerClass {
+public class TodoSectionControllerTest extends AbstractContollerClass {
 
     // get all sections
     @Test

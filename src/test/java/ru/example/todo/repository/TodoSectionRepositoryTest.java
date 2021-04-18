@@ -5,11 +5,7 @@ package ru.example.todo.repository;
  * */
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
-import org.springframework.test.context.junit4.SpringRunner;
 import ru.example.todo.entity.TodoSection;
 import ru.example.todo.exception.CustomException;
 
@@ -19,19 +15,10 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
-@RunWith(SpringRunner.class)
-@DataJpaTest
-public class TodoSectionRepositoryTest {
-
-    private static final Long ADMIN_ID = 1L;
-    private static final Long USER_ID = 2L;
-    private static final Long[] SECTIONS = new Long[]{1L, 2L, 3L};
+public class TodoSectionRepositoryTest extends AbstractRepositoryClass{
 
     @Autowired
     private TodoSectionRepository repository;
-
-    @Autowired
-    private TestEntityManager entityManager;
 
     @Test
     public void testDeleteByIdAndUserId() {
