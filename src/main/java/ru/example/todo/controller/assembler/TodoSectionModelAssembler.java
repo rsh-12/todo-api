@@ -16,7 +16,6 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @Component
 public class TodoSectionModelAssembler implements RepresentationModelAssembler<TodoSection, EntityModel<TodoSection>> {
 
-    // todo
     @Override
     public EntityModel<TodoSection> toModel(TodoSection section) {
         return EntityModel.of(section,
