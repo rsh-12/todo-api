@@ -114,7 +114,7 @@ public class TodoSectionServiceImpl implements TodoSectionService {
     public void addTasksToList(Long userId, Long sectionId, Set<Long> tasks, SetTasks flag) {
 
         if (tasks == null || tasks.isEmpty()) {
-            throw new CustomException("Bad Request", "Tasks IDs are required!", HttpStatus.BAD_REQUEST);
+            throw new CustomException("Bad Request", "Tasks IDs are required", HttpStatus.BAD_REQUEST);
         }
 
         log.info("Get the section by id: {}", sectionId);
