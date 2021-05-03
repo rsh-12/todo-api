@@ -71,10 +71,6 @@ public class JwtTokenServiceImpl implements JwtTokenService {
     @Override
     public RefreshToken buildRefreshToken(String username) {
 
-        if (!userRepository.existsByUsername(username)) {
-            throw new UsernameNotFoundException("User not found: " + username);
-        }
-
         RefreshToken refreshToken = new RefreshToken.Builder()
                 .id(RandomStringUtils.randomAlphanumeric(64))
                 .expiryTime(getValidity(tokenProperties.getRefreshTokenValidity()))

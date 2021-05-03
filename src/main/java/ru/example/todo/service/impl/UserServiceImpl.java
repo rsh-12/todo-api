@@ -6,10 +6,10 @@ package ru.example.todo.service.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -20,6 +20,7 @@ import ru.example.todo.entity.Role;
 import ru.example.todo.entity.User;
 import ru.example.todo.exception.CustomException;
 import ru.example.todo.repository.UserRepository;
+import ru.example.todo.security.UserDetailsImpl;
 import ru.example.todo.service.JwtTokenService;
 import ru.example.todo.service.UserService;
 
@@ -30,33 +31,30 @@ import java.util.Map;
 @Service
 public class UserServiceImpl implements UserService {
 
-    @Autowired
-    private AuthenticationManager authManager;
-
-    @Autowired
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
-
+    private final AuthenticationManager authManager;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final JwtTokenService jwtTokenService;
     private final UserRepository userRepository;
     private final TokenProperties tokenProperties;
 
-    public UserServiceImpl(JwtTokenService jwtTokenService,
-                           UserRepository userRepository,
-                           TokenProperties tokenProperties) {
+    public UserServiceImpl(JwtTokenService jwtTokenService, UserRepository userRepository,
+                           TokenProperties tokenProperties, AuthenticationManager authManager,
+                           BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.jwtTokenService = jwtTokenService;
         this.userRepository = userRepository;
         this.tokenProperties = tokenProperties;
+        this.authManager = authManager;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
     @Override
     public String login(UserDto userDto) {
 
-        User user = userRepository.findByUsername(userDto.getUsername())
-                .orElseThrow(() -> new CustomException("Invalid username/password", HttpStatus.NOT_FOUND));
-
         try {
-            authManager.authenticate(
+            Authentication auth = authManager.authenticate(
                     new UsernamePasswordAuthenticationToken(userDto.getUsername(), userDto.getPassword()));
+
+            User user = ((UserDetailsImpl) auth.getPrincipal()).getUser();
 
             return buildResponseBody(user);
         } catch (AuthenticationException ex) {

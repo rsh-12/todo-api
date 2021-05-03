@@ -51,7 +51,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         web.ignoring()
                 .mvcMatchers("/v2/api-docs")
                 .mvcMatchers("/swagger-resources/**")//
-                .mvcMatchers("/swagger-ui.html")//
+                .mvcMatchers("/swagger-ui/**")//
                 .mvcMatchers("/configuration/**")//
                 .mvcMatchers("/webjars/**")//
                 .mvcMatchers("/public");
