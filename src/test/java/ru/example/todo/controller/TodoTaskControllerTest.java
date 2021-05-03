@@ -13,7 +13,7 @@ import ru.example.todo.enums.TaskStatus;
 
 import java.time.LocalDate;
 
-import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.containsStringIgnoringCase;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -78,7 +78,7 @@ public class TodoTaskControllerTest extends AbstractContollerClass {
         mvc.perform(get(TASKS + TASK_ID))
                 .andExpect(status().isNotFound())
                 .andDo(print())
-                .andExpect(jsonPath("message", containsString("Task not found")));
+                .andExpect(jsonPath("message", containsStringIgnoringCase("Task not found")));
     }
 
     @Test
@@ -105,7 +105,7 @@ public class TodoTaskControllerTest extends AbstractContollerClass {
 
         mvc.perform(delete(TASKS + TASK_ID))
                 .andExpect(status().is4xxClientError())
-                .andExpect(jsonPath("message", containsString("Task not found")));
+                .andExpect(jsonPath("message", containsStringIgnoringCase("Task not found")));
 
         int afterTasksQuantity = getJsonArraySize(TASKS, "_embedded.tasks");
 
@@ -141,7 +141,7 @@ public class TodoTaskControllerTest extends AbstractContollerClass {
         mvc.perform(patch(TASKS + TASK_ID)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is4xxClientError())
-                .andExpect(jsonPath("message", containsString("Task not found")));
+                .andExpect(jsonPath("message", containsStringIgnoringCase("Task not found")));
     }
 
     @Test
@@ -152,7 +152,7 @@ public class TodoTaskControllerTest extends AbstractContollerClass {
 
         mvc.perform(get(TASKS + TASK_ID))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("title", containsString("Create a presentation")));
+                .andExpect(jsonPath("title", containsStringIgnoringCase("Create a presentation")));
 
         mvc.perform(patch(TASKS + TASK_ID)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -161,7 +161,7 @@ public class TodoTaskControllerTest extends AbstractContollerClass {
 
         mvc.perform(get(TASKS + TASK_ID))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("title", containsString("New title")));
+                .andExpect(jsonPath("title", containsStringIgnoringCase("New title")));
     }
 
     @Test
@@ -173,7 +173,7 @@ public class TodoTaskControllerTest extends AbstractContollerClass {
 
         mvc.perform(get(TASKS + TASK_ID))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("completionDate", containsString(LocalDate.now().toString())));
+                .andExpect(jsonPath("completionDate", containsStringIgnoringCase(LocalDate.now().toString())));
 
         mvc.perform(patch(TASKS + TASK_ID)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -182,7 +182,7 @@ public class TodoTaskControllerTest extends AbstractContollerClass {
 
         mvc.perform(get(TASKS + TASK_ID))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("completionDate", containsString(newCompletionDate)));
+                .andExpect(jsonPath("completionDate", containsStringIgnoringCase(newCompletionDate)));
 
     }
 
@@ -239,10 +239,10 @@ public class TodoTaskControllerTest extends AbstractContollerClass {
         mvc.perform(get(TASKS + TASK_ID))
                 .andExpect(status().isOk())
                 .andDo(print())
-                .andExpect(jsonPath("title", containsString("Section task")))
+                .andExpect(jsonPath("title", containsStringIgnoringCase("Section task")))
                 .andExpect(jsonPath("completed", is(false)))
                 .andExpect(jsonPath("starred", is(false)))
-                .andExpect(jsonPath("completionDate", containsString(LocalDate.now().toString())));
+                .andExpect(jsonPath("completionDate", containsStringIgnoringCase(LocalDate.now().toString())));
 
         mvc.perform(patch(TASKS + TASK_ID)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -253,9 +253,9 @@ public class TodoTaskControllerTest extends AbstractContollerClass {
         mvc.perform(get(TASKS + TASK_ID))
                 .andExpect(status().isOk())
                 .andDo(print())
-                .andExpect(jsonPath("title", containsString(newTitle)))
+                .andExpect(jsonPath("title", containsStringIgnoringCase(newTitle)))
                 .andExpect(jsonPath("completed", is(true)))
                 .andExpect(jsonPath("starred", is(true)))
-                .andExpect(jsonPath("completionDate", containsString(newCompletionDate)));
+                .andExpect(jsonPath("completionDate", containsStringIgnoringCase(newCompletionDate)));
     }
 }
