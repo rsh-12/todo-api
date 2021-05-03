@@ -63,7 +63,7 @@ public class TodoTaskServiceImpl implements TodoTaskService {
     public TodoTask getTaskById(User user, Long taskId) {
         log.info("Get the task by id: {}", taskId);
         return todoTaskRepository.findByIdAndUserId(taskId, user.getId())
-                .orElseThrow(() -> new CustomException("Task not found: " + taskId, HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new CustomException("Not Found", "Task not found: " + taskId, HttpStatus.NOT_FOUND));
     }
 
     // delete task by id
@@ -71,12 +71,12 @@ public class TodoTaskServiceImpl implements TodoTaskService {
     public void deleteTaskById(User user, Long taskId) {
 
         TodoTask task = todoTaskRepository.findById(taskId)
-                .orElseThrow(() -> new CustomException("Task not found: " + taskId, HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new CustomException("Not Found", "Task not found: " + taskId, HttpStatus.NOT_FOUND));
 
         if ((task.getUser() != null && task.getUser().equals(user)) || user.getRoles().contains(Role.ROLE_ADMIN)) {
             todoTaskRepository.deleteById(taskId);
         } else {
-            throw new CustomException("Not enough permissions", HttpStatus.FORBIDDEN);
+            throw new CustomException("Forbidden", "Not enough permissions", HttpStatus.FORBIDDEN);
         }
 
 
@@ -106,7 +106,7 @@ public class TodoTaskServiceImpl implements TodoTaskService {
         // get task from DB
         log.info("Get the task from DB: id={}", taskId);
         TodoTask taskFromDB = todoTaskRepository.findByIdAndUserId(taskId, user.getId())
-                .orElseThrow(() -> new CustomException("Task not found: " + taskId, HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new CustomException("Not Found", "Task not found: " + taskId, HttpStatus.NOT_FOUND));
 
         // update task title or task completion date
         if (task != null) {

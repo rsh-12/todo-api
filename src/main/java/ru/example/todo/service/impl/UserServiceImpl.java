@@ -58,7 +58,7 @@ public class UserServiceImpl implements UserService {
 
             return buildResponseBody(user);
         } catch (AuthenticationException ex) {
-            throw new CustomException("Username not found or incorrect password", HttpStatus.NOT_FOUND);
+            throw new CustomException("Not Found", "Username Not Found / Incorrect Password", HttpStatus.NOT_FOUND);
         }
     }
 
@@ -86,7 +86,7 @@ public class UserServiceImpl implements UserService {
     public String register(User user) {
 
         if (userRepository.existsByUsername(user.getUsername())) {
-            throw new CustomException("Username already in use", HttpStatus.BAD_REQUEST);
+            throw new CustomException("Bad Request", "Username already in use", HttpStatus.BAD_REQUEST);
         }
 
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
@@ -106,7 +106,7 @@ public class UserServiceImpl implements UserService {
                     HttpStatus.BAD_REQUEST);
         }
         User user = userRepository.findByUsername(oldRefreshToken.getUsername())
-                .orElseThrow(() -> new CustomException("Refresh token owner not found", HttpStatus.BAD_REQUEST));
+                .orElseThrow(() -> new CustomException("Not Found", "Refresh token owner not found", HttpStatus.BAD_REQUEST));
 
         return buildResponseBody(user);
     }
@@ -114,7 +114,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteUser(Long userId) {
         if (!userRepository.existsById(userId)) {
-            throw new CustomException("User not found: " + userId, HttpStatus.NOT_FOUND);
+            throw new CustomException("Not Found", "User Not Found: " + userId, HttpStatus.NOT_FOUND);
         }
         userRepository.deleteById(userId);
     }
@@ -122,7 +122,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getUser(String username) {
         return userRepository.findByUsername(username)
-                .orElseThrow(() -> new CustomException("Username not found", HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new CustomException("Not Found", "Username not found", HttpStatus.NOT_FOUND));
     }
 
 }

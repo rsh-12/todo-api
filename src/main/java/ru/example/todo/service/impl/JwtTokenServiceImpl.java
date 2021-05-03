@@ -109,7 +109,7 @@ public class JwtTokenServiceImpl implements JwtTokenService {
                     .parseClaimsJws(token);
             return true;
         } catch (JwtException | IllegalArgumentException ex) {
-            throw new CustomException("Expired or invalid JWT token", HttpStatus.FORBIDDEN);
+            throw new CustomException("Forbidden", "Expired or invalid JWT token", HttpStatus.FORBIDDEN);
         }
     }
 
