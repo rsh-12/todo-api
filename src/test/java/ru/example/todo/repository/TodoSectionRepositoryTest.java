@@ -66,7 +66,8 @@ public class TodoSectionRepositoryTest extends AbstractRepositoryClass{
 
     @Test
     public void testGetSectionById() {
-        TodoSection section = repository.findById(1L).orElseThrow(() -> new CustomException("Not found"));
+        TodoSection section = repository.findById(1L).orElse(null);
+        assertNotNull(section);
         assertEquals(section.getTitle(), "Important");
     }
 
@@ -80,8 +81,8 @@ public class TodoSectionRepositoryTest extends AbstractRepositoryClass{
 
         entityManager.persistAndFlush(section);
 
-        TodoSection sectionFromDB = repository.findById(section.getId())
-                .orElseThrow(() -> new CustomException("Not found"));
+        TodoSection sectionFromDB = repository.findById(section.getId()).orElse(null);
+        assertNotNull(sectionFromDB);
 
         assert sectionFromDB != null;
         assertEquals(section.getTitle(), sectionFromDB.getTitle());
@@ -110,8 +111,8 @@ public class TodoSectionRepositoryTest extends AbstractRepositoryClass{
 
     @Test
     public void testUpdateSectionById() {
-        TodoSection section = repository.findById(2L)
-                .orElseThrow(() -> new CustomException("Section not found"));
+        TodoSection section = repository.findById(2L).orElse(null);
+        assertNotNull(section);
 
         assertNotEquals("New title", section.getTitle());
 
@@ -120,8 +121,7 @@ public class TodoSectionRepositoryTest extends AbstractRepositoryClass{
         section.setUpdatedAt(new Timestamp(date.getTime()));
         entityManager.persistAndFlush(section);
 
-        TodoSection updatedSection = repository.findById(2L)
-                .orElseThrow(() -> new CustomException("Section not found"));
+        TodoSection updatedSection = repository.findById(2L).orElse(null);
 
         assertEquals("New title", updatedSection.getTitle());
     }
