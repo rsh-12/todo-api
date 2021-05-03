@@ -4,6 +4,7 @@ package ru.example.todo.controller;
  * Time: 4:39 PM
  * */
 
+import io.swagger.annotations.Api;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,7 @@ import ru.example.todo.service.UserService;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+@Api("Users")
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
