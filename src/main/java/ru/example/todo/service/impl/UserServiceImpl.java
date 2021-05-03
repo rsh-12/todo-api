@@ -58,7 +58,7 @@ public class UserServiceImpl implements UserService {
 
             return buildResponseBody(user);
         } catch (AuthenticationException ex) {
-            throw new CustomException("Invalid username/password", HttpStatus.BAD_REQUEST);
+            throw new CustomException("Username not found or incorrect password", HttpStatus.NOT_FOUND);
         }
     }
 

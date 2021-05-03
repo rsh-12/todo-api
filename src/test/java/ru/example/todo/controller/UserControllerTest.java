@@ -60,7 +60,7 @@ public class UserControllerTest extends AbstractContollerClass {
                 .content(body))
                 .andDo(print())
                 .andExpect(status().isNotFound())
-                .andExpect(jsonPath("message", containsString("Invalid username/password")));
+                .andExpect(jsonPath("message", containsString("Username not found or incorrect password")));
     }
 
     @Test
@@ -72,7 +72,7 @@ public class UserControllerTest extends AbstractContollerClass {
                 .content(body))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("message", containsString("Invalid username/password")));
+                .andExpect(jsonPath("message", containsString("Username not found or incorrect password")));
     }
 
     // Register: success
