@@ -85,8 +85,8 @@ public class UserRepositoryTest extends AbstractRepositoryClass {
 
         assertTrue(repository.existsByUsername(username));
 
-        User user = repository.findByUsername(username)
-                .orElseThrow(() -> new CustomException("User not found", HttpStatus.NOT_FOUND));
+        User user = repository.findByUsername(username).orElse(null);
+        assertNotNull(user);
 
         repository.delete(user);
         entityManager.flush();

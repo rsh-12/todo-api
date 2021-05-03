@@ -15,13 +15,11 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import ru.example.todo.config.properties.TokenProperties;
 import ru.example.todo.entity.RefreshToken;
 import ru.example.todo.entity.Role;
 import ru.example.todo.exception.CustomException;
-import ru.example.todo.repository.UserRepository;
 import ru.example.todo.security.UserDetailsServiceImpl;
 import ru.example.todo.service.JwtTokenService;
 import ru.example.todo.service.TokenStore;
@@ -41,14 +39,12 @@ public class JwtTokenServiceImpl implements JwtTokenService {
 
     private final UserDetailsServiceImpl userDetailsService;
     private final TokenProperties tokenProperties;
-    private final UserRepository userRepository;
     private final TokenStore tokenStore;
 
-    public JwtTokenServiceImpl(TokenProperties tokenProperties, UserDetailsServiceImpl userDetailsService,
-                               UserRepository userRepository, TokenStore tokenStore) {
+    public JwtTokenServiceImpl(TokenProperties tokenProperties,
+                               UserDetailsServiceImpl userDetailsService, TokenStore tokenStore) {
         this.tokenProperties = tokenProperties;
         this.userDetailsService = userDetailsService;
-        this.userRepository = userRepository;
         this.tokenStore = tokenStore;
     }
 
@@ -113,7 +109,7 @@ public class JwtTokenServiceImpl implements JwtTokenService {
                     .parseClaimsJws(token);
             return true;
         } catch (JwtException | IllegalArgumentException ex) {
-            throw new CustomException("Expired or invalid JWT token", HttpStatus.FORBIDDEN);
+            throw new CustomException("Forbidden", "Expired or invalid JWT token", HttpStatus.FORBIDDEN);
         }
     }
 

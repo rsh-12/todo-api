@@ -41,7 +41,7 @@ public class TodoSectionServiceImpl implements TodoSectionService {
     public TodoSection getSectionById(User user, Long sectionId) {
         log.info("Get the section by id: {}", sectionId);
         return todoSectionRepository.findByUserIdAndId(user.getId(), sectionId)
-                .orElseThrow(() -> new CustomException("Section not found: " + sectionId, HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new CustomException("Not Found", "Section not found: " + sectionId, HttpStatus.NOT_FOUND));
     }
 
     // get all sections
@@ -59,7 +59,7 @@ public class TodoSectionServiceImpl implements TodoSectionService {
     public void deleteSectionById(User user, Long sectionId) {
 
         TodoSection section = todoSectionRepository.findById(sectionId)
-                .orElseThrow(() -> new CustomException("Section not found", HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new CustomException("Not Found", "Section not found", HttpStatus.NOT_FOUND));
 
         validateArgs(user, section);
     }
@@ -83,7 +83,7 @@ public class TodoSectionServiceImpl implements TodoSectionService {
 
         // get a section by id
         TodoSection section = todoSectionRepository.findById(sectionId)
-                .orElseThrow(() -> new CustomException("Section not found: " + sectionId, HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new CustomException("Not Found", "Section not found: " + sectionId, HttpStatus.NOT_FOUND));
 
         validateArgs(user, sectionDto, section);
 
@@ -96,7 +96,7 @@ public class TodoSectionServiceImpl implements TodoSectionService {
         if ((section.getUser() != null && section.getUser().equals(user)) || user.getRoles().contains(Role.ROLE_ADMIN)) {
             section.setTitle(sectionDto.getTitle());
         } else {
-            throw new CustomException("Not enough permissions", HttpStatus.FORBIDDEN);
+            throw new CustomException("Forbidden", "Not enough permissions", HttpStatus.FORBIDDEN);
         }
     }
 
@@ -105,7 +105,7 @@ public class TodoSectionServiceImpl implements TodoSectionService {
         if ((section.getUser() != null && section.getUser().equals(user)) || user.getRoles().contains(Role.ROLE_ADMIN)) {
             todoSectionRepository.delete(section);
         } else {
-            throw new CustomException("Not enough permissions", HttpStatus.FORBIDDEN);
+            throw new CustomException("Forbidden", "Not enough permissions", HttpStatus.FORBIDDEN);
         }
     }
 
@@ -114,12 +114,12 @@ public class TodoSectionServiceImpl implements TodoSectionService {
     public void addTasksToList(Long userId, Long sectionId, Set<Long> tasks, SetTasks flag) {
 
         if (tasks == null || tasks.isEmpty()) {
-            throw new CustomException("Tasks IDs are required!", HttpStatus.BAD_REQUEST);
+            throw new CustomException("Bad Request", "Tasks IDs are required", HttpStatus.BAD_REQUEST);
         }
 
         log.info("Get the section by id: {}", sectionId);
         TodoSection section = todoSectionRepository.findByUserIdAndId(userId, sectionId)
-                .orElseThrow(() -> new CustomException("Section not found: " + sectionId, HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new CustomException("Not Found", "Section not found: " + sectionId, HttpStatus.NOT_FOUND));
 
         List<TodoTask> tasksByIds = todoTaskService.findAllBySetId(tasks, userId);
         log.info("Get tasks list size: {}", tasksByIds.size());

@@ -171,7 +171,7 @@ public class TodoSectionControllerTest extends AbstractContollerClass {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(getSectionInJson((long) SECTION_ID, "New title")))
                 .andExpect(status().isNotFound())
-                .andExpect(jsonPath("message", containsString("Section not found")));
+                .andExpect(jsonPath("message", containsStringIgnoringCase("Section not found")));
     }
 
     @Test
@@ -258,7 +258,7 @@ public class TodoSectionControllerTest extends AbstractContollerClass {
                 .content(asJsonString(wrapper)))
                 .andDo(print())
                 .andExpect(status().is4xxClientError())
-                .andExpect(jsonPath("message", containsString("Tasks IDs are required!")));
+                .andExpect(jsonPath("message", containsStringIgnoringCase("Tasks IDs are required")));
     }
 
     @Test
@@ -275,7 +275,7 @@ public class TodoSectionControllerTest extends AbstractContollerClass {
                 .param("do", "remove")
                 .content(asJsonString(wrapper)))
                 .andExpect(status().is4xxClientError())
-                .andExpect(jsonPath("message", containsString("Tasks IDs are required!")));
+                .andExpect(jsonPath("message", containsStringIgnoringCase("Tasks IDs are required")));
     }
 
     @Test
@@ -294,6 +294,6 @@ public class TodoSectionControllerTest extends AbstractContollerClass {
                 .param("do", "remove")
                 .content(asJsonString(wrapper)))
                 .andExpect(status().is4xxClientError())
-                .andExpect(jsonPath("message", containsString("Section not found")));
+                .andExpect(jsonPath("message", containsStringIgnoringCase("Section not found")));
     }
 }

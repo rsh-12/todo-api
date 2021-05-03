@@ -33,8 +33,8 @@ public class TodoTaskRepositoryTest extends AbstractRepositoryClass {
 
         assertTrue(repository.existsById(TASK_ID));
 
-        TodoTask task = repository.findById(TASK_ID)
-                .orElseThrow(() -> new CustomException("Task not found"));
+        TodoTask task = repository.findById(TASK_ID).orElse(null);
+        assertNotNull(task);
 
         assertEquals(TASK_ID, task.getId());
         assertEquals("Read a book", task.getTitle());
@@ -54,8 +54,8 @@ public class TodoTaskRepositoryTest extends AbstractRepositoryClass {
 
         assertEquals(beforeTasksQuantity + 1, afterTasksQuantity);
 
-        TodoTask taskFromDB = repository.findById(task.getId())
-                .orElseThrow(() -> new CustomException("Task not found"));
+        TodoTask taskFromDB = repository.findById(task.getId()).orElse(null);
+        assertNotNull(taskFromDB);
 
         assertEquals(task.getTitle(), taskFromDB.getTitle());
     }
@@ -68,16 +68,16 @@ public class TodoTaskRepositoryTest extends AbstractRepositoryClass {
 
         assertTrue(repository.existsById(TASK_ID));
 
-        TodoTask task = repository.findById(TASK_ID)
-                .orElseThrow(() -> new CustomException("Task not found"));
+        TodoTask task = repository.findById(TASK_ID).orElse(null);
+        assertNotNull(task);
 
         assertEquals("Read a book", task.getTitle());
 
         task.setTitle(newTitle);
         entityManager.persistAndFlush(task);
 
-        TodoTask updatedTask = repository.findById(TASK_ID)
-                .orElseThrow(() -> new CustomException("Task not found"));
+        TodoTask updatedTask = repository.findById(TASK_ID).orElse(null);
+        assertNotNull(updatedTask);
 
         assertEquals(newTitle, updatedTask.getTitle());
     }

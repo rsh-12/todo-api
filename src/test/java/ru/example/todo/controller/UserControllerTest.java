@@ -12,8 +12,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -60,7 +59,7 @@ public class UserControllerTest extends AbstractContollerClass {
                 .content(body))
                 .andDo(print())
                 .andExpect(status().isNotFound())
-                .andExpect(jsonPath("message", containsString("Invalid username/password")));
+                .andExpect(jsonPath("message", containsStringIgnoringCase("Username not found / incorrect password")));
     }
 
     @Test
@@ -71,8 +70,8 @@ public class UserControllerTest extends AbstractContollerClass {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(body))
                 .andDo(print())
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("message", containsString("Invalid username/password")));
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("message", containsStringIgnoringCase("Username not found / incorrect password")));
     }
 
     // Register: success
@@ -138,7 +137,7 @@ public class UserControllerTest extends AbstractContollerClass {
         mvc.perform(delete(USERS + USER_ID))
                 .andDo(print())
                 .andExpect(status().isForbidden())
-                .andExpect(jsonPath("message", containsString("Not enough permissions")));
+                .andExpect(jsonPath("message", containsStringIgnoringCase("Not enough permissions")));
 
     }
 
@@ -151,6 +150,6 @@ public class UserControllerTest extends AbstractContollerClass {
                 .andDo(print())
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("message",
-                        containsString("Refresh token is not valid or expired, please, try to log in")));
+                        containsStringIgnoringCase("Refresh token is not valid or expired, please, try to log in")));
     }
 }
