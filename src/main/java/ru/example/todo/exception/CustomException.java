@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 
 public class CustomException extends RuntimeException {
 
+    private String error;
     private String message;
     private HttpStatus httpStatus;
 
@@ -15,17 +16,27 @@ public class CustomException extends RuntimeException {
         super(message);
     }
 
-    public CustomException(String message, HttpStatus httpStatus) {
-        this.message = message;
-        this.httpStatus = httpStatus;
+    public CustomException(Throwable cause) {
+        super(cause);
     }
 
     public CustomException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    public CustomException(Throwable cause) {
-        super(cause);
+    public CustomException(String message, HttpStatus httpStatus) {
+        this.message = message;
+        this.httpStatus = httpStatus;
+    }
+
+    public CustomException(String error, String message, HttpStatus httpStatus) {
+        this.error = error;
+        this.message = message;
+        this.httpStatus = httpStatus;
+    }
+
+    public String getError() {
+        return error;
     }
 
     @Override
