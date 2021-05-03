@@ -5,56 +5,70 @@ package ru.example.todo.exception;
  * */
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import org.springframework.http.HttpStatus;
 
 import java.util.Date;
 
 public class CustomErrorResponse {
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, timezone = "Asia/Yekaterinburg")
-    private Date timestamp;
-    private int status;
-    private String error;
-    private String message;
+    private final Date timestamp;
+    private final int status;
+    private final String error;
+    private final String message;
 
-    public CustomErrorResponse() {
+    public static class Builder {
+        private Date timestamp = new Date();
+        private int status = 500;
+        private String error = "Internal server error";
+        private String message = "Something went wrong";
+
+        public Builder timestamp(Date val) {
+            if (val != null) timestamp = val;
+            return this;
+        }
+
+        public Builder status(HttpStatus httpStatus) {
+            if (httpStatus != null) status = httpStatus.value();
+            return this;
+        }
+
+        public Builder error(String val) {
+            if (val != null) error = val;
+            return this;
+        }
+
+        public Builder message(String val) {
+            if (val != null) message = val;
+            return this;
+        }
+
+        public CustomErrorResponse build() {
+            return new CustomErrorResponse(this);
+        }
     }
 
-    public CustomErrorResponse(Date timestamp, int status, String error, String message) {
-        this.timestamp = timestamp;
-        this.status = status;
-        this.error = error;
-        this.message = message;
+    private CustomErrorResponse(Builder builder) {
+        timestamp = builder.timestamp;
+        status = builder.status;
+        error = builder.error;
+        message = builder.message;
     }
 
     public Date getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(Date timestamp) {
-        this.timestamp = timestamp;
-    }
-
     public int getStatus() {
         return status;
-    }
-
-    public void setStatus(int status) {
-        this.status = status;
     }
 
     public String getError() {
         return error;
     }
 
-    public void setError(String error) {
-        this.error = error;
-    }
-
     public String getMessage() {
         return message;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
-    }
 }
