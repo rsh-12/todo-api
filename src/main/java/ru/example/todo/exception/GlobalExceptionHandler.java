@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -47,11 +46,10 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             exHttpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
         }
 
-        var error = new CustomErrorResponse();
-        error.setTimestamp(new Date());
-        error.setStatus(exHttpStatus.value());
-        error.setError("Something went wrong");
-        error.setMessage(ex.getMessage());
+        var error = new CustomErrorResponse.Builder()
+                .status(ex.getHttpStatus())
+                .error(ex.getError())
+                .message(ex.getMessage()).build();
 
         return new ResponseEntity<>(error, exHttpStatus);
     }
@@ -60,11 +58,10 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     public ResponseEntity<CustomErrorResponse> handleException(RuntimeException ex) {
 
-        var error = new CustomErrorResponse();
-        error.setTimestamp(new Date());
-        error.setStatus(HttpStatus.BAD_REQUEST.value());
-        error.setError("Bad Request");
-        error.setMessage("Conversion error");
+        var error = new CustomErrorResponse.Builder()
+                .status(HttpStatus.BAD_REQUEST)
+                .error("Bad Request")
+                .message("Conversion error").build();
 
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
@@ -72,11 +69,10 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<CustomErrorResponse> handleAccessDeniedException(AccessDeniedException ex) {
 
-        var error = new CustomErrorResponse();
-        error.setTimestamp(new Date());
-        error.setStatus(HttpStatus.FORBIDDEN.value());
-        error.setError("Forbidden");
-        error.setMessage("Not enough permissions");
+        var error = new CustomErrorResponse.Builder()
+                .status(HttpStatus.FORBIDDEN)
+                .error("Forbidden")
+                .message("Not enough permissions").build();
 
         return new ResponseEntity<>(error, HttpStatus.FORBIDDEN);
     }
