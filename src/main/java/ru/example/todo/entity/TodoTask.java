@@ -5,67 +5,62 @@ package ru.example.todo.entity;
  * */
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonView;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.hateoas.server.core.Relation;
-import ru.example.todo.util.Views;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.util.Date;
+import java.util.Objects;
 
 @Entity
 @Table(name = "task")
 @Relation(value = "task", collectionRelation = "tasks")
 public class TodoTask {
 
-    // @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Id
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Size(min = 3, max = 80, message = "Size must be between 3 and 80")
-    @JsonView(value = Views.Public.class)
     private String title;
 
-    @JsonView(value = Views.Public.class)
     @Column(columnDefinition = "boolean default false")
     private boolean completed;
 
-    @JsonView(value = Views.Public.class)
     @Column(columnDefinition = "boolean default false")
     private boolean starred;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Yekaterinburg")
-    @JsonView(value = Views.Public.class)
     @Column(columnDefinition = "date default current_date")
-    private LocalDate completionDate = LocalDate.now();
+    private LocalDate completionDate;
 
     // @Column(columnDefinition = "timestamp default current_timestamp", updatable = false)
     @JsonFormat(timezone = "Asia/Yekaterinburg")
-    @JsonView(value = Views.Public.class)
     @CreationTimestamp
     private Date createdAt;
 
     // @Column(columnDefinition = "timestamp default current_timestamp")
     @JsonFormat(timezone = "Asia/Yekaterinburg")
-    @JsonView(value = Views.Public.class)
     @UpdateTimestamp
     private Date updatedAt;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE,
-            CascadeType.DETACH, CascadeType.REFRESH})
+    @JsonManagedReference
+    @ManyToOne(fetch = FetchType.LAZY,
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE,
+                    CascadeType.DETACH, CascadeType.REFRESH})
     @JoinColumn(name = "list_id")
     private TodoSection todoSection;
 
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @JsonManagedReference
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
-    @JsonIgnore
     private User user;
 
     public TodoTask() {
@@ -117,7 +112,7 @@ public class TodoTask {
     }
 
     public void setCompletionDate(LocalDate completionDate) {
-        this.completionDate = completionDate;
+        this.completionDate = Objects.requireNonNullElseGet(completionDate, LocalDate::now);
     }
 
     public Date getCreatedAt() {
