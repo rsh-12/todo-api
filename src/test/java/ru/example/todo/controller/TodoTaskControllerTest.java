@@ -61,14 +61,14 @@ public class TodoTaskControllerTest extends AbstractContollerClass {
     }
 
     @Test
-    @WithUserDetails(USER)
+    @WithUserDetails(ADMIN)
     public void testGetTaskById() throws Exception {
-        final int TASK_ID = 2;
+        final int TASK_ID = 3;
 
         mvc.perform(get(TASKS + TASK_ID))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("title",
-                        containsStringIgnoringCase("Create a presentation")));
+                        containsStringIgnoringCase("Write a letter")));
     }
 
     @Test
