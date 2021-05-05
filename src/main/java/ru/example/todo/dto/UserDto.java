@@ -5,7 +5,10 @@ package ru.example.todo.dto;
  * */
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.springframework.lang.NonNull;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
@@ -15,10 +18,14 @@ public class UserDto {
             flags = Pattern.Flag.CASE_INSENSITIVE,
             message = "Not a valid email address")
     @Size(min = 4, max = 127, message = "Email is required: minimum 4 characters")
+    @NotBlank
+    @NotEmpty
     private String username;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Size(min = 4, message = "Password is required")
+    @NotBlank
+    @NotEmpty
     private String password;
 
     public String getUsername() {

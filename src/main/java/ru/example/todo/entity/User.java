@@ -11,6 +11,8 @@ import org.hibernate.annotations.CreationTimestamp;
 import ru.example.todo.enums.Role;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.util.Date;
@@ -25,6 +27,8 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank
+    @NotEmpty
     @Pattern(regexp = "^[a-z]{2,}@[a-z]{2,5}\\.(ru|com)",
             flags = Pattern.Flag.CASE_INSENSITIVE, message = "Not a valid email address")
     @Size(min = 4, max = 127, message = "Email is required: minimum 4 characters")
@@ -32,6 +36,8 @@ public class User {
     private String username;
 
     // todo set min=8
+    @NotBlank
+    @NotEmpty
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Size(min = 4, message = "Password is required")
     private String password;
