@@ -1,4 +1,4 @@
-package ru.example.todo.entity;
+package ru.example.todo.domain;
 /*
  * Date: 3/25/21
  * Time: 10:47 AM

@@ -13,9 +13,9 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import ru.example.todo.service.TokenStore;
 import ru.example.todo.service.impl.InMemoryTokenStore;
-import ru.example.todo.util.StringToDateEnumConverter;
-import ru.example.todo.util.StringToSetTasksEnumConverter;
-import ru.example.todo.util.StringToStatusEnumConverter;
+import ru.example.todo.util.converters.StringToDateEnumConverter;
+import ru.example.todo.util.converters.StringToSetTasksEnumConverter;
+import ru.example.todo.util.converters.StringToStatusEnumConverter;
 
 @Configuration
 public class ProjectConfig implements WebMvcConfigurer {
@@ -49,4 +49,5 @@ public class ProjectConfig implements WebMvcConfigurer {
                 .allowedOrigins("*")
                 .allowedMethods("*");
     }
+
 }

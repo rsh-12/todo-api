@@ -5,11 +5,13 @@ package ru.example.todo.entity;
  * */
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.annotations.CreationTimestamp;
+import ru.example.todo.enums.Role;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.util.Date;
@@ -24,6 +26,8 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank
+    @NotEmpty
     @Pattern(regexp = "^[a-z]{2,}@[a-z]{2,5}\\.(ru|com)",
             flags = Pattern.Flag.CASE_INSENSITIVE, message = "Not a valid email address")
     @Size(min = 4, max = 127, message = "Email is required: minimum 4 characters")
@@ -31,6 +35,8 @@ public class User {
     private String username;
 
     // todo set min=8
+    @NotBlank
+    @NotEmpty
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Size(min = 4, message = "Password is required")
     private String password;
@@ -43,16 +49,16 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Set<Role> roles;
 
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user",
             cascade = {CascadeType.REFRESH, CascadeType.DETACH,
                     CascadeType.REMOVE, CascadeType.MERGE})
-    @JsonIgnore
     private Set<TodoSection> todoSections;
 
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user",
             cascade = {CascadeType.REFRESH, CascadeType.DETACH,
                     CascadeType.REMOVE, CascadeType.MERGE})
-    @JsonIgnore
     private List<TodoTask> todoTasks;
 
     public User() {

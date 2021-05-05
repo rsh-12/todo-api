@@ -14,10 +14,10 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.example.todo.config.properties.TokenProperties;
+import ru.example.todo.domain.RefreshToken;
 import ru.example.todo.dto.UserDto;
-import ru.example.todo.entity.RefreshToken;
-import ru.example.todo.entity.Role;
 import ru.example.todo.entity.User;
+import ru.example.todo.enums.Role;
 import ru.example.todo.exception.CustomException;
 import ru.example.todo.repository.UserRepository;
 import ru.example.todo.security.UserDetailsImpl;
@@ -123,6 +123,12 @@ public class UserServiceImpl implements UserService {
     public User getUser(String username) {
         return userRepository.findByUsername(username)
                 .orElseThrow(() -> new CustomException("Not Found", "Username not found", HttpStatus.NOT_FOUND));
+    }
+
+    @Override
+    public User getUser(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new CustomException("Not Found", "User Not Found", HttpStatus.BAD_REQUEST));
     }
 
 }

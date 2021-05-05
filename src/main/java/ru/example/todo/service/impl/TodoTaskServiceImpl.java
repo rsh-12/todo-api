@@ -4,7 +4,6 @@ package ru.example.todo.service.impl;
  * Time: 6:16 PM
  * */
 
-import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +13,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import ru.example.todo.dto.TodoTaskDto;
-import ru.example.todo.entity.Role;
+import ru.example.todo.enums.Role;
 import ru.example.todo.entity.TodoTask;
 import ru.example.todo.entity.User;
 import ru.example.todo.enums.TaskDate;

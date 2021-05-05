@@ -5,7 +5,7 @@ package ru.example.todo.repository;
  * */
 
 import org.junit.jupiter.api.Test;
-import ru.example.todo.entity.RefreshToken;
+import ru.example.todo.domain.RefreshToken;
 import ru.example.todo.service.impl.InMemoryTokenStore;
 
 import java.util.Date;

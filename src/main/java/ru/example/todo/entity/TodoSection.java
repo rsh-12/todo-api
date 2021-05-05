@@ -5,16 +5,15 @@ package ru.example.todo.entity;
  * */
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonView;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.hateoas.server.core.Relation;
-import ru.example.todo.util.Views;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 import java.util.Date;
 import java.util.List;
@@ -24,35 +23,30 @@ import java.util.List;
 @Relation(value = "section", collectionRelation = "sections")
 public class TodoSection {
 
-    // @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Id
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotEmpty
     @NotBlank
     @Size(min = 3, max = 50, message = "Size must be between 3 and 50")
-    @JsonView(value = Views.Public.class)
     private String title;
 
-    // @Column(columnDefinition = "timestamp default current_timestamp", updatable = false)
     @JsonFormat(timezone = "Asia/Yekaterinburg")
-    @JsonView(value = Views.Public.class)
     @CreationTimestamp
     private Date createdAt;
 
-    // @Column(columnDefinition = "timestamp default current_timestamp")
     @JsonFormat(timezone = "Asia/Yekaterinburg")
-    @JsonView(value = Views.Public.class)
     @UpdateTimestamp
     private Date updatedAt;
 
-    @OneToMany(mappedBy = "todoSection", cascade = {CascadeType.PERSIST})
-    @JsonView(value = Views.Internal.class)
+    @OneToMany(mappedBy = "todoSection", cascade = {CascadeType.PERSIST}, fetch = FetchType.EAGER)
     List<TodoTask> todoTasks;
 
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
-    @JsonIgnore
     private User user;
 
     @PreRemove

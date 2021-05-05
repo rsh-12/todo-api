@@ -1,4 +1,4 @@
-package ru.example.todo.entity;
+package ru.example.todo.enums;
 
 import org.springframework.security.core.GrantedAuthority;
 
