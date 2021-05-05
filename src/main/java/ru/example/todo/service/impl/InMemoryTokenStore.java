@@ -5,7 +5,7 @@ package ru.example.todo.service.impl;
  * */
 
 import org.springframework.scheduling.annotation.Async;
-import ru.example.todo.entity.RefreshToken;
+import ru.example.todo.domain.RefreshToken;
 import ru.example.todo.service.TokenStore;
 
 import java.util.Date;

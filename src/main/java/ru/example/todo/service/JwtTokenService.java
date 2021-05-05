@@ -1,8 +1,8 @@
 package ru.example.todo.service;
 
 import org.springframework.security.core.Authentication;
-import ru.example.todo.entity.RefreshToken;
-import ru.example.todo.entity.Role;
+import ru.example.todo.domain.RefreshToken;
+import ru.example.todo.enums.Role;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Set;

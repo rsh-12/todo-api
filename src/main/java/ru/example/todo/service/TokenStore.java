@@ -1,6 +1,6 @@
 package ru.example.todo.service;
 
-import ru.example.todo.entity.RefreshToken;
+import ru.example.todo.domain.RefreshToken;
 
 import java.util.concurrent.CompletableFuture;
 
