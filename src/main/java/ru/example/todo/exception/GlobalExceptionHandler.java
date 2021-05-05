@@ -40,18 +40,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler
     public ResponseEntity<CustomErrorResponse> handleException(CustomException ex) {
 
-        HttpStatus exHttpStatus = ex.getHttpStatus();
-
-        if (exHttpStatus == null) {
-            exHttpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
-        }
-
         var error = new CustomErrorResponse.Builder()
                 .status(ex.getHttpStatus())
                 .error(ex.getError())
                 .message(ex.getMessage()).build();
 
-        return new ResponseEntity<>(error, exHttpStatus);
+        return new ResponseEntity<>(error, HttpStatus.valueOf(error.getStatus()));
     }
 
     @ExceptionHandler(ConversionFailedException.class)
