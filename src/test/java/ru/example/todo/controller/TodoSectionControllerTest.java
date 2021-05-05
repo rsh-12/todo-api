@@ -225,7 +225,7 @@ public class TodoSectionControllerTest extends AbstractContollerClass {
 
         mvc.perform(get(SECTIONS + SECTION_ID))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("tasks[0].id", is(TASK_ID)));
+                .andExpect(jsonPath("tasks[0].title", containsStringIgnoringCase("special")));
 
         // request body
         TaskIdsWrapper wrapper = new TaskIdsWrapper();
