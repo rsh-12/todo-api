@@ -5,7 +5,6 @@ package ru.example.todo.entity;
  * */
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -39,18 +38,15 @@ public class TodoTask {
     @Column(columnDefinition = "date default current_date")
     private LocalDate completionDate;
 
-    // @Column(columnDefinition = "timestamp default current_timestamp", updatable = false)
     @JsonFormat(timezone = "Asia/Yekaterinburg")
     @CreationTimestamp
     private Date createdAt;
 
-    // @Column(columnDefinition = "timestamp default current_timestamp")
     @JsonFormat(timezone = "Asia/Yekaterinburg")
     @UpdateTimestamp
     private Date updatedAt;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @JsonManagedReference
     @ManyToOne(fetch = FetchType.LAZY,
             cascade = {CascadeType.PERSIST, CascadeType.MERGE,
                     CascadeType.DETACH, CascadeType.REFRESH})
@@ -58,7 +54,6 @@ public class TodoTask {
     private TodoSection todoSection;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @JsonManagedReference
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;

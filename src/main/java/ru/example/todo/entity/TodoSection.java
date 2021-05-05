@@ -33,21 +33,17 @@ public class TodoSection {
     @Size(min = 3, max = 50, message = "Size must be between 3 and 50")
     private String title;
 
-    // @Column(columnDefinition = "timestamp default current_timestamp", updatable = false)
     @JsonFormat(timezone = "Asia/Yekaterinburg")
     @CreationTimestamp
     private Date createdAt;
 
-    // @Column(columnDefinition = "timestamp default current_timestamp")
     @JsonFormat(timezone = "Asia/Yekaterinburg")
     @UpdateTimestamp
     private Date updatedAt;
 
-//    @JsonBackReference
     @OneToMany(mappedBy = "todoSection", cascade = {CascadeType.PERSIST}, fetch = FetchType.EAGER)
     List<TodoTask> todoTasks;
 
-    @JsonManagedReference
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", referencedColumnName = "id")

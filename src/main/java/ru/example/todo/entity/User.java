@@ -4,7 +4,6 @@ package ru.example.todo.entity;
  * Time: 9:47 AM
  * */
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.annotations.CreationTimestamp;
@@ -50,13 +49,13 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Set<Role> roles;
 
-    @JsonBackReference
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user",
             cascade = {CascadeType.REFRESH, CascadeType.DETACH,
                     CascadeType.REMOVE, CascadeType.MERGE})
     private Set<TodoSection> todoSections;
 
-    @JsonBackReference
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user",
             cascade = {CascadeType.REFRESH, CascadeType.DETACH,
                     CascadeType.REMOVE, CascadeType.MERGE})
