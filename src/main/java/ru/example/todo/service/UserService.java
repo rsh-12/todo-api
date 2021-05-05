@@ -23,4 +23,5 @@ public interface UserService {
 
     User getUser(String username);
 
+    User getUser(Long userId);
 }
