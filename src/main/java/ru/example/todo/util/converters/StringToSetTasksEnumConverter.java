@@ -1,4 +1,4 @@
-package ru.example.todo.util;
+package ru.example.todo.util.converters;
 /*
  * Date: 1/17/21
  * Time: 8:22 AM
