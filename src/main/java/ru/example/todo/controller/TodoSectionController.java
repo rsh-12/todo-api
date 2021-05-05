@@ -4,7 +4,6 @@ package ru.example.todo.controller;
  * Time: 7:51 PM
  * */
 
-import com.fasterxml.jackson.annotation.JsonView;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +21,6 @@ import ru.example.todo.entity.TodoSection;
 import ru.example.todo.enums.SetTasks;
 import ru.example.todo.security.UserDetailsImpl;
 import ru.example.todo.service.TodoSectionService;
-import ru.example.todo.util.Views;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -49,7 +47,6 @@ public class TodoSectionController {
     // get all sections
     @ApiOperation(value = "List todo sections", notes = "List all todo sections")
     @GetMapping(produces = "application/json")
-    @JsonView(Views.Public.class)
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     public CollectionModel<EntityModel<TodoSection>> all(@AuthenticationPrincipal UserDetailsImpl uds) {
 
@@ -65,7 +62,6 @@ public class TodoSectionController {
     // get custom section by id
     @ApiOperation(value = "Find section", notes = "Find the Section by ID")
     @GetMapping(value = "/{id}", produces = "application/json")
-    @JsonView(value = Views.Internal.class)
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     public EntityModel<TodoSection> one(@AuthenticationPrincipal UserDetailsImpl uds,
                                         @PathVariable("id") Long sectonId) {
