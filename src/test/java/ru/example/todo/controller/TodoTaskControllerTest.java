@@ -67,7 +67,8 @@ public class TodoTaskControllerTest extends AbstractContollerClass {
 
         mvc.perform(get(TASKS + TASK_ID))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("id", is(TASK_ID)));
+                .andExpect(jsonPath("title",
+                        containsStringIgnoringCase("Create a presentation")));
     }
 
     @Test
