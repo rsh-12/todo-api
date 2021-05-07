@@ -41,7 +41,7 @@ public class TodoSection {
     @UpdateTimestamp
     private Date updatedAt;
 
-    @OneToMany(mappedBy = "todoSection", cascade = {CascadeType.PERSIST}, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "todoSection", cascade = {CascadeType.PERSIST}, fetch = FetchType.LAZY)
     List<TodoTask> todoTasks;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
