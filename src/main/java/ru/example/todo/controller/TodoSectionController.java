@@ -6,6 +6,7 @@ package ru.example.todo.controller;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
@@ -36,12 +37,14 @@ public class TodoSectionController {
 
     private final TodoSectionService todoSectionService;
     private final TodoSectionModelAssembler assembler;
+    private final ModelMapper mapper;
 
     @Autowired
     public TodoSectionController(TodoSectionService todoSectionService,
-                                 TodoSectionModelAssembler assembler) {
+                                 TodoSectionModelAssembler assembler, ModelMapper mapper) {
         this.todoSectionService = todoSectionService;
         this.assembler = assembler;
+        this.mapper = mapper;
     }
 
     // get all sections
@@ -52,6 +55,7 @@ public class TodoSectionController {
 
         List<EntityModel<TodoSection>> sections = todoSectionService.getAllSections(uds.getUser())
                 .stream()
+                .map(sectionDto -> mapper.map(sectionDto, TodoSection.class))
                 .map(assembler::toModel)
                 .collect(Collectors.toList());
 

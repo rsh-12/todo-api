@@ -46,9 +46,9 @@ public class TodoSectionServiceImpl implements TodoSectionService {
 
     // get all sections
     @Override
-    public List<TodoSection> getAllSections(User user) {
+    public List<TodoSectionDto> getAllSections(User user) {
 
-        List<TodoSection> sections = todoSectionRepository.findAllByUserId(user.getId());
+        List<TodoSectionDto> sections = todoSectionRepository.findAllByUserId(user.getId());
         log.info("Get all sections: {}", sections.size());
         return sections;
     }
