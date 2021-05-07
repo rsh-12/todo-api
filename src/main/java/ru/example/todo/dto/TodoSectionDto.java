@@ -4,11 +4,8 @@ package ru.example.todo.dto;
  * Time: 5:46 PM
  * */
 
-import ru.example.todo.entity.TodoTask;
-
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
-import java.util.List;
 
 public class TodoSectionDto {
 
@@ -16,7 +13,6 @@ public class TodoSectionDto {
     @Size(min = 3, max = 50, message = "Size must be between 3 and 50")
     private String title;
 
-    public List<TodoTask> todoTasks;
 
     public String getTitle() {
         return title;
@@ -26,19 +22,9 @@ public class TodoSectionDto {
         this.title = title;
     }
 
-    public List<TodoTask> getTodoTasks() {
-        return todoTasks;
-    }
-
-    public void setTodoTasks(List<TodoTask> todoTasks) {
-        this.todoTasks = todoTasks;
-    }
-
     @Override
     public String toString() {
         return "TodoSectionDto{" +
-                "title='" + title + '\'' +
-                ", todoTasks=" + todoTasks +
-                '}';
+                "title='" + title + '\'' + '}';
     }
 }
