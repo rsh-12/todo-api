@@ -50,13 +50,11 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Set<Role> roles;
 
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user",
             cascade = {CascadeType.REFRESH, CascadeType.DETACH,
                     CascadeType.REMOVE, CascadeType.MERGE})
     private Set<TodoSection> todoSections;
 
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user",
             cascade = {CascadeType.REFRESH, CascadeType.DETACH,
                     CascadeType.REMOVE, CascadeType.MERGE})
