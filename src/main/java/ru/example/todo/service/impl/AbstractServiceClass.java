@@ -43,7 +43,7 @@ public class AbstractServiceClass {
         String refreshToken = jwtTokenService.buildRefreshToken(user.getUsername()).getToken();
 
         return String.format("{\"access_token\": \"%s\", " +
-                        "\"resfresh_token\": \"%s\", " +
+                        "\"refresh_token\": \"%s\", " +
                         "\"token_type\": \"Bearer\", " +
                         "\"expires\": %d}",
                 accessToken, refreshToken, tokenProperties.getAccessTokenValidity());
