@@ -91,6 +91,7 @@ public class TodoSection {
         this.title = title.trim();
     }
 
+    @JsonProperty("tasks")
     public List<TodoTask> getTodoTasks() {
         return todoTasks;
     }
