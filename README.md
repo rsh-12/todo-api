@@ -5,8 +5,8 @@
 
 ...
 
-## **Swagger:**
-> ### com.example`/swagger-ui/`
+### **Swagger:** 
+ com.example`/swagger-ui/`
 
 
 ---
