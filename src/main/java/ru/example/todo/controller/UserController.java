@@ -18,7 +18,7 @@ import ru.example.todo.service.UserService;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
-@Api("Users")
+@Api(tags = "Users")
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
