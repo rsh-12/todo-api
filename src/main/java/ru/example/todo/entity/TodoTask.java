@@ -54,7 +54,7 @@ public class TodoTask {
     @JoinColumn(name = "list_id")
     private TodoSection todoSection;
 
-    @NotNull
+    // @NotNull
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
