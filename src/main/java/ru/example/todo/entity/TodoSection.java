@@ -45,7 +45,7 @@ public class TodoSection {
     @OneToMany(mappedBy = "todoSection", cascade = {CascadeType.PERSIST}, fetch = FetchType.LAZY)
     List<TodoTask> todoTasks = Collections.emptyList();
 
-    @NotNull
+    // @NotNull
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
@@ -91,6 +91,7 @@ public class TodoSection {
         this.title = title.trim();
     }
 
+    @JsonProperty("tasks")
     public List<TodoTask> getTodoTasks() {
         return todoTasks;
     }
