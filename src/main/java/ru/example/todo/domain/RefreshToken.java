@@ -11,7 +11,7 @@ import static java.time.Instant.now;
 
 public class RefreshToken {
 
-    private final String id;
+    private final String token;
     private final String username;
     private final Date expiryTime;
 
@@ -20,12 +20,12 @@ public class RefreshToken {
     }
 
     public static class Builder {
-        private String id;
+        private String token;
         private String username;
         private Date expiryTime;
 
-        public Builder id(String val) {
-            id = val;
+        public Builder token(String val) {
+            token = val;
             return this;
         }
 
@@ -45,13 +45,13 @@ public class RefreshToken {
     }
 
     private RefreshToken(Builder builder) {
-        id = builder.id;
+        token = builder.token;
         username = builder.username;
         expiryTime = builder.expiryTime;
     }
 
-    public String getId() {
-        return id;
+    public String getToken() {
+        return token;
     }
 
     public String getUsername() {
@@ -65,7 +65,7 @@ public class RefreshToken {
     @Override
     public String toString() {
         return "RefreshToken{" +
-                "id='" + id + '\'' +
+                "token='" + token + '\'' +
                 ", username='" + username + '\'' +
                 ", expiryTime=" + expiryTime +
                 '}';

@@ -40,7 +40,7 @@ public class AbstractServiceClass {
     String buildResponseBody(User user, JwtTokenService jwtTokenService, TokenProperties tokenProperties) {
 
         String accessToken = jwtTokenService.buildAccessToken(user.getUsername(), user.getRoles());
-        String refreshToken = jwtTokenService.buildRefreshToken(user.getUsername()).getId();
+        String refreshToken = jwtTokenService.buildRefreshToken(user.getUsername()).getToken();
 
         return String.format("{\"access_token\": \"%s\", " +
                         "\"resfresh_token\": \"%s\", " +
