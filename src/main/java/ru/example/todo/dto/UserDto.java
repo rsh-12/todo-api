@@ -5,7 +5,6 @@ package ru.example.todo.dto;
  * */
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.springframework.lang.NonNull;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
