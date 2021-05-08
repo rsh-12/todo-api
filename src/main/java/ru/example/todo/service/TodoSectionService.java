@@ -20,5 +20,6 @@ public interface TodoSectionService {
 
     void updateSection(User user, Long sectionId, TodoSectionDto sectionDto);
 
-    void addTasksToList(Long userId, Long sectionId, Set<Long> tasks, SetTasks flag);
+    // add to or remove from the task section
+    void moveTasks(Long userId, Long sectionId, Set<Long> tasks, SetTasks flag);
 }
