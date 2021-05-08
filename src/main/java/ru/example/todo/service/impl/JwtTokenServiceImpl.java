@@ -94,8 +94,10 @@ public class JwtTokenServiceImpl implements JwtTokenService {
     public String resolveToken(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
 
-        if (bearerToken != null && StringUtils.startsWithIgnoreCase(bearerToken, "Bearer ")) {
-            return bearerToken.substring(7);
+        if (bearerToken != null) {
+            return StringUtils.startsWithIgnoreCase(bearerToken, "Bearer ") ?
+                    bearerToken.substring(7) :
+                    bearerToken;
         }
         return null;
     }
