@@ -11,5 +11,3 @@
 
 ---
 Learn more on the project's [website](https://rsh-12.github.io/todo-api/)
-
-- [ ] Fix swagger
