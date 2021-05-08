@@ -68,7 +68,7 @@ public class JwtTokenServiceImpl implements JwtTokenService {
     public RefreshToken buildRefreshToken(String username) {
 
         RefreshToken refreshToken = new RefreshToken.Builder()
-                .id(RandomStringUtils.randomAlphanumeric(64))
+                .token(RandomStringUtils.randomAlphanumeric(64))
                 .expiryTime(getValidity(tokenProperties.getRefreshTokenValidity()))
                 .username(username)
                 .build();

@@ -13,7 +13,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import ru.example.todo.dto.TodoTaskDto;
-import ru.example.todo.enums.Role;
 import ru.example.todo.entity.TodoTask;
 import ru.example.todo.entity.User;
 import ru.example.todo.enums.TaskDate;
@@ -28,7 +27,7 @@ import java.util.List;
 import java.util.Set;
 
 @Service
-public class TodoTaskServiceImpl implements TodoTaskService {
+public class TodoTaskServiceImpl extends AbstractServiceClass implements TodoTaskService {
 
     private static final Logger log = LoggerFactory.getLogger(TodoTaskServiceImpl.class.getName());
 
@@ -72,12 +71,11 @@ public class TodoTaskServiceImpl implements TodoTaskService {
         TodoTask task = todoTaskRepository.findById(taskId)
                 .orElseThrow(() -> new CustomException("Not Found", "Task not found: " + taskId, HttpStatus.NOT_FOUND));
 
-        if ((task.getUser() != null && task.getUser().equals(user)) || user.getRoles().contains(Role.ROLE_ADMIN)) {
+        if (isValidOrAdmin(user, task.getUser())) {
             todoTaskRepository.deleteById(taskId);
         } else {
             throw new CustomException("Forbidden", "Not enough permissions", HttpStatus.FORBIDDEN);
         }
-
 
         log.info("The task with id={} was deleted successfully", taskId);
     }
@@ -124,29 +122,6 @@ public class TodoTaskServiceImpl implements TodoTaskService {
 
         log.info("Save the updated task: id={}", taskId);
         todoTaskRepository.save(taskFromDB);
-    }
-
-    private void setTitleOrDate(TodoTaskDto taskDto, TodoTask taskFromDB) {
-        log.info("Update task 'completionDate' field");
-        if (taskDto.getCompletionDate() != null) taskFromDB.setCompletionDate(taskDto.getCompletionDate());
-
-        log.info("Update task 'title' field");
-        if (taskDto.getTitle() != null) taskFromDB.setTitle(taskDto.getTitle());
-    }
-
-    // --------------------------------------------------------------------------- Helper methods.
-    private boolean toABoolean(TaskStatus status) {
-        return Boolean.parseBoolean(status.toString());
-    }
-
-    private Sort.Direction getSortDirection(String sort) {
-        if (sort.contains(",asc")) return Sort.Direction.ASC;
-        return Sort.Direction.DESC;
-    }
-
-    private String getSortAsString(String sort) {
-        if (sort.contains(",")) return sort.split(",")[0];
-        return sort;
     }
 
 }

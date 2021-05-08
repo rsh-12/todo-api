@@ -28,9 +28,9 @@ public class InMemoryTokenStore implements TokenStore {
 
         tokenStore.values().stream()
                 .filter(token -> token.getUsername().equals(refreshToken.getUsername()))
-                .forEach(token -> tokenStore.remove(token.getId()));
+                .forEach(token -> tokenStore.remove(token.getToken()));
 
-        tokenStore.put(refreshToken.getId(), refreshToken);
+        tokenStore.put(refreshToken.getToken(), refreshToken);
 
         return CompletableFuture.allOf();
     }
@@ -44,7 +44,7 @@ public class InMemoryTokenStore implements TokenStore {
     public void removeIfExpired() {
         tokenStore.values().stream()
                 .filter(token -> token.getExpiryTime().before(new Date(System.currentTimeMillis())))
-                .forEach(token -> tokenStore.remove(token.getId()));
+                .forEach(token -> tokenStore.remove(token.getToken()));
     }
 
     public Map<String, RefreshToken> getTokenStore() {

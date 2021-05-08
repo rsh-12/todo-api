@@ -13,6 +13,7 @@ import org.springframework.hateoas.server.core.Relation;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.Collections;
 import java.util.Date;
@@ -44,6 +45,7 @@ public class TodoSection {
     @OneToMany(mappedBy = "todoSection", cascade = {CascadeType.PERSIST}, fetch = FetchType.LAZY)
     List<TodoTask> todoTasks = Collections.emptyList();
 
+    @NotNull
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
@@ -55,6 +57,10 @@ public class TodoSection {
     }
 
     public TodoSection() {
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public Date getCreatedAt() {
@@ -77,14 +83,6 @@ public class TodoSection {
         this.title = title;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public String getTitle() {
         return title;
     }
@@ -93,7 +91,6 @@ public class TodoSection {
         this.title = title.trim();
     }
 
-    @JsonProperty("tasks")
     public List<TodoTask> getTodoTasks() {
         return todoTasks;
     }
@@ -104,6 +101,17 @@ public class TodoSection {
 
     public void removeTodoTasks(List<TodoTask> todoTasks) {
         todoTasks.forEach(task -> task.setTodoSection(null));
+    }
+
+    public void addTask(TodoTask task) {
+        if (task == null) throw new NullPointerException("Can't add null Task");
+        getTodoTasks().add(task);
+        task.setTodoSection(this);
+    }
+
+    public void removeTask(TodoTask task) {
+        if (task == null) throw new NullPointerException("Can't remove null task");
+        task.setTodoSection(null);
     }
 
     public User getUser() {

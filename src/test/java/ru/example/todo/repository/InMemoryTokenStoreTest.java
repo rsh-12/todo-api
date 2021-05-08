@@ -44,7 +44,7 @@ public class InMemoryTokenStoreTest {
 
     public RefreshToken buildRefreshToken(String id, String username) {
         return new RefreshToken.Builder()
-                .id(id)
+                .token(id)
                 .username(username)
                 .expiryTime(new Date(System.currentTimeMillis() + 30000))
                 .build();

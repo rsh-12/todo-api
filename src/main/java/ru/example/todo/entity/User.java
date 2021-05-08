@@ -16,6 +16,7 @@ import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -49,13 +50,11 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Set<Role> roles;
 
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user",
             cascade = {CascadeType.REFRESH, CascadeType.DETACH,
                     CascadeType.REMOVE, CascadeType.MERGE})
     private Set<TodoSection> todoSections;
 
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user",
             cascade = {CascadeType.REFRESH, CascadeType.DETACH,
                     CascadeType.REMOVE, CascadeType.MERGE})
@@ -66,10 +65,6 @@ public class User {
 
     public Long getId() {
         return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getUsername() {
@@ -112,22 +107,6 @@ public class User {
         roles.remove(role);
     }
 
-    public List<TodoTask> getTodoTasks() {
-        return todoTasks;
-    }
-
-    public void setTodoTasks(List<TodoTask> todoTasks) {
-        this.todoTasks = todoTasks;
-    }
-
-    public Set<TodoSection> getTodoSections() {
-        return todoSections;
-    }
-
-    public void setTodoSections(Set<TodoSection> todoSections) {
-        this.todoSections = todoSections;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -135,8 +114,8 @@ public class User {
 
         User user = (User) o;
 
-        if (id != null ? !id.equals(user.id) : user.id != null) return false;
-        return username != null ? username.equals(user.username) : user.username == null;
+        if (!Objects.equals(id, user.id)) return false;
+        return Objects.equals(username, user.username);
     }
 
     @Override

@@ -115,7 +115,7 @@ public class TodoSectionController {
                                             @RequestBody TaskIdsWrapper wrapper,
                                             @RequestParam(value = "do") SetTasks flag) {
 
-        todoSectionService.addTasksToList(uds.getId(), sectionId, wrapper.tasks, flag);
+        todoSectionService.moveTasks(uds.getId(), sectionId, wrapper.tasks, flag);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
