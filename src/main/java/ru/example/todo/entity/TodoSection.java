@@ -91,7 +91,6 @@ public class TodoSection {
         this.title = title.trim();
     }
 
-    @JsonProperty("tasks")
     public List<TodoTask> getTodoTasks() {
         return todoTasks;
     }
@@ -102,6 +101,17 @@ public class TodoSection {
 
     public void removeTodoTasks(List<TodoTask> todoTasks) {
         todoTasks.forEach(task -> task.setTodoSection(null));
+    }
+
+    public void addTask(TodoTask task) {
+        if (task == null) throw new NullPointerException("Can't add null Task");
+        getTodoTasks().add(task);
+        task.setTodoSection(this);
+    }
+
+    public void removeTask(TodoTask task) {
+        if (task == null) throw new NullPointerException("Can't remove null task");
+        task.setTodoSection(null);
     }
 
     public User getUser() {
