@@ -4,8 +4,6 @@ package ru.example.todo.service.impl;
  * Time: 4:39 PM
  * */
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -25,11 +23,9 @@ import ru.example.todo.service.JwtTokenService;
 import ru.example.todo.service.UserService;
 
 import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 @Service
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl extends AbstractServiceClass implements UserService {
 
     private final AuthenticationManager authManager;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
@@ -56,31 +52,12 @@ public class UserServiceImpl implements UserService {
 
             User user = ((UserDetailsImpl) auth.getPrincipal()).getUser();
 
-            return buildResponseBody(user);
+            return buildResponseBody(user, jwtTokenService, tokenProperties);
         } catch (AuthenticationException ex) {
             throw new CustomException("Not Found", "Username Not Found / Incorrect Password", HttpStatus.NOT_FOUND);
         }
     }
 
-    private String buildResponseBody(User user) {
-
-        Map<String, String> body = new LinkedHashMap<>();
-
-        String accessToken = jwtTokenService.buildAccessToken(user.getUsername(), user.getRoles());
-        RefreshToken refreshToken = jwtTokenService.buildRefreshToken(user.getUsername());
-
-        body.put("access_token", accessToken);
-        body.put("refresh_token", refreshToken.getId());
-        body.put("token_type", "Bearer");
-        body.put("expires", String.valueOf(tokenProperties.getAccessTokenValidity()));
-
-        try {
-            return new ObjectMapper().writeValueAsString(body);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
-        throw new CustomException("Error while building response", HttpStatus.INTERNAL_SERVER_ERROR);
-    }
 
     @Override
     public String register(User user) {
@@ -108,7 +85,7 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findByUsername(oldRefreshToken.getUsername())
                 .orElseThrow(() -> new CustomException("Not Found", "Refresh token owner not found", HttpStatus.BAD_REQUEST));
 
-        return buildResponseBody(user);
+        return buildResponseBody(user, jwtTokenService, tokenProperties);
     }
 
     @Override

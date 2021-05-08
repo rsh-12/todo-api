@@ -9,7 +9,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import ru.example.todo.dto.TodoSectionDto;
-import ru.example.todo.enums.Role;
 import ru.example.todo.entity.TodoSection;
 import ru.example.todo.entity.TodoTask;
 import ru.example.todo.entity.User;
@@ -23,7 +22,7 @@ import java.util.List;
 import java.util.Set;
 
 @Service
-public class TodoSectionServiceImpl implements TodoSectionService {
+public class TodoSectionServiceImpl extends AbstractServiceClass implements TodoSectionService {
 
     private static final Logger log = LoggerFactory.getLogger(TodoSectionServiceImpl.class.getName());
 
@@ -61,7 +60,11 @@ public class TodoSectionServiceImpl implements TodoSectionService {
         TodoSection section = todoSectionRepository.findById(sectionId)
                 .orElseThrow(() -> new CustomException("Not Found", "Section not found", HttpStatus.NOT_FOUND));
 
-        validateArgs(user, section);
+        if (isValidOrAdmin(user, section)) {
+            todoSectionRepository.delete(section);
+        } else {
+            throw new CustomException("Forbidden", "Not enough permissions", HttpStatus.FORBIDDEN);
+        }
     }
 
 
@@ -85,29 +88,15 @@ public class TodoSectionServiceImpl implements TodoSectionService {
         TodoSection section = todoSectionRepository.findById(sectionId)
                 .orElseThrow(() -> new CustomException("Not Found", "Section not found: " + sectionId, HttpStatus.NOT_FOUND));
 
-        validateArgs(user, sectionDto, section);
-
-        todoSectionRepository.save(section);
-    }
-
-
-    private void validateArgs(User user, TodoSectionDto sectionDto, TodoSection section) {
-
-        if ((section.getUser() != null && section.getUser().equals(user)) || user.getRoles().contains(Role.ROLE_ADMIN)) {
+        if (isValidOrAdmin(user, section.getUser())) {
             section.setTitle(sectionDto.getTitle());
         } else {
             throw new CustomException("Forbidden", "Not enough permissions", HttpStatus.FORBIDDEN);
         }
+
+        todoSectionRepository.save(section);
     }
 
-    private void validateArgs(User user, TodoSection section) {
-
-        if ((section.getUser() != null && section.getUser().equals(user)) || user.getRoles().contains(Role.ROLE_ADMIN)) {
-            todoSectionRepository.delete(section);
-        } else {
-            throw new CustomException("Forbidden", "Not enough permissions", HttpStatus.FORBIDDEN);
-        }
-    }
 
     // add to or remove from the task section
     @Override
@@ -126,19 +115,7 @@ public class TodoSectionServiceImpl implements TodoSectionService {
 
         // add or remove
         addOrRemoveTasks(flag, section, tasksByIds);
-    }
-
-    // --------------------------------------------- helper methods
-    private void addOrRemoveTasks(SetTasks flag, TodoSection section, List<TodoTask> tasksByIds) {
-
-        if (flag.equals(SetTasks.MOVE)) {
-            log.info("Add tasks to the section");
-            section.setTodoTasks(tasksByIds);
-        } else if (flag.equals(SetTasks.REMOVE)) {
-            log.info("Remove tasks from the section");
-            section.removeTodoTasks(tasksByIds);
-        }
-
         todoSectionRepository.save(section);
     }
+
 }
