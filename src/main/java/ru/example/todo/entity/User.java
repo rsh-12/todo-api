@@ -116,8 +116,8 @@ public class User {
 
         User user = (User) o;
 
-        if (id != null ? !id.equals(user.id) : user.id != null) return false;
-        return username != null ? username.equals(user.username) : user.username == null;
+        if (!Objects.equals(id, user.id)) return false;
+        return Objects.equals(username, user.username);
     }
 
     @Override
