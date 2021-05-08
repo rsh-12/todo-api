@@ -16,6 +16,7 @@ import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -106,22 +107,6 @@ public class User {
 
     public void removeRole(Role role) {
         roles.remove(role);
-    }
-
-    public List<TodoTask> getTodoTasks() {
-        return todoTasks;
-    }
-
-    public void setTodoTasks(List<TodoTask> todoTasks) {
-        this.todoTasks = todoTasks;
-    }
-
-    public Set<TodoSection> getTodoSections() {
-        return todoSections;
-    }
-
-    public void setTodoSections(Set<TodoSection> todoSections) {
-        this.todoSections = todoSections;
     }
 
     @Override
