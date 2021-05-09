@@ -6,16 +6,14 @@ package ru.example.todo.repository;
 
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import ru.example.todo.entity.User;
-import ru.example.todo.exception.CustomException;
 
 import java.util.List;
 
 import static org.junit.Assert.*;
 
 
-public class UserRepositoryTest extends AbstractRepositoryClass {
+public class UserRepositoryTest extends AbstractRepositoryTestClass {
 
     @Autowired
     private UserRepository repository;

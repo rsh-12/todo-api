@@ -14,7 +14,7 @@ import java.util.List;
 import static org.junit.Assert.*;
 
 
-public class TodoTaskRepositoryTest extends AbstractRepositoryClass {
+public class TodoTaskRepositoryTest extends AbstractRepositoryTestClass {
 
     @Autowired
     private TodoTaskRepository repository;

@@ -13,7 +13,7 @@ import ru.example.todo.entity.User;
 
 @RunWith(SpringRunner.class)
 @DataJpaTest
-abstract class AbstractRepositoryClass {
+abstract class AbstractRepositoryTestClass {
 
     final static String ADMIN_USERNAME = "admin@mail.com";
     final static String CLIENT_USERNAME = "client@mail.com";
