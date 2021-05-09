@@ -16,22 +16,18 @@ import ru.example.todo.service.impl.JwtTokenServiceImpl;
 @TestConfiguration
 public class JwtTokenServiceImplTestConfig {
 
-    @TestConfiguration
-    static class JwtTokenServiceImplConfig {
+    @Autowired
+    private UserDetailsServiceImpl uds;
 
-        @Autowired
-        private UserDetailsServiceImpl uds;
+    @Autowired
+    private TokenProperties tokenProperties;
 
-        @Autowired
-        private TokenProperties tokenProperties;
+    @Autowired
+    private TokenStore tokenStore;
 
-        @Autowired
-        private TokenStore tokenStore;
-
-        @Bean
-        public JwtTokenService jwtTokenService() {
-            return new JwtTokenServiceImpl(tokenProperties, uds, tokenStore);
-        }
+    @Bean
+    public JwtTokenService jwtTokenService() {
+        return new JwtTokenServiceImpl(tokenProperties, uds, tokenStore);
     }
 
 }
