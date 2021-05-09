@@ -13,6 +13,7 @@ import ru.example.todo.exception.CustomException;
 import ru.example.todo.service.config.JwtTokenServiceImplTestConfig;
 
 import java.util.Collections;
+import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThrows;
@@ -31,11 +32,15 @@ public class JwtTokenServiceTest extends AbstractServiceTestClass {
 
     @Test
     public void buildAccessToken_ShouldReturnAccessToken() throws CustomException {
-        String accessToken = jwtTokenService
-                .buildAccessToken("admin", Collections.singleton(Role.ROLE_ADMIN));
+        String accessToken = getAccessToken("admin", Collections.singleton(Role.ROLE_ADMIN));
 
         int parts = accessToken.split("\\.").length;
         assertEquals(3, parts);
         System.out.println("accessToken = " + accessToken);
+    }
+
+    private String getAccessToken(String username, Set<Role> roles) {
+        return jwtTokenService
+                .buildAccessToken(username, roles);
     }
 }
