@@ -4,10 +4,8 @@ package ru.example.todo.domain;
  * Time: 10:47 AM
  * */
 
-import java.time.Duration;
 import java.util.Date;
-
-import static java.time.Instant.now;
+import java.util.Objects;
 
 public class RefreshToken {
 
@@ -15,39 +13,10 @@ public class RefreshToken {
     private final String username;
     private final Date expiryTime;
 
-    private long getValiditySeconds() {
-        return expiryTime == null ? Long.MAX_VALUE : Duration.between(now(), expiryTime.toInstant()).getSeconds();
-    }
-
-    public static class Builder {
-        private String token;
-        private String username;
-        private Date expiryTime;
-
-        public Builder token(String val) {
-            token = val;
-            return this;
-        }
-
-        public Builder username(String val) {
-            username = val;
-            return this;
-        }
-
-        public Builder expiryTime(Date val) {
-            expiryTime = val;
-            return this;
-        }
-
-        public RefreshToken build() {
-            return new RefreshToken(this);
-        }
-    }
-
-    private RefreshToken(Builder builder) {
-        token = builder.token;
-        username = builder.username;
-        expiryTime = builder.expiryTime;
+    public RefreshToken(String token, String username, Date expiryTime) {
+        this.token = token;
+        this.username = username;
+        this.expiryTime = expiryTime;
     }
 
     public String getToken() {
@@ -60,6 +29,24 @@ public class RefreshToken {
 
     public Date getExpiryTime() {
         return expiryTime;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        RefreshToken that = (RefreshToken) o;
+
+        if (!Objects.equals(token, that.token)) return false;
+        return Objects.equals(username, that.username);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = token != null ? token.hashCode() : 0;
+        result = 31 * result + (username != null ? username.hashCode() : 0);
+        return result;
     }
 
     @Override
