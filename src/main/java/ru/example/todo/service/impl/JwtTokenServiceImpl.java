@@ -134,8 +134,8 @@ public class JwtTokenServiceImpl implements JwtTokenService {
     }
 
     @Override
-    public boolean isValidRefreshToken(RefreshToken refreshToken) {
-        return !now().isAfter(refreshToken.getExpiryTime().toInstant());
+    public boolean isNotExpired(RefreshToken refreshToken) {
+        return now().isBefore(refreshToken.getExpiryTime().toInstant());
     }
 
     private String getUsername(String token) {
