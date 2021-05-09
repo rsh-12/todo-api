@@ -21,7 +21,7 @@
     margin: 0 auto;
     max-width: 300px;
     display: flex;
-    justify-content: center;
+    justify-content: center; /*Центрирование по горизонтали*/
     align-items: center;
     overflow: hidden;
     border: 1px solid #e5e4e4;;
@@ -29,4 +29,45 @@
 
 .title {
     text-align: center;
+    text-transform: uppercase;
+    font-family: "Courier New", serif;
+    font-size: 3em;
+    color: #4e4d4d;
+}
+
+.block-1 {
+    padding: 100px 10px;
+}
+
+body {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.link-blocks {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+.link {
+    font-size: 28px;
+    text-decoration: none;
+    padding: 10px 10px;
+}
+
+@media (min-width: 481px) and (max-width: 767px) {
+    .link {
+        font-size: 22px;
+        text-decoration: none;
+        padding: 10px 10px;
+    }
+}
+
+@media (min-width: 320px) and (max-width: 480px) {
+    .link {
+        font-size: 18px;
+        text-decoration: none;
+        padding: 10px 10px;
+    }
 }
