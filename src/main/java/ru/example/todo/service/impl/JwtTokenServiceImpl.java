@@ -66,14 +66,14 @@ public class JwtTokenServiceImpl implements JwtTokenService {
 
     @Override
     public RefreshToken buildRefreshToken(String username) {
+        String token = RandomStringUtils.randomAlphanumeric(64);
 
-        RefreshToken refreshToken = new RefreshToken.Builder()
-                .token(RandomStringUtils.randomAlphanumeric(64))
-                .expiryTime(getValidity(tokenProperties.getRefreshTokenValidity()))
-                .username(username)
-                .build();
+        long refreshTokenValidity = tokenProperties.getRefreshTokenValidity();
+        Date expiryTime = getValidity(refreshTokenValidity);
 
+        RefreshToken refreshToken = new RefreshToken(token, username, expiryTime);
         tokenStore.save(refreshToken);
+
         return refreshToken;
     }
 
