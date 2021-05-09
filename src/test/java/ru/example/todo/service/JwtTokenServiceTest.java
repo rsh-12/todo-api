@@ -40,7 +40,14 @@ public class JwtTokenServiceTest extends AbstractServiceTestClass {
     }
 
     private String getAccessToken(String username, Set<Role> roles) {
-        return jwtTokenService
-                .buildAccessToken(username, roles);
+        String accessToken = jwtTokenService.buildAccessToken(username, roles);
+        assert accessToken != null;
+        return accessToken;
+    }
+
+    private String getRefreshToken(String username) {
+        String refreshToken = jwtTokenService.buildRefreshToken(username).getToken();
+        assert refreshToken != null;
+        return refreshToken;
     }
 }
