@@ -23,5 +23,5 @@ public interface JwtTokenService {
 
     void removeOldRefreshTokenById(String tokenId);
 
-    boolean isValidRefreshToken(RefreshToken refreshToken);
+    boolean isNotExpired(RefreshToken refreshToken);
 }
