@@ -14,23 +14,24 @@ import ru.example.todo.service.config.JwtTokenServiceImplTestConfig;
 
 import java.util.Collections;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
 
 @Import(JwtTokenServiceImplTestConfig.class)
 public class JwtTokenServiceTest extends AbstractServiceTestClass {
 
     @Qualifier("jwtTokenService")
     @Autowired
-    private JwtTokenService tokenService;
+    JwtTokenService jwtTokenService;
 
     @Test
     public void validateToken_ShouldThrowException() throws CustomException {
-        assertThrows(CustomException.class, () -> tokenService.validateToken("invalid"));
+        assertThrows(CustomException.class, () -> jwtTokenService.validateToken("invalid"));
     }
 
     @Test
     public void buildAccessToken_ShouldReturnAccessToken() throws CustomException {
-        String accessToken = tokenService
+        String accessToken = jwtTokenService
                 .buildAccessToken("admin", Collections.singleton(Role.ROLE_ADMIN));
 
         int parts = accessToken.split("\\.").length;
