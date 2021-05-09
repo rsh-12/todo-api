@@ -16,8 +16,7 @@ import ru.example.todo.service.config.JwtTokenServiceImplTestConfig;
 import java.util.Collections;
 import java.util.Set;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.*;
 
 @Import(JwtTokenServiceImplTestConfig.class)
 public class JwtTokenServiceTest extends AbstractServiceTestClass {
@@ -38,6 +37,13 @@ public class JwtTokenServiceTest extends AbstractServiceTestClass {
         int parts = accessToken.split("\\.").length;
         assertEquals(3, parts);
         System.out.println("accessToken = " + accessToken);
+    }
+
+    @Test
+    public void isValidRefreshToken_ShouldReturnTrue() {
+        RefreshToken refreshToken = getRefreshToken("admin");
+        boolean isValid = jwtTokenService.isNotExpired(refreshToken);
+        assertTrue(isValid);
     }
 
     private String getAccessToken(String username, Set<Role> roles) {
