@@ -8,6 +8,7 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Import;
+import ru.example.todo.domain.RefreshToken;
 import ru.example.todo.enums.Role;
 import ru.example.todo.exception.CustomException;
 import ru.example.todo.service.config.JwtTokenServiceImplTestConfig;
@@ -45,8 +46,8 @@ public class JwtTokenServiceTest extends AbstractServiceTestClass {
         return accessToken;
     }
 
-    private String getRefreshToken(String username) {
-        String refreshToken = jwtTokenService.buildRefreshToken(username).getToken();
+    private RefreshToken getRefreshToken(String username) {
+        RefreshToken refreshToken = jwtTokenService.buildRefreshToken(username);
         assert refreshToken != null;
         return refreshToken;
     }
