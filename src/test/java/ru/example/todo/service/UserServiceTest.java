@@ -14,7 +14,7 @@ import ru.example.todo.service.config.UserServiceImplTestConfig;
 
 import java.util.Collections;
 
-import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.*;
 
 
 @Import(UserServiceImplTestConfig.class)
@@ -27,6 +27,13 @@ public class UserServiceTest extends AbstractServiceTestClass {
     public void register_ShouldThrowCustomException() {
         User user = createUser("admin@mail.com");
         assertThrows(CustomException.class, () -> userService.register(user));
+    }
+
+    @Test
+    public void getUserByUsername_ShouldReturnUser() {
+        User user = userService.getUser("admin@mail.com");
+        assertNotNull(user);
+        assertTrue(user.getRoles().contains(Role.ROLE_ADMIN));
     }
 
     public User createUser(String username) {
