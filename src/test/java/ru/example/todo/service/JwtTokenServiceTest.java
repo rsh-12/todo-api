@@ -55,6 +55,12 @@ public class JwtTokenServiceTest extends AbstractServiceTestClass {
         assertTrue(isValidToken);
     }
 
+    @Test
+    public void findRefreshToken_ShouldThrowCustomException() throws CustomException {
+        assertThrows(CustomException.class, () -> jwtTokenService.findRefreshToken(null));
+    }
+
+    // Helper methods
     private String getAccessToken(String username, Set<Role> roles) {
         String accessToken = jwtTokenService.buildAccessToken(username, roles);
         assert accessToken != null;
