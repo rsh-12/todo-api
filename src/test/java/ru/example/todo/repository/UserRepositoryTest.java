@@ -97,4 +97,10 @@ public class UserRepositoryTest extends AbstractRepositoryTestClass {
 
         assertFalse(repository.existsByUsername(username));
     }
+
+    @Test
+    public void userExist_ShouldThrowCustomException() {
+        User user = createUser("admin@mail.com");
+        assertThrows(Exception.class, () -> entityManager.persist(user));
+    }
 }
