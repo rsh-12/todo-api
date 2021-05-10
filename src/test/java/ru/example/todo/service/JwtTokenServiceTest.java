@@ -60,6 +60,21 @@ public class JwtTokenServiceTest extends AbstractServiceTestClass {
         assertThrows(CustomException.class, () -> jwtTokenService.findRefreshToken(null));
     }
 
+    @Test
+    public void findRefreshToken_ShouldReturnToken() throws Exception {
+        String refreshToken = getRefreshToken("admin").getToken();
+        assertNotNull(refreshToken);
+
+        Thread.sleep(100);
+        RefreshToken refreshTokenFromStore = jwtTokenService.findRefreshToken(refreshToken);
+        assertNotNull(refreshTokenFromStore);
+
+        String fromStoreToken = refreshTokenFromStore.getToken();
+        assertNotNull(fromStoreToken);
+
+        assertEquals(refreshToken, fromStoreToken);
+    }
+
     // Helper methods
     private String getAccessToken(String username, Set<Role> roles) {
         String accessToken = jwtTokenService.buildAccessToken(username, roles);
