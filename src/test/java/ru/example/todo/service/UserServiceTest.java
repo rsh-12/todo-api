@@ -41,6 +41,18 @@ public class UserServiceTest extends AbstractServiceTestClass {
         assertThrows(CustomException.class, () -> userService.getUser("notexist@mail.com"));
     }
 
+    @Test
+    public void getUserById_ShouldReturnUser() {
+        User user = userService.getUser(1L);
+        assertNotNull(user);
+        assertEquals("admin@mail.com", user.getUsername());
+    }
+
+    @Test
+    public void getUserById_ShouldThrowCustomException() {
+        assertThrows(CustomException.class, () -> userService.getUser(0L));
+    }
+
     public User createUser(String username) {
         User user = new User();
         user.setUsername(username);
