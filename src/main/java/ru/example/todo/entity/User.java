@@ -30,6 +30,7 @@ public class User {
     private String username;
 
     // todo set min=8
+    @NotNull
     @NotBlank
     @NotEmpty
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
