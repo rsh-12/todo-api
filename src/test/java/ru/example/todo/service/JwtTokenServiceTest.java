@@ -40,10 +40,19 @@ public class JwtTokenServiceTest extends AbstractServiceTestClass {
     }
 
     @Test
-    public void isValidRefreshToken_ShouldReturnTrue() {
+    public void isNotExpired_ShouldReturnTrue() {
         RefreshToken refreshToken = getRefreshToken("admin");
         boolean isValid = jwtTokenService.isNotExpired(refreshToken);
         assertTrue(isValid);
+    }
+
+    @Test
+    public void validateToken_ShouldReturnTrue() {
+        String accessToken = getAccessToken("admin", null);
+        assertNotNull(accessToken);
+
+        boolean isValidToken = jwtTokenService.validateToken(accessToken);
+        assertTrue(isValidToken);
     }
 
     private String getAccessToken(String username, Set<Role> roles) {
