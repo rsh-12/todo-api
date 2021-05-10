@@ -96,6 +96,24 @@ public class JwtTokenServiceTest extends AbstractServiceTestClass {
         assertThrows(UsernameNotFoundException.class, () -> jwtTokenService.getAuthentication(accessToken));
     }
 
+    @Test
+    public void removeOldRefreshToken_ShouldRemoveTokenFromTokenStore() throws InterruptedException {
+
+        // create refresh token and save it
+        String refreshToken = getRefreshToken("admin").getToken();
+        assertNotNull(refreshToken);
+
+        Thread.sleep(100);
+        RefreshToken refreshTokenFromStore = jwtTokenService.findRefreshToken(refreshToken);
+        assertNotNull(refreshTokenFromStore);
+
+        // delete refresh token from tokenStore
+        jwtTokenService.removeOldRefreshTokenById(refreshToken);
+
+        RefreshToken deletedRefreshTokenFromStore = jwtTokenService.findRefreshToken(refreshToken);
+        assertNull(deletedRefreshTokenFromStore);
+    }
+
     // Helper methods
     private String getAccessToken(String username, Set<Role> roles) {
         String accessToken = jwtTokenService.buildAccessToken(username, roles);
