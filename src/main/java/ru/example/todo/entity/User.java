@@ -10,14 +10,8 @@ import org.hibernate.annotations.CreationTimestamp;
 import ru.example.todo.enums.Role;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import javax.validation.constraints.*;
+import java.util.*;
 
 @Entity
 @Table(name = "app_user")
@@ -46,6 +40,7 @@ public class User {
     @CreationTimestamp
     private Date createdAt;
 
+    @NotNull
     @ElementCollection(fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
     private Set<Role> roles;
