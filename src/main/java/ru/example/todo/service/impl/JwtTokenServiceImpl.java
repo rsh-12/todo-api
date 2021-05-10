@@ -53,9 +53,12 @@ public class JwtTokenServiceImpl implements JwtTokenService {
 
         Claims claims = Jwts.claims();
         claims.put("username", username);
-        claims.put("auth", roles.stream()
-                .map(role -> new SimpleGrantedAuthority(role.getAuthority()))
-                .collect(Collectors.toList()));
+
+        if (roles != null) {
+            claims.put("auth", roles.stream()
+                    .map(role -> new SimpleGrantedAuthority(role.getAuthority()))
+                    .collect(Collectors.toList()));
+        }
 
         return Jwts.builder()
                 .setClaims(claims)
