@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Import;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import ru.example.todo.domain.RefreshToken;
 import ru.example.todo.enums.Role;
 import ru.example.todo.exception.CustomException;
@@ -87,6 +88,12 @@ public class JwtTokenServiceTest extends AbstractServiceTestClass {
 
         String username = authentication.getName();
         assertEquals("admin@mail.com", username);
+    }
+
+    @Test
+    public void getAuthentication_ShouldThrowUsernameNotFoundException() throws UsernameNotFoundException {
+        String accessToken = getAccessToken("admin", Collections.singleton(Role.ROLE_ADMIN));
+        assertThrows(UsernameNotFoundException.class, () -> jwtTokenService.getAuthentication(accessToken));
     }
 
     // Helper methods
