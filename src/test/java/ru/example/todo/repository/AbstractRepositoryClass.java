@@ -10,6 +10,9 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.junit4.SpringRunner;
 import ru.example.todo.entity.User;
+import ru.example.todo.enums.Role;
+
+import java.util.Collections;
 
 @RunWith(SpringRunner.class)
 @DataJpaTest
@@ -34,6 +37,7 @@ abstract class AbstractRepositoryTestClass {
 
     User createAndSaveUser() {
         User user = createUser("ola@mail.com");
+        user.setRoles(Collections.singleton(Role.ROLE_USER));
         return entityManager.persistAndFlush(user);
     }
 
