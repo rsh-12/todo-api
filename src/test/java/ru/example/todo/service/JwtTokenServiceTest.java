@@ -8,6 +8,7 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Import;
+import org.springframework.security.core.Authentication;
 import ru.example.todo.domain.RefreshToken;
 import ru.example.todo.enums.Role;
 import ru.example.todo.exception.CustomException;
@@ -73,6 +74,19 @@ public class JwtTokenServiceTest extends AbstractServiceTestClass {
         assertNotNull(fromStoreToken);
 
         assertEquals(refreshToken, fromStoreToken);
+    }
+
+    @Test
+    public void getAuthentication_ShouldReturnUsernamePasswordAuthToken() throws Exception {
+        String accessToken = getAccessToken("admin@mail.com", Collections.singleton(Role.ROLE_ADMIN));
+        Authentication authentication = jwtTokenService.getAuthentication(accessToken);
+        assertNotNull(authentication);
+
+        boolean isAuthenticated = authentication.isAuthenticated();
+        assertTrue(isAuthenticated);
+
+        String username = authentication.getName();
+        assertEquals("admin@mail.com", username);
     }
 
     // Helper methods
