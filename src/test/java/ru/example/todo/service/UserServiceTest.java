@@ -36,6 +36,11 @@ public class UserServiceTest extends AbstractServiceTestClass {
         assertTrue(user.getRoles().contains(Role.ROLE_ADMIN));
     }
 
+    @Test
+    public void getUserByUsername_ShouldThrowCustomException() {
+        assertThrows(CustomException.class, () -> userService.getUser("notexist@mail.com"));
+    }
+
     public User createUser(String username) {
         User user = new User();
         user.setUsername(username);
