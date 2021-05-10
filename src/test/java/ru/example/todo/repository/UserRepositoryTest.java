@@ -39,6 +39,9 @@ public class UserRepositoryTest extends AbstractRepositoryTestClass {
 
         assertNotNull(client);
         assertEquals(CLIENT_USERNAME, client.getUsername());
+
+        assertNotNull(admin.getCreatedAt());
+        System.out.println("admin = " + admin);
     }
 
     @Test
