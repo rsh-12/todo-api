@@ -30,6 +30,7 @@ abstract class AbstractRepositoryTestClass {
 
     User createUser(String username) {
         User user = new User();
+        user.setRoles(Collections.singleton(Role.ROLE_ADMIN));
         user.setUsername(username);
         user.setPassword("secretpassword12345");
         return user;
