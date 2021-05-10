@@ -259,4 +259,14 @@ public class TodoTaskControllerTest extends AbstractControllerTestClass {
                 .andExpect(jsonPath("starred", is(true)))
                 .andExpect(jsonPath("completionDate", containsStringIgnoringCase(newCompletionDate)));
     }
+
+    @Test
+    @WithUserDetails(USER)
+    public void deleteTaskById_ShouldThrowCustomException() throws Exception {
+        mvc.perform(delete(TASKS + 4))
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("message",
+                        containsStringIgnoringCase("not enough permissions")))
+                .andDo(print());
+    }
 }
