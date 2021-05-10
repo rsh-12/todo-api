@@ -42,6 +42,18 @@ public class JwtTokenServiceTest extends AbstractServiceTestClass {
     }
 
     @Test
+    public void buildRefreshToken_ShouldReturnRefreshToken() {
+        RefreshToken refreshToken = getRefreshToken("admin");
+
+        assertNotNull(refreshToken.getToken());
+        assertNotNull(refreshToken.getExpiryTime());
+        assertNotNull(refreshToken.getUsername());
+
+        assertEquals("admin", refreshToken.getUsername());
+        System.out.println("refreshToken = " + refreshToken);
+    }
+
+    @Test
     public void isNotExpired_ShouldReturnTrue() {
         RefreshToken refreshToken = getRefreshToken("admin");
         boolean isValid = jwtTokenService.isNotExpired(refreshToken);
