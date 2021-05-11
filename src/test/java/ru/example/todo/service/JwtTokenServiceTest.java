@@ -134,6 +134,15 @@ public class JwtTokenServiceTest extends AbstractServiceTestClass {
         assertNull(result);
     }
 
+    @Test
+    public void resolveToken_ShouldReturnToken() {
+        var request = new MockHttpServletRequest();
+        request.addHeader("Authorization", "bearer some-token");
+
+        String result = jwtTokenService.resolveToken(request);
+        assertEquals("some-token", result);
+    }
+
     // Helper methods
     private String getAccessToken(String username, Set<Role> roles) {
         String accessToken = jwtTokenService.buildAccessToken(username, roles);
