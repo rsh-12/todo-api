@@ -8,6 +8,7 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Import;
+import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import ru.example.todo.domain.RefreshToken;
@@ -124,6 +125,13 @@ public class JwtTokenServiceTest extends AbstractServiceTestClass {
 
         RefreshToken deletedRefreshTokenFromStore = jwtTokenService.findRefreshToken(refreshToken);
         assertNull(deletedRefreshTokenFromStore);
+    }
+
+    @Test
+    public void resolveToken_ShouldReturnNull() {
+        var request = new MockHttpServletRequest();
+        String result = jwtTokenService.resolveToken(request);
+        assertNull(result);
     }
 
     // Helper methods
