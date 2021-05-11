@@ -20,13 +20,15 @@ public class InMemoryTokenStoreServiceTest extends AbstractServiceTestClass {
     @Autowired
     private TokenStore tokenStore;
 
+    private final static String TOKEN = "some-token";
+
     @Before
     public void setUp() throws Exception {
         Instant instant = Instant.now().minus(Duration.ofDays(10));
         Date expiryTime = Date.from(instant);
 
         RefreshToken refreshToken = new RefreshToken(
-                "some-token",
+                TOKEN,
                 "user12@mail.com",
                 expiryTime);
 
@@ -37,14 +39,25 @@ public class InMemoryTokenStoreServiceTest extends AbstractServiceTestClass {
 
     @Test
     public void findRefreshToken_ShouldReturnToken() throws Exception {
-        RefreshToken refreshToken = tokenStore.find("some-token");
+        RefreshToken refreshToken = tokenStore.find(TOKEN);
         assertNotNull(refreshToken);
-        assertEquals("some-token", refreshToken.getToken());
+        assertEquals(TOKEN, refreshToken.getToken());
     }
 
     @Test
     public void findRefreshToken_ShouldReturnNull() {
         RefreshToken refreshToken = tokenStore.find("notfound");
         assertNull(refreshToken);
+    }
+
+    @Test
+    public void removeIfExpired_ShouldRemoveTokenFromStore() {
+        RefreshToken before = tokenStore.find(TOKEN);
+        assertNotNull(before);
+
+        tokenStore.removeIfExpired();
+
+        RefreshToken after = tokenStore.find("notfound");
+        assertNull(after);
     }
 }
