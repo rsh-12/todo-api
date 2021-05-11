@@ -13,8 +13,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.Date;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 public class InMemoryTokenStoreServiceTest extends AbstractServiceTestClass {
 
@@ -41,5 +40,11 @@ public class InMemoryTokenStoreServiceTest extends AbstractServiceTestClass {
         RefreshToken refreshToken = tokenStore.find("some-token");
         assertNotNull(refreshToken);
         assertEquals("some-token", refreshToken.getToken());
+    }
+
+    @Test
+    public void findRefreshToken_ShouldReturnNull() {
+        RefreshToken refreshToken = tokenStore.find("notfound");
+        assertNull(refreshToken);
     }
 }
