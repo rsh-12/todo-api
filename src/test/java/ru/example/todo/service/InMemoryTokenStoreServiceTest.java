@@ -57,7 +57,7 @@ public class InMemoryTokenStoreServiceTest extends AbstractServiceTestClass {
 
         tokenStore.removeIfExpired();
 
-        RefreshToken after = tokenStore.find("notfound");
+        RefreshToken after = tokenStore.find(TOKEN);
         assertNull(after);
     }
 }
