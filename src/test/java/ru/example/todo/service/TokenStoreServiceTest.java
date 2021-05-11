@@ -15,7 +15,7 @@ import java.util.Date;
 
 import static org.junit.Assert.*;
 
-public class InMemoryTokenStoreServiceTest extends AbstractServiceTestClass {
+public class TokenStoreServiceTest extends AbstractServiceTestClass {
 
     @Autowired
     private TokenStore tokenStore;
