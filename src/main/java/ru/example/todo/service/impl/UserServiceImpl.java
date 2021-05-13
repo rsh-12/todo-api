@@ -15,14 +15,11 @@ import ru.example.todo.config.properties.TokenProperties;
 import ru.example.todo.domain.RefreshToken;
 import ru.example.todo.dto.UserDto;
 import ru.example.todo.entity.User;
-import ru.example.todo.enums.Role;
 import ru.example.todo.exception.CustomException;
 import ru.example.todo.repository.UserRepository;
 import ru.example.todo.security.UserDetailsImpl;
 import ru.example.todo.service.JwtTokenService;
 import ru.example.todo.service.UserService;
-
-import java.util.Collections;
 
 @Service
 public class UserServiceImpl extends AbstractServiceClass implements UserService {
@@ -67,8 +64,6 @@ public class UserServiceImpl extends AbstractServiceClass implements UserService
         }
 
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-        user.setRoles(Collections.singleton(Role.ROLE_USER));
-
         userRepository.save(user);
         return "ok";
     }

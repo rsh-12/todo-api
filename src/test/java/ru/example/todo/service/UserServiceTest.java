@@ -57,7 +57,6 @@ public class UserServiceTest extends AbstractServiceTestClass {
         User user = new User();
         user.setUsername(username);
         user.setPassword("somepassword");
-        user.setRoles(Collections.singleton(Role.ROLE_USER));
         return user;
     }
 }

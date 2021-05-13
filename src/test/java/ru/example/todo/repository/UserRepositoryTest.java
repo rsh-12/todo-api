@@ -7,10 +7,8 @@ package ru.example.todo.repository;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import ru.example.todo.entity.User;
-import ru.example.todo.enums.Role;
 
 import java.util.List;
-import java.util.Set;
 
 import static org.junit.Assert.*;
 
@@ -55,10 +53,11 @@ public class UserRepositoryTest extends AbstractRepositoryTestClass {
     @Test
     public void testCreateUser() {
         User user = createUser("harry@mail.com");
-        user.setRoles(Set.of(Role.ROLE_USER, Role.ROLE_ADMIN));
 
         assertFalse(repository.existsByUsername(user.getUsername()));
+
         entityManager.persistAndFlush(user);
+
         assertTrue(repository.existsByUsername(user.getUsername()));
     }
 
