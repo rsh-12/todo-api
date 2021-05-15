@@ -96,6 +96,11 @@ public class User {
         this.roles = roles;
     }
 
+    public void clearRoles() {
+        this.roles = Collections.emptySet();
+    }
+
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
