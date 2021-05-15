@@ -4,7 +4,6 @@ package ru.example.todo.config;
  * Time: 8:47 AM
  * */
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -22,8 +21,11 @@ import ru.example.todo.service.JwtTokenService;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Autowired
-    private JwtTokenService jwtTokenService;
+    private final JwtTokenService jwtTokenService;
+
+    public WebSecurityConfig(JwtTokenService jwtTokenService) {
+        this.jwtTokenService = jwtTokenService;
+    }
 
     @Bean
     @Override
@@ -38,10 +40,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         http.authorizeRequests()
-                .mvcMatchers("/api/users/login").permitAll()
-                .mvcMatchers("/api/users/register").permitAll()
-                .mvcMatchers("/api/users/token").permitAll()
                 .mvcMatchers("/").permitAll()
+                .mvcMatchers("/api/users/*").permitAll()
                 .anyRequest().authenticated();
 
         http.apply(new JwtTokenFilterConfigurer(jwtTokenService));
