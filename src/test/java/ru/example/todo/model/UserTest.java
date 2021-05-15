@@ -29,4 +29,14 @@ public class UserTest {
         user.setRoles(roles);
         assertTrue(user.getRoles().containsAll(roles));
     }
+
+    @Test
+    public void removeRole_ShouldRemoveRole() {
+        User user = new User();
+        assertTrue(user.getRoles().contains(Role.ROLE_USER));
+
+        user.clearRoles();
+        assertFalse(user.getRoles().stream()
+                .anyMatch(role -> role.equals(Role.ROLE_USER) || role.equals(Role.ROLE_ADMIN)));
+    }
 }
