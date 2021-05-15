@@ -8,6 +8,8 @@ import org.junit.Test;
 import ru.example.todo.entity.User;
 import ru.example.todo.enums.Role;
 
+import java.util.Set;
+
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -18,5 +20,13 @@ public class UserTest {
         User user = new User();
         assertTrue(user.getRoles().contains(Role.ROLE_USER));
         assertFalse(user.getRoles().contains(Role.ROLE_ADMIN));
+    }
+
+    @Test
+    public void setRoles_ShouldContainAllRoles() {
+        Set<Role> roles = Set.of(Role.ROLE_USER, Role.ROLE_ADMIN);
+        User user = new User();
+        user.setRoles(roles);
+        assertTrue(user.getRoles().containsAll(roles));
     }
 }
