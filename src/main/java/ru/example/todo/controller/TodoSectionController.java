@@ -33,6 +33,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @Api(tags = "Task sections")
 @RestController
 @RequestMapping("/api/sections")
+@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
 public class TodoSectionController {
 
     private final TodoSectionService todoSectionService;
@@ -50,7 +51,6 @@ public class TodoSectionController {
     // get all sections
     @ApiOperation(value = "List todo sections", notes = "List all todo sections")
     @GetMapping(produces = "application/json")
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     public CollectionModel<EntityModel<TodoSection>> all(@AuthenticationPrincipal UserDetailsImpl uds) {
 
         List<EntityModel<TodoSection>> sections = todoSectionService.getAllSections(uds.getUser())
@@ -66,7 +66,6 @@ public class TodoSectionController {
     // get custom section by id
     @ApiOperation(value = "Find section", notes = "Find the Section by ID")
     @GetMapping(value = "/{id}", produces = "application/json")
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     public EntityModel<TodoSection> one(@AuthenticationPrincipal UserDetailsImpl uds,
                                         @PathVariable("id") Long sectonId) {
 
@@ -76,7 +75,6 @@ public class TodoSectionController {
     // delete section by id
     @ApiOperation(value = "Remove section", notes = "It permits to remove a section")
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     public ResponseEntity<?> deleteOne(@AuthenticationPrincipal UserDetailsImpl uds,
                                        @PathVariable("id") Long sectionId) {
         todoSectionService.deleteSectionById(uds.getUser(), sectionId);
@@ -86,7 +84,6 @@ public class TodoSectionController {
     // create new section
     @ApiOperation(value = "Create section", notes = "It permits to create a new section")
     @PostMapping(consumes = "application/json")
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     public ResponseEntity<?> createSection(@AuthenticationPrincipal UserDetailsImpl uds,
                                            @Valid @RequestBody TodoSectionDto sectionDto) {
         todoSectionService.createSection(uds.getUser(), sectionDto);
@@ -97,7 +94,6 @@ public class TodoSectionController {
     // update section title by id
     @ApiOperation(value = "Update section", notes = "It permits to update a section")
     @PutMapping(value = "/{id}", consumes = "application/json")
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     public ResponseEntity<?> updateSection(@AuthenticationPrincipal UserDetailsImpl uds,
                                            @PathVariable("id") Long sectionId,
                                            @Valid @RequestBody TodoSectionDto sectionDto) {
@@ -109,7 +105,6 @@ public class TodoSectionController {
     // add tasks to the list
     @ApiOperation(value = "Add tasks to section", notes = "It permits to add tasks to section")
     @PostMapping(value = "/{id}/tasks", consumes = "application/json")
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     public ResponseEntity<?> addTasksToList(@AuthenticationPrincipal UserDetailsImpl uds,
                                             @PathVariable("id") Long sectionId,
                                             @RequestBody TaskIdsWrapper wrapper,
