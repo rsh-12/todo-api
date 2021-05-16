@@ -67,3 +67,4 @@ secrets.yml
 .gradletasknamecache
 #
 run-report-tests.sh
+venv.sh
