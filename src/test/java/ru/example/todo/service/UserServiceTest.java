@@ -7,6 +7,7 @@ package ru.example.todo.service;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import ru.example.todo.entity.User;
 import ru.example.todo.enums.Role;
 import ru.example.todo.exception.CustomException;
@@ -20,6 +21,9 @@ public class UserServiceTest extends AbstractServiceTestClass {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Test
     public void register_ShouldThrowCustomException() {
@@ -58,5 +62,15 @@ public class UserServiceTest extends AbstractServiceTestClass {
         assertThrows(CustomException.class, () -> userService.updatePassword(user, ""));
         assertThrows(CustomException.class, () -> userService.updatePassword(user, "1234567"));
         assertThrows(CustomException.class, () -> userService.updatePassword(user, "                "));
+    }
+
+    @Test
+    public void updatePassword_ShouldUpdatePassword() throws InterruptedException {
+        User user = createUser("some@mail.com", null);
+        String newPassword = "newPassword";
+        userService.updatePassword(user, newPassword);
+
+        Thread.sleep(200);
+        assertTrue(bCryptPasswordEncoder.matches(newPassword, user.getPassword()));
     }
 }
