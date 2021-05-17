@@ -12,8 +12,6 @@ import ru.example.todo.enums.Role;
 import ru.example.todo.exception.CustomException;
 import ru.example.todo.service.config.UserServiceImplTestConfig;
 
-import java.util.Collections;
-
 import static org.junit.Assert.*;
 
 
@@ -25,7 +23,7 @@ public class UserServiceTest extends AbstractServiceTestClass {
 
     @Test
     public void register_ShouldThrowCustomException() {
-        User user = createUser("admin@mail.com");
+        User user = createUser("admin@mail.com", null);
         assertThrows(CustomException.class, () -> userService.register(user));
     }
 
@@ -53,10 +51,5 @@ public class UserServiceTest extends AbstractServiceTestClass {
         assertThrows(CustomException.class, () -> userService.getUser(0L));
     }
 
-    public User createUser(String username) {
-        User user = new User();
-        user.setUsername(username);
-        user.setPassword("somepassword");
-        return user;
-    }
+
 }
