@@ -4,19 +4,21 @@ package ru.example.todo.controller;
  * Time: 4:39 PM
  * */
 
+import com.fasterxml.jackson.databind.JsonNode;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import ru.example.todo.entity.User;
+import ru.example.todo.security.UserDetailsImpl;
 import ru.example.todo.service.UserService;
 
 @Api(tags = "Users")
 @RestController
 @RequestMapping("/api/users")
-@PreAuthorize("hasRole('ADMIN')")
 public class UserController {
 
     private final UserService userService;
@@ -26,16 +28,25 @@ public class UserController {
         this.userService = userService;
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{id}")
     public User getUser(@PathVariable("id") Long userId) {
         return userService.getUser(userId);
     }
 
-
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<?> deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+    @PostMapping(value = "/password/update", consumes = "application/json")
+    public ResponseEntity<String> changePassword(@AuthenticationPrincipal UserDetailsImpl udi,
+                                                 @RequestBody JsonNode jsonNode) {
+        userService.updatePassword(udi.getUser(), jsonNode);
+        return ResponseEntity.ok().body("Password updated successfully");
     }
 
 }
