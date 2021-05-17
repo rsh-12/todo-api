@@ -51,5 +51,12 @@ public class UserServiceTest extends AbstractServiceTestClass {
         assertThrows(CustomException.class, () -> userService.getUser(0L));
     }
 
-
+    @Test
+    public void updatePassword_ShouldThrowCustomException_400() {
+        User user = createUser("some@mail.com", null);
+        assertThrows(CustomException.class, () -> userService.updatePassword(user, null));
+        assertThrows(CustomException.class, () -> userService.updatePassword(user, ""));
+        assertThrows(CustomException.class, () -> userService.updatePassword(user, "1234567"));
+        assertThrows(CustomException.class, () -> userService.updatePassword(user, "                "));
+    }
 }
