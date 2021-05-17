@@ -4,7 +4,6 @@ package ru.example.todo.service.impl;
  * Time: 4:39 PM
  * */
 
-import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -105,15 +104,14 @@ public class UserServiceImpl extends AbstractServiceClass implements UserService
     }
 
     @Override
-    public void updatePassword(User user, JsonNode jsonNode) {
-        String newPassword = jsonNode.get("password").toString();
+    public void updatePassword(User user, String password) {
 
-        if (newPassword == null || newPassword.isBlank() || newPassword.length() < 8) {
-            throw new CustomException("Bad Request", "", HttpStatus.BAD_REQUEST);
+        if (password == null || password.isBlank() || password.length() < 8) {
+            throw new CustomException("Bad Request", "Invalid data", HttpStatus.BAD_REQUEST);
         }
 
-        user.setPassword(bCryptPasswordEncoder.encode(newPassword));
-        userRepository.save(user);
+        String encodedPassword = bCryptPasswordEncoder.encode(password);
+        user.setPassword(encodedPassword);
     }
 
 }

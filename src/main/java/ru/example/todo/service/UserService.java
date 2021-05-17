@@ -1,6 +1,5 @@
 package ru.example.todo.service;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import ru.example.todo.dto.UserDto;
 import ru.example.todo.entity.User;
 import ru.example.todo.exception.CustomException;
@@ -26,5 +25,5 @@ public interface UserService {
 
     User getUser(Long userId);
 
-    void updatePassword(User user, JsonNode jsonNode);
+    void updatePassword(User user, String password);
 }

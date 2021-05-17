@@ -4,7 +4,6 @@ package ru.example.todo.controller;
  * Time: 4:39 PM
  * */
 
-import com.fasterxml.jackson.databind.JsonNode;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -44,8 +43,8 @@ public class UserController {
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     @PostMapping(value = "/password/update", consumes = "application/json")
     public ResponseEntity<String> changePassword(@AuthenticationPrincipal UserDetailsImpl udi,
-                                                 @RequestBody JsonNode jsonNode) {
-        userService.updatePassword(udi.getUser(), jsonNode);
+                                                 @RequestBody String password) {
+        userService.updatePassword(udi.getUser(), password);
         return ResponseEntity.ok().body("Password updated successfully");
     }
 
