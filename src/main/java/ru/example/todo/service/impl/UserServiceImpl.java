@@ -107,6 +107,11 @@ public class UserServiceImpl extends AbstractServiceClass implements UserService
     @Override
     public void updatePassword(User user, JsonNode jsonNode) {
         String newPassword = jsonNode.get("password").toString();
+
+        if (newPassword == null || newPassword.isBlank() || newPassword.length() < 8) {
+            throw new CustomException("Bad Request", "", HttpStatus.BAD_REQUEST);
+        }
+
         user.setPassword(bCryptPasswordEncoder.encode(newPassword));
         userRepository.save(user);
     }
