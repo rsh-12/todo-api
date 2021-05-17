@@ -4,6 +4,7 @@ package ru.example.todo.service.impl;
  * Time: 4:39 PM
  * */
 
+import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -101,6 +102,13 @@ public class UserServiceImpl extends AbstractServiceClass implements UserService
     public User getUser(Long userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException("Not Found", "User Not Found", HttpStatus.BAD_REQUEST));
+    }
+
+    @Override
+    public void updatePassword(User user, JsonNode jsonNode) {
+        String newPassword = jsonNode.get("password").toString();
+        user.setPassword(bCryptPasswordEncoder.encode(newPassword));
+        userRepository.save(user);
     }
 
 }
