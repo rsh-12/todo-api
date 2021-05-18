@@ -31,7 +31,7 @@ public class UserTest {
     }
 
     @Test
-    public void removeRole_ShouldRemoveRole() {
+    public void clearRoles_ShouldClearRoles() {
         User user = new User();
         assertTrue(user.getRoles().contains(Role.ROLE_USER));
 
