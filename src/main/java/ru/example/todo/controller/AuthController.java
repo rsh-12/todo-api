@@ -4,6 +4,7 @@ package ru.example.todo.controller;
  * Time: 6:10 PM
  * */
 
+import com.fasterxml.jackson.databind.JsonNode;
 import io.swagger.annotations.Api;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.example.todo.dto.UserDto;
 import ru.example.todo.entity.User;
+import ru.example.todo.service.OtpService;
 import ru.example.todo.service.UserService;
 
 import javax.servlet.http.HttpServletRequest;
@@ -24,10 +26,13 @@ import javax.validation.Valid;
 public class AuthController {
 
     private final UserService userService;
+    private final OtpService otpService;
     private final ModelMapper modelMapper;
 
-    public AuthController(UserService userService, ModelMapper modelMapper) {
+    public AuthController(UserService userService,
+                          OtpService otpService, ModelMapper modelMapper) {
         this.userService = userService;
+        this.otpService = otpService;
         this.modelMapper = modelMapper;
     }
 
@@ -47,6 +52,12 @@ public class AuthController {
     public ResponseEntity<String> refreshToken(HttpServletRequest request) {
         String tokens = userService.refreshToken(request.getHeader("token"));
         return ResponseEntity.ok(tokens);
+    }
+
+    @PostMapping(value = "/password/forgot")
+    public ResponseEntity<?> createAndSendOtp(@RequestBody JsonNode body) {
+        otpService.sendOtp(body);
+        return ResponseEntity.ok("Code sent to mail successfully");
     }
 
 }
