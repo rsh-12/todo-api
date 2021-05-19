@@ -44,7 +44,8 @@ public class AuthControllerTest extends AbstractControllerTestClass {
         assertTrue(response.contains("access_token"));
         assertTrue(response.contains("refresh_token"));
         assertTrue(response.contains("token_type"));
-        assertTrue(response.contains("expires"));
+        assertTrue(response.contains("access_token_expires"));
+        assertTrue(response.contains("refresh_token_expires"));
     }
 
     // Login: fail
