@@ -6,4 +6,6 @@ public interface OtpService {
 
     void sendOtp(JsonNode body);
 
+    boolean checkOtp(String username, String code);
+
 }
