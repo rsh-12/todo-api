@@ -15,6 +15,7 @@ import ru.example.todo.service.EmailService;
 import ru.example.todo.service.OtpService;
 import ru.example.todo.util.GenerateCodeUtil;
 
+import java.util.Date;
 import java.util.Optional;
 
 @Service
@@ -30,12 +31,26 @@ public class OtpServiceImpl implements OtpService {
         this.emailService = emailService;
     }
 
-
     @Override
     public void sendOtp(JsonNode body) {
         Otp otp = renewOtp(body);
         save(otp);
         emailService.send(otp.getUsername(), otp.getCode());
+    }
+
+    @Override
+    public boolean checkOtp(String username, String code) throws CustomException {
+        Otp otp = otpRepository.findByUsername(username)
+                .orElseThrow(() -> new CustomException("Not Found", "Username Not Found", HttpStatus.NOT_FOUND));
+
+        if (!otp.getCode().equals(code) || isExpired(otp)) {
+            throw new CustomException("Not Found", "Code not found or is expired", HttpStatus.NOT_FOUND);
+        }
+        return true;
+    }
+
+    private boolean isExpired(Otp otp) {
+        return otp.getExpiresAt().before(new Date());
     }
 
     private Otp renewOtp(JsonNode body) {
