@@ -5,6 +5,7 @@ package ru.example.todo.controller;
  * */
 
 import org.junit.Test;
+import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MvcResult;
 
@@ -125,5 +126,26 @@ public class AuthControllerTest extends AbstractControllerTestClass {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("message",
                         containsStringIgnoringCase("Refresh token is not valid or expired, please, try to log in")));
+    }
+
+    @Test
+    public void createAndSendOtp_ShouldThrowException() throws Exception {
+        mvc.perform(post(AUTH + "/password/forgot"))
+                .andExpect(status().isBadRequest())
+                .andDo(print());
+    }
+
+    @Test
+    public void createAndSendOtp_ShouldThrowNotFound() throws Exception {
+
+        JSONObject body = new JSONObject();
+        body.put("email", "non-existent-email");
+
+        mvc.perform(post(AUTH + "/password/forgot")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(String.valueOf(body)))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("message", containsStringIgnoringCase("username not found")))
+                .andDo(print());
     }
 }
