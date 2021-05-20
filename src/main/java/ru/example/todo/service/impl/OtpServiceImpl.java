@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import ru.example.todo.entity.Otp;
 import ru.example.todo.exception.CustomException;
 import ru.example.todo.repository.OtpRepository;
+import ru.example.todo.repository.UserRepository;
 import ru.example.todo.service.EmailService;
 import ru.example.todo.service.OtpService;
 import ru.example.todo.util.GenerateCodeUtil;
@@ -20,10 +21,12 @@ import java.util.Optional;
 public class OtpServiceImpl implements OtpService {
 
     private final OtpRepository otpRepository;
+    private final UserRepository userRepository;
     private final EmailService emailService;
 
-    public OtpServiceImpl(OtpRepository otpRepository, EmailService emailService) {
+    public OtpServiceImpl(OtpRepository otpRepository, UserRepository userRepository, EmailService emailService) {
         this.otpRepository = otpRepository;
+        this.userRepository = userRepository;
         this.emailService = emailService;
     }
 
@@ -38,7 +41,7 @@ public class OtpServiceImpl implements OtpService {
     private Otp renewOtp(JsonNode body) {
 
         if (body == null || body.get("email") == null) {
-            throw new CustomException("Bad Request", "Email is required!", HttpStatus.BAD_REQUEST);
+            throw new CustomException("Bad Request", "Email is required", HttpStatus.BAD_REQUEST);
         }
 
         String email = body.get("email").asText();
@@ -48,6 +51,8 @@ public class OtpServiceImpl implements OtpService {
     }
 
     private Otp createOtp(Otp otp, String email) {
+        checkUsername(email);
+
         otp.setCode(GenerateCodeUtil.generateCode());
         otp.setUsername(email);
         return otp;
@@ -61,5 +66,13 @@ public class OtpServiceImpl implements OtpService {
 
     private void save(Otp otp) {
         otpRepository.save(otp);
+    }
+
+    private boolean checkUsername(String email) throws CustomException {
+        boolean existsByUsername = userRepository.existsByUsername(email);
+        if (!existsByUsername) {
+            throw new CustomException("Not Found", "Username Not Found", HttpStatus.NOT_FOUND);
+        }
+        return existsByUsername;
     }
 }
