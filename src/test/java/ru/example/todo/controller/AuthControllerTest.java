@@ -148,4 +148,18 @@ public class AuthControllerTest extends AbstractControllerTestClass {
                 .andExpect(jsonPath("message", containsStringIgnoringCase("username not found")))
                 .andDo(print());
     }
+
+    @Test
+    public void createAndSendOtp_ShouldThrowBadRequest() throws Exception {
+
+        JSONObject body = new JSONObject();
+        body.put("email", null);
+
+        mvc.perform(post(AUTH + "/password/forgot")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(String.valueOf(body)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("message", containsStringIgnoringCase("email is required")))
+                .andDo(print());
+    }
 }
