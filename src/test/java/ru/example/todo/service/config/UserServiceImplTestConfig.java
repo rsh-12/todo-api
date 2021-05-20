@@ -12,6 +12,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import ru.example.todo.config.properties.TokenProperties;
 import ru.example.todo.repository.UserRepository;
 import ru.example.todo.service.JwtTokenService;
+import ru.example.todo.service.OtpService;
 import ru.example.todo.service.UserService;
 import ru.example.todo.service.impl.UserServiceImpl;
 
@@ -33,10 +34,14 @@ public class UserServiceImplTestConfig {
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
+
+    @Autowired
+    private OtpService otpService;
+
     @Bean
     public UserService userService() {
         return new UserServiceImpl(jwtTokenService, userRepository,
-                tokenProperties, authenticationManager, bCryptPasswordEncoder);
+                tokenProperties, authenticationManager, bCryptPasswordEncoder, otpService);
     }
 
 }
