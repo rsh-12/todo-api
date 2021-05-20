@@ -23,7 +23,7 @@ public class User {
 
     @NotBlank
     @NotEmpty
-    @Pattern(regexp = "^[a-z]{2,}@[a-z]{2,5}\\.(ru|com)",
+    @Pattern(regexp = "^[a-z_-]{2,}[0-9a-z_-]*@[a-z]{2,5}\\.(ru|com)",
             flags = Pattern.Flag.CASE_INSENSITIVE, message = "Not a valid email address")
     @Size(min = 4, max = 127, message = "Email is required: minimum 4 characters")
     @Column(nullable = false, unique = true)
