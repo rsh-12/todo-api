@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import ru.example.todo.domain.request.PasswordRequest;
 import ru.example.todo.dto.UserDto;
 import ru.example.todo.entity.User;
 import ru.example.todo.service.OtpService;
@@ -58,6 +59,12 @@ public class AuthController {
     public ResponseEntity<?> createAndSendOtp(@RequestBody JsonNode body) {
         otpService.sendOtp(body);
         return ResponseEntity.ok("Code sent to mail successfully");
+    }
+
+    @PostMapping(value = "/password/reset", consumes = "application/json")
+    public ResponseEntity<?> resetPassword(@Valid @RequestBody PasswordRequest passwordRequest) {
+        userService.updatePassword(passwordRequest);
+        return ResponseEntity.ok().build();
     }
 
 }
