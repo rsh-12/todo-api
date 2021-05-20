@@ -1,5 +1,6 @@
 package ru.example.todo.service;
 
+import ru.example.todo.domain.request.PasswordRequest;
 import ru.example.todo.dto.UserDto;
 import ru.example.todo.entity.User;
 import ru.example.todo.exception.CustomException;
@@ -26,4 +27,6 @@ public interface UserService {
     User getUser(Long userId);
 
     void updatePassword(User user, String password);
+
+    void updatePassword(PasswordRequest passwordRequest);
 }
