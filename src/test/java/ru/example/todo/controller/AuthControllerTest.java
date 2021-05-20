@@ -18,8 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 public class AuthControllerTest extends AbstractControllerTestClass {
 
@@ -162,4 +161,20 @@ public class AuthControllerTest extends AbstractControllerTestClass {
                 .andExpect(jsonPath("message", containsStringIgnoringCase("email is required")))
                 .andDo(print());
     }
+
+    @Test
+    public void createAndSendOtp_ShouldCreateAndSaveOtp() throws Exception {
+
+        JSONObject body = new JSONObject();
+        body.put("email", "client@mail.com");
+
+        mvc.perform(post(AUTH + "/password/forgot")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(String.valueOf(body)))
+                .andExpect(status().isOk())
+                .andExpect(content().string("Code sent to mail successfully"))
+                .andDo(print());
+    }
+
+
 }
