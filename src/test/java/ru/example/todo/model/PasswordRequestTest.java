@@ -49,4 +49,16 @@ public class PasswordRequestTest {
         assertTrue(violations.isEmpty());
     }
 
+    @Test
+    public void createPasswordRequestWithConstructor() {
+        String username = "user@mail.com";
+        String code = "123456";
+        String pwd = "password1234";
+
+        PasswordRequest passwordRequest = new PasswordRequest(username, code, pwd);
+
+        assertEquals(passwordRequest.getUsername(), username);
+        assertEquals(passwordRequest.getCode(), code);
+        assertEquals(passwordRequest.getPassword(), pwd);
+    }
 }
