@@ -57,6 +57,9 @@ public class PasswordRequestTest {
 
         PasswordRequest passwordRequest = new PasswordRequest(username, code, pwd);
 
+        Set<ConstraintViolation<PasswordRequest>> violations = validator.validate(passwordRequest);
+        assertTrue(violations.isEmpty());
+
         assertEquals(passwordRequest.getUsername(), username);
         assertEquals(passwordRequest.getCode(), code);
         assertEquals(passwordRequest.getPassword(), pwd);
