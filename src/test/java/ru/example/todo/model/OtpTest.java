@@ -12,10 +12,10 @@ import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
+import java.util.Date;
 import java.util.Set;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.*;
 
 public class OtpTest {
 
@@ -38,4 +38,18 @@ public class OtpTest {
 
         assertFalse(violations.isEmpty());
     }
+
+    @Test
+    public void createOtp_ShouldCreateOtp() {
+        String username = "user@mail.com", code = "123456";
+        Otp otp = new Otp(username, code);
+
+        Set<ConstraintViolation<Otp>> violations = validator.validate(otp);
+        assertTrue(violations.isEmpty());
+
+        assertTrue(otp.getExpiresAt().after(new Date()));
+        assertEquals(username, otp.getUsername());
+        assertEquals(code, otp.getCode());
+    }
+
 }
