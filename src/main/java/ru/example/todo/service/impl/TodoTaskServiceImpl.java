@@ -42,6 +42,7 @@ public class TodoTaskServiceImpl extends AbstractServiceClass implements TodoTas
     @Override
     public List<TodoTask> getAllTasks(User user, Integer pageNo, Integer pageSize, TaskDate date, String sort) {
 
+        pageSize = pageSize > 100 ? 100 : pageSize; // set max page size
         Pageable page = PageRequest.of(pageNo, pageSize, Sort.by(getSortDirection(sort), getSortAsString(sort)));
 
         if (date.equals(TaskDate.TODAY)) {
