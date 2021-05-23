@@ -28,5 +28,4 @@ public interface UserService {
 
     void updatePassword(User user, String password);
 
-    void updatePassword(PasswordRequest passwordRequest);
 }

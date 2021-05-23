@@ -20,7 +20,6 @@ import ru.example.todo.exception.CustomException;
 import ru.example.todo.repository.UserRepository;
 import ru.example.todo.security.UserDetailsImpl;
 import ru.example.todo.service.JwtTokenService;
-import ru.example.todo.service.OtpService;
 import ru.example.todo.service.UserService;
 
 @Service
@@ -31,17 +30,15 @@ public class UserServiceImpl extends AbstractServiceClass implements UserService
     private final JwtTokenService jwtTokenService;
     private final UserRepository userRepository;
     private final TokenProperties tokenProperties;
-    private final OtpService otpService;
 
     public UserServiceImpl(JwtTokenService jwtTokenService, UserRepository userRepository,
                            TokenProperties tokenProperties, AuthenticationManager authManager,
-                           BCryptPasswordEncoder bCryptPasswordEncoder, OtpService otpService) {
+                           BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.jwtTokenService = jwtTokenService;
         this.userRepository = userRepository;
         this.tokenProperties = tokenProperties;
         this.authManager = authManager;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
-        this.otpService = otpService;
     }
 
     @Override
@@ -118,18 +115,5 @@ public class UserServiceImpl extends AbstractServiceClass implements UserService
         user.setPassword(encodedPassword);
     }
 
-    @Override
-    public void updatePassword(PasswordRequest passwordRequest) {
-        boolean isOtpValid = otpService
-                .checkOtp(passwordRequest.getUsername(), passwordRequest.getCode());
-
-        if (isOtpValid) {
-            User user = userRepository.findByUsername(passwordRequest.getUsername())
-                    .orElseThrow(() -> new CustomException("Not Found", "Username not found", HttpStatus.NOT_FOUND));
-
-            user.setPassword(bCryptPasswordEncoder.encode(passwordRequest.getPassword()));
-            userRepository.save(user);
-        }
-    }
 
 }
