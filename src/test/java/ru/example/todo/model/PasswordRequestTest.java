@@ -31,7 +31,6 @@ public class PasswordRequestTest {
         PasswordRequest passwordRequest = new PasswordRequest();
 
         passwordRequest.setUsername("invalid_username");
-        passwordRequest.setCode("12345"); // size must be 6
         passwordRequest.setPassword("123"); // min size = 8
         Set<ConstraintViolation<PasswordRequest>> violations = validator.validate(passwordRequest);
         assertFalse(violations.isEmpty());
@@ -43,7 +42,6 @@ public class PasswordRequestTest {
         PasswordRequest passwordRequest = new PasswordRequest();
 
         passwordRequest.setUsername("some@bk.ru");
-        passwordRequest.setCode("123456"); // size must be 6
         passwordRequest.setPassword("12345678"); // min size = 8
         Set<ConstraintViolation<PasswordRequest>> violations = validator.validate(passwordRequest);
         assertTrue(violations.isEmpty());
@@ -52,16 +50,14 @@ public class PasswordRequestTest {
     @Test
     public void createPasswordRequestWithConstructor() {
         String username = "user@mail.com";
-        String code = "123456";
         String pwd = "password1234";
 
-        PasswordRequest passwordRequest = new PasswordRequest(username, code, pwd);
+        PasswordRequest passwordRequest = new PasswordRequest(username, pwd);
 
         Set<ConstraintViolation<PasswordRequest>> violations = validator.validate(passwordRequest);
         assertTrue(violations.isEmpty());
 
         assertEquals(passwordRequest.getUsername(), username);
-        assertEquals(passwordRequest.getCode(), code);
         assertEquals(passwordRequest.getPassword(), pwd);
     }
 }
