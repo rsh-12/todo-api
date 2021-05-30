@@ -1,6 +1,5 @@
 package ru.example.todo.service;
 
-import ru.example.todo.domain.request.PasswordRequest;
 import ru.example.todo.dto.UserDto;
 import ru.example.todo.entity.User;
 import ru.example.todo.exception.CustomException;
@@ -28,4 +27,5 @@ public interface UserService {
 
     void updatePassword(User user, String password);
 
+    boolean existsByUsername(String email);
 }

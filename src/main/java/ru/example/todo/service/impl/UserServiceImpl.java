@@ -13,7 +13,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.example.todo.config.properties.TokenProperties;
 import ru.example.todo.domain.RefreshToken;
-import ru.example.todo.domain.request.PasswordRequest;
 import ru.example.todo.dto.UserDto;
 import ru.example.todo.entity.User;
 import ru.example.todo.exception.CustomException;
@@ -115,5 +114,9 @@ public class UserServiceImpl extends AbstractServiceClass implements UserService
         user.setPassword(encodedPassword);
     }
 
+    @Override
+    public boolean existsByUsername(String email) {
+        return userRepository.existsByUsername(email);
+    }
 
 }
