@@ -18,20 +18,14 @@ public class PasswordRequest {
 
     @NotNull
     @NotBlank
-    @Size(min = 6, max = 6)
-    private String code;
-
-    @NotNull
-    @NotBlank
     @Size(min = 8, max = 255, message = "Password is required")
     private String password;
 
     public PasswordRequest() {
     }
 
-    public PasswordRequest(String username, String code, String password) {
+    public PasswordRequest(String username, String password) {
         this.username = username;
-        this.code = code;
         this.password = password;
     }
 
@@ -41,14 +35,6 @@ public class PasswordRequest {
 
     public void setUsername(String username) {
         this.username = username;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
     }
 
     public String getPassword() {
@@ -67,13 +53,13 @@ public class PasswordRequest {
         PasswordRequest that = (PasswordRequest) o;
 
         if (!Objects.equals(username, that.username)) return false;
-        return Objects.equals(code, that.code);
+        return Objects.equals(password, that.password);
     }
 
     @Override
     public int hashCode() {
         int result = username != null ? username.hashCode() : 0;
-        result = 31 * result + (code != null ? code.hashCode() : 0);
+        result = 31 * result + (password != null ? password.hashCode() : 0);
         return result;
     }
 
@@ -81,7 +67,7 @@ public class PasswordRequest {
     public String toString() {
         return "PasswordRequest{" +
                 "username='" + username + '\'' +
-                ", code='" + code + '\'' +
                 '}';
     }
+
 }
