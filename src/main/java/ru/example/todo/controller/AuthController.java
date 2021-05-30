@@ -7,12 +7,12 @@ package ru.example.todo.controller;
 import io.swagger.annotations.Api;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import ru.example.todo.dto.UserDto;
 import ru.example.todo.entity.User;
+import ru.example.todo.messaging.MessagingService;
+import ru.example.todo.messaging.requests.Email;
+import ru.example.todo.messaging.requests.Token;
 import ru.example.todo.service.UserService;
 
 import javax.servlet.http.HttpServletRequest;
@@ -24,10 +24,12 @@ import javax.validation.Valid;
 public class AuthController {
 
     private final UserService userService;
+    private final MessagingService messagingService;
     private final ModelMapper modelMapper;
 
-    public AuthController(UserService userService, ModelMapper modelMapper) {
+    public AuthController(UserService userService, MessagingService messagingService, ModelMapper modelMapper) {
         this.userService = userService;
+        this.messagingService = messagingService;
         this.modelMapper = modelMapper;
     }
 
@@ -49,4 +51,15 @@ public class AuthController {
         return ResponseEntity.ok(tokens);
     }
 
+    @PostMapping(value = "/password/forgot")
+    public ResponseEntity<?> forgotPassword(@RequestBody Email email) {
+        messagingService.send(email);
+        return ResponseEntity.ok("OK");
+    }
+
+    @PostMapping(value = "/password/reset")
+    public ResponseEntity<?> resetPassword(@RequestParam(value = "token") Token token) {
+        messagingService.send(token);
+        return ResponseEntity.ok("OK");
+    }
 }
