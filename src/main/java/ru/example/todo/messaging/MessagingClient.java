@@ -34,25 +34,21 @@ public class MessagingClient implements MessagingService {
 
     @Override
     public void send(Email email) {
-
         if (!userService.existsByUsername(email.getEmail())) {
             throw new CustomException("Not Found", "Username Not Found", HttpStatus.NOT_FOUND);
         }
 
         Object response = getResponse(emailExchange, email, "todo.email.replies");
-
-        if (response != null) {
-            System.out.println("response = " + response);
+        if (response == null || ((boolean) response == false)) {
+            throw new CustomException("Internal Server Error", "An error occurred while generating the token",
+                    HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @Override
-    public void send(Token token) {
+    public String send(Token token) {
         Object response = getResponse(tokenExchange, token, "todo.token.replies");
-
-        if (response != null) {
-            System.out.println("response = " + response);
-        }
+        return response == null ? "" : (String) response;
     }
 
     private <T> Object getResponse(DirectExchange exchange, T data, String replyTo) {
