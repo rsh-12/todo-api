@@ -4,6 +4,7 @@ package ru.example.todo.controller;
  * Time: 6:10 PM
  * */
 
+import com.fasterxml.jackson.databind.JsonNode;
 import io.swagger.annotations.Api;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
@@ -54,12 +55,20 @@ public class AuthController {
     @PostMapping(value = "/password/forgot")
     public ResponseEntity<?> forgotPassword(@RequestBody Email email) {
         messagingService.send(email);
-        return ResponseEntity.ok("OK");
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping(value = "/password/reset")
-    public ResponseEntity<?> resetPassword(@RequestParam(value = "token") Token token) {
-        messagingService.send(token);
-        return ResponseEntity.ok("OK");
+    public ResponseEntity<?> resetPassword(@RequestParam(value = "token") Token token,
+                                           @RequestBody JsonNode payload) {
+
+        JsonNode password = payload.get("password");
+
+        if (password == null) {
+            return ResponseEntity.badRequest().body("Token is required");
+        } else {
+            userService.updatePassword(token, password.asText());
+            return ResponseEntity.ok().build();
+        }
     }
 }
