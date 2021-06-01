@@ -3,6 +3,7 @@ package ru.example.todo.service;
 import ru.example.todo.dto.UserDto;
 import ru.example.todo.entity.User;
 import ru.example.todo.exception.CustomException;
+import ru.example.todo.messaging.requests.Token;
 
 public interface UserService {
 
@@ -26,6 +27,8 @@ public interface UserService {
     User getUser(Long userId);
 
     void updatePassword(User user, String password);
+
+    void updatePassword(Token token, String password);
 
     boolean existsByUsername(String email);
 }

@@ -4,6 +4,7 @@ package ru.example.todo.service.impl;
  * Time: 4:39 PM
  * */
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -16,6 +17,8 @@ import ru.example.todo.domain.RefreshToken;
 import ru.example.todo.dto.UserDto;
 import ru.example.todo.entity.User;
 import ru.example.todo.exception.CustomException;
+import ru.example.todo.messaging.MessagingService;
+import ru.example.todo.messaging.requests.Token;
 import ru.example.todo.repository.UserRepository;
 import ru.example.todo.security.UserDetailsImpl;
 import ru.example.todo.service.JwtTokenService;
@@ -23,6 +26,9 @@ import ru.example.todo.service.UserService;
 
 @Service
 public class UserServiceImpl extends AbstractServiceClass implements UserService {
+
+    @Autowired
+    private MessagingService messagingService;
 
     private final AuthenticationManager authManager;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
@@ -112,6 +118,21 @@ public class UserServiceImpl extends AbstractServiceClass implements UserService
 
         String encodedPassword = bCryptPasswordEncoder.encode(password);
         user.setPassword(encodedPassword);
+    }
+
+    @Override
+    public void updatePassword(Token token, String password) {
+        String email = messagingService.send(token);
+        if (email == null || email.isBlank()) {
+            throw new CustomException("Internal Server Error", "An error occurred while generating the token",
+                    HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        User user = userRepository.findByUsername(email)
+                .orElseThrow(() -> new CustomException("Not Found", "Username Not Found", HttpStatus.BAD_REQUEST));
+
+        user.setPassword(bCryptPasswordEncoder.encode(password));
+        userRepository.save(user);
     }
 
     @Override
