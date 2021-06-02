@@ -79,7 +79,7 @@ public class TodoTaskController {
     // delete task by id
     @ApiOperation(value = "Remove task", notes = "It permits to remove a task")
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteOne(
+    public ResponseEntity<String> deleteOne(
             @AuthenticationPrincipal UserDetailsImpl uds,
             @PathVariable("id") Long taskId) {
         todoTaskService.deleteTaskById(uds.getUser(), taskId);
@@ -89,7 +89,7 @@ public class TodoTaskController {
     // create new task
     @ApiOperation(value = "Create task", notes = "It permits to create a new task")
     @PostMapping(consumes = "application/json")
-    public ResponseEntity<?> createTask(
+    public ResponseEntity<String> createTask(
             @AuthenticationPrincipal UserDetailsImpl uds,
             @Valid @RequestBody TodoTaskDto taskDto) {
         todoTaskService.createTask(uds.getUser(), modelMapper.map(taskDto, TodoTask.class));
@@ -101,7 +101,7 @@ public class TodoTaskController {
     // update task status (completed, starred)
     @ApiOperation(value = "Update task", notes = "It permits to update a task")
     @PatchMapping(value = "/{id}", consumes = "application/json")
-    public ResponseEntity<?> updateTask(
+    public ResponseEntity<String> updateTask(
             @AuthenticationPrincipal UserDetailsImpl uds,
             @PathVariable("id") Long taskId,
             @Valid @RequestBody(required = false) TodoTaskDto taskDto,

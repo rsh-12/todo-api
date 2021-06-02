@@ -75,7 +75,7 @@ public class TodoSectionController {
     // delete section by id
     @ApiOperation(value = "Remove section", notes = "It permits to remove a section")
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteOne(@AuthenticationPrincipal UserDetailsImpl uds,
+    public ResponseEntity<String> deleteOne(@AuthenticationPrincipal UserDetailsImpl uds,
                                        @PathVariable("id") Long sectionId) {
         todoSectionService.deleteSectionById(uds.getUser(), sectionId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -84,7 +84,7 @@ public class TodoSectionController {
     // create new section
     @ApiOperation(value = "Create section", notes = "It permits to create a new section")
     @PostMapping(consumes = "application/json")
-    public ResponseEntity<?> createSection(@AuthenticationPrincipal UserDetailsImpl uds,
+    public ResponseEntity<String> createSection(@AuthenticationPrincipal UserDetailsImpl uds,
                                            @Valid @RequestBody TodoSectionDto sectionDto) {
         todoSectionService.createSection(uds.getUser(), sectionDto);
         return new ResponseEntity<>(HttpStatus.CREATED);
@@ -94,7 +94,7 @@ public class TodoSectionController {
     // update section title by id
     @ApiOperation(value = "Update section", notes = "It permits to update a section")
     @PutMapping(value = "/{id}", consumes = "application/json")
-    public ResponseEntity<?> updateSection(@AuthenticationPrincipal UserDetailsImpl uds,
+    public ResponseEntity<String> updateSection(@AuthenticationPrincipal UserDetailsImpl uds,
                                            @PathVariable("id") Long sectionId,
                                            @Valid @RequestBody TodoSectionDto sectionDto) {
 
@@ -105,7 +105,7 @@ public class TodoSectionController {
     // add tasks to the list
     @ApiOperation(value = "Add tasks to section", notes = "It permits to add tasks to section")
     @PostMapping(value = "/{id}/tasks", consumes = "application/json")
-    public ResponseEntity<?> addTasksToList(@AuthenticationPrincipal UserDetailsImpl uds,
+    public ResponseEntity<String> addTasksToList(@AuthenticationPrincipal UserDetailsImpl uds,
                                             @PathVariable("id") Long sectionId,
                                             @RequestBody TaskIdsWrapper wrapper,
                                             @RequestParam(value = "do") SetTasks flag) {

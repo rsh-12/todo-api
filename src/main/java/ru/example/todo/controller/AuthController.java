@@ -53,14 +53,14 @@ public class AuthController {
     }
 
     @PostMapping(value = "/password/forgot")
-    public ResponseEntity<?> forgotPassword(@RequestBody Email email) {
+    public ResponseEntity<String> forgotPassword(@RequestBody Email email) {
         messagingService.send(email);
         return ResponseEntity.ok().build();
     }
 
     @PostMapping(value = "/password/reset")
-    public ResponseEntity<?> resetPassword(@RequestParam(value = "token") Token token,
-                                           @RequestBody JsonNode payload) {
+    public ResponseEntity<String> resetPassword(@RequestParam(value = "token") Token token,
+                                                @RequestBody JsonNode payload) {
 
         JsonNode password = payload.get("password");
 
