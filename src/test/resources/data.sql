@@ -5,10 +5,10 @@ values ('admin@mail.com', '$2a$10$YamL9ghddJL6OLQcSpYb1uPkno8Pw64/jyVCkK1nZDKoE2
        ('client3@mail.com', '$2a$10$ByBjnv4AAlFwtu2NT2N6puUcUZwh2lMmV0gSKv7ZQ6vKfNqTRTJTi', current_timestamp);
 
 insert into user_roles(user_id, roles)
-VALUES (1, 'ROLE_ADMIN'),
-       (2, 'ROLE_USER'),
-       (3, 'ROLE_USER'),
-       (4, 'ROLE_USER');
+VALUES (1, 'ADMIN'),
+       (2, 'USER'),
+       (3, 'USER'),
+       (4, 'USER');
 
 
 insert into section(id, title, created_at, updated_at, user_id)

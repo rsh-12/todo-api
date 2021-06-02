@@ -57,7 +57,7 @@ public class User {
     private List<TodoTask> todoTasks;
 
     public User() {
-        this.roles = Collections.singleton(Role.ROLE_USER);
+        this.roles = Collections.singleton(Role.USER);
     }
 
     public Long getId() {

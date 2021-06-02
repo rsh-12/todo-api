@@ -35,7 +35,7 @@ public class UserServiceTest extends AbstractServiceTestClass {
     public void getUserByUsername_ShouldReturnUser() {
         User user = userService.getUser("admin@mail.com");
         assertNotNull(user);
-        assertTrue(user.getRoles().contains(Role.ROLE_ADMIN));
+        assertTrue(user.getRoles().contains(Role.ADMIN));
     }
 
     @Test

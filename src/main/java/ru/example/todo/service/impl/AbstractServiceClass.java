@@ -80,7 +80,7 @@ public class AbstractServiceClass {
 
     <T> boolean isValidOrAdmin(User user, T entity) {
         return (entity != null && entity.equals(user)) ||
-                user.getRoles().contains(Role.ROLE_ADMIN);
+                user.getRoles().contains(Role.ADMIN);
     }
 
 }

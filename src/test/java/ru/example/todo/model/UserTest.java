@@ -18,13 +18,13 @@ public class UserTest {
     @Test
     public void createUser_ShouldContainRoleUser() {
         User user = new User();
-        assertTrue(user.getRoles().contains(Role.ROLE_USER));
-        assertFalse(user.getRoles().contains(Role.ROLE_ADMIN));
+        assertTrue(user.getRoles().contains(Role.USER));
+        assertFalse(user.getRoles().contains(Role.ADMIN));
     }
 
     @Test
     public void setRoles_ShouldContainAllRoles() {
-        Set<Role> roles = Set.of(Role.ROLE_USER, Role.ROLE_ADMIN);
+        Set<Role> roles = Set.of(Role.USER, Role.ADMIN);
         User user = new User();
         user.setRoles(roles);
         assertTrue(user.getRoles().containsAll(roles));
@@ -33,10 +33,10 @@ public class UserTest {
     @Test
     public void clearRoles_ShouldClearRoles() {
         User user = new User();
-        assertTrue(user.getRoles().contains(Role.ROLE_USER));
+        assertTrue(user.getRoles().contains(Role.USER));
 
         user.clearRoles();
         assertFalse(user.getRoles().stream()
-                .anyMatch(role -> role.equals(Role.ROLE_USER) || role.equals(Role.ROLE_ADMIN)));
+                .anyMatch(role -> role.equals(Role.USER) || role.equals(Role.ADMIN)));
     }
 }

@@ -33,7 +33,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @Api(tags = "Task sections")
 @RestController
 @RequestMapping("/api/sections")
-@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
+@PreAuthorize("hasAnyRole('ADMIN', 'USER')")
 public class TodoSectionController {
 
     private final TodoSectionService todoSectionService;

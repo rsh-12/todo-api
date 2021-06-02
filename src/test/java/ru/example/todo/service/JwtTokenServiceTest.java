@@ -35,7 +35,7 @@ public class JwtTokenServiceTest extends AbstractServiceTestClass {
 
     @Test
     public void buildAccessToken_ShouldReturnAccessToken() throws CustomException {
-        String accessToken = getAccessToken("admin", Collections.singleton(Role.ROLE_ADMIN));
+        String accessToken = getAccessToken("admin", Collections.singleton(Role.ADMIN));
 
         int parts = accessToken.split("\\.").length;
         assertEquals(3, parts);
@@ -92,7 +92,7 @@ public class JwtTokenServiceTest extends AbstractServiceTestClass {
 
     @Test
     public void getAuthentication_ShouldReturnUsernamePasswordAuthToken() throws Exception {
-        String accessToken = getAccessToken("admin@mail.com", Collections.singleton(Role.ROLE_ADMIN));
+        String accessToken = getAccessToken("admin@mail.com", Collections.singleton(Role.ADMIN));
         Authentication authentication = jwtTokenService.getAuthentication(accessToken);
         assertNotNull(authentication);
 
@@ -105,7 +105,7 @@ public class JwtTokenServiceTest extends AbstractServiceTestClass {
 
     @Test
     public void getAuthentication_ShouldThrowUsernameNotFoundException() throws UsernameNotFoundException {
-        String accessToken = getAccessToken("admin", Collections.singleton(Role.ROLE_ADMIN));
+        String accessToken = getAccessToken("admin", Collections.singleton(Role.ADMIN));
         assertThrows(UsernameNotFoundException.class, () -> jwtTokenService.getAuthentication(accessToken));
     }
 

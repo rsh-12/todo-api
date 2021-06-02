@@ -8,5 +8,5 @@ values ('admin@mail.com', '$2a$10$YamL9ghddJL6OLQcSpYb1uPkno8Pw64/jyVCkK1nZDKoE2
        ('client@mail.com', '$2a$10$ByBjnv4AAlFwtu2NT2N6puUcUZwh2lMmV0gSKv7ZQ6vKfNqTRTJTi'); -- client
 
 insert into user_roles (user_id, roles)
-values (1, 'ROLE_ADMIN'),
-       (2, 'ROLE_USER');
+values (1, 'ADMIN'),
+       (2, 'USER');
