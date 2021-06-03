@@ -11,8 +11,7 @@ import ru.example.todo.entity.TodoTask;
 
 import java.time.LocalDate;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class TodoSectionTest {
 
@@ -36,6 +35,16 @@ public class TodoSectionTest {
     public void removeTask_ShouldRemoveTask() {
         section.removeTask(task);
         assertTrue(section.getTodoTasks().isEmpty());
+    }
+
+    @Test
+    public void addTask_ShouldThrowNPE() {
+        assertThrows(NullPointerException.class, () -> section.addTask(null));
+    }
+
+    @Test
+    public void removeTask_ShouldThrowNPE() {
+        assertThrows(NullPointerException.class, () -> section.removeTask(null));
     }
 
 }
