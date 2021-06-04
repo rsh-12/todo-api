@@ -4,14 +4,14 @@ package ru.example.todo.messaging.requests;
  * Time: 10:39 PM
  * */
 
-public class Token {
+public class TokenRequest {
 
     private String token;
 
-    public Token() {
+    public TokenRequest() {
     }
 
-    public Token(String token) {
+    public TokenRequest(String token) {
         this.token = token;
     }
 

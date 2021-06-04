@@ -18,7 +18,7 @@ import ru.example.todo.dto.UserDto;
 import ru.example.todo.entity.User;
 import ru.example.todo.exception.CustomException;
 import ru.example.todo.messaging.MessagingService;
-import ru.example.todo.messaging.requests.Token;
+import ru.example.todo.messaging.requests.TokenRequest;
 import ru.example.todo.repository.UserRepository;
 import ru.example.todo.security.UserDetailsImpl;
 import ru.example.todo.service.JwtTokenService;
@@ -121,7 +121,7 @@ public class UserServiceImpl extends AbstractServiceClass implements UserService
     }
 
     @Override
-    public void updatePassword(Token token, String password) {
+    public void updatePassword(TokenRequest token, String password) {
         String email = messagingService.send(token);
         if (email == null || email.isBlank()) {
             throw new CustomException("Internal Server Error", "An error occurred while generating the token",
