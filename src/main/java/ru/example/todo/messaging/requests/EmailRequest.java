@@ -4,14 +4,14 @@ package ru.example.todo.messaging.requests;
  * Time: 1:22 PM
  * */
 
-public class Email {
+public class EmailRequest {
 
     private String email;
 
-    public Email() {
+    public EmailRequest() {
     }
 
-    public Email(String email) {
+    public EmailRequest(String email) {
         this.email = email;
     }
 
