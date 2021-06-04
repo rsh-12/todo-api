@@ -11,8 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import ru.example.todo.exception.CustomException;
-import ru.example.todo.messaging.requests.Email;
-import ru.example.todo.messaging.requests.Token;
+import ru.example.todo.messaging.requests.EmailRequest;
+import ru.example.todo.messaging.requests.TokenRequest;
 import ru.example.todo.service.UserService;
 
 @Service
@@ -33,7 +33,7 @@ public class MessagingClient implements MessagingService {
     }
 
     @Override
-    public void send(Email email) {
+    public void send(EmailRequest email) {
         if (!userService.existsByUsername(email.getEmail())) {
             throw new CustomException("Not Found", "Username Not Found", HttpStatus.NOT_FOUND);
         }
@@ -46,7 +46,7 @@ public class MessagingClient implements MessagingService {
     }
 
     @Override
-    public String send(Token token) {
+    public String send(TokenRequest token) {
         Object response = getResponse(tokenExchange, token, "todo.token.replies");
         return response == null ? "" : (String) response;
     }

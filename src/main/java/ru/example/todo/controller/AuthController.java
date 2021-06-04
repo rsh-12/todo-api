@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.*;
 import ru.example.todo.dto.UserDto;
 import ru.example.todo.entity.User;
 import ru.example.todo.messaging.MessagingService;
-import ru.example.todo.messaging.requests.Email;
-import ru.example.todo.messaging.requests.Token;
+import ru.example.todo.messaging.requests.EmailRequest;
+import ru.example.todo.messaging.requests.TokenRequest;
 import ru.example.todo.service.UserService;
 
 import javax.servlet.http.HttpServletRequest;
@@ -53,13 +53,13 @@ public class AuthController {
     }
 
     @PostMapping(value = "/password/forgot")
-    public ResponseEntity<String> forgotPassword(@RequestBody Email email) {
+    public ResponseEntity<String> forgotPassword(@RequestBody EmailRequest email) {
         messagingService.send(email);
         return ResponseEntity.ok().build();
     }
 
     @PostMapping(value = "/password/reset")
-    public ResponseEntity<String> resetPassword(@RequestParam(value = "token") Token token,
+    public ResponseEntity<String> resetPassword(@RequestParam(value = "token") TokenRequest token,
                                                 @RequestBody JsonNode payload) {
 
         JsonNode password = payload.get("password");
