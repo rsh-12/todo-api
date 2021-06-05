@@ -16,10 +16,8 @@ import ru.example.todo.enums.SetTasks;
 import ru.example.todo.exception.CustomException;
 import ru.example.todo.repository.TodoSectionRepository;
 import ru.example.todo.service.TodoSectionService;
-import ru.example.todo.service.TodoTaskService;
 
 import java.util.List;
-import java.util.Set;
 
 @Service
 public class TodoSectionServiceImpl extends AbstractServiceClass implements TodoSectionService {
@@ -27,12 +25,9 @@ public class TodoSectionServiceImpl extends AbstractServiceClass implements Todo
     private static final Logger log = LoggerFactory.getLogger(TodoSectionServiceImpl.class.getName());
 
     private final TodoSectionRepository todoSectionRepository;
-    private final TodoTaskService todoTaskService;
 
-    public TodoSectionServiceImpl(TodoSectionRepository todoSectionRepository,
-                                  TodoTaskService todoTaskService) {
+    public TodoSectionServiceImpl(TodoSectionRepository todoSectionRepository) {
         this.todoSectionRepository = todoSectionRepository;
-        this.todoTaskService = todoTaskService;
     }
 
     // get section by id
@@ -100,21 +95,14 @@ public class TodoSectionServiceImpl extends AbstractServiceClass implements Todo
 
     // add to or remove from the task section
     @Override
-    public void addTasksToOrRemoveFromSection(Long userId, Long sectionId, Set<Long> taskIds, SetTasks flag) {
-
-        if (taskIds == null || taskIds.isEmpty()) {
-            throw new CustomException("Bad Request", "Tasks IDs are required", HttpStatus.BAD_REQUEST);
-        }
+    public void addTasksToOrRemoveFromSection(Long userId, Long sectionId, List<TodoTask> tasks, SetTasks flag) {
 
         log.info("Get the section by id: {}", sectionId);
         TodoSection section = todoSectionRepository.findByUserIdAndId(userId, sectionId)
                 .orElseThrow(() -> new CustomException("Not Found", "Section not found: " + sectionId, HttpStatus.NOT_FOUND));
 
-        List<TodoTask> tasksByIds = todoTaskService.findTasksByIds(taskIds, userId);
-        log.info("Get tasks list size: {}", tasksByIds.size());
-
         // add or remove
-        addOrRemoveTasks(flag, section, tasksByIds);
+        addOrRemoveTasks(flag, section, tasks);
         todoSectionRepository.save(section);
     }
 
