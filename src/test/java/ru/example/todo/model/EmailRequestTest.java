@@ -32,4 +32,9 @@ public class EmailRequestTest {
         assertEquals("admin@mail.com", emailRequest.getEmail());
     }
 
+    @Test
+    public void toString_ShouldCheckOverridedMethod() {
+        assertEquals(emailRequest.toString(), "Email{email='"+emailRequest.getEmail()+"'}");
+    }
+
 }
