@@ -49,7 +49,7 @@ public class AuthControllerTest extends AbstractControllerTestClass {
 
     // Login: success
     @Test
-    public void testLogin() throws Exception {
+    public void login_ShouldReturnTokens() throws Exception {
         UserDto admin = new UserDto(ADMIN, "admin");
 
         given(jwtTokenService.buildAccessToken(ADMIN, Collections.singleton(Role.ADMIN)))
@@ -77,7 +77,7 @@ public class AuthControllerTest extends AbstractControllerTestClass {
 
     // Login: fail
     @Test
-    public void testLogin_NotFound() throws Exception {
+    public void login_NotFound_ShouldThrowCustomException() throws Exception {
         UserDto user = new UserDto("usernameNotExists@mail.com", "somePassword");
         given(userService.login(user))
                 .willThrow(new CustomException("Not Found",
@@ -92,7 +92,7 @@ public class AuthControllerTest extends AbstractControllerTestClass {
     }
 
     @Test
-    public void testLogin_WrongPassword() throws Exception {
+    public void login_WrongPassword_ShouldThrowCustomException() throws Exception {
 
         UserDto user = new UserDto(USER, "wrongPassword");
 
@@ -110,7 +110,7 @@ public class AuthControllerTest extends AbstractControllerTestClass {
 
     // Register: success
     @Test
-    public void testRegister() throws Exception {
+    public void register_ShouldReturnOk() throws Exception {
         User user = new User("user@mail.com", "password1234");
 
         given(userService.register(user))
@@ -129,7 +129,7 @@ public class AuthControllerTest extends AbstractControllerTestClass {
 
     // Register: fail
     @Test
-    public void testRegister_InvalidUsername() throws Exception {
+    public void register_InvalidUsername_ShouldReturnBadRequest() throws Exception {
         String body = requestBody("notValidUsername", "password");
 
         mvc.perform(post(AUTH + "register")
@@ -141,7 +141,7 @@ public class AuthControllerTest extends AbstractControllerTestClass {
     }
 
     @Test
-    public void testRegister_InvalidPassword() throws Exception {
+    public void register_InvalidPwd_ShouldReturnBadRequest() throws Exception {
         String body = requestBody("username@mail.com", "1");
 
         mvc.perform(post(AUTH + "register")
@@ -155,7 +155,7 @@ public class AuthControllerTest extends AbstractControllerTestClass {
 
     // Token: fail
     @Test
-    public void testRefreshTokens_Fail() throws Exception {
+    public void getToken_NotFound_ShouldThrowCustomException() throws Exception {
 
         final String TOKEN = "tokenDoesNotExist";
         given(userService.generateNewTokens(TOKEN))
