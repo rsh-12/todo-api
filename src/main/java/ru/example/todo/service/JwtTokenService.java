@@ -13,15 +13,15 @@ public interface JwtTokenService {
 
     RefreshToken buildRefreshToken(String username);
 
-    Authentication getAuthentication(String token);
+    Authentication authenticateAndReturnInstance(String token);
 
-    String resolveToken(HttpServletRequest request);
+    String resolveAccessToken(HttpServletRequest request);
 
-    boolean validateToken(String token);
+    boolean isAccessTokenValid(String token);
 
     RefreshToken findRefreshToken(String token);
 
-    void removeOldRefreshTokenById(String tokenId);
+    void removeRefreshTokenById(String tokenId);
 
-    boolean isNotExpired(RefreshToken refreshToken);
+    boolean hasRefreshTokenExpired(RefreshToken refreshToken);
 }

@@ -75,7 +75,7 @@ public class JwtTokenServiceImpl implements JwtTokenService {
         Date expiryTime = getValidity(refreshTokenValidity);
 
         RefreshToken refreshToken = new RefreshToken(token, username, expiryTime);
-        tokenStore.save(refreshToken);
+        tokenStore.saveRefreshToken(refreshToken);
 
         return refreshToken;
     }
@@ -87,14 +87,14 @@ public class JwtTokenServiceImpl implements JwtTokenService {
 
 
     @Override
-    public Authentication getAuthentication(String token) {
+    public Authentication authenticateAndReturnInstance(String token) {
         String username = getUsername(token);
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
         return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
     }
 
     @Override
-    public String resolveToken(HttpServletRequest request) {
+    public String resolveAccessToken(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
 
         if (bearerToken != null) {
@@ -106,7 +106,7 @@ public class JwtTokenServiceImpl implements JwtTokenService {
     }
 
     @Override
-    public boolean validateToken(String token) {
+    public boolean isAccessTokenValid(String token) {
         try {
             Jwts.parserBuilder()
                     .setSigningKey(getSecretKey())
@@ -128,16 +128,16 @@ public class JwtTokenServiceImpl implements JwtTokenService {
         if (token == null) {
             throw new CustomException("Bad Request", "Invalid token", HttpStatus.BAD_REQUEST);
         }
-        return tokenStore.find(token);
+        return tokenStore.findRefreshToken(token);
     }
 
     @Override
-    public void removeOldRefreshTokenById(String tokenId) {
-        tokenStore.deleteById(tokenId);
+    public void removeRefreshTokenById(String tokenId) {
+        tokenStore.deleteRefreshTokenById(tokenId);
     }
 
     @Override
-    public boolean isNotExpired(RefreshToken refreshToken) {
+    public boolean hasRefreshTokenExpired(RefreshToken refreshToken) {
         return now().isBefore(refreshToken.getExpiryTime().toInstant());
     }
 
