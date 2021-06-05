@@ -63,7 +63,7 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
 
         mvc.perform(post(SECTIONS)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(asJsonString(section)))
+                .content(convertToJson(section)))
                 .andExpect(status().isCreated())
                 .andDo(print());
 
@@ -202,7 +202,7 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
         mvc.perform(post(SECTIONS + SECTION_ID + "/tasks")
                 .contentType(MediaType.APPLICATION_JSON)
                 .param("do", "move")
-                .content(asJsonString(wrapper)))
+                .content(convertToJson(wrapper)))
                 .andExpect(status().is2xxSuccessful())
                 .andExpect(status().isOk());
 
@@ -236,7 +236,7 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
         mvc.perform(post(SECTIONS + SECTION_ID + "/tasks")
                 .contentType(MediaType.APPLICATION_JSON)
                 .param("do", "remove")
-                .content(asJsonString(wrapper)))
+                .content(convertToJson(wrapper)))
                 .andExpect(status().isOk());
 
         int afterTasksQuantity = getJsonArraySize(SECTIONS + SECTION_ID, "tasks");
@@ -255,7 +255,7 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
         mvc.perform(post(SECTIONS + SECTION_ID + "/tasks")
                 .contentType(MediaType.APPLICATION_JSON)
                 .param("do", "move")
-                .content(asJsonString(wrapper)))
+                .content(convertToJson(wrapper)))
                 .andDo(print())
                 .andExpect(status().is4xxClientError())
                 .andExpect(jsonPath("message", containsStringIgnoringCase("Tasks IDs are required")));
@@ -273,7 +273,7 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
         mvc.perform(post(SECTIONS + SECTION_ID + "/tasks")
                 .contentType(MediaType.APPLICATION_JSON)
                 .param("do", "remove")
-                .content(asJsonString(wrapper)))
+                .content(convertToJson(wrapper)))
                 .andExpect(status().is4xxClientError())
                 .andExpect(jsonPath("message", containsStringIgnoringCase("Tasks IDs are required")));
     }
@@ -292,7 +292,7 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
         mvc.perform(post(SECTIONS + SECTION_ID + "/tasks")
                 .contentType(MediaType.APPLICATION_JSON)
                 .param("do", "remove")
-                .content(asJsonString(wrapper)))
+                .content(convertToJson(wrapper)))
                 .andExpect(status().is4xxClientError())
                 .andExpect(jsonPath("message", containsStringIgnoringCase("Section not found")));
     }

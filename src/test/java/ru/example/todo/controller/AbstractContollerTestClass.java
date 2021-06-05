@@ -36,7 +36,7 @@ abstract class AbstractControllerTestClass {
     @Autowired
     protected MockMvc mvc;
 
-    protected static String asJsonString(final Object obj) {
+    protected static String convertToJson(final Object obj) {
         try {
             final ObjectMapper mapper = new ObjectMapper();
             return mapper.writeValueAsString(obj);

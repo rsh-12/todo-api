@@ -44,7 +44,7 @@ public class AuthControllerTest extends AbstractControllerTestClass {
         Map<String, String> body = new LinkedHashMap<>();
         body.put("username", username);
         body.put("password", password);
-        return asJsonString(body);
+        return convertToJson(body);
     }
 
     // Login: success
