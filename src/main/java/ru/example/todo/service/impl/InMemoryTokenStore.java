@@ -18,13 +18,13 @@ public class InMemoryTokenStore implements TokenStore {
     private final Map<String, RefreshToken> tokenStore = new ConcurrentHashMap<>();
 
     @Override
-    public RefreshToken find(String token) {
+    public RefreshToken findRefreshToken(String token) {
         return tokenStore.get(token);
     }
 
     @Override
     @Async
-    public CompletableFuture<Void> save(RefreshToken refreshToken) {
+    public CompletableFuture<Void> saveRefreshToken(RefreshToken refreshToken) {
 
         tokenStore.values().stream()
                 .filter(token -> token.getUsername().equals(refreshToken.getUsername()))
@@ -36,12 +36,12 @@ public class InMemoryTokenStore implements TokenStore {
     }
 
     @Override
-    public void deleteById(String tokenId) {
+    public void deleteRefreshTokenById(String tokenId) {
         tokenStore.remove(tokenId);
     }
 
     @Override
-    public void removeIfExpired() {
+    public void deleteExpiredRefreshTokens() {
         tokenStore.values().stream()
                 .filter(token -> token.getExpiryTime().before(new Date(System.currentTimeMillis())))
                 .forEach(token -> tokenStore.remove(token.getToken()));

@@ -6,11 +6,11 @@ import java.util.concurrent.CompletableFuture;
 
 public interface TokenStore {
 
-    RefreshToken find(String token);
+    RefreshToken findRefreshToken(String token);
 
-    CompletableFuture<Void> save(RefreshToken refreshToken);
+    CompletableFuture<Void> saveRefreshToken(RefreshToken refreshToken);
 
-    void deleteById(String tokenId);
+    void deleteRefreshTokenById(String tokenId);
 
-    void removeIfExpired();
+    void deleteExpiredRefreshTokens();
 }
