@@ -58,7 +58,7 @@ public class TodoTaskController {
             @RequestParam(value = "sort", required = false, defaultValue = "createdAt") String sort) {
 
         List<EntityModel<TodoTask>> todos = todoTaskService
-                .getAllTasks(uds.getUser(), pageNo, pageSize, date, sort)
+                .findTasks(uds.getUser(), pageNo, pageSize, date, sort)
                 .stream()
                 .map(assembler::toModel)
                 .collect(Collectors.toList());
@@ -73,7 +73,7 @@ public class TodoTaskController {
     public EntityModel<TodoTask> one(
             @AuthenticationPrincipal UserDetailsImpl uds,
             @PathVariable("id") Long taskId) {
-        return assembler.toModel(todoTaskService.getTaskById(uds.getUser(), taskId));
+        return assembler.toModel(todoTaskService.findTaskById(uds.getUser(), taskId));
     }
 
     // delete task by id
