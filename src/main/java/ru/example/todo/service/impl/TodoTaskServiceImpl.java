@@ -107,7 +107,7 @@ public class TodoTaskServiceImpl extends AbstractServiceClass implements TodoTas
                 .orElseThrow(() -> new CustomException("Not Found", "Task not found: " + taskId, HttpStatus.NOT_FOUND));
 
         // update task title or task completion date
-        if (task != null) {
+        if (taskDto != null) {
             setTitleOrDate(taskDto, task);
         }
 
