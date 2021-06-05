@@ -51,7 +51,7 @@ public class TodoSectionController {
     // get all sections
     @ApiOperation(value = "List todo sections", notes = "List all todo sections")
     @GetMapping(produces = "application/json")
-    public CollectionModel<EntityModel<TodoSection>> all(@AuthenticationPrincipal UserDetailsImpl uds) {
+    public CollectionModel<EntityModel<TodoSection>> listSections(@AuthenticationPrincipal UserDetailsImpl uds) {
 
         List<EntityModel<TodoSection>> sections = todoSectionService.findSectionDtoList(uds.getUser())
                 .stream()
@@ -60,13 +60,13 @@ public class TodoSectionController {
                 .collect(Collectors.toList());
 
         return CollectionModel.of(sections,
-                linkTo(methodOn(TodoSectionController.class).all(uds)).withSelfRel());
+                linkTo(methodOn(TodoSectionController.class).listSections(uds)).withSelfRel());
     }
 
     // get custom section by id
     @ApiOperation(value = "Find section", notes = "Find the Section by ID")
     @GetMapping(value = "/{id}", produces = "application/json")
-    public EntityModel<TodoSection> one(@AuthenticationPrincipal UserDetailsImpl uds,
+    public EntityModel<TodoSection> getSection(@AuthenticationPrincipal UserDetailsImpl uds,
                                         @PathVariable("id") Long sectonId) {
 
         return assembler.toModel(todoSectionService.findSectionById(uds.getUser(), sectonId));
@@ -75,7 +75,7 @@ public class TodoSectionController {
     // delete section by id
     @ApiOperation(value = "Remove section", notes = "It permits to remove a section")
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteOne(@AuthenticationPrincipal UserDetailsImpl uds,
+    public ResponseEntity<String> deleteSection(@AuthenticationPrincipal UserDetailsImpl uds,
                                        @PathVariable("id") Long sectionId) {
         todoSectionService.deleteSectionById(uds.getUser(), sectionId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -105,12 +105,12 @@ public class TodoSectionController {
     // add tasks to the list
     @ApiOperation(value = "Add tasks to section", notes = "It permits to add tasks to section")
     @PostMapping(value = "/{id}/tasks", consumes = "application/json")
-    public ResponseEntity<String> addTasksToList(@AuthenticationPrincipal UserDetailsImpl uds,
+    public ResponseEntity<String> addOrRemoveTasks(@AuthenticationPrincipal UserDetailsImpl uds,
                                             @PathVariable("id") Long sectionId,
                                             @RequestBody TaskIdsWrapper wrapper,
                                             @RequestParam(value = "do") SetTasks flag) {
 
-        todoSectionService.addOrRemoveTasksFromSection(uds.getId(), sectionId, wrapper.tasks, flag);
+        todoSectionService.addTasksToOrRemoveFromSection(uds.getId(), sectionId, wrapper.tasks, flag);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
