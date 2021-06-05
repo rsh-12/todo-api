@@ -78,7 +78,7 @@ public class AbstractServiceClass {
         if (taskDto.getTitle() != null) taskFromDB.setTitle(taskDto.getTitle());
     }
 
-    <T> boolean isValidOrAdmin(User user, T entity) {
+    <T> boolean isUserValidOrHasRoleAdmin(User user, T entity) {
         return (entity != null && entity.equals(user)) ||
                 user.getRoles().contains(Role.ADMIN);
     }

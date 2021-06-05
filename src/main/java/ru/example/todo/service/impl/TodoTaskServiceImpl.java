@@ -72,7 +72,7 @@ public class TodoTaskServiceImpl extends AbstractServiceClass implements TodoTas
         TodoTask task = todoTaskRepository.findById(taskId)
                 .orElseThrow(() -> new CustomException("Not Found", "Task not found: " + taskId, HttpStatus.NOT_FOUND));
 
-        if (isValidOrAdmin(user, task.getUser())) {
+        if (isUserValidOrHasRoleAdmin(user, task.getUser())) {
             todoTaskRepository.deleteById(taskId);
         } else {
             throw new CustomException("Forbidden", "Not enough permissions", HttpStatus.FORBIDDEN);
