@@ -6,11 +6,16 @@ package ru.example.todo.controller;
 
 import org.junit.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MvcResult;
 import ru.example.todo.domain.RefreshToken;
+import ru.example.todo.dto.UserDto;
+import ru.example.todo.entity.User;
 import ru.example.todo.enums.Role;
+import ru.example.todo.exception.CustomException;
 import ru.example.todo.service.JwtTokenService;
+import ru.example.todo.service.UserService;
 
 import java.util.Collections;
 import java.util.Date;
@@ -32,6 +37,9 @@ public class AuthControllerTest extends AbstractControllerTestClass {
     @MockBean
     private JwtTokenService jwtTokenService;
 
+    @MockBean
+    private UserService userService;
+
     private String requestBody(String username, String password) {
         Map<String, String> body = new LinkedHashMap<>();
         body.put("username", username);
@@ -42,37 +50,42 @@ public class AuthControllerTest extends AbstractControllerTestClass {
     // Login: success
     @Test
     public void testLogin() throws Exception {
+        UserDto admin = new UserDto(ADMIN, "admin");
 
         given(jwtTokenService.buildAccessToken(ADMIN, Collections.singleton(Role.ADMIN)))
-                .willReturn("accessToken");
+                .willReturn("access_token");
 
         given(jwtTokenService.buildRefreshToken(ADMIN))
-                .willReturn(new RefreshToken("refreshToken", ADMIN, new Date()));
+                .willReturn(new RefreshToken("refresh_token", ADMIN, new Date()));
 
-        String body = requestBody(ADMIN, "admin");
+        given(userService.login(new UserDto(ADMIN, "admin")))
+                .willReturn("access_token");
+
+        assertEquals(userService.login(admin), "access_token");
 
         String response = mvc.perform(post(AUTH + "login")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(body))
+                .content(requestBody(admin.getUsername(), admin.getPassword())))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andReturn().getResponse().getContentAsString();
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
 
         assertTrue(response.contains("access_token"));
-        assertTrue(response.contains("refresh_token"));
-        assertTrue(response.contains("token_type"));
-        assertTrue(response.contains("access_token_expires"));
-        assertTrue(response.contains("refresh_token_expires"));
     }
 
     // Login: fail
     @Test
     public void testLogin_NotFound() throws Exception {
-        String body = requestBody("usernameNotExists@mail.com", "client");
+        UserDto user = new UserDto("usernameNotExists@mail.com", "somePassword");
+        given(userService.login(user))
+                .willThrow(new CustomException("Not Found",
+                        "Username Not Found / Incorrect Password", HttpStatus.NOT_FOUND));
 
         mvc.perform(post(AUTH + "login")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(body))
+                .content(requestBody(user.getUsername(), user.getPassword())))
                 .andDo(print())
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("message", containsStringIgnoringCase("Username not found / incorrect password")));
@@ -80,11 +93,16 @@ public class AuthControllerTest extends AbstractControllerTestClass {
 
     @Test
     public void testLogin_WrongPassword() throws Exception {
-        String body = requestBody(USER, "wrongpassword");
+
+        UserDto user = new UserDto(USER, "wrongPassword");
+
+        given(userService.login(user))
+                .willThrow(new CustomException("Not Found",
+                        "Username Not Found / Incorrect Password", HttpStatus.NOT_FOUND));
 
         mvc.perform(post(AUTH + "login")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(body))
+                .content(requestBody(user.getUsername(), user.getPassword())))
                 .andDo(print())
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("message", containsStringIgnoringCase("Username not found / incorrect password")));
@@ -93,11 +111,14 @@ public class AuthControllerTest extends AbstractControllerTestClass {
     // Register: success
     @Test
     public void testRegister() throws Exception {
-        String body = requestBody("newUsername@mail.com", "newPassword");
+        User user = new User("user@mail.com", "password1234");
+
+        given(userService.register(user))
+                .willReturn("ok");
 
         MvcResult result = mvc.perform(post(AUTH + "register")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(body))
+                .content(requestBody(user.getUsername(), user.getPassword())))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andReturn();
@@ -136,8 +157,14 @@ public class AuthControllerTest extends AbstractControllerTestClass {
     @Test
     public void testRefreshTokens_Fail() throws Exception {
 
+        final String TOKEN = "tokenDoesNotExist";
+        given(userService.refreshToken(TOKEN))
+                .willThrow(new CustomException(
+                        "Refresh token is not valid or expired, please, try to log in",
+                        HttpStatus.BAD_REQUEST));
+
         mvc.perform(post(AUTH + "token")
-                .header("token", "non-existent-token"))
+                .header("token", TOKEN))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("message",
