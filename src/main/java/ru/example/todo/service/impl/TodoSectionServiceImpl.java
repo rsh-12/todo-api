@@ -100,7 +100,7 @@ public class TodoSectionServiceImpl extends AbstractServiceClass implements Todo
 
     // add to or remove from the task section
     @Override
-    public void addOrRemoveTasksFromSection(Long userId, Long sectionId, Set<Long> taskIds, SetTasks flag) {
+    public void addTasksToOrRemoveFromSection(Long userId, Long sectionId, Set<Long> taskIds, SetTasks flag) {
 
         if (taskIds == null || taskIds.isEmpty()) {
             throw new CustomException("Bad Request", "Tasks IDs are required", HttpStatus.BAD_REQUEST);

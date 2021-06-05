@@ -20,5 +20,5 @@ public interface TodoSectionService {
 
     void updateSection(User user, Long sectionId, TodoSectionDto sectionDto);
 
-    void addOrRemoveTasksFromSection(Long userId, Long sectionId, Set<Long> tasks, SetTasks flag);
+    void addTasksToOrRemoveFromSection(Long userId, Long sectionId, Set<Long> tasks, SetTasks flag);
 }
