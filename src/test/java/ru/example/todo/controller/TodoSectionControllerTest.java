@@ -32,7 +32,7 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
     @Test
     @WithUserDetails(ADMIN)
     public void A_testGetAllTodoSections() throws Exception {
-        mvc.perform(get(SECTIONS)
+        mvc.perform(get(API_SECTIONS)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("_embedded.sections[0].title", is("Important")))
@@ -45,7 +45,7 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
     public void B_testGetTodoSectionById() throws Exception {
         final int SECTION_ID = 1;
 
-        mvc.perform(get(SECTIONS + SECTION_ID))
+        mvc.perform(get(API_SECTIONS + SECTION_ID))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("title", is("Important")))
                 .andDo(print());
@@ -59,20 +59,20 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
         TodoSectionDto section = new TodoSectionDto();
         section.setTitle("Created Section");
 
-        int beforeSectionsQuantity = getJsonArraySize(SECTIONS, "_embedded.sections");
+        int beforeSectionsQuantity = getJsonArraySize(API_SECTIONS, "_embedded.sections");
 
-        mvc.perform(post(SECTIONS)
+        mvc.perform(post(API_SECTIONS)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(convertToJson(section)))
                 .andExpect(status().isCreated())
                 .andDo(print());
 
-        mvc.perform(get(SECTIONS + 5))
+        mvc.perform(get(API_SECTIONS + 5))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("title", is("Created Section")))
                 .andDo(print());
 
-        int afterSectionsQuantity = getJsonArraySize(SECTIONS, "_embedded.sections");
+        int afterSectionsQuantity = getJsonArraySize(API_SECTIONS, "_embedded.sections");
 
         assertEquals(beforeSectionsQuantity + 1, afterSectionsQuantity);
     }
@@ -85,19 +85,19 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
         final int SECTION_ID = 1;
 
         // get by id: returns 200 OK
-        mvc.perform(get(SECTIONS + SECTION_ID)
+        mvc.perform(get(API_SECTIONS + SECTION_ID)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk());
 
         // delete by id: returns 204 NO CONTENT
-        mvc.perform(delete(SECTIONS + SECTION_ID)
+        mvc.perform(delete(API_SECTIONS + SECTION_ID)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent())
                 .andDo(print());
 
         // get again by id: returns 404 NOT FOUND
-        mvc.perform(get(SECTIONS + SECTION_ID)
+        mvc.perform(get(API_SECTIONS + SECTION_ID)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isNotFound());
@@ -110,20 +110,20 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
         final int SECTION_ID = 3;
 
         // get section by id: returns 200 OK
-        mvc.perform(get(SECTIONS + SECTION_ID)
+        mvc.perform(get(API_SECTIONS + SECTION_ID)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("title", is("Later")));
 
         // update section by id: returns 200 OK
-        mvc.perform(put(SECTIONS + SECTION_ID)
+        mvc.perform(put(API_SECTIONS + SECTION_ID)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(getSectionInJson(2L, "NewTitle")))
                 .andExpect(status().isOk())
                 .andDo(print());
 
         // get section by id, check new title: returns 200 OK
-        mvc.perform(get(SECTIONS + SECTION_ID)
+        mvc.perform(get(API_SECTIONS + SECTION_ID)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("title", is("NewTitle")));
@@ -139,7 +139,7 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
     public void testSectionById_NotFound() throws Exception {
         final int SECTION_ID = 100;
 
-        mvc.perform(get(SECTIONS + SECTION_ID)
+        mvc.perform(get(API_SECTIONS + SECTION_ID)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is4xxClientError())
                 .andExpect(status().isNotFound());
@@ -151,12 +151,12 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
     public void testDeleteSectionByNoneExistentId() throws Exception {
         final int SECTION_ID = 100;
 
-        int beforeSectionsQuantity = getJsonArraySize(SECTIONS, "_embedded.sections");
+        int beforeSectionsQuantity = getJsonArraySize(API_SECTIONS, "_embedded.sections");
 
-        mvc.perform(delete(SECTIONS + SECTION_ID))
+        mvc.perform(delete(API_SECTIONS + SECTION_ID))
                 .andExpect(status().isNotFound());
 
-        int afterSectionsQuantity = getJsonArraySize(SECTIONS, "_embedded.sections");
+        int afterSectionsQuantity = getJsonArraySize(API_SECTIONS, "_embedded.sections");
 
         assertEquals(beforeSectionsQuantity, afterSectionsQuantity);
     }
@@ -167,7 +167,7 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
     public void testUpdateSectionByNoneExistentId() throws Exception {
         final int SECTION_ID = 100;
 
-        mvc.perform(put(SECTIONS + SECTION_ID)
+        mvc.perform(put(API_SECTIONS + SECTION_ID)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(getSectionInJson((long) SECTION_ID, "New title")))
                 .andExpect(status().isNotFound())
@@ -178,7 +178,7 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
     public void testUpdateSectionById_InvalidData() throws Exception {
         final int SECTION_ID = 3;
 
-        mvc.perform(put(SECTIONS + SECTION_ID)
+        mvc.perform(put(API_SECTIONS + SECTION_ID)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(getSectionInJson((long) SECTION_ID, "T")))
                 .andExpect(status().is4xxClientError())
@@ -197,16 +197,16 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
             addAll(Set.of(4L, 6L));
         }};
 
-        int beforeTasksQuantity = getJsonArraySize(SECTIONS + SECTION_ID, "tasks");
+        int beforeTasksQuantity = getJsonArraySize(API_SECTIONS + SECTION_ID, "tasks");
 
-        mvc.perform(post(SECTIONS + SECTION_ID + "/tasks")
+        mvc.perform(post(API_SECTIONS + SECTION_ID + "/tasks")
                 .contentType(MediaType.APPLICATION_JSON)
                 .param("do", "move")
                 .content(convertToJson(wrapper)))
                 .andExpect(status().is2xxSuccessful())
                 .andExpect(status().isOk());
 
-        int afterTasksQuantity = getJsonArraySize(SECTIONS + SECTION_ID, "tasks");
+        int afterTasksQuantity = getJsonArraySize(API_SECTIONS + SECTION_ID, "tasks");
 
         assertEquals(beforeTasksQuantity + wrapper.tasks.size(), afterTasksQuantity);
     }
@@ -218,12 +218,12 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
 
         final int TASK_ID = 10, SECTION_ID = 4;
 
-        int beforeTasksQuantity = getJsonArraySize(SECTIONS + SECTION_ID, "tasks");
+        int beforeTasksQuantity = getJsonArraySize(API_SECTIONS + SECTION_ID, "tasks");
         System.out.println("beforeTasksQuantity = " + beforeTasksQuantity);
 
         assertEquals(1, beforeTasksQuantity);
 
-        mvc.perform(get(SECTIONS + SECTION_ID))
+        mvc.perform(get(API_SECTIONS + SECTION_ID))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("tasks[0].title", containsStringIgnoringCase("special")));
 
@@ -233,13 +233,13 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
             add((long) TASK_ID);
         }};
 
-        mvc.perform(post(SECTIONS + SECTION_ID + "/tasks")
+        mvc.perform(post(API_SECTIONS + SECTION_ID + "/tasks")
                 .contentType(MediaType.APPLICATION_JSON)
                 .param("do", "remove")
                 .content(convertToJson(wrapper)))
                 .andExpect(status().isOk());
 
-        int afterTasksQuantity = getJsonArraySize(SECTIONS + SECTION_ID, "tasks");
+        int afterTasksQuantity = getJsonArraySize(API_SECTIONS + SECTION_ID, "tasks");
 
         assertEquals(beforeTasksQuantity - wrapper.tasks.size(), afterTasksQuantity);
     }
@@ -252,7 +252,7 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
         TaskIdsWrapper wrapper = new TaskIdsWrapper();
         wrapper.tasks = new HashSet<>();
 
-        mvc.perform(post(SECTIONS + SECTION_ID + "/tasks")
+        mvc.perform(post(API_SECTIONS + SECTION_ID + "/tasks")
                 .contentType(MediaType.APPLICATION_JSON)
                 .param("do", "move")
                 .content(convertToJson(wrapper)))
@@ -270,7 +270,7 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
         TaskIdsWrapper wrapper = new TaskIdsWrapper();
         wrapper.tasks = null;
 
-        mvc.perform(post(SECTIONS + SECTION_ID + "/tasks")
+        mvc.perform(post(API_SECTIONS + SECTION_ID + "/tasks")
                 .contentType(MediaType.APPLICATION_JSON)
                 .param("do", "remove")
                 .content(convertToJson(wrapper)))
@@ -289,7 +289,7 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
             add(4L);
         }};
 
-        mvc.perform(post(SECTIONS + SECTION_ID + "/tasks")
+        mvc.perform(post(API_SECTIONS + SECTION_ID + "/tasks")
                 .contentType(MediaType.APPLICATION_JSON)
                 .param("do", "remove")
                 .content(convertToJson(wrapper)))

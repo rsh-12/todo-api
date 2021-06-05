@@ -63,7 +63,7 @@ public class AuthControllerTest extends AbstractControllerTestClass {
 
         assertEquals(userService.login(admin), "access_token");
 
-        String response = mvc.perform(post(AUTH + "login")
+        String response = mvc.perform(post(API_AUTH + "login")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requestBody(admin.getUsername(), admin.getPassword())))
                 .andDo(print())
@@ -83,7 +83,7 @@ public class AuthControllerTest extends AbstractControllerTestClass {
                 .willThrow(new CustomException("Not Found",
                         "Username Not Found / Incorrect Password", HttpStatus.NOT_FOUND));
 
-        mvc.perform(post(AUTH + "login")
+        mvc.perform(post(API_AUTH + "login")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requestBody(user.getUsername(), user.getPassword())))
                 .andDo(print())
@@ -100,7 +100,7 @@ public class AuthControllerTest extends AbstractControllerTestClass {
                 .willThrow(new CustomException("Not Found",
                         "Username Not Found / Incorrect Password", HttpStatus.NOT_FOUND));
 
-        mvc.perform(post(AUTH + "login")
+        mvc.perform(post(API_AUTH + "login")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requestBody(user.getUsername(), user.getPassword())))
                 .andDo(print())
@@ -116,7 +116,7 @@ public class AuthControllerTest extends AbstractControllerTestClass {
         given(userService.register(user))
                 .willReturn("ok");
 
-        MvcResult result = mvc.perform(post(AUTH + "register")
+        MvcResult result = mvc.perform(post(API_AUTH + "register")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requestBody(user.getUsername(), user.getPassword())))
                 .andDo(print())
@@ -132,7 +132,7 @@ public class AuthControllerTest extends AbstractControllerTestClass {
     public void register_InvalidUsername_ShouldReturnBadRequest() throws Exception {
         String body = requestBody("notValidUsername", "password");
 
-        mvc.perform(post(AUTH + "register")
+        mvc.perform(post(API_AUTH + "register")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(body))
                 .andDo(print())
@@ -144,7 +144,7 @@ public class AuthControllerTest extends AbstractControllerTestClass {
     public void register_InvalidPwd_ShouldReturnBadRequest() throws Exception {
         String body = requestBody("username@mail.com", "1");
 
-        mvc.perform(post(AUTH + "register")
+        mvc.perform(post(API_AUTH + "register")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(body))
                 .andDo(print())
@@ -163,7 +163,7 @@ public class AuthControllerTest extends AbstractControllerTestClass {
                         "Refresh token is not valid or expired, please, try to log in",
                         HttpStatus.BAD_REQUEST));
 
-        mvc.perform(post(AUTH + "token")
+        mvc.perform(post(API_AUTH + "token")
                 .header("token", TOKEN))
                 .andDo(print())
                 .andExpect(status().isBadRequest())

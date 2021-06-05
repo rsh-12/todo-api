@@ -22,10 +22,10 @@ public class UserControllerTest extends AbstractControllerTestClass {
     public void testDeleteUser() throws Exception {
         final int USER_ID = 4;
 
-        mvc.perform(delete(USERS + USER_ID))
+        mvc.perform(delete(API_USERS + USER_ID))
                 .andExpect(status().isNoContent());
 
-        mvc.perform(delete(USERS + USER_ID))
+        mvc.perform(delete(API_USERS + USER_ID))
                 .andExpect(status().isNotFound());
     }
 
@@ -35,7 +35,7 @@ public class UserControllerTest extends AbstractControllerTestClass {
     public void testDeleteUser_Forbidden() throws Exception {
         final int USER_ID = 4;
 
-        mvc.perform(delete(USERS + USER_ID))
+        mvc.perform(delete(API_USERS + USER_ID))
                 .andDo(print())
                 .andExpect(status().isForbidden())
                 .andExpect(jsonPath("message", containsStringIgnoringCase("Not enough permissions")));

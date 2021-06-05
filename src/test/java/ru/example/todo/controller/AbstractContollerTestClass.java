@@ -24,10 +24,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc(addFilters = false)
 abstract class AbstractControllerTestClass {
 
-    protected final static String SECTIONS = "/api/sections/";
-    protected final static String TASKS = "/api/tasks/";
-    protected final static String USERS = "/api/users/";
-    protected final static String AUTH = "/api/auth/";
+    protected final static String API_SECTIONS = "/api/sections/";
+    protected final static String API_TASKS = "/api/tasks/";
+    protected final static String API_USERS = "/api/users/";
+    protected final static String API_AUTH = "/api/auth/";
 
     protected static final String ADMIN = "admin@mail.com";
     protected static final String USER = "client@mail.com";
