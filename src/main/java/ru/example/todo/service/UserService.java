@@ -28,7 +28,7 @@ public interface UserService {
 
     void updatePassword(User user, String password);
 
-    void updatePassword(TokenRequest token, String password);
+    void updatePassword(String email, String password);
 
     boolean existsByUsername(String email);
 }
