@@ -50,7 +50,7 @@ public class TodoTaskController {
     // get all tasks
     @ApiOperation(value = "List tasks", notes = "List all tasks")
     @GetMapping(produces = "application/json")
-    public CollectionModel<EntityModel<TodoTask>> all(
+    public CollectionModel<EntityModel<TodoTask>> getTasks(
             @AuthenticationPrincipal UserDetailsImpl uds,
             @RequestParam(value = "page", required = false, defaultValue = "0") Integer pageNo,
             @RequestParam(value = "size", required = false, defaultValue = "20") Integer pageSize,
@@ -64,13 +64,13 @@ public class TodoTaskController {
                 .collect(Collectors.toList());
 
         return CollectionModel.of(todos,
-                linkTo(methodOn(TodoTaskController.class).all(uds, pageNo, pageSize, date, sort)).withSelfRel());
+                linkTo(methodOn(TodoTaskController.class).getTasks(uds, pageNo, pageSize, date, sort)).withSelfRel());
     }
 
     // get task by id
     @ApiOperation(value = "Find task", notes = "Find the task by ID")
     @GetMapping(value = "/{id}", produces = "application/json")
-    public EntityModel<TodoTask> one(
+    public EntityModel<TodoTask> getTask(
             @AuthenticationPrincipal UserDetailsImpl uds,
             @PathVariable("id") Long taskId) {
         return assembler.toModel(todoTaskService.findTaskById(uds.getUser(), taskId));
@@ -79,7 +79,7 @@ public class TodoTaskController {
     // delete task by id
     @ApiOperation(value = "Remove task", notes = "It permits to remove a task")
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteOne(
+    public ResponseEntity<String> deleteTask(
             @AuthenticationPrincipal UserDetailsImpl uds,
             @PathVariable("id") Long taskId) {
         todoTaskService.deleteTaskById(uds.getUser(), taskId);
