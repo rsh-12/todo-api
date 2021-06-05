@@ -35,10 +35,10 @@ public class InMemoryTokenStoreTest {
         RefreshToken rt3 = buildRefreshToken("id3", "lika");
         RefreshToken rt4 = buildRefreshToken("id4", "lika");
 
-        inMemoryTokenStore.save(rt1);
-        inMemoryTokenStore.save(rt2);
-        inMemoryTokenStore.save(rt3);
-        inMemoryTokenStore.save(rt4);
+        inMemoryTokenStore.saveRefreshToken(rt1);
+        inMemoryTokenStore.saveRefreshToken(rt2);
+        inMemoryTokenStore.saveRefreshToken(rt3);
+        inMemoryTokenStore.saveRefreshToken(rt4);
         return tokenStore;
     }
 
