@@ -32,32 +32,32 @@ public class TokenStoreServiceTest extends AbstractServiceTestClass {
                 "user12@mail.com",
                 expiryTime);
 
-        tokenStore.save(refreshToken);
+        tokenStore.saveRefreshToken(refreshToken);
         Thread.sleep(100);
     }
 
 
     @Test
     public void findRefreshToken_ShouldReturnToken() throws Exception {
-        RefreshToken refreshToken = tokenStore.find(TOKEN);
+        RefreshToken refreshToken = tokenStore.findRefreshToken(TOKEN);
         assertNotNull(refreshToken);
         assertEquals(TOKEN, refreshToken.getToken());
     }
 
     @Test
     public void findRefreshToken_ShouldReturnNull() {
-        RefreshToken refreshToken = tokenStore.find("notfound");
+        RefreshToken refreshToken = tokenStore.findRefreshToken("notfound");
         assertNull(refreshToken);
     }
 
     @Test
     public void removeIfExpired_ShouldRemoveTokenFromStore() {
-        RefreshToken before = tokenStore.find(TOKEN);
+        RefreshToken before = tokenStore.findRefreshToken(TOKEN);
         assertNotNull(before);
 
-        tokenStore.removeIfExpired();
+        tokenStore.deleteExpiredRefreshTokens();
 
-        RefreshToken after = tokenStore.find(TOKEN);
+        RefreshToken after = tokenStore.findRefreshToken(TOKEN);
         assertNull(after);
     }
 }
