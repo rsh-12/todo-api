@@ -22,6 +22,6 @@ public class ClearTokenStoreScheduledTask {
     // Delete expired refresh tokens from memory every day at 01:00 a.m.
     @Scheduled(cron = "0 0 1 * * ?")
     public void clearTokenStore() {
-        tokenStore.removeIfExpired();
+        tokenStore.deleteExpiredRefreshTokens();
     }
 }
