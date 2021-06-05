@@ -51,7 +51,7 @@ public class TodoSectionController {
     // get all sections
     @ApiOperation(value = "List todo sections", notes = "List all todo sections")
     @GetMapping(produces = "application/json")
-    public CollectionModel<EntityModel<TodoSection>> listSections(@AuthenticationPrincipal UserDetailsImpl uds) {
+    public CollectionModel<EntityModel<TodoSection>> getSections(@AuthenticationPrincipal UserDetailsImpl uds) {
 
         List<EntityModel<TodoSection>> sections = todoSectionService.findSectionDtoList(uds.getUser())
                 .stream()
@@ -60,7 +60,7 @@ public class TodoSectionController {
                 .collect(Collectors.toList());
 
         return CollectionModel.of(sections,
-                linkTo(methodOn(TodoSectionController.class).listSections(uds)).withSelfRel());
+                linkTo(methodOn(TodoSectionController.class).getSections(uds)).withSelfRel());
     }
 
     // get custom section by id
