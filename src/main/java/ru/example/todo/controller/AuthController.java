@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.example.todo.dto.UserDto;
 import ru.example.todo.entity.User;
+import ru.example.todo.facade.PasswordFacade;
 import ru.example.todo.messaging.MessagingService;
 import ru.example.todo.messaging.requests.EmailRequest;
 import ru.example.todo.messaging.requests.TokenRequest;
@@ -25,11 +26,14 @@ import javax.validation.Valid;
 public class AuthController {
 
     private final UserService userService;
+    private final PasswordFacade passwordFacade;
     private final MessagingService messagingService;
     private final ModelMapper modelMapper;
 
-    public AuthController(UserService userService, MessagingService messagingService, ModelMapper modelMapper) {
+    public AuthController(UserService userService, PasswordFacade passwordFacade,
+                          MessagingService messagingService, ModelMapper modelMapper) {
         this.userService = userService;
+        this.passwordFacade = passwordFacade;
         this.messagingService = messagingService;
         this.modelMapper = modelMapper;
     }
@@ -67,7 +71,7 @@ public class AuthController {
         if (password == null) {
             return ResponseEntity.badRequest().body("Token is required");
         } else {
-            userService.updatePassword(token, password.asText());
+            passwordFacade.updatePassword(token, password.asText());
             return ResponseEntity.ok().build();
         }
     }
