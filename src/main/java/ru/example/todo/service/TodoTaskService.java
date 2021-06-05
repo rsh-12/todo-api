@@ -11,9 +11,9 @@ import java.util.Set;
 
 public interface TodoTaskService {
 
-    List<TodoTask> getAllTasks(User user, Integer pageNo, Integer pageSize, TaskDate date, String sort);
+    List<TodoTask> findTasks(User user, Integer pageNo, Integer pageSize, TaskDate date, String sort);
 
-    TodoTask getTaskById(User user, Long taskId);
+    TodoTask findTaskById(User user, Long taskId);
 
     void deleteTaskById(User user, Long taskId);
 
@@ -21,6 +21,6 @@ public interface TodoTaskService {
 
     void updateTask(User user, Long sectionId, TodoTaskDto task, TaskStatus completed, TaskStatus starred);
 
-    List<TodoTask> findAllBySetId(Set<Long> taskIds, Long userId);
+    List<TodoTask> findTasksByIds(Set<Long> taskIds, Long userId);
 
 }

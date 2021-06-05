@@ -40,7 +40,7 @@ public class TodoTaskServiceImpl extends AbstractServiceClass implements TodoTas
 
     // get all tasks
     @Override
-    public List<TodoTask> getAllTasks(User user, Integer pageNo, Integer pageSize, TaskDate date, String sort) {
+    public List<TodoTask> findTasks(User user, Integer pageNo, Integer pageSize, TaskDate date, String sort) {
 
         pageSize = pageSize > 100 ? 100 : pageSize; // set max page size
         Pageable page = PageRequest.of(pageNo, pageSize, Sort.by(getSortDirection(sort), getSortAsString(sort)));
@@ -59,7 +59,7 @@ public class TodoTaskServiceImpl extends AbstractServiceClass implements TodoTas
 
     // get task by id
     @Override
-    public TodoTask getTaskById(User user, Long taskId) {
+    public TodoTask findTaskById(User user, Long taskId) {
         log.info("Get the task by id: {}", taskId);
         return todoTaskRepository.findByIdAndUserId(taskId, user.getId())
                 .orElseThrow(() -> new CustomException("Not Found", "Task not found: " + taskId, HttpStatus.NOT_FOUND));
@@ -90,7 +90,7 @@ public class TodoTaskServiceImpl extends AbstractServiceClass implements TodoTas
     }
 
     @Override
-    public List<TodoTask> findAllBySetId(Set<Long> taskIds, Long userId) {
+    public List<TodoTask> findTasksByIds(Set<Long> taskIds, Long userId) {
         List<TodoTask> tasksByIds = todoTaskRepository.findAllByIdInAndUserId(taskIds, userId);
         log.info("Get tasks by set of ids: {}", tasksByIds.size());
         return tasksByIds;
