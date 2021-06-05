@@ -18,13 +18,13 @@ public interface UserService {
 
     String register(User user);
 
-    String refreshToken(String token);
+    String generateNewTokens(String refreshToken);
 
-    void deleteUser(Long userId);
+    void deleteUserById(Long userId);
 
-    User getUser(String username);
+    User findUserByUsername(String username);
 
-    User getUser(Long userId);
+    User findUserById(Long userId);
 
     void updatePassword(User user, String password);
 

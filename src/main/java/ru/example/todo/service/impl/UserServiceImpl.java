@@ -48,7 +48,6 @@ public class UserServiceImpl extends AbstractServiceClass implements UserService
 
     @Override
     public String login(UserDto userDto) {
-
         try {
             Authentication auth = authManager.authenticate(
                     new UsernamePasswordAuthenticationToken(userDto.getUsername(), userDto.getPassword()));
@@ -75,10 +74,10 @@ public class UserServiceImpl extends AbstractServiceClass implements UserService
     }
 
     @Override
-    public String refreshToken(String token) {
-        RefreshToken oldRefreshToken = jwtTokenService.findRefreshToken(token);
+    public String generateNewTokens(String refreshToken) {
+        RefreshToken oldRefreshToken = jwtTokenService.findRefreshToken(refreshToken);
 
-        if (oldRefreshToken == null || !jwtTokenService.isNotExpired(oldRefreshToken)) {
+        if (oldRefreshToken == null || !jwtTokenService.hasRefreshTokenExpired(oldRefreshToken)) {
             throw new CustomException(
                     "Refresh token is not valid or expired, please, try to log in",
                     HttpStatus.BAD_REQUEST);
@@ -90,7 +89,7 @@ public class UserServiceImpl extends AbstractServiceClass implements UserService
     }
 
     @Override
-    public void deleteUser(Long userId) {
+    public void deleteUserById(Long userId) {
         if (!userRepository.existsById(userId)) {
             throw new CustomException("Not Found", "User Not Found: " + userId, HttpStatus.NOT_FOUND);
         }
@@ -98,13 +97,13 @@ public class UserServiceImpl extends AbstractServiceClass implements UserService
     }
 
     @Override
-    public User getUser(String username) {
+    public User findUserByUsername(String username) {
         return userRepository.findByUsername(username)
                 .orElseThrow(() -> new CustomException("Not Found", "Username not found", HttpStatus.NOT_FOUND));
     }
 
     @Override
-    public User getUser(Long userId) {
+    public User findUserById(Long userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException("Not Found", "User Not Found", HttpStatus.BAD_REQUEST));
     }
