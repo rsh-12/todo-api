@@ -158,7 +158,7 @@ public class AuthControllerTest extends AbstractControllerTestClass {
     public void testRefreshTokens_Fail() throws Exception {
 
         final String TOKEN = "tokenDoesNotExist";
-        given(userService.refreshToken(TOKEN))
+        given(userService.generateNewTokens(TOKEN))
                 .willThrow(new CustomException(
                         "Refresh token is not valid or expired, please, try to log in",
                         HttpStatus.BAD_REQUEST));

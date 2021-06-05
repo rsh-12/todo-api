@@ -48,7 +48,7 @@ public class AuthController {
 
     @PostMapping(value = "/token", produces = "application/json")
     public ResponseEntity<String> refreshToken(HttpServletRequest request) {
-        String tokens = userService.refreshToken(request.getHeader("token"));
+        String tokens = userService.generateNewTokens(request.getHeader("token"));
         return ResponseEntity.ok(tokens);
     }
 
