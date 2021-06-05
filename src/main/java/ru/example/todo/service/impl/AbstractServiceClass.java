@@ -21,6 +21,7 @@ import ru.example.todo.exception.CustomException;
 import ru.example.todo.service.JwtTokenService;
 
 import java.util.List;
+import java.util.Optional;
 
 public class AbstractServiceClass {
 
@@ -70,12 +71,15 @@ public class AbstractServiceClass {
 
     }
 
-    void setTitleOrDate(TodoTaskDto taskDto, TodoTask taskFromDB) {
-        log.info("Update task 'completionDate' field");
-        if (taskDto.getCompletionDate() != null) taskFromDB.setCompletionDate(taskDto.getCompletionDate());
+    void setTitleOrDate(TodoTaskDto taskDto, TodoTask task) {
 
-        log.info("Update task 'title' field");
-        if (taskDto.getTitle() != null) taskFromDB.setTitle(taskDto.getTitle());
+        // if completionDate != null -> set completion date
+        Optional.ofNullable(taskDto.getCompletionDate())
+                .ifPresent(task::setCompletionDate);
+
+        // if title != null -> set title
+        Optional.ofNullable(taskDto.getTitle())
+                .ifPresent(task::setTitle);
     }
 
     <T> boolean isUserValidOrHasRoleAdmin(User user, T entity) {
