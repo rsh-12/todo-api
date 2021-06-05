@@ -26,4 +26,10 @@ public class EmailRequestTest {
         assertEquals(EMAIL, emailRequest.getEmail());
     }
 
+    @Test
+    public void setEmail_ShouldSetEmail() {
+        emailRequest.setEmail("admin@mail.com");
+        assertEquals("admin@mail.com", emailRequest.getEmail());
+    }
+
 }
