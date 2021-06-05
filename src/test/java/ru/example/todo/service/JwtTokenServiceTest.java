@@ -30,7 +30,7 @@ public class JwtTokenServiceTest extends AbstractServiceTestClass {
 
     @Test
     public void validateToken_ShouldThrowException() throws CustomException {
-        assertThrows(CustomException.class, () -> jwtTokenService.validateToken("invalid"));
+        assertThrows(CustomException.class, () -> jwtTokenService.isAccessTokenValid("invalid"));
     }
 
     @Test
@@ -57,7 +57,7 @@ public class JwtTokenServiceTest extends AbstractServiceTestClass {
     @Test
     public void isNotExpired_ShouldReturnTrue() {
         RefreshToken refreshToken = getRefreshToken("admin");
-        boolean isValid = jwtTokenService.isNotExpired(refreshToken);
+        boolean isValid = jwtTokenService.hasRefreshTokenExpired(refreshToken);
         assertTrue(isValid);
     }
 
@@ -66,7 +66,7 @@ public class JwtTokenServiceTest extends AbstractServiceTestClass {
         String accessToken = getAccessToken("admin", null);
         assertNotNull(accessToken);
 
-        boolean isValidToken = jwtTokenService.validateToken(accessToken);
+        boolean isValidToken = jwtTokenService.isAccessTokenValid(accessToken);
         assertTrue(isValidToken);
     }
 
@@ -91,9 +91,9 @@ public class JwtTokenServiceTest extends AbstractServiceTestClass {
     }
 
     @Test
-    public void getAuthentication_ShouldReturnUsernamePasswordAuthToken() throws Exception {
+    public void getAuthentication_ShouldReturnUsernamePasswordAuthToken() {
         String accessToken = getAccessToken("admin@mail.com", Collections.singleton(Role.ADMIN));
-        Authentication authentication = jwtTokenService.getAuthentication(accessToken);
+        Authentication authentication = jwtTokenService.authenticateAndReturnInstance(accessToken);
         assertNotNull(authentication);
 
         boolean isAuthenticated = authentication.isAuthenticated();
@@ -106,7 +106,7 @@ public class JwtTokenServiceTest extends AbstractServiceTestClass {
     @Test
     public void getAuthentication_ShouldThrowUsernameNotFoundException() throws UsernameNotFoundException {
         String accessToken = getAccessToken("admin", Collections.singleton(Role.ADMIN));
-        assertThrows(UsernameNotFoundException.class, () -> jwtTokenService.getAuthentication(accessToken));
+        assertThrows(UsernameNotFoundException.class, () -> jwtTokenService.authenticateAndReturnInstance(accessToken));
     }
 
     @Test
@@ -121,7 +121,7 @@ public class JwtTokenServiceTest extends AbstractServiceTestClass {
         assertNotNull(refreshTokenFromStore);
 
         // delete refresh token from tokenStore
-        jwtTokenService.removeOldRefreshTokenById(refreshToken);
+        jwtTokenService.removeRefreshTokenById(refreshToken);
 
         RefreshToken deletedRefreshTokenFromStore = jwtTokenService.findRefreshToken(refreshToken);
         assertNull(deletedRefreshTokenFromStore);
@@ -130,7 +130,7 @@ public class JwtTokenServiceTest extends AbstractServiceTestClass {
     @Test
     public void resolveToken_ShouldReturnNull() {
         var request = new MockHttpServletRequest();
-        String result = jwtTokenService.resolveToken(request);
+        String result = jwtTokenService.resolveAccessToken(request);
         assertNull(result);
     }
 
@@ -139,7 +139,7 @@ public class JwtTokenServiceTest extends AbstractServiceTestClass {
         var request = new MockHttpServletRequest();
         request.addHeader("Authorization", "bearer some-token");
 
-        String result = jwtTokenService.resolveToken(request);
+        String result = jwtTokenService.resolveAccessToken(request);
         assertEquals("some-token", result);
     }
 
