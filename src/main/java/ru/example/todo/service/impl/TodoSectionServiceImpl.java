@@ -37,7 +37,7 @@ public class TodoSectionServiceImpl extends AbstractServiceClass implements Todo
 
     // get section by id
     @Override
-    public TodoSection getSectionById(User user, Long sectionId) {
+    public TodoSection findSectionById(User user, Long sectionId) {
         log.info("Get the section by id: {}", sectionId);
         return todoSectionRepository.findByUserIdAndId(user.getId(), sectionId)
                 .orElseThrow(() -> new CustomException("Not Found", "Section not found: " + sectionId, HttpStatus.NOT_FOUND));
@@ -45,7 +45,7 @@ public class TodoSectionServiceImpl extends AbstractServiceClass implements Todo
 
     // get all sections
     @Override
-    public List<TodoSectionDto> getAllSections(User user) {
+    public List<TodoSectionDto> findSectionDtoList(User user) {
 
         List<TodoSectionDto> sections = todoSectionRepository.findAllByUserId(user.getId());
         log.info("Get all sections: {}", sections.size());
@@ -100,9 +100,9 @@ public class TodoSectionServiceImpl extends AbstractServiceClass implements Todo
 
     // add to or remove from the task section
     @Override
-    public void moveTasks(Long userId, Long sectionId, Set<Long> tasks, SetTasks flag) {
+    public void addOrRemoveTasksFromSection(Long userId, Long sectionId, Set<Long> taskIds, SetTasks flag) {
 
-        if (tasks == null || tasks.isEmpty()) {
+        if (taskIds == null || taskIds.isEmpty()) {
             throw new CustomException("Bad Request", "Tasks IDs are required", HttpStatus.BAD_REQUEST);
         }
 
@@ -110,7 +110,7 @@ public class TodoSectionServiceImpl extends AbstractServiceClass implements Todo
         TodoSection section = todoSectionRepository.findByUserIdAndId(userId, sectionId)
                 .orElseThrow(() -> new CustomException("Not Found", "Section not found: " + sectionId, HttpStatus.NOT_FOUND));
 
-        List<TodoTask> tasksByIds = todoTaskService.findAllBySetId(tasks, userId);
+        List<TodoTask> tasksByIds = todoTaskService.findTasksByIds(taskIds, userId);
         log.info("Get tasks list size: {}", tasksByIds.size());
 
         // add or remove

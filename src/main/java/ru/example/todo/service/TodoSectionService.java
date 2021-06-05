@@ -10,9 +10,9 @@ import java.util.Set;
 
 public interface TodoSectionService {
 
-    TodoSection getSectionById(User user, Long sectionId);
+    TodoSection findSectionById(User user, Long sectionId);
 
-    List<TodoSectionDto> getAllSections(User user);
+    List<TodoSectionDto> findSectionDtoList(User user);
 
     void deleteSectionById(User user, Long sectionId);
 
@@ -20,6 +20,5 @@ public interface TodoSectionService {
 
     void updateSection(User user, Long sectionId, TodoSectionDto sectionDto);
 
-    // add to or remove from the task section
-    void moveTasks(Long userId, Long sectionId, Set<Long> tasks, SetTasks flag);
+    void addOrRemoveTasksFromSection(Long userId, Long sectionId, Set<Long> tasks, SetTasks flag);
 }

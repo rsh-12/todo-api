@@ -53,7 +53,7 @@ public class TodoSectionController {
     @GetMapping(produces = "application/json")
     public CollectionModel<EntityModel<TodoSection>> all(@AuthenticationPrincipal UserDetailsImpl uds) {
 
-        List<EntityModel<TodoSection>> sections = todoSectionService.getAllSections(uds.getUser())
+        List<EntityModel<TodoSection>> sections = todoSectionService.findSectionDtoList(uds.getUser())
                 .stream()
                 .map(sectionDto -> mapper.map(sectionDto, TodoSection.class))
                 .map(assembler::toModel)
@@ -69,7 +69,7 @@ public class TodoSectionController {
     public EntityModel<TodoSection> one(@AuthenticationPrincipal UserDetailsImpl uds,
                                         @PathVariable("id") Long sectonId) {
 
-        return assembler.toModel(todoSectionService.getSectionById(uds.getUser(), sectonId));
+        return assembler.toModel(todoSectionService.findSectionById(uds.getUser(), sectonId));
     }
 
     // delete section by id
@@ -110,7 +110,7 @@ public class TodoSectionController {
                                             @RequestBody TaskIdsWrapper wrapper,
                                             @RequestParam(value = "do") SetTasks flag) {
 
-        todoSectionService.moveTasks(uds.getId(), sectionId, wrapper.tasks, flag);
+        todoSectionService.addOrRemoveTasksFromSection(uds.getId(), sectionId, wrapper.tasks, flag);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
