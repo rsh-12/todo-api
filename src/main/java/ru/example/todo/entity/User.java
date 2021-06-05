@@ -60,6 +60,12 @@ public class User {
         this.roles = Collections.singleton(Role.USER);
     }
 
+    public User(String username, String password) {
+        this.username = username;
+        this.password = password;
+        this.roles = Collections.singleton(Role.USER);
+    }
+
     public Long getId() {
         return id;
     }
