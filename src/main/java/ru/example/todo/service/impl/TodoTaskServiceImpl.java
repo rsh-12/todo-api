@@ -98,31 +98,34 @@ public class TodoTaskServiceImpl extends AbstractServiceClass implements TodoTas
 
     // update task by id
     @Override
-    public void updateTask(User user, Long taskId, TodoTaskDto task,
+    public void updateTask(User user, Long taskId, TodoTaskDto taskDto,
                            TaskStatus completed, TaskStatus starred) {
 
         // get task from DB
         log.info("Get the task from DB: id={}", taskId);
-        TodoTask taskFromDB = todoTaskRepository.findByIdAndUserId(taskId, user.getId())
+        TodoTask task = todoTaskRepository.findByIdAndUserId(taskId, user.getId())
                 .orElseThrow(() -> new CustomException("Not Found", "Task not found: " + taskId, HttpStatus.NOT_FOUND));
 
         // update task title or task completion date
         if (task != null) {
-            setTitleOrDate(task, taskFromDB);
+            setTitleOrDate(taskDto, task);
         }
 
-        // set task status
-        log.info("Update task 'completed' field");
-        if (completed != null) taskFromDB.setCompleted(toABoolean(completed));
+        if (completed != null) {
+            log.info("Update task 'completed' field");
+            task.setCompleted(toABoolean(completed));
+        }
 
-        log.info("Update task 'starred' field");
-        if (starred != null) taskFromDB.setStarred(toABoolean(starred));
+        if (starred != null) {
+            log.info("Update task 'starred' field");
+            task.setStarred(toABoolean(starred));
+        }
 
         log.info("Update task 'updatedAt' field");
-        taskFromDB.setUpdatedAt(new Date());
+        task.setUpdatedAt(new Date());
 
         log.info("Save the updated task: id={}", taskId);
-        todoTaskRepository.save(taskFromDB);
+        todoTaskRepository.save(task);
     }
 
 }
