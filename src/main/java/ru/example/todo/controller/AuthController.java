@@ -47,19 +47,19 @@ public class AuthController {
     }
 
     @PostMapping(value = "/token", produces = "application/json")
-    public ResponseEntity<String> refreshToken(HttpServletRequest request) {
+    public ResponseEntity<String> getTokens(HttpServletRequest request) {
         String tokens = userService.generateNewTokens(request.getHeader("token"));
         return ResponseEntity.ok(tokens);
     }
 
     @PostMapping(value = "/password/forgot")
-    public ResponseEntity<String> forgotPassword(@RequestBody EmailRequest email) {
+    public ResponseEntity<String> sendPasswordResetToken(@RequestBody EmailRequest email) {
         messagingService.send(email);
         return ResponseEntity.ok().build();
     }
 
     @PostMapping(value = "/password/reset")
-    public ResponseEntity<String> resetPassword(@RequestParam(value = "token") TokenRequest token,
+    public ResponseEntity<String> updatePassword(@RequestParam(value = "token") TokenRequest token,
                                                 @RequestBody JsonNode payload) {
 
         JsonNode password = payload.get("password");
