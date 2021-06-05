@@ -5,10 +5,15 @@ package ru.example.todo.controller;
  * */
 
 import org.junit.Test;
-import org.springframework.boot.configurationprocessor.json.JSONObject;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MvcResult;
+import ru.example.todo.domain.RefreshToken;
+import ru.example.todo.enums.Role;
+import ru.example.todo.service.JwtTokenService;
 
+import java.util.Collections;
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -16,11 +21,16 @@ import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.containsStringIgnoringCase;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class AuthControllerTest extends AbstractControllerTestClass {
+
+    @MockBean
+    private JwtTokenService jwtTokenService;
 
     private String requestBody(String username, String password) {
         Map<String, String> body = new LinkedHashMap<>();
@@ -32,6 +42,13 @@ public class AuthControllerTest extends AbstractControllerTestClass {
     // Login: success
     @Test
     public void testLogin() throws Exception {
+
+        given(jwtTokenService.buildAccessToken(ADMIN, Collections.singleton(Role.ADMIN)))
+                .willReturn("accessToken");
+
+        given(jwtTokenService.buildRefreshToken(ADMIN))
+                .willReturn(new RefreshToken("refreshToken", ADMIN, new Date()));
+
         String body = requestBody(ADMIN, "admin");
 
         String response = mvc.perform(post(AUTH + "login")
