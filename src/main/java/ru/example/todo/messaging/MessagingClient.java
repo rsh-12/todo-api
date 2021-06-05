@@ -46,7 +46,7 @@ public class MessagingClient implements MessagingService {
     }
 
     @Override
-    public String send(TokenRequest token) {
+    public String sendTokenAndReceiveEmail(TokenRequest token) {
         Object response = getResponse(tokenExchange, token, "todo.token.replies");
         return response == null ? "" : (String) response;
     }

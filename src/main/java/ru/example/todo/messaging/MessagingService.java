@@ -7,6 +7,6 @@ public interface MessagingService {
 
     void send(EmailRequest email);
 
-    String send(TokenRequest token);
+    String sendTokenAndReceiveEmail(TokenRequest token);
 
 }

@@ -121,7 +121,7 @@ public class UserServiceImpl extends AbstractServiceClass implements UserService
 
     @Override
     public void updatePassword(TokenRequest token, String password) {
-        String email = messagingService.send(token);
+        String email = messagingService.sendTokenAndReceiveEmail(token);
         if (email == null || email.isBlank()) {
             throw new CustomException("Internal Server Error", "An error occurred while generating the token",
                     HttpStatus.INTERNAL_SERVER_ERROR);
