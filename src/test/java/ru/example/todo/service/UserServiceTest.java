@@ -33,26 +33,26 @@ public class UserServiceTest extends AbstractServiceTestClass {
 
     @Test
     public void getUserByUsername_ShouldReturnUser() {
-        User user = userService.getUser("admin@mail.com");
+        User user = userService.findUserByUsername("admin@mail.com");
         assertNotNull(user);
         assertTrue(user.getRoles().contains(Role.ADMIN));
     }
 
     @Test
     public void getUserByUsername_ShouldThrowCustomException() {
-        assertThrows(CustomException.class, () -> userService.getUser("notexist@mail.com"));
+        assertThrows(CustomException.class, () -> userService.findUserByUsername("notexist@mail.com"));
     }
 
     @Test
     public void getUserById_ShouldReturnUser() {
-        User user = userService.getUser(1L);
+        User user = userService.findUserById(1L);
         assertNotNull(user);
         assertEquals("admin@mail.com", user.getUsername());
     }
 
     @Test
     public void getUserById_ShouldThrowCustomException() {
-        assertThrows(CustomException.class, () -> userService.getUser(0L));
+        assertThrows(CustomException.class, () -> userService.findUserById(0L));
     }
 
     @Test
