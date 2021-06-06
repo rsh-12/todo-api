@@ -21,14 +21,14 @@ public class TodoTaskRepositoryTest extends AbstractRepositoryTestClass {
 
     // get all
     @Test
-    public void getAllTasks() {
+    public void findAll_ShouldReturnListOfTasks() {
         List<TodoTask> tasks = repository.findAll();
         assertEquals(7, tasks.size());
     }
 
     // get by id
     @Test
-    public void testGetTaskById() {
+    public void findById_ShouldReturnTaskById() {
         final Long TASK_ID = 1L;
 
         assertTrue(repository.existsById(TASK_ID));
@@ -42,7 +42,7 @@ public class TodoTaskRepositoryTest extends AbstractRepositoryTestClass {
 
     // create new task
     @Test
-    public void testCreateTask() {
+    public void createTask_ShouldCreateTask() {
         TodoTask task = new TodoTask();
         task.setTitle("New task title");
 
@@ -62,7 +62,7 @@ public class TodoTaskRepositoryTest extends AbstractRepositoryTestClass {
 
     // update by id
     @Test
-    public void testUpdateTask() {
+    public void updateTask_ShouldUpdateTaskById() {
         final Long TASK_ID = 1L;
         final String newTitle = "Take a walk";
 
@@ -84,7 +84,7 @@ public class TodoTaskRepositoryTest extends AbstractRepositoryTestClass {
 
     // delete by id
     @Test
-    public void testDeleteTask() {
+    public void deleteById_ShouldDeleteTaskById() {
         final Long TASK_ID = 2L;
 
         assertTrue(repository.existsById(TASK_ID));
@@ -103,7 +103,7 @@ public class TodoTaskRepositoryTest extends AbstractRepositoryTestClass {
 
     // delete all
     @Test
-    public void testDeleteAllTasks() {
+    public void deleteAll_ShouldDeleteAllTasks() {
 
         int beforeTasksQuantity = repository.findAll().size();
         assertTrue(beforeTasksQuantity != 0);
