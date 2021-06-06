@@ -25,13 +25,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Test data:
  * Important, Starred, Later
  * */
-// todo update tests
+// todo update tests, mock service layer
 public class TodoSectionControllerTest extends AbstractControllerTestClass {
 
     // get all sections
     @Test
     @WithUserDetails(ADMIN)
-    public void A_testGetAllTodoSections() throws Exception {
+    public void getSections_ShouldReturnListOfSections() throws Exception {
         mvc.perform(get(API_SECTIONS)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -42,7 +42,7 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
     // get section by ID
     @Test
     @WithUserDetails(ADMIN)
-    public void B_testGetTodoSectionById() throws Exception {
+    public void getSection_ShouldReturnSectionById() throws Exception {
         final int SECTION_ID = 1;
 
         mvc.perform(get(API_SECTIONS + SECTION_ID))
@@ -54,7 +54,7 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
     // create new section
     @Test
     @WithUserDetails(ADMIN)
-    public void C_testCreateNewSection() throws Exception {
+    public void createSection_ShouldReturnStatusCreated() throws Exception {
 
         TodoSectionDto section = new TodoSectionDto();
         section.setTitle("Created Section");
@@ -67,7 +67,7 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
                 .andExpect(status().isCreated())
                 .andDo(print());
 
-        mvc.perform(get(API_SECTIONS + 5))
+        mvc.perform(get(API_SECTIONS + 6))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("title", is("Created Section")))
                 .andDo(print());
@@ -78,11 +78,12 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
     }
 
 
+    // todo: fix this test method - mock service layer
     // delete section
     @Test
     @WithUserDetails(ADMIN)
-    public void D_testDeleteSectionById() throws Exception {
-        final int SECTION_ID = 1;
+    public void deleteSection_ShouldDeleteSectionById() throws Exception {
+        final int SECTION_ID = 5;
 
         // get by id: returns 200 OK
         mvc.perform(get(API_SECTIONS + SECTION_ID)
@@ -106,7 +107,7 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
     // update section
     @Test
     @WithUserDetails(ADMIN)
-    public void E_testUpdateSectionById() throws Exception {
+    public void updateSection_ShouldUpdateTitleAndReturnOk() throws Exception {
         final int SECTION_ID = 3;
 
         // get section by id: returns 200 OK
@@ -118,7 +119,7 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
         // update section by id: returns 200 OK
         mvc.perform(put(API_SECTIONS + SECTION_ID)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(getSectionInJson(2L, "NewTitle")))
+                .content(getSectionInJson(2L, "Updated Title")))
                 .andExpect(status().isOk())
                 .andDo(print());
 
@@ -126,7 +127,7 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
         mvc.perform(get(API_SECTIONS + SECTION_ID)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("title", is("NewTitle")));
+                .andExpect(jsonPath("title", is("Updated Title")));
     }
 
     private String getSectionInJson(Long id, String title) {
@@ -136,7 +137,7 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
     // get section by non-existent id: returns 404 NOT FOUND
     @Test
     @WithUserDetails(USER)
-    public void testSectionById_NotFound() throws Exception {
+    public void getSection_ShouldReturnBadRequest() throws Exception {
         final int SECTION_ID = 100;
 
         mvc.perform(get(API_SECTIONS + SECTION_ID)
@@ -148,7 +149,7 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
     // delete section by non-existent id: returns 204 NO CONTENT
     @Test
     @WithUserDetails(USER)
-    public void testDeleteSectionByNoneExistentId() throws Exception {
+    public void deleteSection_ShouldReturnNotFound() throws Exception {
         final int SECTION_ID = 100;
 
         int beforeSectionsQuantity = getJsonArraySize(API_SECTIONS, "_embedded.sections");
@@ -161,10 +162,9 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
         assertEquals(beforeSectionsQuantity, afterSectionsQuantity);
     }
 
-
     @Test
     @WithUserDetails(USER)
-    public void testUpdateSectionByNoneExistentId() throws Exception {
+    public void updateSection_SectionDoesNotExist_ShouldReturnNotFound() throws Exception {
         final int SECTION_ID = 100;
 
         mvc.perform(put(API_SECTIONS + SECTION_ID)
@@ -175,7 +175,7 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
     }
 
     @Test
-    public void testUpdateSectionById_InvalidData() throws Exception {
+    public void updateSection_InvalidTitle_ShouldReturnBadRequest() throws Exception {
         final int SECTION_ID = 3;
 
         mvc.perform(put(API_SECTIONS + SECTION_ID)
@@ -188,7 +188,7 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
     // add tasks to the section
     @Test
     @WithUserDetails(ADMIN)
-    public void testAddTasks() throws Exception {
+    public void addOrRemoveTasks_AddTasks_ShouldReturnStatusOk() throws Exception {
         final int SECTION_ID = 3;
 
         // request body
@@ -214,7 +214,7 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
     // remove task(s) from the section
     @Test
     @WithUserDetails(ADMIN)
-    public void testRemoveTaskFromSection() throws Exception {
+    public void addOrRemoveTasks_RemoveTasks_ShouldReturnStatusOk() throws Exception {
 
         final int TASK_ID = 10, SECTION_ID = 4;
 
@@ -246,7 +246,7 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
 
     @Test
     @WithUserDetails(ADMIN)
-    public void testAddTasksEmptySet() throws Exception {
+    public void addOrRemoveTasks_EmptyIdSet_ShouldReturnBadRequest() throws Exception {
         final int SECTION_ID = 3;
 
         TaskIdsWrapper wrapper = new TaskIdsWrapper();
@@ -263,7 +263,7 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
 
     @Test
     @WithUserDetails(ADMIN)
-    public void testAddTasks_Null() throws Exception {
+    public void addOrRemoveTasks_Null_ShouldReturnBadRequest() throws Exception {
         final int SECTION_ID = 3;
 
         // request body
@@ -280,7 +280,7 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
 
     @Test
     @WithUserDetails(ADMIN)
-    public void testAddTasks_SectionNotFound() throws Exception {
+    public void addOrRemove_NotFound_ShouldReturnBadRequest() throws Exception {
         final int SECTION_ID = 100;
 
         // request body
