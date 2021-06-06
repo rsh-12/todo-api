@@ -13,13 +13,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-// todo update tests
+// todo update tests, mock service layer
 public class UserControllerTest extends AbstractControllerTestClass {
 
     // Delete user: success
     @Test
     @WithUserDetails(ADMIN)
-    public void testDeleteUser() throws Exception {
+    public void deleteUser_ShouldReturnNoContent() throws Exception {
         final int USER_ID = 4;
 
         mvc.perform(delete(API_USERS + USER_ID))
@@ -32,7 +32,7 @@ public class UserControllerTest extends AbstractControllerTestClass {
     // Delete user:  fail
     @Test
     @WithUserDetails(USER)
-    public void testDeleteUser_Forbidden() throws Exception {
+    public void deleteUser_ShouldReturnForbidden() throws Exception {
         final int USER_ID = 4;
 
         mvc.perform(delete(API_USERS + USER_ID))
