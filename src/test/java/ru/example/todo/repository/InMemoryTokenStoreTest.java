@@ -19,7 +19,7 @@ public class InMemoryTokenStoreTest {
     private final InMemoryTokenStore inMemoryTokenStore = new InMemoryTokenStore();
 
     @Test
-    public void testTokenStore_ClearIfNameAlreadyExists() {
+    public void saveRefreshToken_ShouldRemoveDuplicateTokens() {
 
         Map<String, RefreshToken> tokenStore = initTokenStore();
 
