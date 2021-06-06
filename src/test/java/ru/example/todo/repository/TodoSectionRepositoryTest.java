@@ -52,7 +52,7 @@ public class TodoSectionRepositoryTest extends AbstractRepositoryTestClass{
         List<TodoSectionDto> adminSections = repository.findAllByUserId(ADMIN_ID);
         List<TodoSectionDto> userSections = repository.findAllByUserId(USER_ID);
 
-        assertEquals(3, adminSections.size());
+        assertEquals(4, adminSections.size());
         assertEquals(1, userSections.size());
 
         assertEquals("Starred", userSections.get(0).getTitle());
@@ -61,7 +61,7 @@ public class TodoSectionRepositoryTest extends AbstractRepositoryTestClass{
     @Test
     public void testGetAllSections() {
         List<TodoSection> sections = repository.findAll();
-        assertEquals(4, sections.size());
+        assertEquals(5, sections.size());
     }
 
     @Test
