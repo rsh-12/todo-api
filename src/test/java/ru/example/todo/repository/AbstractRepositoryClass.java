@@ -25,7 +25,7 @@ abstract class AbstractRepositoryTestClass {
     @Autowired
     TestEntityManager entityManager;
 
-    User createUser(String username) {
+    User createAndGetUser(String username) {
         User user = new User();
         user.setUsername(username);
         user.setPassword("secretpassword12345");
@@ -33,7 +33,7 @@ abstract class AbstractRepositoryTestClass {
     }
 
     User createAndSaveUser() {
-        User user = createUser("ola@mail.com");
+        User user = createAndGetUser("ola@mail.com");
         return entityManager.persistAndFlush(user);
     }
 

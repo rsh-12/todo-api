@@ -52,7 +52,7 @@ public class UserRepositoryTest extends AbstractRepositoryTestClass {
     // create user
     @Test
     public void testCreateUser() {
-        User user = createUser("harry@mail.com");
+        User user = createAndGetUser("harry@mail.com");
 
         assertFalse(repository.existsByUsername(user.getUsername()));
 
@@ -99,7 +99,7 @@ public class UserRepositoryTest extends AbstractRepositoryTestClass {
 
     @Test
     public void userExist_ShouldThrowCustomException() {
-        User user = createUser("admin@mail.com");
+        User user = createAndGetUser("admin@mail.com");
         assertThrows(Exception.class, () -> entityManager.persist(user));
     }
 }
