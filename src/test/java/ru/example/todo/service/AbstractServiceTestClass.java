@@ -17,7 +17,7 @@ import java.util.Objects;
 public class AbstractServiceTestClass {
 
     // for userservice test
-    User createUser(String username, String password) {
+    User createAndGetUser(String username, String password) {
         User user = new User();
         user.setUsername(username);
         user.setCreatedAt(new Date());

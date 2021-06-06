@@ -27,7 +27,7 @@ public class UserServiceTest extends AbstractServiceTestClass {
 
     @Test
     public void register_ShouldThrowCustomException() {
-        User user = createUser("admin@mail.com", null);
+        User user = createAndGetUser("admin@mail.com", null);
         assertThrows(CustomException.class, () -> userService.register(user));
     }
 
@@ -57,7 +57,7 @@ public class UserServiceTest extends AbstractServiceTestClass {
 
     @Test
     public void updatePassword_ShouldThrowCustomException_400() {
-        User user = createUser("some@mail.com", null);
+        User user = createAndGetUser("some@mail.com", null);
         assertThrows(CustomException.class, () -> userService.updatePassword(user, null));
         assertThrows(CustomException.class, () -> userService.updatePassword(user, ""));
         assertThrows(CustomException.class, () -> userService.updatePassword(user, "1234567"));
@@ -66,7 +66,7 @@ public class UserServiceTest extends AbstractServiceTestClass {
 
     @Test
     public void updatePassword_ShouldUpdatePassword() throws InterruptedException {
-        User user = createUser("some@mail.com", null);
+        User user = createAndGetUser("some@mail.com", null);
         String newPassword = "newPassword";
         userService.updatePassword(user, newPassword);
 
