@@ -22,12 +22,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-// todo update tests
+// todo update tests, mock service layer
 public class TodoTaskControllerTest extends AbstractControllerTestClass {
 
     @Test
     @WithUserDetails(ADMIN)
-    public void testGetAllTasks_WithAndWithoutParams() throws Exception {
+    public void getTasks_WithAndWithoutArgs_ShouldReturnListOfTasks() throws Exception {
         mvc.perform(get(API_TASKS)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
@@ -48,7 +48,7 @@ public class TodoTaskControllerTest extends AbstractControllerTestClass {
 
     @Test
     @WithUserDetails(ADMIN)
-    public void testGetTodaysTasks() throws Exception {
+    public void getTasks_FilterByDate_ShouldReturnTodaysTasks() throws Exception {
         int size = getJsonArraySize(API_TASKS, "_embedded.tasks", "date", TaskDate.TODAY.name());
         assertTrue(size > 0);
 
@@ -62,7 +62,7 @@ public class TodoTaskControllerTest extends AbstractControllerTestClass {
 
     @Test
     @WithUserDetails(ADMIN)
-    public void testGetTaskById() throws Exception {
+    public void getTask_ShouldReturnTaskById() throws Exception {
         final int TASK_ID = 3;
 
         mvc.perform(get(API_TASKS + TASK_ID))
@@ -73,7 +73,7 @@ public class TodoTaskControllerTest extends AbstractControllerTestClass {
 
     @Test
     @WithUserDetails(USER)
-    public void testGetTaskById_NotFound() throws Exception {
+    public void getTask_ShouldReturnNotFound() throws Exception {
         final int TASK_ID = 100;
 
         mvc.perform(get(API_TASKS + TASK_ID))
@@ -84,7 +84,7 @@ public class TodoTaskControllerTest extends AbstractControllerTestClass {
 
     @Test
     @WithUserDetails(ADMIN)
-    public void testDeleteTaskById() throws Exception {
+    public void deleteTask_ShouldReturnNoContent() throws Exception {
         final int TASK_ID = 6;
 
         int beforeTasksQuantity = getJsonArraySize(API_TASKS, "_embedded.tasks");
@@ -99,7 +99,7 @@ public class TodoTaskControllerTest extends AbstractControllerTestClass {
 
     @Test
     @WithUserDetails(USER)
-    public void testDeleteTaskById_NotFound() throws Exception {
+    public void deleteTask_ShouldReturnNotFound() throws Exception {
         final int TASK_ID = 100;
 
         int beforeTasksQuantity = getJsonArraySize(API_TASKS, "_embedded.tasks");
@@ -115,7 +115,7 @@ public class TodoTaskControllerTest extends AbstractControllerTestClass {
 
     @Test
     @WithUserDetails(USER)
-    public void testCreateNewTask() throws Exception {
+    public void createTask_ShouldReturnStatusCreated() throws Exception {
         int beforeTasksQuantity = getJsonArraySize(API_TASKS, "_embedded.tasks");
 
         final String body = String.format("{\"title\": \"%s\", \"completionDate\": \"%s\"}", "New Title", "2022-12-12");
@@ -136,18 +136,19 @@ public class TodoTaskControllerTest extends AbstractControllerTestClass {
 
     @Test
     @WithUserDetails(USER)
-    public void testUpdateTask_NotFound() throws Exception {
+    public void updateTask_ShouldReturnNotFound() throws Exception {
         final int TASK_ID = 100;
 
         mvc.perform(patch(API_TASKS + TASK_ID)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is4xxClientError())
+                .andExpect(status().isNotFound())
                 .andExpect(jsonPath("message", containsStringIgnoringCase("Task not found")));
     }
 
     @Test
     @WithUserDetails(USER)
-    public void testUpdateTask_Title() throws Exception {
+    public void updateTask_Title_ShouldReturnStatusOk() throws Exception {
         final int TASK_ID = 2;
         final String body = String.format("{\"title\": \"%s\"}", "New title");
 
@@ -167,7 +168,7 @@ public class TodoTaskControllerTest extends AbstractControllerTestClass {
 
     @Test
     @WithUserDetails(USER)
-    public void testUpdateTask_CompletionDate() throws Exception {
+    public void updateTask_CompletionDate_ShouldReturnStatusOk() throws Exception {
         final int TASK_ID = 5;
         final String newCompletionDate = "2022-12-12";
         final String body = String.format("{\"completionDate\": \"%s\"}", newCompletionDate);
@@ -189,7 +190,7 @@ public class TodoTaskControllerTest extends AbstractControllerTestClass {
 
     @Test
     @WithUserDetails(USER)
-    public void testUpdateTask_Completed() throws Exception {
+    public void updateTask_Completed_ShouldReturnStatusOk() throws Exception {
         final int TASK_ID = 2;
 
         mvc.perform(get(API_TASKS + TASK_ID))
@@ -209,7 +210,7 @@ public class TodoTaskControllerTest extends AbstractControllerTestClass {
 
     @Test
     @WithUserDetails(ADMIN)
-    public void testUpdateTask_Starred() throws Exception {
+    public void updateTask_Starred_ShouldReturnStatusOk() throws Exception {
         final int TASK_ID = 3;
 
         mvc.perform(get(API_TASKS + TASK_ID))
@@ -229,7 +230,7 @@ public class TodoTaskControllerTest extends AbstractControllerTestClass {
 
     @Test
     @WithUserDetails(ADMIN)
-    public void testUpdateTask_AllInOne() throws Exception {
+    public void updateTask_TitleCompletedStarredCompletionDate_ShouldReturnStatusOk() throws Exception {
         final int TASK_ID = 4;
         final String newTitle = "New title";
         final String newCompletionDate = "2022-12-12";
@@ -262,7 +263,7 @@ public class TodoTaskControllerTest extends AbstractControllerTestClass {
 
     @Test
     @WithUserDetails(USER)
-    public void deleteTaskById_ShouldThrowCustomException() throws Exception {
+    public void deleteTask_ShouldReturnForbidden() throws Exception {
         mvc.perform(delete(API_TASKS + 4))
                 .andExpect(status().isForbidden())
                 .andExpect(jsonPath("message",
