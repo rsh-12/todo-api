@@ -15,7 +15,8 @@ insert into section(id, title, created_at, updated_at, user_id)
 values (1, 'Important', current_timestamp, DATEADD('HOUR', 1, current_timestamp), 1),
        (2, 'Starred', DATEADD('DAY', -7, current_timestamp), DATEADD('DAY', -2, current_timestamp), 2),
        (3, 'Later', DATEADD('MONTH', -1, current_timestamp), DATEADD('WEEK', -1, current_timestamp), 1),
-       (4, 'Special', DATEADD('MONTH', -1, current_timestamp), DATEADD('WEEK', -1, current_timestamp), 1);
+       (4, 'Special', DATEADD('MONTH', -1, current_timestamp), DATEADD('WEEK', -1, current_timestamp), 1),
+       (5, 'Another one', DATEADD('MONTH', -1, current_timestamp), DATEADD('WEEK', -1, current_timestamp), 1);
 
 
 insert into task(id, title, completed, starred, completion_date, created_at, updated_at, list_id, user_id)
