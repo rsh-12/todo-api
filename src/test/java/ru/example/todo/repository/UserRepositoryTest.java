@@ -19,13 +19,13 @@ public class UserRepositoryTest extends AbstractRepositoryTestClass {
     private UserRepository repository;
 
     @Test
-    public void testGetAllUsers() {
+    public void findAll_ShouldReturnListOfUsers() {
         List<User> users = repository.findAll();
         assertEquals(4, users.size());
     }
 
     @Test
-    public void testFindByUserName() {
+    public void findByUsername_ShouldReturnUsersByUsername() {
         User admin = repository.findByUsername(ADMIN_USERNAME)
                 .orElse(null);
 
@@ -43,7 +43,7 @@ public class UserRepositoryTest extends AbstractRepositoryTestClass {
     }
 
     @Test
-    public void testExistsByUsername() {
+    public void existsByUsername_ShouldReturnCorrectBoolean() {
         assertTrue(repository.existsByUsername(ADMIN_USERNAME));
         assertTrue(repository.existsByUsername(CLIENT_USERNAME));
         assertFalse(repository.existsByUsername("john@mail.com"));
@@ -51,7 +51,7 @@ public class UserRepositoryTest extends AbstractRepositoryTestClass {
 
     // create user
     @Test
-    public void testCreateUser() {
+    public void createUser_ShouldCreateUser() {
         User user = createAndGetUser("harry@mail.com");
 
         assertFalse(repository.existsByUsername(user.getUsername()));
@@ -64,7 +64,7 @@ public class UserRepositoryTest extends AbstractRepositoryTestClass {
 
     // update user
     @Test
-    public void testUpdateUser() {
+    public void updateUser_ShouldUpdateUsername() {
         String username = "ola@mail.com";
         String newUsername = "newOla@mail.com";
         createAndSaveUser();
@@ -83,7 +83,7 @@ public class UserRepositoryTest extends AbstractRepositoryTestClass {
 
     // delete user
     @Test
-    public void testDeleteUser() {
+    public void delete_ShouldDeleteUser() {
         String username = "client2@mail.com";
 
         assertTrue(repository.existsByUsername(username));
@@ -98,7 +98,7 @@ public class UserRepositoryTest extends AbstractRepositoryTestClass {
     }
 
     @Test
-    public void userExist_ShouldThrowCustomException() {
+    public void createUser_UsernameAlreadyTaken_ShouldThrowException() {
         User user = createAndGetUser("admin@mail.com");
         assertThrows(Exception.class, () -> entityManager.persist(user));
     }
