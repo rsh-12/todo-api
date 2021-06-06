@@ -21,7 +21,7 @@ public class TodoSectionRepositoryTest extends AbstractRepositoryTestClass{
     private TodoSectionRepository repository;
 
     @Test
-    public void testDeleteByIdAndUserId() {
+    public void deleteByIdAndUserId_ShouldDeleteSectionByIdAndUserId() {
         TodoSection beforeDeleting = repository.findByUserIdAndId(ADMIN_ID, SECTIONS[0]).orElse(null);
         assertNotNull(beforeDeleting);
 
@@ -33,7 +33,7 @@ public class TodoSectionRepositoryTest extends AbstractRepositoryTestClass{
     }
 
     @Test
-    public void testFindByUserIdAndId() {
+    public void findByUserIdAndId_ShouldReturnSectionByIdAndByUserId() {
         TodoSection s1 = repository.findByUserIdAndId(ADMIN_ID, SECTIONS[0]).orElse(null);
         TodoSection s2 = repository.findByUserIdAndId(ADMIN_ID, SECTIONS[2]).orElse(null);
         TodoSection s3 = repository.findByUserIdAndId(ADMIN_ID, SECTIONS[1]).orElse(null);
@@ -48,7 +48,7 @@ public class TodoSectionRepositoryTest extends AbstractRepositoryTestClass{
     }
 
     @Test
-    public void testFindAllByUserId() {
+    public void findAllByUserId_ShouldReturnListOfUserSections() {
         List<TodoSectionDto> adminSections = repository.findAllByUserId(ADMIN_ID);
         List<TodoSectionDto> userSections = repository.findAllByUserId(USER_ID);
 
@@ -59,20 +59,20 @@ public class TodoSectionRepositoryTest extends AbstractRepositoryTestClass{
     }
 
     @Test
-    public void testGetAllSections() {
+    public void findAll_ShouldReturnListOfSections() {
         List<TodoSection> sections = repository.findAll();
         assertEquals(5, sections.size());
     }
 
     @Test
-    public void testGetSectionById() {
+    public void findById_ShouldReturnSectionById() {
         TodoSection section = repository.findById(1L).orElse(null);
         assertNotNull(section);
         assertEquals(section.getTitle(), "Important");
     }
 
     @Test
-    public void testCreateNewSection() {
+    public void createSection_ShouldCreateSection() {
         TodoSection section = new TodoSection("Tomorrow");
 
         Date date = new Date();
@@ -89,7 +89,7 @@ public class TodoSectionRepositoryTest extends AbstractRepositoryTestClass{
     }
 
     @Test
-    public void testDeleteAllSections() {
+    public void deleteAll_ShouldDeleteAllSections() {
         repository.deleteAll();
         entityManager.flush();
 
@@ -98,7 +98,7 @@ public class TodoSectionRepositoryTest extends AbstractRepositoryTestClass{
     }
 
     @Test
-    public void testDeleteSectionById() {
+    public void deleteById_ShouldDeleteSectionById() {
         final Long SECTION_ID = 3L;
 
         assertTrue(repository.existsById(SECTION_ID));
@@ -110,7 +110,7 @@ public class TodoSectionRepositoryTest extends AbstractRepositoryTestClass{
     }
 
     @Test
-    public void testUpdateSectionById() {
+    public void updateSection_ShouldUpdateSection() {
         TodoSection section = repository.findById(2L).orElse(null);
         assertNotNull(section);
 
