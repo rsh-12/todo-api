@@ -14,19 +14,20 @@ import ru.example.todo.dto.UserDto;
 import ru.example.todo.entity.User;
 import ru.example.todo.enums.Role;
 import ru.example.todo.exception.CustomException;
+import ru.example.todo.facade.PasswordFacade;
+import ru.example.todo.messaging.requests.TokenRequest;
 import ru.example.todo.service.JwtTokenService;
 import ru.example.todo.service.UserService;
 
-import java.util.Collections;
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.containsStringIgnoringCase;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -36,6 +37,9 @@ public class AuthControllerTest extends AbstractControllerTestClass {
 
     @MockBean
     private JwtTokenService jwtTokenService;
+
+    @MockBean
+    private PasswordFacade passwordFacade;
 
     @MockBean
     private UserService userService;
@@ -189,6 +193,23 @@ public class AuthControllerTest extends AbstractControllerTestClass {
                 .getContentAsString();
 
         assertEquals(response, "access_token, refresh_token");
+    }
+
+    @Test
+    public void sendPasswordResetToken_ShouldReturnStatusOk() throws Exception {
+
+        Map<String, String> body = new HashMap<>();
+        body.put("password", "somePassword");
+
+        TokenRequest token = new TokenRequest("token");
+        doNothing().when(passwordFacade).updatePassword(token, "somePassword");
+
+        mvc.perform(post(API_AUTH + "password/reset")
+                .contentType(MediaType.APPLICATION_JSON)
+                .param("token", "someToken")
+                .content(convertToJson(body)))
+                .andExpect(status().isOk());
+
     }
 
 }
