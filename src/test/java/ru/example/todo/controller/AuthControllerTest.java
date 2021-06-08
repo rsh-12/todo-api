@@ -233,6 +233,27 @@ public class AuthControllerTest extends AbstractControllerTestClass {
         verify(messagingService, times(1)).send(Mockito.any(EmailRequest.class));
     }
 
+    @Test
+    public void sendPasswordResetToken_ShouldThrowCustomExceptionAndReturnInternalServerError() throws Exception {
+        String email = "test@mail.com";
+        doThrow(new CustomException("Internal Server Error", "An error occurred while generating the token",
+                HttpStatus.INTERNAL_SERVER_ERROR))
+                .when(messagingService).send(Mockito.any(EmailRequest.class));
+
+        JSONObject body = new JSONObject();
+        body.put("email", email);
+
+        mvc.perform(post(API_AUTH + "password/forgot")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(body.toString()))
+                .andDo(print())
+                .andExpect(status().isInternalServerError())
+                .andExpect(jsonPath("message",
+                        containsStringIgnoringCase("An error occurred while generating the token    ")));
+
+        verify(messagingService, times(1)).send(Mockito.any(EmailRequest.class));
+    }
+
 
     @Test
     public void updatePassword_ShouldReturnStatusOk() throws Exception {
