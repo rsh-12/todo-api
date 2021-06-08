@@ -196,7 +196,7 @@ public class AuthControllerTest extends AbstractControllerTestClass {
     }
 
     @Test
-    public void sendPasswordResetToken_ShouldReturnStatusOk() throws Exception {
+    public void updatePassword_ShouldReturnStatusOk() throws Exception {
 
         Map<String, String> body = new HashMap<>();
         body.put("password", "somePassword");
