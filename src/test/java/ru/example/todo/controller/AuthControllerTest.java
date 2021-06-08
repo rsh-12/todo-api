@@ -12,19 +12,17 @@ import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MvcResult;
-import ru.example.todo.domain.RefreshToken;
 import ru.example.todo.dto.UserDto;
 import ru.example.todo.entity.User;
-import ru.example.todo.enums.Role;
 import ru.example.todo.exception.CustomException;
 import ru.example.todo.facade.PasswordFacade;
 import ru.example.todo.messaging.MessagingService;
-import ru.example.todo.messaging.requests.EmailRequest;
 import ru.example.todo.messaging.requests.TokenRequest;
-import ru.example.todo.service.JwtTokenService;
 import ru.example.todo.service.UserService;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.containsStringIgnoringCase;
@@ -38,9 +36,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class AuthControllerTest extends AbstractControllerTestClass {
-
-    @MockBean
-    private JwtTokenService jwtTokenService;
 
     @MockBean
     private PasswordFacade passwordFacade;
@@ -84,7 +79,7 @@ public class AuthControllerTest extends AbstractControllerTestClass {
     public void login_NotFound_ShouldThrowCustomException() throws Exception {
         UserDto user = new UserDto("usernameNotExists@mail.com", "somePassword");
 
-        given(userService.login(user))
+        given(userService.login(Mockito.any(UserDto.class)))
                 .willThrow(new CustomException("Not Found",
                         "Username Not Found / Incorrect Password", HttpStatus.NOT_FOUND));
 
@@ -100,7 +95,7 @@ public class AuthControllerTest extends AbstractControllerTestClass {
     public void login_WrongPassword_ShouldThrowCustomException() throws Exception {
         UserDto user = new UserDto(USER, "wrongPassword");
 
-        given(userService.login(user))
+        given(userService.login(Mockito.any(UserDto.class)))
                 .willThrow(new CustomException("Not Found",
                         "Username Not Found / Incorrect Password", HttpStatus.NOT_FOUND));
 
@@ -117,7 +112,7 @@ public class AuthControllerTest extends AbstractControllerTestClass {
     public void register_ShouldReturnOk() throws Exception {
         User user = new User("user@mail.com", "password1234");
 
-        given(userService.register(user))
+        given(userService.register(Mockito.any(User.class)))
                 .willReturn("ok");
 
         MvcResult result = mvc.perform(post(API_AUTH + "register")
@@ -177,7 +172,7 @@ public class AuthControllerTest extends AbstractControllerTestClass {
 
     @Test
     public void getToken_ShouldReturnNewTokens() throws Exception {
-        given(userService.generateNewTokens("refreshToken"))
+        given(userService.generateNewTokens(Mockito.anyString()))
                 .willReturn("access_token, refresh_token");
 
         String response = mvc.perform(post(API_AUTH + "token")
