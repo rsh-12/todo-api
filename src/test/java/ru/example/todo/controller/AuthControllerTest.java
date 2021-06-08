@@ -15,6 +15,8 @@ import ru.example.todo.entity.User;
 import ru.example.todo.enums.Role;
 import ru.example.todo.exception.CustomException;
 import ru.example.todo.facade.PasswordFacade;
+import ru.example.todo.messaging.MessagingService;
+import ru.example.todo.messaging.requests.EmailRequest;
 import ru.example.todo.messaging.requests.TokenRequest;
 import ru.example.todo.service.JwtTokenService;
 import ru.example.todo.service.UserService;
@@ -43,6 +45,9 @@ public class AuthControllerTest extends AbstractControllerTestClass {
 
     @MockBean
     private UserService userService;
+
+    @MockBean
+    private MessagingService messagingService;
 
     private String requestBody(String username, String password) {
         Map<String, String> body = new LinkedHashMap<>();
@@ -82,7 +87,6 @@ public class AuthControllerTest extends AbstractControllerTestClass {
     // Login: fail
     @Test
     public void login_NotFound_ShouldThrowCustomException() throws Exception {
-
         UserDto user = new UserDto("usernameNotExists@mail.com", "somePassword");
 
         given(userService.login(user))
@@ -99,7 +103,6 @@ public class AuthControllerTest extends AbstractControllerTestClass {
 
     @Test
     public void login_WrongPassword_ShouldThrowCustomException() throws Exception {
-
         UserDto user = new UserDto(USER, "wrongPassword");
 
         given(userService.login(user))
@@ -162,7 +165,6 @@ public class AuthControllerTest extends AbstractControllerTestClass {
     // Token: fail
     @Test
     public void getToken_NotFound_ShouldThrowCustomException() throws Exception {
-        
         final String TOKEN = "tokenDoesNotExist";
 
         given(userService.generateNewTokens(TOKEN))
@@ -180,7 +182,6 @@ public class AuthControllerTest extends AbstractControllerTestClass {
 
     @Test
     public void getToken_ShouldReturnNewTokens() throws Exception {
-
         given(userService.generateNewTokens("refreshToken"))
                 .willReturn("access_token, refresh_token");
 
@@ -193,6 +194,17 @@ public class AuthControllerTest extends AbstractControllerTestClass {
                 .getContentAsString();
 
         assertEquals(response, "access_token, refresh_token");
+    }
+
+    @Test
+    public void sendPasswordResetToken_ShouldReturnStatusOk() throws Exception {
+        doNothing().when(messagingService).send(new EmailRequest("test@mail.com"));
+
+        mvc.perform(post(API_AUTH + "password/forgot")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(convertToJson("{\"email\": \"test@mail.com\"}")))
+                .andDo(print())
+                .andExpect(status().isOk());
     }
 
     @Test
