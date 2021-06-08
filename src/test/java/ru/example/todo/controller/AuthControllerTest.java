@@ -4,6 +4,7 @@ package ru.example.todo.controller;
  * Time: 6:25 PM
  * */
 
+import org.json.JSONObject;
 import org.junit.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
@@ -29,7 +30,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -198,11 +198,15 @@ public class AuthControllerTest extends AbstractControllerTestClass {
 
     @Test
     public void sendPasswordResetToken_ShouldReturnStatusOk() throws Exception {
-        doNothing().when(messagingService).send(new EmailRequest("test@mail.com"));
+        String email = "test@mail.com";
+        doNothing().when(messagingService).send(new EmailRequest(email));
+
+        JSONObject body = new JSONObject();
+        body.put("email", email);
 
         mvc.perform(post(API_AUTH + "password/forgot")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(convertToJson("{\"email\": \"test@mail.com\"}")))
+                .content(body.toString()))
                 .andDo(print())
                 .andExpect(status().isOk());
     }
