@@ -6,7 +6,9 @@ package ru.example.todo.controller;
 
 import org.json.JSONObject;
 import org.junit.Test;
+import org.mockito.Mockito;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MvcResult;
@@ -29,7 +31,7 @@ import static org.hamcrest.Matchers.containsStringIgnoringCase;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -46,7 +48,7 @@ public class AuthControllerTest extends AbstractControllerTestClass {
     @MockBean
     private UserService userService;
 
-    @MockBean
+    @SpyBean
     private MessagingService messagingService;
 
     private String requestBody(String username, String password) {
@@ -61,16 +63,8 @@ public class AuthControllerTest extends AbstractControllerTestClass {
     public void login_ShouldReturnTokens() throws Exception {
         UserDto admin = new UserDto(ADMIN, "admin");
 
-        given(jwtTokenService.buildAccessToken(ADMIN, Collections.singleton(Role.ADMIN)))
+        given(userService.login(Mockito.any(UserDto.class)))
                 .willReturn("access_token");
-
-        given(jwtTokenService.buildRefreshToken(ADMIN))
-                .willReturn(new RefreshToken("refresh_token", ADMIN, new Date()));
-
-        given(userService.login(new UserDto(ADMIN, "admin")))
-                .willReturn("access_token");
-
-        assertEquals(userService.login(admin), "access_token");
 
         String response = mvc.perform(post(API_AUTH + "login")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -82,6 +76,7 @@ public class AuthControllerTest extends AbstractControllerTestClass {
                 .getContentAsString();
 
         assertTrue(response.contains("access_token"));
+        verify(userService, times(1)).login(Mockito.any());
     }
 
     // Login: fail
@@ -167,7 +162,7 @@ public class AuthControllerTest extends AbstractControllerTestClass {
     public void getToken_NotFound_ShouldThrowCustomException() throws Exception {
         final String TOKEN = "tokenDoesNotExist";
 
-        given(userService.generateNewTokens(TOKEN))
+        given(userService.generateNewTokens(Mockito.anyString()))
                 .willThrow(new CustomException(
                         "Refresh token is not valid or expired, please, try to log in",
                         HttpStatus.BAD_REQUEST));
@@ -199,7 +194,7 @@ public class AuthControllerTest extends AbstractControllerTestClass {
     @Test
     public void sendPasswordResetToken_ShouldReturnStatusOk() throws Exception {
         String email = "test@mail.com";
-        doNothing().when(messagingService).send(new EmailRequest(email));
+        doNothing().when(messagingService).send(Mockito.any());
 
         JSONObject body = new JSONObject();
         body.put("email", email);
@@ -212,13 +207,29 @@ public class AuthControllerTest extends AbstractControllerTestClass {
     }
 
     @Test
-    public void updatePassword_ShouldReturnStatusOk() throws Exception {
+    public void sendPasswordResetToken_ShouldThrowCustomExceptionAndReturnNotFound() throws Exception {
+        String email = "test@mail.com";
+        doThrow(new CustomException("Not Found", "Username Not Found", HttpStatus.NOT_FOUND))
+                .when(messagingService).send(Mockito.any());
 
+        JSONObject body = new JSONObject();
+        body.put("email", email);
+
+        mvc.perform(post(API_AUTH + "password/forgot")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(body.toString()))
+                .andDo(print())
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("message", containsStringIgnoringCase("username not found")));
+    }
+
+
+    @Test
+    public void updatePassword_ShouldReturnStatusOk() throws Exception {
         Map<String, String> body = new HashMap<>();
         body.put("password", "somePassword");
 
-        TokenRequest token = new TokenRequest("token");
-        doNothing().when(passwordFacade).updatePassword(token, "somePassword");
+        doNothing().when(passwordFacade).updatePassword(Mockito.any(TokenRequest.class), Mockito.anyString());
 
         mvc.perform(post(API_AUTH + "password/reset")
                 .contentType(MediaType.APPLICATION_JSON)
