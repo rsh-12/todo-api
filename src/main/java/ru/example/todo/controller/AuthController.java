@@ -65,7 +65,6 @@ public class AuthController {
     @PostMapping(value = "/password/reset")
     public ResponseEntity<String> updatePassword(@RequestParam(value = "token") TokenRequest token,
                                                 @RequestBody JsonNode payload) {
-
         JsonNode password = payload.get("password");
 
         if (password == null) {
