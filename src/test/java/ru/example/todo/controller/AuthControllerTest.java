@@ -271,4 +271,12 @@ public class AuthControllerTest extends AbstractControllerTestClass {
         verify(passwordFacade, times(1)).updatePassword(Mockito.any(TokenRequest.class), Mockito.anyString());
     }
 
+    @Test
+    public void updatePassword_ShouldReturnBadRequest() throws Exception {
+        mvc.perform(post(API_AUTH + "password/reset")
+                .contentType(MediaType.APPLICATION_JSON)
+                .param("token", "someToken"))
+                .andExpect(status().isBadRequest());
+    }
+
 }
