@@ -272,11 +272,28 @@ public class AuthControllerTest extends AbstractControllerTestClass {
     }
 
     @Test
-    public void updatePassword_ShouldReturnBadRequest() throws Exception {
+    public void updatePassword_PasswordIsNull_ShouldReturnBadRequest() throws Exception {
         mvc.perform(post(API_AUTH + "password/reset")
                 .contentType(MediaType.APPLICATION_JSON)
                 .param("token", "someToken"))
+                .andDo(print())
                 .andExpect(status().isBadRequest());
+
+        verify(passwordFacade, times(0)).updatePassword(Mockito.any(TokenRequest.class), Mockito.anyString());
+    }
+
+    @Test
+    public void updatePassword_TokenIsNull_ShouldReturnBadRequest() throws Exception {
+        Map<String, String> body = new HashMap<>();
+        body.put("password", "somePassword");
+
+        mvc.perform(post(API_AUTH + "password/reset")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(body.toString()))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+
+        verify(passwordFacade, times(0)).updatePassword(Mockito.any(TokenRequest.class), Mockito.anyString());
     }
 
 }
