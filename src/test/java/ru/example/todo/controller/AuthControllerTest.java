@@ -249,7 +249,7 @@ public class AuthControllerTest extends AbstractControllerTestClass {
                 .andDo(print())
                 .andExpect(status().isInternalServerError())
                 .andExpect(jsonPath("message",
-                        containsStringIgnoringCase("An error occurred while generating the token    ")));
+                        containsStringIgnoringCase("An error occurred while generating the token")));
 
         verify(messagingService, times(1)).send(Mockito.any(EmailRequest.class));
     }
