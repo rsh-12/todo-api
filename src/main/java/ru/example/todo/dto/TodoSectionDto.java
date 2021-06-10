@@ -25,6 +25,10 @@ public class TodoSectionDto {
     public TodoSectionDto() {
     }
 
+    public TodoSectionDto(String title) {
+        this.title = title;
+    }
+
     public TodoSectionDto(Long id, String title, Date createdAt, Date updatedAt) {
         this.id = id;
         this.title = title;
