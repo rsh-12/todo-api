@@ -41,7 +41,6 @@ public class TodoSectionServiceImpl extends AbstractServiceClass implements Todo
     // get all sections
     @Override
     public List<TodoSectionDto> findSectionDtoList(User user) {
-
         List<TodoSectionDto> sections = todoSectionRepository.findAllByUserId(user.getId());
         log.info("Get all sections: {}", sections.size());
         return sections;
@@ -51,7 +50,6 @@ public class TodoSectionServiceImpl extends AbstractServiceClass implements Todo
     // delete section by id
     @Override
     public void deleteSectionById(User user, Long sectionId) {
-
         TodoSection section = todoSectionRepository.findById(sectionId)
                 .orElseThrow(() -> new CustomException("Not Found", "Section not found", HttpStatus.NOT_FOUND));
 
@@ -66,7 +64,6 @@ public class TodoSectionServiceImpl extends AbstractServiceClass implements Todo
     // create new section
     @Override
     public void createSection(User user, TodoSectionDto sectionDto) {
-
         TodoSection section = new TodoSection();
         section.setUser(user);
         section.setTitle(sectionDto.getTitle());
@@ -78,7 +75,6 @@ public class TodoSectionServiceImpl extends AbstractServiceClass implements Todo
     // update section title
     @Override
     public void updateSection(User user, Long sectionId, TodoSectionDto sectionDto) {
-
         // get a section by id
         TodoSection section = todoSectionRepository.findById(sectionId)
                 .orElseThrow(() -> new CustomException("Not Found", "Section not found: " + sectionId, HttpStatus.NOT_FOUND));
@@ -96,7 +92,6 @@ public class TodoSectionServiceImpl extends AbstractServiceClass implements Todo
     // add to or remove from the task section
     @Override
     public void addTasksToOrRemoveFromSection(Long userId, Long sectionId, List<TodoTask> tasks, SetTasks flag) {
-
         log.info("Get the section by id: {}", sectionId);
         TodoSection section = todoSectionRepository.findByUserIdAndId(userId, sectionId)
                 .orElseThrow(() -> new CustomException("Not Found", "Section not found: " + sectionId, HttpStatus.NOT_FOUND));
