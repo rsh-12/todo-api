@@ -4,39 +4,50 @@ package ru.example.todo.controller;
  * Time: 10:30 PM
  * */
 
-
 import org.junit.Test;
+import org.mockito.Mockito;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithUserDetails;
 import ru.example.todo.controller.wrapper.TaskIdsWrapper;
 import ru.example.todo.dto.TodoSectionDto;
+import ru.example.todo.entity.User;
+import ru.example.todo.service.TodoSectionService;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertEquals;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-/*
- * Test data:
- * Important, Starred, Later
- * */
 // todo update tests, mock service layer
 public class TodoSectionControllerTest extends AbstractControllerTestClass {
+
+    @MockBean
+    private TodoSectionService sectionService;
 
     // get all sections
     @Test
     @WithUserDetails(ADMIN)
     public void getSections_ShouldReturnListOfSections() throws Exception {
+        given(sectionService.findSectionDtoList(Mockito.any(User.class)))
+                .willReturn(List.of(new TodoSectionDto("task1"), new TodoSectionDto("task2")));
+
         mvc.perform(get(API_SECTIONS)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("_embedded.sections[0].title", is("Important")))
+                .andExpect(jsonPath("_embedded.sections[0].title", is("task1")))
+                .andExpect(jsonPath("_embedded.sections[1].title", is("task2")))
                 .andDo(print());
+
+        verify(sectionService, times(1)).findSectionDtoList(Mockito.any(User.class));
     }
 
     // get section by ID
