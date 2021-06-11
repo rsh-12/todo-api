@@ -76,12 +76,10 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
     @Test
     @WithUserDetails(ADMIN)
     public void getSection_ShouldReturnSectionById() throws Exception {
-        final int SECTION_ID = 1;
-
         given(sectionService.findSectionById(Mockito.any(User.class), Mockito.anyLong()))
                 .willReturn(new TodoSection("Important"));
 
-        mvc.perform(get(API_SECTIONS + SECTION_ID))
+        mvc.perform(get(API_SECTIONS + 1))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("title", is("Important")))
                 .andDo(print());
@@ -93,12 +91,10 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
     @Test
     @WithUserDetails(USER)
     public void getSection_ShouldReturnBadRequest() throws Exception {
-        final int SECTION_ID = 100;
-
         given(sectionService.findSectionById(Mockito.any(User.class), Mockito.anyLong()))
-                .willThrow(new CustomException("Not Found", "Section not found: " + SECTION_ID, HttpStatus.NOT_FOUND));
+                .willThrow(new CustomException("Not Found", "Section not found: " + 1, HttpStatus.NOT_FOUND));
 
-        mvc.perform(get(API_SECTIONS + SECTION_ID)
+        mvc.perform(get(API_SECTIONS + 1)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().is4xxClientError())
@@ -112,12 +108,10 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
     @Test
     @WithUserDetails(ADMIN)
     public void deleteSection_ShouldDeleteSectionById() throws Exception {
-        final int SECTION_ID = 5;
-
         doNothing().when(sectionService).deleteSectionById(Mockito.any(User.class), Mockito.anyLong());
 
         // delete by id: returns 204 NO CONTENT
-        mvc.perform(delete(API_SECTIONS + SECTION_ID)
+        mvc.perform(delete(API_SECTIONS + 1)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent())
                 .andDo(print());
@@ -129,15 +123,28 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
     @Test
     @WithUserDetails(USER)
     public void deleteSection_ShouldReturnNotFound() throws Exception {
-        final int SECTION_ID = 100;
-
         doThrow(new CustomException("Not Found", "Section not found", HttpStatus.NOT_FOUND))
                 .when(sectionService).deleteSectionById(Mockito.any(User.class), Mockito.anyLong());
 
-        mvc.perform(delete(API_SECTIONS + SECTION_ID)
+        mvc.perform(delete(API_SECTIONS + 1)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("error", containsStringIgnoringCase("not found")))
+                .andDo(print());
+
+        verify(sectionService).deleteSectionById(Mockito.any(User.class), Mockito.anyLong());
+    }
+
+    @Test
+    @WithUserDetails(USER)
+    public void deleteSection_ShouldReturnForbidden() throws Exception {
+        doThrow(new CustomException("Forbidden", "Not enough permissions", HttpStatus.FORBIDDEN))
+                .when(sectionService).deleteSectionById(Mockito.any(User.class), Mockito.anyLong());
+
+        mvc.perform(delete(API_SECTIONS + 1)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("error", containsStringIgnoringCase("Forbidden")))
                 .andDo(print());
 
         verify(sectionService).deleteSectionById(Mockito.any(User.class), Mockito.anyLong());
