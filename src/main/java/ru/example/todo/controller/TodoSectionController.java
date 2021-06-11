@@ -93,7 +93,6 @@ public class TodoSectionController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-
     // update section title by id
     @ApiOperation(value = "Update section", notes = "It permits to update a section")
     @PutMapping(value = "/{id}", consumes = "application/json")
