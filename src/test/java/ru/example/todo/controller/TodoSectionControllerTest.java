@@ -84,7 +84,7 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
                 .andExpect(jsonPath("title", is("Important")))
                 .andDo(print());
 
-        verify(sectionService).findSectionById(Mockito.any(User.class), Mockito.anyLong());
+        verify(sectionService, times(1)).findSectionById(Mockito.any(User.class), Mockito.anyLong());
     }
 
     // get section by non-existent id: returns 404 NOT FOUND
@@ -101,7 +101,7 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("message", containsStringIgnoringCase("section not found")));
 
-        verify(sectionService).findSectionById(Mockito.any(User.class), Mockito.anyLong());
+        verify(sectionService, times(1)).findSectionById(Mockito.any(User.class), Mockito.anyLong());
     }
 
     // delete section
@@ -116,7 +116,7 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
                 .andExpect(status().isNoContent())
                 .andDo(print());
 
-        verify(sectionService).deleteSectionById(Mockito.any(User.class), Mockito.anyLong());
+        verify(sectionService, times(1)).deleteSectionById(Mockito.any(User.class), Mockito.anyLong());
     }
 
     // delete section by non-existent id: returns 204 NO CONTENT
@@ -132,7 +132,7 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
                 .andExpect(jsonPath("error", containsStringIgnoringCase("not found")))
                 .andDo(print());
 
-        verify(sectionService).deleteSectionById(Mockito.any(User.class), Mockito.anyLong());
+        verify(sectionService, times(1)).deleteSectionById(Mockito.any(User.class), Mockito.anyLong());
     }
 
     @Test
@@ -147,34 +147,22 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
                 .andExpect(jsonPath("error", containsStringIgnoringCase("Forbidden")))
                 .andDo(print());
 
-        verify(sectionService).deleteSectionById(Mockito.any(User.class), Mockito.anyLong());
+        verify(sectionService, times(1)).deleteSectionById(Mockito.any(User.class), Mockito.anyLong());
     }
-
 
     // create new section
     @Test
     @WithUserDetails(ADMIN)
     public void createSection_ShouldReturnStatusCreated() throws Exception {
-
-        TodoSectionDto section = new TodoSectionDto();
-        section.setTitle("Created Section");
-
-        int beforeSectionsQuantity = getJsonArraySize(API_SECTIONS, "_embedded.sections");
+        doNothing().when(sectionService).createSection(Mockito.any(User.class), Mockito.any(TodoSectionDto.class));
 
         mvc.perform(post(API_SECTIONS)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(convertToJson(section)))
+                .content(convertToJson(new TodoSectionDto("Created Section"))))
                 .andExpect(status().isCreated())
                 .andDo(print());
 
-        mvc.perform(get(API_SECTIONS + 6))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("title", is("Created Section")))
-                .andDo(print());
-
-        int afterSectionsQuantity = getJsonArraySize(API_SECTIONS, "_embedded.sections");
-
-        assertEquals(beforeSectionsQuantity + 1, afterSectionsQuantity);
+        verify(sectionService, times(1)).createSection(Mockito.any(User.class), Mockito.any(TodoSectionDto.class));
     }
 
 
