@@ -194,33 +194,6 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
                 .updateSection(Mockito.any(User.class), Mockito.anyLong(), Mockito.any(TodoSectionDto.class));
     }
 
-    private String getSectionInJson(Long id, String title) {
-        return String.format("{\"id\":%d, \"title\":\"%s\"}", id, title);
-    }
-
-
-    @Test
-    @WithUserDetails(USER)
-    public void updateSection_SectionDoesNotExist_ShouldReturnNotFound() throws Exception {
-        final int SECTION_ID = 100;
-
-        mvc.perform(put(API_SECTIONS + SECTION_ID)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(getSectionInJson((long) SECTION_ID, "New title")))
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("message", containsStringIgnoringCase("Section not found")));
-    }
-
-    @Test
-    public void updateSection_InvalidTitle_ShouldReturnBadRequest() throws Exception {
-        final int SECTION_ID = 3;
-
-        mvc.perform(put(API_SECTIONS + SECTION_ID)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(getSectionInJson((long) SECTION_ID, "T")))
-                .andExpect(status().is4xxClientError())
-                .andExpect(jsonPath("title", containsInAnyOrder("Size must be between 3 and 50")));
-    }
 
     // add tasks to the section
     @Test
