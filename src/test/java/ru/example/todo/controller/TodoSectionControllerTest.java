@@ -194,6 +194,24 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
                 .updateSection(Mockito.any(User.class), Mockito.anyLong(), Mockito.any(TodoSectionDto.class));
     }
 
+    @Test
+    @WithUserDetails(ADMIN)
+    public void updateSection_ShouldReturnNotFound() throws Exception {
+        doThrow(new CustomException("Not Found", "Section Not Found", HttpStatus.NOT_FOUND))
+                .when(sectionService)
+                .updateSection(Mockito.any(User.class), Mockito.anyLong(), Mockito.any(TodoSectionDto.class));
+
+        mvc.perform(put(API_SECTIONS + 1)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(convertToJson(new TodoSectionDto("Title"))))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("error", containsStringIgnoringCase("not found")))
+                .andDo(print());
+
+        verify(sectionService, times(1))
+                .updateSection(Mockito.any(User.class), Mockito.anyLong(), Mockito.any(TodoSectionDto.class));
+    }
+
 
     // add tasks to the section
     @Test
