@@ -125,6 +125,24 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
         verify(sectionService).deleteSectionById(Mockito.any(User.class), Mockito.anyLong());
     }
 
+    // delete section by non-existent id: returns 204 NO CONTENT
+    @Test
+    @WithUserDetails(USER)
+    public void deleteSection_ShouldReturnNotFound() throws Exception {
+        final int SECTION_ID = 100;
+
+        doThrow(new CustomException("Not Found", "Section not found", HttpStatus.NOT_FOUND))
+                .when(sectionService).deleteSectionById(Mockito.any(User.class), Mockito.anyLong());
+
+        mvc.perform(delete(API_SECTIONS + SECTION_ID)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("error", containsStringIgnoringCase("not found")))
+                .andDo(print());
+
+        verify(sectionService).deleteSectionById(Mockito.any(User.class), Mockito.anyLong());
+    }
+
 
     // create new section
     @Test
@@ -183,21 +201,6 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
         return String.format("{\"id\":%d, \"title\":\"%s\"}", id, title);
     }
 
-    // delete section by non-existent id: returns 204 NO CONTENT
-    @Test
-    @WithUserDetails(USER)
-    public void deleteSection_ShouldReturnNotFound() throws Exception {
-        final int SECTION_ID = 100;
-
-        int beforeSectionsQuantity = getJsonArraySize(API_SECTIONS, "_embedded.sections");
-
-        mvc.perform(delete(API_SECTIONS + SECTION_ID))
-                .andExpect(status().isNotFound());
-
-        int afterSectionsQuantity = getJsonArraySize(API_SECTIONS, "_embedded.sections");
-
-        assertEquals(beforeSectionsQuantity, afterSectionsQuantity);
-    }
 
     @Test
     @WithUserDetails(USER)
