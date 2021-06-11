@@ -69,12 +69,12 @@ public class JwtTokenServiceImpl implements JwtTokenService {
 
     @Override
     public RefreshToken buildRefreshToken(String username) {
-        String token = RandomStringUtils.randomAlphanumeric(64);
+        String randomToken = RandomStringUtils.randomAlphanumeric(64);
 
         long refreshTokenValidity = tokenProperties.getRefreshTokenValidity();
         Date expiryTime = getValidity(refreshTokenValidity);
 
-        RefreshToken refreshToken = new RefreshToken(token, username, expiryTime);
+        RefreshToken refreshToken = new RefreshToken(randomToken, username, expiryTime);
         tokenStore.saveRefreshToken(refreshToken);
 
         return refreshToken;
@@ -106,12 +106,12 @@ public class JwtTokenServiceImpl implements JwtTokenService {
     }
 
     @Override
-    public boolean isAccessTokenValid(String token) {
+    public boolean isAccessTokenValid(String accessToken) {
         try {
             Jwts.parserBuilder()
                     .setSigningKey(getSecretKey())
                     .build()
-                    .parseClaimsJws(token);
+                    .parseClaimsJws(accessToken);
             return true;
         } catch (JwtException | IllegalArgumentException ex) {
             throw new CustomException("Forbidden", "Expired or invalid JWT token", HttpStatus.FORBIDDEN);
@@ -124,11 +124,11 @@ public class JwtTokenServiceImpl implements JwtTokenService {
     }
 
     @Override
-    public RefreshToken findRefreshToken(String token) {
-        if (token == null) {
+    public RefreshToken findRefreshToken(String refreshToken) {
+        if (refreshToken == null) {
             throw new CustomException("Bad Request", "Invalid token", HttpStatus.BAD_REQUEST);
         }
-        return tokenStore.findRefreshToken(token);
+        return tokenStore.findRefreshToken(refreshToken);
     }
 
     @Override
@@ -141,12 +141,12 @@ public class JwtTokenServiceImpl implements JwtTokenService {
         return now().isBefore(refreshToken.getExpiryTime().toInstant());
     }
 
-    private String getUsername(String token) {
+    private String getUsername(String accessToken) {
 
         Claims claims = Jwts.parserBuilder()
                 .setSigningKey(getSecretKey())
                 .build()
-                .parseClaimsJws(token)
+                .parseClaimsJws(accessToken)
                 .getBody();
 
         return String.valueOf(claims.get("username"));
