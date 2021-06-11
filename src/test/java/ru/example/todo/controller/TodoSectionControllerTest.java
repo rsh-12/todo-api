@@ -230,6 +230,18 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
                 .updateSection(Mockito.any(User.class), Mockito.anyLong(), Mockito.any(TodoSectionDto.class));
     }
 
+    @Test
+    @WithUserDetails(USER)
+    public void updateSection_ShouldReturnBadRequest() throws Exception {
+        mvc.perform(put(API_SECTIONS + 1)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andDo(print());
+
+        verify(sectionService, times(0))
+                .updateSection(Mockito.any(User.class), Mockito.anyLong(), Mockito.any(TodoSectionDto.class));
+    }
+
     // add tasks to the section
     @Test
     @WithUserDetails(ADMIN)
