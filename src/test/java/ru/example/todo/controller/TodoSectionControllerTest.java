@@ -176,32 +176,22 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
         verify(sectionService, times(0)).createSection(Mockito.any(User.class), Mockito.any(TodoSectionDto.class));
     }
 
-
-
     // update section
     @Test
     @WithUserDetails(ADMIN)
-    public void updateSection_ShouldUpdateTitleAndReturnOk() throws Exception {
-        final int SECTION_ID = 3;
-
-        // get section by id: returns 200 OK
-        mvc.perform(get(API_SECTIONS + SECTION_ID)
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("title", is("Later")));
+    public void updateSection_ShouldReturnOk() throws Exception {
+        doNothing().when(sectionService)
+                .updateSection(Mockito.any(User.class), Mockito.anyLong(), Mockito.any(TodoSectionDto.class));
 
         // update section by id: returns 200 OK
-        mvc.perform(put(API_SECTIONS + SECTION_ID)
+        mvc.perform(put(API_SECTIONS + 1)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(getSectionInJson(2L, "Updated Title")))
+                .content(convertToJson(new TodoSectionDto("Title"))))
                 .andExpect(status().isOk())
                 .andDo(print());
 
-        // get section by id, check new title: returns 200 OK
-        mvc.perform(get(API_SECTIONS + SECTION_ID)
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("title", is("Updated Title")));
+        verify(sectionService, times(1))
+                .updateSection(Mockito.any(User.class), Mockito.anyLong(), Mockito.any(TodoSectionDto.class));
     }
 
     private String getSectionInJson(Long id, String title) {
