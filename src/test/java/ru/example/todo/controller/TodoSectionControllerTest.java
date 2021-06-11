@@ -4,6 +4,7 @@ package ru.example.todo.controller;
  * Time: 10:30 PM
  * */
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -11,9 +12,11 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithUserDetails;
 import ru.example.todo.controller.wrapper.TaskIdsWrapper;
 import ru.example.todo.dto.TodoSectionDto;
+import ru.example.todo.entity.TodoSection;
 import ru.example.todo.entity.User;
 import ru.example.todo.service.TodoSectionService;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -21,13 +24,14 @@ import java.util.Set;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-// todo update tests, mock service layer
+
 public class TodoSectionControllerTest extends AbstractControllerTestClass {
 
     @MockBean
@@ -50,16 +54,37 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
         verify(sectionService, times(1)).findSectionDtoList(Mockito.any(User.class));
     }
 
+    @Ignore
+    @Test
+    @WithUserDetails(ADMIN)
+    public void getSections_ShouldReturnEmptyList() throws Exception {
+        given(sectionService.findSectionDtoList(Mockito.any(User.class)))
+                .willReturn(Collections.emptyList());
+
+        mvc.perform(get(API_SECTIONS)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("_embedded.sections.isEmpty()", is(true)))
+                .andDo(print());
+
+        verify(sectionService, times(1)).findSectionDtoList(Mockito.any(User.class));
+    }
+
     // get section by ID
     @Test
     @WithUserDetails(ADMIN)
     public void getSection_ShouldReturnSectionById() throws Exception {
         final int SECTION_ID = 1;
 
+        given(sectionService.findSectionById(Mockito.any(User.class), Mockito.anyLong()))
+                .willReturn(new TodoSection("Important"));
+
         mvc.perform(get(API_SECTIONS + SECTION_ID))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("title", is("Important")))
                 .andDo(print());
+
+        verify(sectionService).findSectionById(Mockito.any(User.class), Mockito.anyLong());
     }
 
     // create new section
@@ -143,18 +168,6 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
 
     private String getSectionInJson(Long id, String title) {
         return String.format("{\"id\":%d, \"title\":\"%s\"}", id, title);
-    }
-
-    // get section by non-existent id: returns 404 NOT FOUND
-    @Test
-    @WithUserDetails(USER)
-    public void getSection_ShouldReturnBadRequest() throws Exception {
-        final int SECTION_ID = 100;
-
-        mvc.perform(get(API_SECTIONS + SECTION_ID)
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().is4xxClientError())
-                .andExpect(status().isNotFound());
     }
 
     // delete section by non-existent id: returns 204 NO CONTENT
