@@ -8,12 +8,14 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithUserDetails;
 import ru.example.todo.controller.wrapper.TaskIdsWrapper;
 import ru.example.todo.dto.TodoSectionDto;
 import ru.example.todo.entity.TodoSection;
 import ru.example.todo.entity.User;
+import ru.example.todo.exception.CustomException;
 import ru.example.todo.service.TodoSectionService;
 
 import java.util.Collections;
@@ -83,6 +85,25 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("title", is("Important")))
                 .andDo(print());
+
+        verify(sectionService).findSectionById(Mockito.any(User.class), Mockito.anyLong());
+    }
+
+    // get section by non-existent id: returns 404 NOT FOUND
+    @Test
+    @WithUserDetails(USER)
+    public void getSection_ShouldReturnBadRequest() throws Exception {
+        final int SECTION_ID = 100;
+
+        given(sectionService.findSectionById(Mockito.any(User.class), Mockito.anyLong()))
+                .willThrow(new CustomException("Not Found", "Section not found: " + SECTION_ID, HttpStatus.NOT_FOUND));
+
+        mvc.perform(get(API_SECTIONS + SECTION_ID)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().is4xxClientError())
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("message", containsStringIgnoringCase("section not found")));
 
         verify(sectionService).findSectionById(Mockito.any(User.class), Mockito.anyLong());
     }
