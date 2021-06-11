@@ -212,6 +212,23 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
                 .updateSection(Mockito.any(User.class), Mockito.anyLong(), Mockito.any(TodoSectionDto.class));
     }
 
+    @Test
+    @WithUserDetails(USER)
+    public void updateSection_ShouldReturnForbidden() throws Exception {
+        doThrow(new CustomException("Forbidden", "Not enough permissions", HttpStatus.FORBIDDEN))
+                .when(sectionService)
+                .updateSection(Mockito.any(User.class), Mockito.anyLong(), Mockito.any(TodoSectionDto.class));
+
+        mvc.perform(put(API_SECTIONS + 1)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(convertToJson(new TodoSectionDto("Title"))))
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("error", containsStringIgnoringCase("forbidden")))
+                .andDo(print());
+
+        verify(sectionService, times(1))
+                .updateSection(Mockito.any(User.class), Mockito.anyLong(), Mockito.any(TodoSectionDto.class));
+    }
 
     // add tasks to the section
     @Test
