@@ -16,6 +16,7 @@ import ru.example.todo.dto.TodoSectionDto;
 import ru.example.todo.entity.TodoSection;
 import ru.example.todo.entity.User;
 import ru.example.todo.exception.CustomException;
+import ru.example.todo.messaging.requests.EmailRequest;
 import ru.example.todo.service.TodoSectionService;
 
 import java.util.Collections;
@@ -26,8 +27,7 @@ import java.util.Set;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -108,6 +108,24 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
         verify(sectionService).findSectionById(Mockito.any(User.class), Mockito.anyLong());
     }
 
+    // delete section
+    @Test
+    @WithUserDetails(ADMIN)
+    public void deleteSection_ShouldDeleteSectionById() throws Exception {
+        final int SECTION_ID = 5;
+
+        doNothing().when(sectionService).deleteSectionById(Mockito.any(User.class), Mockito.anyLong());
+
+        // delete by id: returns 204 NO CONTENT
+        mvc.perform(delete(API_SECTIONS + SECTION_ID)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent())
+                .andDo(print());
+
+        verify(sectionService).deleteSectionById(Mockito.any(User.class), Mockito.anyLong());
+    }
+
+
     // create new section
     @Test
     @WithUserDetails(ADMIN)
@@ -134,32 +152,6 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
         assertEquals(beforeSectionsQuantity + 1, afterSectionsQuantity);
     }
 
-
-    // todo: fix this test method - mock service layer
-    // delete section
-    @Test
-    @WithUserDetails(ADMIN)
-    public void deleteSection_ShouldDeleteSectionById() throws Exception {
-        final int SECTION_ID = 5;
-
-        // get by id: returns 200 OK
-        mvc.perform(get(API_SECTIONS + SECTION_ID)
-                .contentType(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isOk());
-
-        // delete by id: returns 204 NO CONTENT
-        mvc.perform(delete(API_SECTIONS + SECTION_ID)
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNoContent())
-                .andDo(print());
-
-        // get again by id: returns 404 NOT FOUND
-        mvc.perform(get(API_SECTIONS + SECTION_ID)
-                .contentType(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isNotFound());
-    }
 
     // update section
     @Test
