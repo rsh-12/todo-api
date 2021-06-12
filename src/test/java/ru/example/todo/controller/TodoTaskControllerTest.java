@@ -11,6 +11,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithUserDetails;
+import ru.example.todo.dto.TodoSectionDto;
 import ru.example.todo.entity.TodoTask;
 import ru.example.todo.entity.User;
 import ru.example.todo.enums.filters.FilterByBoolean;
@@ -23,7 +24,6 @@ import java.util.List;
 
 import static org.hamcrest.Matchers.containsStringIgnoringCase;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertEquals;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -120,26 +120,17 @@ public class TodoTaskControllerTest extends AbstractControllerTestClass {
         verify(taskService, times(1)).deleteTaskById(Mockito.any(User.class), Mockito.anyLong());
     }
 
-    @Ignore
     @Test
     @WithUserDetails(USER)
-    public void createTask_ShouldReturnStatusCreated() throws Exception {
-        int beforeTasksQuantity = getJsonArraySize(API_TASKS, "_embedded.tasks");
-
-        final String body = String.format("{\"title\": \"%s\", \"completionDate\": \"%s\"}", "New Title", "2022-12-12");
+    public void createTask_ShouldReturnCreated() throws Exception {
+        doNothing().when(taskService).createTask(Mockito.any(User.class), Mockito.any(TodoTask.class));
 
         mvc.perform(post(API_TASKS)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(body))
+                .content(convertToJson(new TodoSectionDto("title"))))
                 .andExpect(status().isCreated());
 
-        int afterTasksQuantity = getJsonArraySize(API_TASKS, "_embedded.tasks");
-
-        assertEquals(beforeTasksQuantity + 1, afterTasksQuantity);
-
-        mvc.perform(get(API_TASKS + 11))
-                .andExpect(status().isOk())
-                .andDo(print());
+        verify(taskService, times(1)).createTask(Mockito.any(User.class), Mockito.any(TodoTask.class));
     }
 
     @Ignore
