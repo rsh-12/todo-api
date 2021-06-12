@@ -22,8 +22,7 @@ import ru.example.todo.service.TodoTaskService;
 import java.time.LocalDate;
 import java.util.List;
 
-import static org.hamcrest.Matchers.containsStringIgnoringCase;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -138,6 +137,19 @@ public class TodoTaskControllerTest extends AbstractControllerTestClass {
     public void createTask_ShouldReturnBadRequest() throws Exception {
         mvc.perform(post(API_TASKS)
                 .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+
+        verify(taskService, times(0)).createTask(Mockito.any(User.class), Mockito.any(TodoTask.class));
+    }
+
+    @Test
+    @WithUserDetails(USER)
+    public void createTask_InvalidTitle_ShouldReturnCreated() throws Exception {
+        mvc.perform(post(API_TASKS)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(convertToJson(new TodoSectionDto("T")))) // min=3
+                .andDo(print())
+                .andExpect(jsonPath("title", containsInAnyOrder("Size must be between 3 and 80")))
                 .andExpect(status().isBadRequest());
 
         verify(taskService, times(0)).createTask(Mockito.any(User.class), Mockito.any(TodoTask.class));
