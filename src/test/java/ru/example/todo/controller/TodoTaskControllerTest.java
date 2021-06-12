@@ -91,10 +91,7 @@ public class TodoTaskControllerTest extends AbstractControllerTestClass {
     @WithUserDetails(ADMIN)
     public void deleteTask_ShouldReturnNoContent() throws Exception {
         doNothing().when(taskService).deleteTaskById(Mockito.any(User.class), Mockito.anyLong());
-
-        mvc.perform(delete(API_TASKS + 1))
-                .andExpect(status().isNoContent());
-
+        mvc.perform(delete(API_TASKS + 1)).andExpect(status().isNoContent());
         verify(taskService, times(1)).deleteTaskById(Mockito.any(User.class), Mockito.anyLong());
     }
 
