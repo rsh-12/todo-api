@@ -8,12 +8,14 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithUserDetails;
 import ru.example.todo.entity.TodoTask;
 import ru.example.todo.entity.User;
 import ru.example.todo.enums.filters.FilterByBoolean;
 import ru.example.todo.enums.filters.FilterByDate;
+import ru.example.todo.exception.CustomException;
 import ru.example.todo.service.TodoTaskService;
 
 import java.time.LocalDate;
@@ -72,16 +74,18 @@ public class TodoTaskControllerTest extends AbstractControllerTestClass {
         verify(taskService, times(1)).findTaskById(Mockito.any(User.class), Mockito.anyLong());
     }
 
-    @Ignore
     @Test
     @WithUserDetails(USER)
     public void getTask_ShouldReturnNotFound() throws Exception {
-        final int TASK_ID = 100;
+        given(taskService.findTaskById(Mockito.any(User.class), Mockito.anyLong()))
+                .willThrow(new CustomException("Not Found", "Task not found", HttpStatus.NOT_FOUND));
 
-        mvc.perform(get(API_TASKS + TASK_ID))
+        mvc.perform(get(API_TASKS + 1))
                 .andExpect(status().isNotFound())
                 .andDo(print())
                 .andExpect(jsonPath("message", containsStringIgnoringCase("Task not found")));
+
+        verify(taskService, times(1)).findTaskById(Mockito.any(User.class), Mockito.anyLong());
     }
 
     @Ignore
