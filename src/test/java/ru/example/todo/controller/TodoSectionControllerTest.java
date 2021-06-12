@@ -280,4 +280,23 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
                 .addTasksToOrRemoveFromSection(Mockito.anyLong(), Mockito.anyLong(), Mockito.anySet(), Mockito.any());
     }
 
+    @Test
+    @WithUserDetails(USER)
+    public void addOrRemoveTasks_NoParam_ShouldReturnBadRequest() throws Exception {
+        doNothing().when(tasksFacade)
+                .addTasksToOrRemoveFromSection(Mockito.anyLong(), Mockito.anyLong(), Mockito.anySet(), Mockito.any());
+
+        Map<String, Integer[]> body = new WeakHashMap<>();
+        body.put("tasks", new Integer[]{1, 2});
+
+        mvc.perform(post(API_SECTIONS + "1/tasks")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(convertToJson(body)))
+                .andExpect(status().isBadRequest())
+                .andDo(print());
+
+        verify(tasksFacade, times(0))
+                .addTasksToOrRemoveFromSection(Mockito.anyLong(), Mockito.anyLong(), Mockito.anySet(), Mockito.any());
+    }
+
 }
