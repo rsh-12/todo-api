@@ -5,19 +5,12 @@ package ru.example.todo.controller;
  * */
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.jayway.jsonpath.JsonPath;
-import org.junit.FixMethodOrder;
 import org.junit.runner.RunWith;
-import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
-
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -45,14 +38,4 @@ abstract class AbstractControllerTestClass {
         }
     }
 
-    protected int getJsonArraySize(String api, String jsonPath) throws Exception {
-        MvcResult result = mvc.perform(get(api)).andExpect(status().isOk()).andReturn();
-        return JsonPath.read(result.getResponse().getContentAsString(), jsonPath + ".length()");
-    }
-
-    protected int getJsonArraySize(String api, String jsonPath, String param, String arg) throws Exception {
-        MvcResult result = mvc.perform(get(api).param(param, arg)).andExpect(status().isOk()).andReturn();
-
-        return JsonPath.read(result.getResponse().getContentAsString(), jsonPath + ".length()");
-    }
 }
