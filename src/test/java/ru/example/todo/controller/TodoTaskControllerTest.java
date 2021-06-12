@@ -26,8 +26,7 @@ import static org.hamcrest.Matchers.containsStringIgnoringCase;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -88,20 +87,15 @@ public class TodoTaskControllerTest extends AbstractControllerTestClass {
         verify(taskService, times(1)).findTaskById(Mockito.any(User.class), Mockito.anyLong());
     }
 
-    @Ignore
     @Test
     @WithUserDetails(ADMIN)
     public void deleteTask_ShouldReturnNoContent() throws Exception {
-        final int TASK_ID = 6;
+        doNothing().when(taskService).deleteTaskById(Mockito.any(User.class), Mockito.anyLong());
 
-        int beforeTasksQuantity = getJsonArraySize(API_TASKS, "_embedded.tasks");
-
-        mvc.perform(delete(API_TASKS + TASK_ID))
+        mvc.perform(delete(API_TASKS + 1))
                 .andExpect(status().isNoContent());
 
-        int afterTasksQuantity = getJsonArraySize(API_TASKS, "_embedded.tasks");
-
-        assertEquals(beforeTasksQuantity - 1, afterTasksQuantity);
+        verify(taskService, times(1)).deleteTaskById(Mockito.any(User.class), Mockito.anyLong());
     }
 
     @Ignore
