@@ -46,13 +46,13 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
     @WithUserDetails(ADMIN)
     public void getSections_ShouldReturnListOfSections() throws Exception {
         given(sectionService.findSectionDtoList(Mockito.any(User.class)))
-                .willReturn(List.of(new TodoSectionDto("task1"), new TodoSectionDto("task2")));
+                .willReturn(List.of(new TodoSectionDto("section1"), new TodoSectionDto("section2")));
 
         mvc.perform(get(API_SECTIONS)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("_embedded.sections[0].title", is("task1")))
-                .andExpect(jsonPath("_embedded.sections[1].title", is("task2")))
+                .andExpect(jsonPath("_embedded.sections[0].title", is("section1")))
+                .andExpect(jsonPath("_embedded.sections[1].title", is("section2")))
                 .andDo(print());
 
         verify(sectionService, times(1)).findSectionDtoList(Mockito.any(User.class));
