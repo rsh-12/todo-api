@@ -17,6 +17,7 @@ import ru.example.todo.enums.filters.FilterByDate;
 import ru.example.todo.service.TodoTaskService;
 
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 
 import static org.hamcrest.Matchers.containsStringIgnoringCase;
@@ -58,16 +59,17 @@ public class TodoTaskControllerTest extends AbstractControllerTestClass {
                 Mockito.any(FilterByDate.class), Mockito.anyString());
     }
 
-    @Ignore
     @Test
     @WithUserDetails(ADMIN)
     public void getTask_ShouldReturnTaskById() throws Exception {
-        final int TASK_ID = 3;
+        given(taskService.findTaskById(Mockito.any(User.class), Mockito.anyLong()))
+                .willReturn(new TodoTask("task"));
 
-        mvc.perform(get(API_TASKS + TASK_ID))
+        mvc.perform(get(API_TASKS + 1))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("title",
-                        containsStringIgnoringCase("Write a letter")));
+                .andExpect(jsonPath("title", containsStringIgnoringCase("task")));
+
+        verify(taskService, times(1)).findTaskById(Mockito.any(User.class), Mockito.anyLong());
     }
 
     @Ignore
