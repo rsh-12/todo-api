@@ -15,9 +15,20 @@ public class TodoTaskDto {
     @Size(min = 3, max = 80, message = "Size must be between 3 and 80")
     private String title;
 
-
     @FutureOrPresent
     private LocalDate completionDate = LocalDate.now();
+
+    public TodoTaskDto() {
+    }
+
+    public TodoTaskDto(String title) {
+        this.title = title;
+    }
+
+    public TodoTaskDto(String title, LocalDate completionDate) {
+        this.title = title;
+        this.completionDate = completionDate;
+    }
 
     public String getTitle() {
         return title;
