@@ -19,7 +19,6 @@ import ru.example.todo.exception.CustomException;
 import ru.example.todo.service.TodoTaskService;
 
 import java.time.LocalDate;
-import java.util.Collections;
 import java.util.List;
 
 import static org.hamcrest.Matchers.containsStringIgnoringCase;
@@ -95,21 +94,17 @@ public class TodoTaskControllerTest extends AbstractControllerTestClass {
         verify(taskService, times(1)).deleteTaskById(Mockito.any(User.class), Mockito.anyLong());
     }
 
-    @Ignore
     @Test
     @WithUserDetails(USER)
     public void deleteTask_ShouldReturnNotFound() throws Exception {
-        final int TASK_ID = 100;
+        doThrow(new CustomException("Not Found", "Task not found", HttpStatus.NOT_FOUND))
+                .when(taskService).deleteTaskById(Mockito.any(User.class), Mockito.anyLong());
 
-        int beforeTasksQuantity = getJsonArraySize(API_TASKS, "_embedded.tasks");
-
-        mvc.perform(delete(API_TASKS + TASK_ID))
-                .andExpect(status().is4xxClientError())
+        mvc.perform(delete(API_TASKS + 1))
+                .andExpect(status().isNotFound())
                 .andExpect(jsonPath("message", containsStringIgnoringCase("Task not found")));
 
-        int afterTasksQuantity = getJsonArraySize(API_TASKS, "_embedded.tasks");
-
-        assertEquals(beforeTasksQuantity, afterTasksQuantity);
+        verify(taskService, times(1)).deleteTaskById(Mockito.any(User.class), Mockito.anyLong());
     }
 
     @Ignore
