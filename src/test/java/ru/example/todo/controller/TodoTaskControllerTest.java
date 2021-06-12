@@ -5,45 +5,58 @@ package ru.example.todo.controller;
  * */
 
 import org.junit.Test;
+import org.mockito.Mockito;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.ResultActions;
-import ru.example.todo.enums.TaskDate;
-import ru.example.todo.enums.TaskStatus;
+import ru.example.todo.entity.TodoTask;
+import ru.example.todo.entity.User;
+import ru.example.todo.enums.filters.TaskDate;
+import ru.example.todo.enums.filters.TaskStatus;
+import ru.example.todo.service.TodoTaskService;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import static org.hamcrest.Matchers.containsStringIgnoringCase;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-// todo update tests, mock service layer
+
 public class TodoTaskControllerTest extends AbstractControllerTestClass {
+
+    @MockBean
+    private TodoTaskService taskService;
 
     @Test
     @WithUserDetails(ADMIN)
-    public void getTasks_WithAndWithoutArgs_ShouldReturnListOfTasks() throws Exception {
+    public void getTasks_ShouldReturnListOfTasks() throws Exception {
+        given(taskService.findTasks(
+                Mockito.any(User.class), Mockito.anyInt(), Mockito.anyInt(),
+                Mockito.any(TaskDate.class), Mockito.anyString()))
+                .willReturn(List.of(
+                        new TodoTask("task1", LocalDate.now()),
+                        new TodoTask("task2", LocalDate.now())));
+
         mvc.perform(get(API_TASKS)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
+                .andExpect(jsonPath("_embedded.tasks[0].title", is("task1")))
+                .andExpect(jsonPath("_embedded.tasks[1].title", is("task2")))
                 .andExpect(status().isOk());
 
-        mvc.perform(get(API_TASKS)
-                .contentType(MediaType.APPLICATION_JSON)
-                .param("date", TaskDate.TODAY.name()))
-                .andDo(print())
-                .andExpect(status().isOk());
-
-        mvc.perform(get(API_TASKS)
-                .contentType(MediaType.APPLICATION_JSON)
-                .param("date", TaskDate.OVERDUE.name()))
-                .andDo(print())
-                .andExpect(status().isOk());
+        verify(taskService, times(1)).findTasks(
+                Mockito.any(User.class), Mockito.anyInt(), Mockito.anyInt(),
+                Mockito.any(TaskDate.class), Mockito.anyString());
     }
 
     @Test
