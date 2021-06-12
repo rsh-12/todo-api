@@ -15,10 +15,13 @@ import ru.example.todo.dto.TodoSectionDto;
 import ru.example.todo.entity.TodoSection;
 import ru.example.todo.entity.User;
 import ru.example.todo.exception.CustomException;
+import ru.example.todo.facade.TasksFacade;
 import ru.example.todo.service.TodoSectionService;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.WeakHashMap;
 
 import static org.hamcrest.Matchers.containsStringIgnoringCase;
 import static org.hamcrest.Matchers.is;
@@ -34,6 +37,9 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
 
     @MockBean
     private TodoSectionService sectionService;
+
+    @MockBean
+    private TasksFacade tasksFacade;
 
     // get all sections
     @Test
@@ -238,6 +244,23 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
                 .updateSection(Mockito.any(User.class), Mockito.anyLong(), Mockito.any(TodoSectionDto.class));
     }
 
-    // todo: test it out addOrRemove method
+    @Test
+    @WithUserDetails(USER)
+    public void addOrRemoveTasks_ShouldReturnOk() throws Exception {
+        doNothing().when(tasksFacade)
+                .addTasksToOrRemoveFromSection(Mockito.anyLong(), Mockito.anyLong(), Mockito.anySet(), Mockito.any());
 
+        Map<String, Integer[]> body = new WeakHashMap<>();
+        body.put("tasks", new Integer[]{1, 2});
+
+        mvc.perform(post(API_SECTIONS + "1/tasks")
+                .contentType(MediaType.APPLICATION_JSON)
+                .param("do", "move")
+                .content(convertToJson(body)))
+                .andExpect(status().isOk())
+                .andDo(print());
+
+        verify(tasksFacade, times(1))
+                .addTasksToOrRemoveFromSection(Mockito.anyLong(), Mockito.anyLong(), Mockito.anySet(), Mockito.any());
+    }
 }
