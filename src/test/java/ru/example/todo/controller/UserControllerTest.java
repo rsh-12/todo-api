@@ -11,12 +11,10 @@ import org.springframework.security.test.context.support.WithUserDetails;
 import ru.example.todo.entity.User;
 import ru.example.todo.service.UserService;
 
-import static org.hamcrest.Matchers.containsStringIgnoringCase;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -42,30 +40,5 @@ public class UserControllerTest extends AbstractControllerTestClass {
         verify(userService, times(1)).findUserById(Mockito.anyLong());
     }
 
-    // Delete user: success
-    @Test
-    @WithUserDetails(ADMIN)
-    public void deleteUser_ShouldReturnNoContent() throws Exception {
-        final int USER_ID = 4;
-
-        mvc.perform(delete(API_USERS + USER_ID))
-                .andExpect(status().isNoContent());
-
-        mvc.perform(delete(API_USERS + USER_ID))
-                .andExpect(status().isNotFound());
-    }
-
-    // Delete user:  fail
-    @Test
-    @WithUserDetails(USER)
-    public void deleteUser_ShouldReturnForbidden() throws Exception {
-        final int USER_ID = 4;
-
-        mvc.perform(delete(API_USERS + USER_ID))
-                .andDo(print())
-                .andExpect(status().isForbidden())
-                .andExpect(jsonPath("message", containsStringIgnoringCase("Not enough permissions")));
-
-    }
 
 }
