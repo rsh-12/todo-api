@@ -59,19 +59,6 @@ public class TodoTaskControllerTest extends AbstractControllerTestClass {
                 Mockito.any(FilterByDate.class), Mockito.anyString());
     }
 
-    @Test
-    @WithUserDetails(ADMIN)
-    public void getTasks_FilterByDate_ShouldReturnTodaysTasks() throws Exception {
-        int size = getJsonArraySize(API_TASKS, "_embedded.tasks", "date", FilterByDate.TODAY.name());
-        assertTrue(size > 0);
-
-        ResultActions actions = mvc.perform(get(API_TASKS).param("date", FilterByDate.TODAY.name())).andDo(print());
-
-        String today = LocalDate.now().toString();
-        for (int i = 0; i < size; i++) {
-            actions.andExpect(jsonPath(String.format("_embedded.tasks[%d].completionDate", i), is(today)));
-        }
-    }
 
     @Test
     @WithUserDetails(ADMIN)
