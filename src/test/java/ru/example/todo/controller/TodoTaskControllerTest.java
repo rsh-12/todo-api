@@ -172,4 +172,22 @@ public class TodoTaskControllerTest extends AbstractControllerTestClass {
                 .andDo(print());
     }
 
+    @Test
+    @WithUserDetails(USER)
+    public void updateTask_ShouldReturnNotFound() throws Exception {
+        doThrow(new CustomException("Not Found", "Task not found", HttpStatus.NOT_FOUND))
+                .when(taskService).updateTask(Mockito.any(User.class), Mockito.anyLong(),
+                Mockito.any(TodoTaskDto.class),
+                Mockito.any(), Mockito.any());
+
+        mvc.perform(patch(API_TASKS + 1)
+                .contentType(MediaType.APPLICATION_JSON)
+                .param("starred", "true")
+                .param("completed", "true")
+                .content(convertToJson("{\"title\":\"some title\"")))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("error", containsStringIgnoringCase("not found")))
+                .andDo(print());
+    }
+
 }
