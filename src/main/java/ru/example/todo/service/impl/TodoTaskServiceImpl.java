@@ -41,7 +41,6 @@ public class TodoTaskServiceImpl extends AbstractServiceClass implements TodoTas
     // get all tasks
     @Override
     public List<TodoTask> findTasks(User user, Integer pageNo, Integer pageSize, FilterByDate date, String sort) {
-
         pageSize = pageSize > 100 ? 100 : pageSize; // set max page size
         Pageable page = PageRequest.of(pageNo, pageSize, Sort.by(getSortDirection(sort), getSortAsString(sort)));
 
@@ -68,7 +67,6 @@ public class TodoTaskServiceImpl extends AbstractServiceClass implements TodoTas
     // delete task by id
     @Override
     public void deleteTaskById(User user, Long taskId) {
-
         TodoTask task = todoTaskRepository.findById(taskId)
                 .orElseThrow(() -> new CustomException("Not Found", "Task not found: " + taskId, HttpStatus.NOT_FOUND));
 
@@ -100,7 +98,6 @@ public class TodoTaskServiceImpl extends AbstractServiceClass implements TodoTas
     @Override
     public void updateTask(User user, Long taskId, TodoTaskDto taskDto,
                            FilterByBoolean completed, FilterByBoolean starred) {
-
         // get task from DB
         log.info("Get the task from DB: id={}", taskId);
         TodoTask task = todoTaskRepository.findByIdAndUserId(taskId, user.getId())
