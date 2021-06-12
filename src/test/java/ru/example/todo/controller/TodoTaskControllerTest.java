@@ -107,6 +107,19 @@ public class TodoTaskControllerTest extends AbstractControllerTestClass {
         verify(taskService, times(1)).deleteTaskById(Mockito.any(User.class), Mockito.anyLong());
     }
 
+    @Test
+    @WithUserDetails(USER)
+    public void deleteTask_ShouldReturnForbidden() throws Exception {
+        doThrow(new CustomException("Forbidden", "Not enough permissions", HttpStatus.FORBIDDEN))
+                .when(taskService).deleteTaskById(Mockito.any(User.class), Mockito.anyLong());
+
+        mvc.perform(delete(API_TASKS + 1))
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("error", containsStringIgnoringCase("forbidden")));
+
+        verify(taskService, times(1)).deleteTaskById(Mockito.any(User.class), Mockito.anyLong());
+    }
+
     @Ignore
     @Test
     @WithUserDetails(USER)
@@ -137,7 +150,6 @@ public class TodoTaskControllerTest extends AbstractControllerTestClass {
 
         mvc.perform(patch(API_TASKS + TASK_ID)
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().is4xxClientError())
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("message", containsStringIgnoringCase("Task not found")));
     }
@@ -262,14 +274,5 @@ public class TodoTaskControllerTest extends AbstractControllerTestClass {
                 .andExpect(jsonPath("completionDate", containsStringIgnoringCase(newCompletionDate)));
     }
 
-    @Ignore
-    @Test
-    @WithUserDetails(USER)
-    public void deleteTask_ShouldReturnForbidden() throws Exception {
-        mvc.perform(delete(API_TASKS + 4))
-                .andExpect(status().isForbidden())
-                .andExpect(jsonPath("message",
-                        containsStringIgnoringCase("not enough permissions")))
-                .andDo(print());
-    }
+
 }
