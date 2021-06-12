@@ -4,7 +4,6 @@ package ru.example.todo.controller;
  * Time: 7:17 AM
  * */
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -12,9 +11,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithUserDetails;
 import ru.example.todo.dto.TodoSectionDto;
+import ru.example.todo.dto.TodoTaskDto;
 import ru.example.todo.entity.TodoTask;
 import ru.example.todo.entity.User;
-import ru.example.todo.enums.filters.FilterByBoolean;
 import ru.example.todo.enums.filters.FilterByDate;
 import ru.example.todo.exception.CustomException;
 import ru.example.todo.service.TodoTaskService;
@@ -22,7 +21,8 @@ import ru.example.todo.service.TodoTaskService;
 import java.time.LocalDate;
 import java.util.List;
 
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.containsStringIgnoringCase;
+import static org.hamcrest.Matchers.is;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -144,13 +144,13 @@ public class TodoTaskControllerTest extends AbstractControllerTestClass {
 
     @Test
     @WithUserDetails(USER)
-    public void createTask_InvalidTitle_ShouldReturnCreated() throws Exception {
+    public void createTask_InvalidTitle_ShouldReturnBadRequest() throws Exception {
         mvc.perform(post(API_TASKS)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(convertToJson(new TodoSectionDto("T")))) // min=3
-                .andDo(print())
-                .andExpect(jsonPath("title", containsInAnyOrder("Size must be between 3 and 80")))
-                .andExpect(status().isBadRequest());
+                .content(convertToJson(new TodoTaskDto("T")))) // min=3
+                //.andExpect(jsonPath("title", containsInAnyOrder("Size must be between 3 and 80")))
+                .andExpect(status().isBadRequest())
+                .andDo(print());
 
         verify(taskService, times(0)).createTask(Mockito.any(User.class), Mockito.any(TodoTask.class));
     }
