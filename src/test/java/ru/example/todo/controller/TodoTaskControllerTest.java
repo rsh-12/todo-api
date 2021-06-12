@@ -155,6 +155,21 @@ public class TodoTaskControllerTest extends AbstractControllerTestClass {
         verify(taskService, times(0)).createTask(Mockito.any(User.class), Mockito.any(TodoTask.class));
     }
 
-    // todo: add updateTask test methods
+    @Test
+    @WithUserDetails(USER)
+    public void updateTask_ShouldReturnOk() throws Exception {
+        doNothing().when(taskService).updateTask(
+                Mockito.any(User.class), Mockito.anyLong(),
+                Mockito.any(TodoTaskDto.class),
+                Mockito.any(), Mockito.any());
+
+        mvc.perform(patch(API_TASKS + 1)
+                .contentType(MediaType.APPLICATION_JSON)
+                .param("starred", "true")
+                .param("completed", "true")
+                .content(convertToJson("{\"title\":\"some title\"")))
+                .andExpect(status().isOk())
+                .andDo(print());
+    }
 
 }
