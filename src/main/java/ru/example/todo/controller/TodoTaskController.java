@@ -47,6 +47,7 @@ public class TodoTaskController {
         this.modelMapper = modelMapper;
     }
 
+    // todo: filter by completed or starred params
     // get all tasks
     @ApiOperation(value = "List tasks", notes = "List all tasks")
     @GetMapping(produces = "application/json")
