@@ -133,6 +133,16 @@ public class TodoTaskControllerTest extends AbstractControllerTestClass {
         verify(taskService, times(1)).createTask(Mockito.any(User.class), Mockito.any(TodoTask.class));
     }
 
+    @Test
+    @WithUserDetails(USER)
+    public void createTask_ShouldReturnBadRequest() throws Exception {
+        mvc.perform(post(API_TASKS)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+
+        verify(taskService, times(0)).createTask(Mockito.any(User.class), Mockito.any(TodoTask.class));
+    }
+
     @Ignore
     @Test
     @WithUserDetails(USER)
