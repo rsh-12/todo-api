@@ -155,18 +155,6 @@ public class TodoTaskControllerTest extends AbstractControllerTestClass {
         verify(taskService, times(0)).createTask(Mockito.any(User.class), Mockito.any(TodoTask.class));
     }
 
-    @Ignore
-    @Test
-    @WithUserDetails(USER)
-    public void updateTask_ShouldReturnNotFound() throws Exception {
-        final int TASK_ID = 100;
-
-        mvc.perform(patch(API_TASKS + TASK_ID)
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("message", containsStringIgnoringCase("Task not found")));
-    }
-
     // todo: add updateTask test methods
 
 }
