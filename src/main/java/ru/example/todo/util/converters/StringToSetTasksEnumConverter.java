@@ -5,12 +5,12 @@ package ru.example.todo.util.converters;
  * */
 
 import org.springframework.core.convert.converter.Converter;
-import ru.example.todo.enums.SetTasks;
+import ru.example.todo.enums.filters.FilterByOperation;
 
-public class StringToSetTasksEnumConverter implements Converter<String, SetTasks> {
+public class StringToSetTasksEnumConverter implements Converter<String, FilterByOperation> {
 
     @Override
-    public SetTasks convert(String string) {
-        return SetTasks.valueOf(string.toUpperCase());
+    public FilterByOperation convert(String string) {
+        return FilterByOperation.valueOf(string.toUpperCase());
     }
 }

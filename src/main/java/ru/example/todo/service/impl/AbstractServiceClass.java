@@ -15,8 +15,8 @@ import ru.example.todo.entity.TodoSection;
 import ru.example.todo.entity.TodoTask;
 import ru.example.todo.entity.User;
 import ru.example.todo.enums.Role;
-import ru.example.todo.enums.SetTasks;
-import ru.example.todo.enums.TaskStatus;
+import ru.example.todo.enums.filters.FilterByOperation;
+import ru.example.todo.enums.filters.FilterByBoolean;
 import ru.example.todo.exception.CustomException;
 import ru.example.todo.service.JwtTokenService;
 
@@ -27,7 +27,7 @@ public class AbstractServiceClass {
 
     private static final Logger log = LoggerFactory.getLogger(AbstractServiceClass.class.getName());
 
-    boolean toABoolean(TaskStatus status) {
+    boolean toABoolean(FilterByBoolean status) {
         return Boolean.parseBoolean(status.toString());
     }
 
@@ -59,12 +59,12 @@ public class AbstractServiceClass {
         return response.toString();
     }
 
-    void addOrRemoveTasks(SetTasks flag, TodoSection section, List<TodoTask> tasksByIds) {
+    void addOrRemoveTasks(FilterByOperation flag, TodoSection section, List<TodoTask> tasksByIds) {
 
-        if (flag.equals(SetTasks.MOVE)) {
+        if (flag.equals(FilterByOperation.MOVE)) {
             log.info("Add tasks to the section");
             section.setTodoTasks(tasksByIds);
-        } else if (flag.equals(SetTasks.REMOVE)) {
+        } else if (flag.equals(FilterByOperation.REMOVE)) {
             log.info("Remove tasks from the section");
             section.removeTodoTasks(tasksByIds);
         }

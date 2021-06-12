@@ -6,9 +6,8 @@ package ru.example.todo.facade.impl;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 import ru.example.todo.entity.TodoTask;
-import ru.example.todo.enums.SetTasks;
+import ru.example.todo.enums.filters.FilterByOperation;
 import ru.example.todo.exception.CustomException;
 import ru.example.todo.facade.TasksFacade;
 import ru.example.todo.service.TodoSectionService;
@@ -30,7 +29,7 @@ public class TasksFacadeImpl implements TasksFacade {
 
 
     @Override
-    public void addTasksToOrRemoveFromSection(Long userId, Long sectionId, Set<Long> taskIds, SetTasks flag) {
+    public void addTasksToOrRemoveFromSection(Long userId, Long sectionId, Set<Long> taskIds, FilterByOperation flag) {
 
         if (taskIds == null || taskIds.isEmpty()) {
             throw new CustomException("Bad Request", "Tasks IDs are required", HttpStatus.BAD_REQUEST);

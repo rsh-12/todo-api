@@ -19,7 +19,7 @@ import ru.example.todo.controller.assembler.TodoSectionModelAssembler;
 import ru.example.todo.controller.wrapper.TaskIdsWrapper;
 import ru.example.todo.dto.TodoSectionDto;
 import ru.example.todo.entity.TodoSection;
-import ru.example.todo.enums.SetTasks;
+import ru.example.todo.enums.filters.FilterByOperation;
 import ru.example.todo.facade.TasksFacade;
 import ru.example.todo.security.UserDetailsImpl;
 import ru.example.todo.service.TodoSectionService;
@@ -110,7 +110,7 @@ public class TodoSectionController {
     public ResponseEntity<String> addOrRemoveTasks(@AuthenticationPrincipal UserDetailsImpl uds,
                                                    @PathVariable("id") Long sectionId,
                                                    @RequestBody TaskIdsWrapper wrapper,
-                                                   @RequestParam(value = "do") SetTasks flag) {
+                                                   @RequestParam(value = "do") FilterByOperation flag) {
 
         tasksFacade.addTasksToOrRemoveFromSection(uds.getId(), sectionId, wrapper.tasks, flag);
         return new ResponseEntity<>(HttpStatus.OK);

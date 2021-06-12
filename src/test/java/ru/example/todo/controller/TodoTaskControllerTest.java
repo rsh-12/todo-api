@@ -12,8 +12,8 @@ import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.ResultActions;
 import ru.example.todo.entity.TodoTask;
 import ru.example.todo.entity.User;
-import ru.example.todo.enums.filters.TaskDate;
-import ru.example.todo.enums.filters.TaskStatus;
+import ru.example.todo.enums.filters.FilterByDate;
+import ru.example.todo.enums.filters.FilterByBoolean;
 import ru.example.todo.service.TodoTaskService;
 
 import java.time.LocalDate;
@@ -42,7 +42,7 @@ public class TodoTaskControllerTest extends AbstractControllerTestClass {
     public void getTasks_ShouldReturnListOfTasks() throws Exception {
         given(taskService.findTasks(
                 Mockito.any(User.class), Mockito.anyInt(), Mockito.anyInt(),
-                Mockito.any(TaskDate.class), Mockito.anyString()))
+                Mockito.any(FilterByDate.class), Mockito.anyString()))
                 .willReturn(List.of(
                         new TodoTask("task1", LocalDate.now()),
                         new TodoTask("task2", LocalDate.now())));
@@ -56,16 +56,16 @@ public class TodoTaskControllerTest extends AbstractControllerTestClass {
 
         verify(taskService, times(1)).findTasks(
                 Mockito.any(User.class), Mockito.anyInt(), Mockito.anyInt(),
-                Mockito.any(TaskDate.class), Mockito.anyString());
+                Mockito.any(FilterByDate.class), Mockito.anyString());
     }
 
     @Test
     @WithUserDetails(ADMIN)
     public void getTasks_FilterByDate_ShouldReturnTodaysTasks() throws Exception {
-        int size = getJsonArraySize(API_TASKS, "_embedded.tasks", "date", TaskDate.TODAY.name());
+        int size = getJsonArraySize(API_TASKS, "_embedded.tasks", "date", FilterByDate.TODAY.name());
         assertTrue(size > 0);
 
-        ResultActions actions = mvc.perform(get(API_TASKS).param("date", TaskDate.TODAY.name())).andDo(print());
+        ResultActions actions = mvc.perform(get(API_TASKS).param("date", FilterByDate.TODAY.name())).andDo(print());
 
         String today = LocalDate.now().toString();
         for (int i = 0; i < size; i++) {
@@ -213,7 +213,7 @@ public class TodoTaskControllerTest extends AbstractControllerTestClass {
 
         mvc.perform(patch(API_TASKS + TASK_ID)
                 .contentType(MediaType.APPLICATION_JSON)
-                .param("completed", TaskStatus.TRUE.name()))
+                .param("completed", FilterByBoolean.TRUE.name()))
                 .andExpect(status().isOk());
 
         mvc.perform(get(API_TASKS + TASK_ID))
@@ -233,7 +233,7 @@ public class TodoTaskControllerTest extends AbstractControllerTestClass {
 
         mvc.perform(patch(API_TASKS + TASK_ID)
                 .contentType(MediaType.APPLICATION_JSON)
-                .param("starred", TaskStatus.TRUE.name()))
+                .param("starred", FilterByBoolean.TRUE.name()))
                 .andExpect(status().isOk());
 
         mvc.perform(get(API_TASKS + TASK_ID))
@@ -262,8 +262,8 @@ public class TodoTaskControllerTest extends AbstractControllerTestClass {
         mvc.perform(patch(API_TASKS + TASK_ID)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(body)
-                .param("completed", TaskStatus.TRUE.name())
-                .param("starred", TaskStatus.TRUE.name()));
+                .param("completed", FilterByBoolean.TRUE.name())
+                .param("starred", FilterByBoolean.TRUE.name()));
 
         mvc.perform(get(API_TASKS + TASK_ID))
                 .andExpect(status().isOk())

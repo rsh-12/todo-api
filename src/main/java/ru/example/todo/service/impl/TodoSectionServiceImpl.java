@@ -12,7 +12,7 @@ import ru.example.todo.dto.TodoSectionDto;
 import ru.example.todo.entity.TodoSection;
 import ru.example.todo.entity.TodoTask;
 import ru.example.todo.entity.User;
-import ru.example.todo.enums.SetTasks;
+import ru.example.todo.enums.filters.FilterByOperation;
 import ru.example.todo.exception.CustomException;
 import ru.example.todo.repository.TodoSectionRepository;
 import ru.example.todo.service.TodoSectionService;
@@ -91,7 +91,7 @@ public class TodoSectionServiceImpl extends AbstractServiceClass implements Todo
 
     // add to or remove from the task section
     @Override
-    public void addTasksToOrRemoveFromSection(Long userId, Long sectionId, List<TodoTask> tasks, SetTasks flag) {
+    public void addTasksToOrRemoveFromSection(Long userId, Long sectionId, List<TodoTask> tasks, FilterByOperation flag) {
         log.info("Get the section by id: {}", sectionId);
         TodoSection section = todoSectionRepository.findByUserIdAndId(userId, sectionId)
                 .orElseThrow(() -> new CustomException("Not Found", "Section not found: " + sectionId, HttpStatus.NOT_FOUND));

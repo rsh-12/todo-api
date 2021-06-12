@@ -15,8 +15,8 @@ import org.springframework.stereotype.Service;
 import ru.example.todo.dto.TodoTaskDto;
 import ru.example.todo.entity.TodoTask;
 import ru.example.todo.entity.User;
-import ru.example.todo.enums.TaskDate;
-import ru.example.todo.enums.TaskStatus;
+import ru.example.todo.enums.filters.FilterByDate;
+import ru.example.todo.enums.filters.FilterByBoolean;
 import ru.example.todo.exception.CustomException;
 import ru.example.todo.repository.TodoTaskRepository;
 import ru.example.todo.service.TodoTaskService;
@@ -40,15 +40,15 @@ public class TodoTaskServiceImpl extends AbstractServiceClass implements TodoTas
 
     // get all tasks
     @Override
-    public List<TodoTask> findTasks(User user, Integer pageNo, Integer pageSize, TaskDate date, String sort) {
+    public List<TodoTask> findTasks(User user, Integer pageNo, Integer pageSize, FilterByDate date, String sort) {
 
         pageSize = pageSize > 100 ? 100 : pageSize; // set max page size
         Pageable page = PageRequest.of(pageNo, pageSize, Sort.by(getSortDirection(sort), getSortAsString(sort)));
 
-        if (date.equals(TaskDate.TODAY)) {
+        if (date.equals(FilterByDate.TODAY)) {
             log.info("Get today's tasks");
             return todoTaskRepository.findAllByCompletionDateEqualsAndUserId(LocalDate.now(), page, user.getId());
-        } else if (date.equals(TaskDate.OVERDUE)) {
+        } else if (date.equals(FilterByDate.OVERDUE)) {
             log.info("Get overdue tasks");
             return todoTaskRepository.findAllByCompletionDateBeforeAndUserId(LocalDate.now(), page, user.getId());
         }
@@ -99,7 +99,7 @@ public class TodoTaskServiceImpl extends AbstractServiceClass implements TodoTas
     // update task by id
     @Override
     public void updateTask(User user, Long taskId, TodoTaskDto taskDto,
-                           TaskStatus completed, TaskStatus starred) {
+                           FilterByBoolean completed, FilterByBoolean starred) {
 
         // get task from DB
         log.info("Get the task from DB: id={}", taskId);

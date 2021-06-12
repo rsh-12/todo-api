@@ -18,8 +18,8 @@ import org.springframework.web.bind.annotation.*;
 import ru.example.todo.controller.assembler.TodoTaskModelAssembler;
 import ru.example.todo.dto.TodoTaskDto;
 import ru.example.todo.entity.TodoTask;
-import ru.example.todo.enums.TaskDate;
-import ru.example.todo.enums.TaskStatus;
+import ru.example.todo.enums.filters.FilterByDate;
+import ru.example.todo.enums.filters.FilterByBoolean;
 import ru.example.todo.security.UserDetailsImpl;
 import ru.example.todo.service.TodoTaskService;
 
@@ -54,7 +54,7 @@ public class TodoTaskController {
             @AuthenticationPrincipal UserDetailsImpl uds,
             @RequestParam(value = "page", required = false, defaultValue = "0") Integer pageNo,
             @RequestParam(value = "size", required = false, defaultValue = "20") Integer pageSize,
-            @RequestParam(value = "date", required = false, defaultValue = "ALL") TaskDate date,
+            @RequestParam(value = "date", required = false, defaultValue = "ALL") FilterByDate date,
             @RequestParam(value = "sort", required = false, defaultValue = "createdAt") String sort) {
 
         List<EntityModel<TodoTask>> todos = todoTaskService
@@ -105,8 +105,8 @@ public class TodoTaskController {
             @AuthenticationPrincipal UserDetailsImpl uds,
             @PathVariable("id") Long taskId,
             @Valid @RequestBody(required = false) TodoTaskDto taskDto,
-            @RequestParam(value = "completed", required = false) TaskStatus completed,
-            @RequestParam(value = "starred", required = false) TaskStatus starred) {
+            @RequestParam(value = "completed", required = false) FilterByBoolean completed,
+            @RequestParam(value = "starred", required = false) FilterByBoolean starred) {
 
         todoTaskService.updateTask(uds.getUser(), taskId, taskDto, completed, starred);
         return new ResponseEntity<>(HttpStatus.OK);

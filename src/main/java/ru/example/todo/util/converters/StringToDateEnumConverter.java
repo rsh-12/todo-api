@@ -5,12 +5,12 @@ package ru.example.todo.util.converters;
  * */
 
 import org.springframework.core.convert.converter.Converter;
-import ru.example.todo.enums.TaskDate;
+import ru.example.todo.enums.filters.FilterByDate;
 
-public class StringToDateEnumConverter implements Converter<String, TaskDate> {
+public class StringToDateEnumConverter implements Converter<String, FilterByDate> {
 
     @Override
-    public TaskDate convert(String string) {
-        return TaskDate.valueOf(string.toUpperCase());
+    public FilterByDate convert(String string) {
+        return FilterByDate.valueOf(string.toUpperCase());
     }
 }

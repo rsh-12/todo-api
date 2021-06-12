@@ -4,10 +4,9 @@ import ru.example.todo.dto.TodoSectionDto;
 import ru.example.todo.entity.TodoSection;
 import ru.example.todo.entity.TodoTask;
 import ru.example.todo.entity.User;
-import ru.example.todo.enums.SetTasks;
+import ru.example.todo.enums.filters.FilterByOperation;
 
 import java.util.List;
-import java.util.Set;
 
 public interface TodoSectionService {
 
@@ -21,5 +20,5 @@ public interface TodoSectionService {
 
     void updateSection(User user, Long sectionId, TodoSectionDto sectionDto);
 
-    void addTasksToOrRemoveFromSection(Long userId, Long sectionId, List<TodoTask> tasks, SetTasks flag);
+    void addTasksToOrRemoveFromSection(Long userId, Long sectionId, List<TodoTask> tasks, FilterByOperation flag);
 }
