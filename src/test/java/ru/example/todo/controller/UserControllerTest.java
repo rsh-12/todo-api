@@ -102,4 +102,23 @@ public class UserControllerTest extends AbstractControllerTestClass {
         verify(userService, times(1)).updatePassword(Mockito.any(User.class), Mockito.anyString());
     }
 
+    @Test
+    @WithUserDetails(ADMIN)
+    public void updatePassword_ServiceException_ShouldReturnBadRequest() throws Exception {
+        doThrow(new CustomException("Bad Request", "Invalid data", HttpStatus.BAD_REQUEST))
+                .when(userService).updatePassword(Mockito.any(User.class), Mockito.anyString());
+
+        JSONObject body = new JSONObject();
+        body.put("password", "somePassword");
+
+        mvc.perform(post(API_USERS + "password/update")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(convertToJson(body.toString())))
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("error", containsStringIgnoringCase("bad request")));
+
+        verify(userService, times(1)).updatePassword(Mockito.any(User.class), Mockito.anyString());
+    }
+
 }
