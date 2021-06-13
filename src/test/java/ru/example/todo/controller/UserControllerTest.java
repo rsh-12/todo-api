@@ -84,4 +84,5 @@ public class UserControllerTest extends AbstractControllerTestClass {
         verify(userService, times(1)).deleteUserById(Mockito.anyLong());
     }
 
+
 }
