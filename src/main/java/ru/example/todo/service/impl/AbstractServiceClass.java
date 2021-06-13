@@ -6,19 +6,14 @@ package ru.example.todo.service.impl;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.configurationprocessor.json.JSONException;
-import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.data.domain.Sort;
-import ru.example.todo.config.properties.TokenProperties;
 import ru.example.todo.dto.TodoTaskDto;
 import ru.example.todo.entity.TodoSection;
 import ru.example.todo.entity.TodoTask;
 import ru.example.todo.entity.User;
 import ru.example.todo.enums.Role;
-import ru.example.todo.enums.filters.FilterByOperation;
 import ru.example.todo.enums.filters.FilterByBoolean;
-import ru.example.todo.exception.CustomException;
-import ru.example.todo.service.JwtTokenService;
+import ru.example.todo.enums.filters.FilterByOperation;
 
 import java.util.List;
 import java.util.Optional;
@@ -39,24 +34,6 @@ public class AbstractServiceClass {
     String getSortAsString(String sort) {
         if (sort.contains(",")) return sort.split(",")[0];
         return sort;
-    }
-
-    String buildResponseBody(User user, JwtTokenService jwtTokenService, TokenProperties tokenProperties) {
-
-        String accessToken = jwtTokenService.buildAccessToken(user.getUsername(), user.getRoles());
-        String refreshToken = jwtTokenService.buildRefreshToken(user.getUsername()).getToken();
-
-        JSONObject response = new JSONObject();
-        try {
-            response.put("access_token", accessToken);
-            response.put("refresh_token", refreshToken);
-            response.put("token_type", "Bearer");
-            response.put("access_token_expires", tokenProperties.getAccessTokenValidity());
-            response.put("refresh_token_expires", tokenProperties.getRefreshTokenValidity());
-        } catch (JSONException e) {
-            throw new CustomException("Error during building response");
-        }
-        return response.toString();
     }
 
     void addOrRemoveTasks(FilterByOperation flag, TodoSection section, List<TodoTask> tasksByIds) {
