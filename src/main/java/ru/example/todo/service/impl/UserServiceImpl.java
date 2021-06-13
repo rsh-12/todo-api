@@ -4,6 +4,8 @@ package ru.example.todo.service.impl;
  * Time: 4:39 PM
  * */
 
+import org.springframework.boot.configurationprocessor.json.JSONException;
+import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -48,7 +50,7 @@ public class UserServiceImpl extends AbstractServiceClass implements UserService
 
             User user = ((UserDetailsImpl) auth.getPrincipal()).getUser();
 
-            return buildResponseBody(user, jwtTokenService, tokenProperties);
+            return buildResponseBody(user);
         } catch (AuthenticationException ex) {
             throw new CustomException("Not Found", "Username Not Found / Incorrect Password", HttpStatus.NOT_FOUND);
         }
@@ -78,7 +80,7 @@ public class UserServiceImpl extends AbstractServiceClass implements UserService
         User user = userRepository.findByUsername(oldRefreshToken.getUsername())
                 .orElseThrow(() -> new CustomException("Not Found", "Refresh token owner not found", HttpStatus.BAD_REQUEST));
 
-        return buildResponseBody(user, jwtTokenService, tokenProperties);
+        return buildResponseBody(user);
     }
 
     @Override
@@ -123,6 +125,23 @@ public class UserServiceImpl extends AbstractServiceClass implements UserService
     @Override
     public boolean existsByUsername(String email) {
         return userRepository.existsByUsername(email);
+    }
+
+    String buildResponseBody(User user) {
+        String accessToken = jwtTokenService.buildAccessToken(user.getUsername(), user.getRoles());
+        String refreshToken = jwtTokenService.buildRefreshToken(user.getUsername()).getToken();
+
+        JSONObject response = new JSONObject();
+        try {
+            response.put("access_token", accessToken);
+            response.put("refresh_token", refreshToken);
+            response.put("token_type", "Bearer");
+            response.put("access_token_expires", tokenProperties.getAccessTokenValidity());
+            response.put("refresh_token_expires", tokenProperties.getRefreshTokenValidity());
+        } catch (JSONException e) {
+            throw new CustomException("Error during building response");
+        }
+        return response.toString();
     }
 
 }
