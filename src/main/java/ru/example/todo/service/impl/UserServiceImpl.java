@@ -57,7 +57,6 @@ public class UserServiceImpl extends AbstractServiceClass implements UserService
 
     @Override
     public String register(User user) {
-
         if (userRepository.existsByUsername(user.getUsername())) {
             throw new CustomException("Bad Request", "Username already in use", HttpStatus.BAD_REQUEST);
         }
@@ -104,7 +103,6 @@ public class UserServiceImpl extends AbstractServiceClass implements UserService
 
     @Override
     public void updatePassword(User user, String password) {
-
         if (password == null || password.isBlank() || password.length() < 8) {
             throw new CustomException("Bad Request", "Invalid data", HttpStatus.BAD_REQUEST);
         }
@@ -115,7 +113,6 @@ public class UserServiceImpl extends AbstractServiceClass implements UserService
 
     @Override
     public void updatePassword(String email, String password) {
-
         User user = userRepository.findByUsername(email)
                 .orElseThrow(() -> new CustomException("Not Found", "Username Not Found", HttpStatus.BAD_REQUEST));
 
