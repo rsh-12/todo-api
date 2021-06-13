@@ -70,4 +70,18 @@ public class UserControllerTest extends AbstractControllerTestClass {
         verify(userService, times(1)).deleteUserById(Mockito.anyLong());
     }
 
+    @Test
+    @WithUserDetails(ADMIN)
+    public void deleteUser_ShouldReturnNotFound() throws Exception {
+        doThrow(new CustomException("Not Found", "User Not Found", HttpStatus.NOT_FOUND))
+                .when(userService).deleteUserById(Mockito.anyLong());
+
+        mvc.perform(delete(API_USERS + 1))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("error", containsStringIgnoringCase("not found")))
+                .andDo(print());
+
+        verify(userService, times(1)).deleteUserById(Mockito.anyLong());
+    }
+
 }
