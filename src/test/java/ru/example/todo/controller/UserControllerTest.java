@@ -7,10 +7,13 @@ package ru.example.todo.controller;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.test.context.support.WithUserDetails;
 import ru.example.todo.entity.User;
+import ru.example.todo.exception.CustomException;
 import ru.example.todo.service.UserService;
 
+import static org.hamcrest.Matchers.containsStringIgnoringCase;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
@@ -35,6 +38,20 @@ public class UserControllerTest extends AbstractControllerTestClass {
         mvc.perform(get(API_USERS + 1))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("username", is("user")))
+                .andDo(print());
+
+        verify(userService, times(1)).findUserById(Mockito.anyLong());
+    }
+
+    @Test
+    @WithUserDetails(ADMIN)
+    public void getUser_ShouldReturnNotFound() throws Exception {
+        given(userService.findUserById(Mockito.anyLong()))
+                .willThrow(new CustomException("Not Found", "User Not Found", HttpStatus.NOT_FOUND));
+
+        mvc.perform(get(API_USERS + 1))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("error", containsStringIgnoringCase("not found")))
                 .andDo(print());
 
         verify(userService, times(1)).findUserById(Mockito.anyLong());
