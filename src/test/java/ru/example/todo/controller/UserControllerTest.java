@@ -58,6 +58,16 @@ public class UserControllerTest extends AbstractControllerTestClass {
         verify(userService, times(1)).findUserById(Mockito.anyLong());
     }
 
+    @Test
+    @WithUserDetails(USER)
+    public void getUser_ShouldReturnForbidden() throws Exception {
+        mvc.perform(get(API_USERS + 1))
+                .andExpect(status().isForbidden())
+                .andDo(print());
+
+        verify(userService, times(0)).findUserById(Mockito.anyLong());
+    }
+
 
     @Test
     @WithUserDetails(ADMIN)
