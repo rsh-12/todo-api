@@ -68,7 +68,6 @@ public class UserControllerTest extends AbstractControllerTestClass {
         verify(userService, times(0)).findUserById(Mockito.anyLong());
     }
 
-
     @Test
     @WithUserDetails(ADMIN)
     public void deleteUser_ShouldReturnNoContent() throws Exception {
@@ -93,6 +92,16 @@ public class UserControllerTest extends AbstractControllerTestClass {
                 .andDo(print());
 
         verify(userService, times(1)).deleteUserById(Mockito.anyLong());
+    }
+
+    @Test
+    @WithUserDetails(USER)
+    public void deleteUser_ShouldReturnForbiddeb() throws Exception {
+        mvc.perform(delete(API_USERS + 1))
+                .andExpect(status().isForbidden())
+                .andDo(print());
+
+        verify(userService, times(0)).deleteUserById(Mockito.anyLong());
     }
 
     @Test
