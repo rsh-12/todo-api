@@ -4,10 +4,12 @@ package ru.example.todo.controller;
  * Time: 2:10 PM
  * */
 
+import org.json.JSONObject;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithUserDetails;
 import ru.example.todo.entity.User;
 import ru.example.todo.exception.CustomException;
@@ -17,8 +19,7 @@ import static org.hamcrest.Matchers.containsStringIgnoringCase;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -84,5 +85,21 @@ public class UserControllerTest extends AbstractControllerTestClass {
         verify(userService, times(1)).deleteUserById(Mockito.anyLong());
     }
 
+    @Test
+    @WithUserDetails(ADMIN)
+    public void updatePassword_ShouldReturnOk() throws Exception {
+        doNothing().when(userService).updatePassword(Mockito.any(User.class), Mockito.anyString());
+
+        JSONObject body = new JSONObject();
+        body.put("password", "somePassword");
+
+        mvc.perform(post(API_USERS + "password/update")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(convertToJson(body.toString())))
+                .andDo(print())
+                .andExpect(status().isOk());
+
+        verify(userService, times(1)).updatePassword(Mockito.any(User.class), Mockito.anyString());
+    }
 
 }
