@@ -99,7 +99,7 @@ public class UserServiceImpl extends AbstractServiceClass implements UserService
     @Override
     public User findUserById(Long userId) {
         return userRepository.findById(userId)
-                .orElseThrow(() -> new CustomException("Not Found", "User Not Found", HttpStatus.BAD_REQUEST));
+                .orElseThrow(() -> new CustomException("Not Found", "User Not Found", HttpStatus.NOT_FOUND));
     }
 
     @Override
