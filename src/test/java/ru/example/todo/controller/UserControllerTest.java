@@ -121,4 +121,15 @@ public class UserControllerTest extends AbstractControllerTestClass {
         verify(userService, times(1)).updatePassword(Mockito.any(User.class), Mockito.anyString());
     }
 
+    @Test
+    @WithUserDetails(ADMIN)
+    public void updatePassword_NoBody_ShouldReturnBadRequest() throws Exception {
+        mvc.perform(post(API_USERS + "password/update")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+
+        verify(userService, times(0)).updatePassword(Mockito.any(User.class), Mockito.anyString());
+    }
+
 }
