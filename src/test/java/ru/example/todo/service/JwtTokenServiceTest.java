@@ -29,7 +29,7 @@ public class JwtTokenServiceTest extends AbstractServiceTestClass {
     JwtTokenService jwtTokenService;
 
     @Test
-    public void validateToken_ShouldThrowException() throws CustomException {
+    public void isAccessTokenValid_ShouldThrowException() throws CustomException {
         assertThrows(CustomException.class, () -> jwtTokenService.isAccessTokenValid("invalid"));
     }
 
@@ -62,7 +62,7 @@ public class JwtTokenServiceTest extends AbstractServiceTestClass {
     }
 
     @Test
-    public void validateToken_ShouldReturnTrue() {
+    public void isAccessTokenValid_ShouldReturnTrue() {
         String accessToken = getAccessToken("admin", null);
         assertNotNull(accessToken);
 
