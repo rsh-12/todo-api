@@ -16,7 +16,7 @@ public class EmailRequestTest {
     private final String EMAIL = "user@mail.com";
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         emailRequest = new EmailRequest();
         emailRequest.setEmail(EMAIL);
     }
@@ -34,7 +34,7 @@ public class EmailRequestTest {
 
     @Test
     public void toString_ShouldCheckOverridedMethod() {
-        assertEquals(emailRequest.toString(), "Email{email='"+emailRequest.getEmail()+"'}");
+        assertEquals(emailRequest.toString(), "Email{email='" + emailRequest.getEmail() + "'}");
     }
 
 }
