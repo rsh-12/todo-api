@@ -50,7 +50,6 @@ public class JwtTokenServiceImpl implements JwtTokenService {
 
     @Override
     public String buildAccessToken(String username, Set<Role> roles) {
-
         Claims claims = Jwts.claims();
         claims.put("username", username);
 
@@ -142,7 +141,6 @@ public class JwtTokenServiceImpl implements JwtTokenService {
     }
 
     private String getUsername(String accessToken) {
-
         Claims claims = Jwts.parserBuilder()
                 .setSigningKey(getSecretKey())
                 .build()
