@@ -6,12 +6,14 @@ package ru.example.todo.service;
 
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import ru.example.todo.domain.RefreshToken;
 import ru.example.todo.enums.Role;
 import ru.example.todo.exception.CustomException;
+import ru.example.todo.security.UserDetailsServiceImpl;
 import ru.example.todo.service.impl.JwtTokenServiceImpl;
 
 import java.util.Collections;
@@ -19,10 +21,17 @@ import java.util.Set;
 
 import static org.junit.Assert.*;
 
+// todo: mock TokenProperties
 public class JwtTokenServiceTest extends AbstractServiceTestClass {
 
     @Autowired
     private JwtTokenServiceImpl jwtTokenService;
+
+    @MockBean
+    private UserDetailsServiceImpl userDetailsService;
+
+    @MockBean
+    private TokenStore tokenStore;
 
     @Test
     public void isAccessTokenValid_ShouldThrowException() throws CustomException {
