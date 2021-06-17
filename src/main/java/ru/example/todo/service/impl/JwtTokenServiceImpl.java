@@ -146,7 +146,7 @@ public class JwtTokenServiceImpl implements JwtTokenService {
     public Authentication getAuthentication(String accessToken) {
         Claims claims = getClaimsBody(accessToken);
 
-        Long id = (Long) claims.get("id");
+        Long id = Long.parseLong(String.valueOf(claims.get("id")));
         String username = String.valueOf(claims.get("username"));
         Set<Role> roles = extractRoles(claims);
 
