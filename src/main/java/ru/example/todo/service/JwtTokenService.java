@@ -19,7 +19,7 @@ public interface JwtTokenService {
      * @param roles    the roles for building access token.
      * @return the access JWT
      */
-    String buildAccessToken(String username, Set<Role> roles);
+    String buildAccessToken(Long userId, String username, Set<Role> roles);
 
     /**
      * Builds a refresh JWT.
@@ -28,14 +28,6 @@ public interface JwtTokenService {
      * @return the refresh JWT.
      */
     RefreshToken buildRefreshToken(String username);
-
-    /**
-     * Accepts an access token and authenticates the user/
-     *
-     * @param accessToken the access token.
-     * @return the authentication instance
-     */
-    Authentication authenticateAndReturnInstance(String accessToken);
 
     /**
      * Gets the access token from header param "Authorization".
@@ -75,4 +67,10 @@ public interface JwtTokenService {
      * @return the boolean: <и>true</и> if the token has not expired, <b>false</b> otherwise.
      */
     boolean hasRefreshTokenExpired(RefreshToken refreshToken);
+
+    String getUsername(String accessToken);
+
+    Set<Role> getUserRoles(String accessToken);
+
+    Authentication getAuthentication(String accessToken);
 }
