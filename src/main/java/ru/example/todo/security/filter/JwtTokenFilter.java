@@ -29,12 +29,11 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest httpServletRequest,
                                     HttpServletResponse httpServletResponse,
                                     FilterChain filterChain) throws ServletException, IOException {
-
         String accessToken = jwtTokenService.resolveAccessToken(httpServletRequest);
 
         try {
             if (accessToken != null && jwtTokenService.isAccessTokenValid(accessToken)) {
-                Authentication auth = jwtTokenService.authenticateAndReturnInstance(accessToken);
+                Authentication auth = jwtTokenService.getAuthentication(accessToken);
                 SecurityContextHolder.getContext().setAuthentication(auth);
             }
         } catch (CustomException ex) {
