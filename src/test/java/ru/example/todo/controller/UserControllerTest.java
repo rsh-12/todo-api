@@ -6,7 +6,6 @@ package ru.example.todo.controller;
 
 import org.json.JSONObject;
 import org.junit.Test;
-import org.mockito.Mockito;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -33,7 +32,7 @@ public class UserControllerTest extends AbstractControllerTestClass {
     @Test
     @WithUserDetails(ADMIN)
     public void getUser_ShouldReturnUser() throws Exception {
-        given(userService.findUserById(Mockito.anyLong()))
+        given(userService.findUserById(anyLong()))
                 .willReturn(new User("user", "password"));
 
         mvc.perform(get(API_USERS + 1))
@@ -41,13 +40,13 @@ public class UserControllerTest extends AbstractControllerTestClass {
                 .andExpect(jsonPath("username", is("user")))
                 .andDo(print());
 
-        verify(userService, times(1)).findUserById(Mockito.anyLong());
+        verify(userService, times(1)).findUserById(anyLong());
     }
 
     @Test
     @WithUserDetails(ADMIN)
     public void getUser_ShouldReturnNotFound() throws Exception {
-        given(userService.findUserById(Mockito.anyLong()))
+        given(userService.findUserById(anyLong()))
                 .willThrow(new CustomException("Not Found", "User Not Found", HttpStatus.NOT_FOUND));
 
         mvc.perform(get(API_USERS + 1))
@@ -55,7 +54,7 @@ public class UserControllerTest extends AbstractControllerTestClass {
                 .andExpect(jsonPath("error", containsStringIgnoringCase("not found")))
                 .andDo(print());
 
-        verify(userService, times(1)).findUserById(Mockito.anyLong());
+        verify(userService, times(1)).findUserById(anyLong());
     }
 
     @Test
@@ -65,33 +64,33 @@ public class UserControllerTest extends AbstractControllerTestClass {
                 .andExpect(status().isForbidden())
                 .andDo(print());
 
-        verify(userService, times(0)).findUserById(Mockito.anyLong());
+        verify(userService, times(0)).findUserById(anyLong());
     }
 
     @Test
     @WithUserDetails(ADMIN)
     public void deleteUser_ShouldReturnNoContent() throws Exception {
-        doNothing().when(userService).deleteUserById(Mockito.anyLong());
+        doNothing().when(userService).deleteUserById(anyLong());
 
         mvc.perform(delete(API_USERS + 1))
                 .andExpect(status().isNoContent())
                 .andDo(print());
 
-        verify(userService, times(1)).deleteUserById(Mockito.anyLong());
+        verify(userService, times(1)).deleteUserById(anyLong());
     }
 
     @Test
     @WithUserDetails(ADMIN)
     public void deleteUser_ShouldReturnNotFound() throws Exception {
         doThrow(new CustomException("Not Found", "User Not Found", HttpStatus.NOT_FOUND))
-                .when(userService).deleteUserById(Mockito.anyLong());
+                .when(userService).deleteUserById(anyLong());
 
         mvc.perform(delete(API_USERS + 1))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("error", containsStringIgnoringCase("not found")))
                 .andDo(print());
 
-        verify(userService, times(1)).deleteUserById(Mockito.anyLong());
+        verify(userService, times(1)).deleteUserById(anyLong());
     }
 
     @Test
@@ -101,13 +100,13 @@ public class UserControllerTest extends AbstractControllerTestClass {
                 .andExpect(status().isForbidden())
                 .andDo(print());
 
-        verify(userService, times(0)).deleteUserById(Mockito.anyLong());
+        verify(userService, times(0)).deleteUserById(anyLong());
     }
 
     @Test
     @WithUserDetails(ADMIN)
     public void updatePassword_ShouldReturnOk() throws Exception {
-        doNothing().when(userService).updatePassword(Mockito.any(User.class), Mockito.anyString());
+        doNothing().when(userService).updatePassword(any(User.class), anyString());
 
         JSONObject body = new JSONObject();
         body.put("password", "somePassword");
@@ -118,14 +117,14 @@ public class UserControllerTest extends AbstractControllerTestClass {
                 .andDo(print())
                 .andExpect(status().isOk());
 
-        verify(userService, times(1)).updatePassword(Mockito.any(User.class), Mockito.anyString());
+        verify(userService, times(1)).updatePassword(any(User.class), anyString());
     }
 
     @Test
     @WithUserDetails(ADMIN)
     public void updatePassword_ServiceException_ShouldReturnBadRequest() throws Exception {
         doThrow(new CustomException("Bad Request", "Invalid data", HttpStatus.BAD_REQUEST))
-                .when(userService).updatePassword(Mockito.any(User.class), Mockito.anyString());
+                .when(userService).updatePassword(any(User.class), anyString());
 
         JSONObject body = new JSONObject();
         body.put("password", "somePassword");
@@ -137,7 +136,7 @@ public class UserControllerTest extends AbstractControllerTestClass {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("error", containsStringIgnoringCase("bad request")));
 
-        verify(userService, times(1)).updatePassword(Mockito.any(User.class), Mockito.anyString());
+        verify(userService, times(1)).updatePassword(any(User.class), anyString());
     }
 
     @Test
@@ -148,7 +147,7 @@ public class UserControllerTest extends AbstractControllerTestClass {
                 .andDo(print())
                 .andExpect(status().isBadRequest());
 
-        verify(userService, times(0)).updatePassword(Mockito.any(User.class), Mockito.anyString());
+        verify(userService, times(0)).updatePassword(any(User.class), anyString());
     }
 
 }
