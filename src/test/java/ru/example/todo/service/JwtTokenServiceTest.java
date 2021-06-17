@@ -43,24 +43,28 @@ public class JwtTokenServiceTest extends AbstractServiceTestClass {
         String accessToken = jwtTokenService.buildAccessToken("username", Set.of(Role.USER));
         assertNotNull(accessToken);
         assertEquals(3, accessToken.split("\\.").length);
+        System.out.println("accessToken = " + accessToken);
     }
 
-    @Test
-    public void isAccessTokenValid_ShouldThrowException() throws CustomException {
-        assertThrows(CustomException.class, () -> jwtTokenService.isAccessTokenValid("invalid"));
-    }
-
-
+    // buildRefreshToken
     @Test
     public void buildRefreshToken_ShouldReturnRefreshToken() {
-        RefreshToken refreshToken = getRefreshToken("admin");
+        final String username = "username";
+        RefreshToken refreshToken = jwtTokenService.buildRefreshToken(username);
 
+        assertNotNull(refreshToken);
         assertNotNull(refreshToken.getToken());
         assertNotNull(refreshToken.getExpiryTime());
         assertNotNull(refreshToken.getUsername());
 
-        assertEquals("admin", refreshToken.getUsername());
+        assertEquals(username, refreshToken.getUsername());
         System.out.println("refreshToken = " + refreshToken);
+    }
+
+
+    @Test
+    public void isAccessTokenValid_ShouldThrowException() throws CustomException {
+        assertThrows(CustomException.class, () -> jwtTokenService.isAccessTokenValid("invalid"));
     }
 
     @Test
