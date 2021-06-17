@@ -59,7 +59,7 @@ public class AuthControllerTest extends AbstractControllerTestClass {
     public void login_ShouldReturnTokens() throws Exception {
         UserDto admin = new UserDto(ADMIN, "admin");
 
-        given(userService.login(Mockito.any(UserDto.class)))
+        given(userService.login(Mockito.any(User.class)))
                 .willReturn("access_token");
 
         String response = mvc.perform(post(API_AUTH + "login")
@@ -80,7 +80,7 @@ public class AuthControllerTest extends AbstractControllerTestClass {
     public void login_NotFound_ShouldThrowCustomException() throws Exception {
         UserDto user = new UserDto("usernameNotExists@mail.com", "somePassword");
 
-        given(userService.login(Mockito.any(UserDto.class)))
+        given(userService.login(Mockito.any(User.class)))
                 .willThrow(new CustomException("Not Found",
                         "Username Not Found / Incorrect Password", HttpStatus.NOT_FOUND));
 
@@ -91,14 +91,14 @@ public class AuthControllerTest extends AbstractControllerTestClass {
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("message", containsStringIgnoringCase("Username not found / incorrect password")));
 
-        verify(userService, times(1)).login(Mockito.any(UserDto.class));
+        verify(userService, times(1)).login(Mockito.any(User.class));
     }
 
     @Test
     public void login_WrongPassword_ShouldThrowCustomException() throws Exception {
         UserDto user = new UserDto(USER, "wrongPassword");
 
-        given(userService.login(Mockito.any(UserDto.class)))
+        given(userService.login(Mockito.any(User.class)))
                 .willThrow(new CustomException("Not Found",
                         "Username Not Found / Incorrect Password", HttpStatus.NOT_FOUND));
 
@@ -110,7 +110,7 @@ public class AuthControllerTest extends AbstractControllerTestClass {
                 .andExpect(jsonPath("message",
                         containsStringIgnoringCase("Username not found / incorrect password")));
 
-        verify(userService, times(1)).login(Mockito.any(UserDto.class));
+        verify(userService, times(1)).login(Mockito.any(User.class));
     }
 
     // Register: success
