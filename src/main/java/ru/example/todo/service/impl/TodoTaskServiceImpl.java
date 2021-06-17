@@ -12,11 +12,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import ru.example.todo.domain.CustomPrincipal;
 import ru.example.todo.dto.TodoTaskDto;
 import ru.example.todo.entity.TodoTask;
 import ru.example.todo.entity.User;
-import ru.example.todo.enums.filters.FilterByDate;
 import ru.example.todo.enums.filters.FilterByBoolean;
+import ru.example.todo.enums.filters.FilterByDate;
 import ru.example.todo.exception.CustomException;
 import ru.example.todo.repository.TodoTaskRepository;
 import ru.example.todo.service.TodoTaskService;
@@ -40,37 +41,38 @@ public class TodoTaskServiceImpl extends AbstractServiceClass implements TodoTas
 
     // get all tasks
     @Override
-    public List<TodoTask> findTasks(User user, Integer pageNo, Integer pageSize, FilterByDate date, String sort) {
+    public List<TodoTask> findTasks(CustomPrincipal principal, Integer pageNo, Integer pageSize, FilterByDate date, String sort) {
         pageSize = pageSize > 100 ? 100 : pageSize; // set max page size
         Pageable page = PageRequest.of(pageNo, pageSize, Sort.by(getSortDirection(sort), getSortAsString(sort)));
 
         if (date.equals(FilterByDate.TODAY)) {
             log.info("Get today's tasks");
-            return todoTaskRepository.findAllByCompletionDateEqualsAndUserId(LocalDate.now(), page, user.getId());
+            return todoTaskRepository.findAllByCompletionDateEqualsAndUserId(LocalDate.now(), page, principal.getId());
         } else if (date.equals(FilterByDate.OVERDUE)) {
             log.info("Get overdue tasks");
-            return todoTaskRepository.findAllByCompletionDateBeforeAndUserId(LocalDate.now(), page, user.getId());
+            return todoTaskRepository.findAllByCompletionDateBeforeAndUserId(LocalDate.now(), page, principal.getId());
         }
 
         log.info("Get all tasks");
-        return todoTaskRepository.findAllByUserId(user.getId(), page).getContent();
+        return todoTaskRepository.findAllByUserId(principal.getId(), page).getContent();
     }
 
     // get task by id
     @Override
-    public TodoTask findTaskById(User user, Long taskId) {
+    public TodoTask findTaskById(CustomPrincipal principal, Long taskId) {
         log.info("Get the task by id: {}", taskId);
-        return todoTaskRepository.findByIdAndUserId(taskId, user.getId())
+        return todoTaskRepository.findByIdAndUserId(taskId, principal.getId())
                 .orElseThrow(() -> new CustomException("Not Found", "Task not found: " + taskId, HttpStatus.NOT_FOUND));
     }
 
     // delete task by id
     @Override
-    public void deleteTaskById(User user, Long taskId) {
+    public void deleteTaskById(CustomPrincipal principal, Long taskId) {
         TodoTask task = todoTaskRepository.findById(taskId)
                 .orElseThrow(() -> new CustomException("Not Found", "Task not found: " + taskId, HttpStatus.NOT_FOUND));
 
-        if (isUserValidOrHasRoleAdmin(user, task.getUser())) {
+        User taskUser = task.getUser();
+        if (taskUser != null && isUserValidOrHasRoleAdmin(principal, taskUser.getUsername())) {
             todoTaskRepository.deleteById(taskId);
         } else {
             throw new CustomException("Forbidden", "Not enough permissions", HttpStatus.FORBIDDEN);
@@ -96,11 +98,11 @@ public class TodoTaskServiceImpl extends AbstractServiceClass implements TodoTas
 
     // update task by id
     @Override
-    public void updateTask(User user, Long taskId, TodoTaskDto taskDto,
+    public void updateTask(CustomPrincipal principal, Long taskId, TodoTaskDto taskDto,
                            FilterByBoolean completed, FilterByBoolean starred) {
         // get task from DB
         log.info("Get the task from DB: id={}", taskId);
-        TodoTask task = todoTaskRepository.findByIdAndUserId(taskId, user.getId())
+        TodoTask task = todoTaskRepository.findByIdAndUserId(taskId, principal.getId())
                 .orElseThrow(() -> new CustomException("Not Found", "Task not found: " + taskId, HttpStatus.NOT_FOUND));
 
         // update task title or task completion date
