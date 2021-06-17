@@ -40,7 +40,7 @@ public class AuthController {
 
     @PostMapping(value = "/login", produces = "application/json")
     public ResponseEntity<String> login(@Valid @RequestBody UserDto userDto) {
-        String tokens = userService.login(modelMapper.map(userDto, User.class));
+        String tokens = userService.login(userDto);
         return ResponseEntity.ok(tokens);
     }
 
@@ -64,7 +64,7 @@ public class AuthController {
 
     @PostMapping(value = "/password/reset")
     public ResponseEntity<String> updatePassword(@RequestParam(value = "token") TokenRequest token,
-                                                @RequestBody JsonNode payload) {
+                                                 @RequestBody JsonNode payload) {
         JsonNode password = payload.get("password");
 
         if (password == null) {
