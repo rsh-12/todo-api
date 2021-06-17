@@ -3,18 +3,17 @@ package ru.example.todo.service;
 import ru.example.todo.dto.UserDto;
 import ru.example.todo.entity.User;
 import ru.example.todo.exception.CustomException;
-import ru.example.todo.messaging.requests.TokenRequest;
 
 public interface UserService {
 
     /**
      * Authenticates (not completed) the user and returns access and refresh tokens.
      *
-     * @param User contains username (email) and password.
+     * @param userDto contains username (email) and password.
      * @return access, refresh tokens, token type and expiration time in milliseconds.
      * @throws CustomException if the user by username not found in the database.
      */
-    String login(User User);
+    String login(UserDto userDto);
 
     String register(User user);
 
