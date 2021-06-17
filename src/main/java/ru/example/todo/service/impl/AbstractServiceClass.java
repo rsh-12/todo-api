@@ -7,10 +7,10 @@ package ru.example.todo.service.impl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Sort;
+import ru.example.todo.domain.CustomPrincipal;
 import ru.example.todo.dto.TodoTaskDto;
 import ru.example.todo.entity.TodoSection;
 import ru.example.todo.entity.TodoTask;
-import ru.example.todo.entity.User;
 import ru.example.todo.enums.Role;
 import ru.example.todo.enums.filters.FilterByBoolean;
 import ru.example.todo.enums.filters.FilterByOperation;
@@ -59,9 +59,9 @@ public class AbstractServiceClass {
                 .ifPresent(task::setTitle);
     }
 
-    <T> boolean isUserValidOrHasRoleAdmin(User user, T entity) {
-        return (entity != null && entity.equals(user)) ||
-                user.getRoles().contains(Role.ADMIN);
+    <T> boolean isUserValidOrHasRoleAdmin(final CustomPrincipal principal, final String username) {
+        return (username != null && username.equals(principal.getName())) ||
+                principal.getRoles().contains(Role.ADMIN);
     }
 
 }
