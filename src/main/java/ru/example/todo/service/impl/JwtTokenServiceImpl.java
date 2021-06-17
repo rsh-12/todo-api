@@ -14,13 +14,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import ru.example.todo.config.properties.TokenProperties;
+import ru.example.todo.domain.CustomPrincipal;
 import ru.example.todo.domain.RefreshToken;
 import ru.example.todo.enums.Role;
 import ru.example.todo.exception.CustomException;
-import ru.example.todo.security.UserDetailsServiceImpl;
 import ru.example.todo.service.JwtTokenService;
 import ru.example.todo.service.TokenStore;
 
@@ -28,6 +27,7 @@ import javax.annotation.PostConstruct;
 import javax.crypto.SecretKey;
 import javax.servlet.http.HttpServletRequest;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -37,20 +37,18 @@ import static java.time.Instant.now;
 @Service
 public class JwtTokenServiceImpl implements JwtTokenService {
 
-    private final UserDetailsServiceImpl userDetailsService;
     private final TokenProperties tokenProperties;
     private final TokenStore tokenStore;
 
-    public JwtTokenServiceImpl(TokenProperties tokenProperties,
-                               UserDetailsServiceImpl userDetailsService, TokenStore tokenStore) {
+    public JwtTokenServiceImpl(TokenProperties tokenProperties, TokenStore tokenStore) {
         this.tokenProperties = tokenProperties;
-        this.userDetailsService = userDetailsService;
         this.tokenStore = tokenStore;
     }
 
     @Override
-    public String buildAccessToken(String username, Set<Role> roles) {
+    public String buildAccessToken(Long userId, String username, Set<Role> roles) {
         Claims claims = Jwts.claims();
+        claims.put("id", userId);
         claims.put("username", username);
 
         if (roles != null) {
@@ -82,14 +80,6 @@ public class JwtTokenServiceImpl implements JwtTokenService {
     private static Date getValidity(long millis) {
         Date now = new Date();
         return new Date(now.getTime() + millis);
-    }
-
-
-    @Override
-    public Authentication authenticateAndReturnInstance(String token) {
-        String username = getUsername(token);
-        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-        return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
     }
 
     @Override
@@ -140,13 +130,46 @@ public class JwtTokenServiceImpl implements JwtTokenService {
         return now().isBefore(refreshToken.getExpiryTime().toInstant());
     }
 
-    private String getUsername(String accessToken) {
-        Claims claims = Jwts.parserBuilder()
+    @Override
+    public String getUsername(String accessToken) {
+        Claims claims = getClaimsBody(accessToken);
+        return String.valueOf(claims.get("username"));
+    }
+
+    @Override
+    public Set<Role> getUserRoles(String accessToken) {
+        Claims claims = getClaimsBody(accessToken);
+        return extractRoles(claims);
+    }
+
+    @Override
+    public Authentication getAuthentication(String accessToken) {
+        Claims claims = getClaimsBody(accessToken);
+
+        Long id = (Long) claims.get("id");
+        String username = String.valueOf(claims.get("username"));
+        Set<Role> roles = extractRoles(claims);
+
+        CustomPrincipal principal = new CustomPrincipal(id, username, roles);
+        return new UsernamePasswordAuthenticationToken(principal, "", principal.getRoles());
+    }
+
+    private Claims getClaimsBody(String accessToken) {
+        return Jwts.parserBuilder()
                 .setSigningKey(getSecretKey())
                 .build()
                 .parseClaimsJws(accessToken)
                 .getBody();
-
-        return String.valueOf(claims.get("username"));
     }
+
+    private Set<Role> extractRoles(Claims claims) {
+        String[] authorities = claims.get("auth").toString().split(",");
+        return Arrays.stream(authorities)
+                .map(authority -> authority
+                        .replaceAll("\\[\\{authority=", "")
+                        .replaceAll("}]", ""))
+                .map(Role::valueOf)
+                .collect(Collectors.toSet());
+    }
+
 }
