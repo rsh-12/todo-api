@@ -11,8 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import ru.example.todo.domain.CustomPrincipal;
 import ru.example.todo.entity.User;
-import ru.example.todo.security.UserDetailsImpl;
 import ru.example.todo.service.UserService;
 
 @Api(tags = "Users")
@@ -42,9 +42,10 @@ public class UserController {
 
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     @PostMapping(value = "/password/update", consumes = "application/json")
-    public ResponseEntity<String> changePassword(@AuthenticationPrincipal UserDetailsImpl udi,
+    public ResponseEntity<String> changePassword(@AuthenticationPrincipal CustomPrincipal principal,
                                                  @RequestBody String password) {
-        userService.updatePassword(udi.getUser(), password);
+        User user = userService.findUserByUsername(principal.getName());
+        userService.updatePassword(user, password);
         return ResponseEntity.ok().body("Password updated successfully");
     }
 
