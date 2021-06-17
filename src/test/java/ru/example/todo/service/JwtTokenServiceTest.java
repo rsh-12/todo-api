@@ -5,6 +5,7 @@ package ru.example.todo.service;
  * */
 
 import org.junit.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -18,8 +19,11 @@ import ru.example.todo.service.impl.JwtTokenServiceImpl;
 
 import java.util.Collections;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import static org.junit.Assert.*;
+import static org.mockito.ArgumentMatchers.anySet;
+import static org.mockito.ArgumentMatchers.anyString;
 
 // todo: mock TokenProperties
 public class JwtTokenServiceTest extends AbstractServiceTestClass {
@@ -33,19 +37,19 @@ public class JwtTokenServiceTest extends AbstractServiceTestClass {
     @MockBean
     private TokenStore tokenStore;
 
+    // buildAccessToken
+    @Test
+    public void buildAccessToken_ShouldReturnAccessToken() throws CustomException {
+        String accessToken = jwtTokenService.buildAccessToken("username", Set.of(Role.USER));
+        assertNotNull(accessToken);
+        assertEquals(3, accessToken.split("\\.").length);
+    }
+
     @Test
     public void isAccessTokenValid_ShouldThrowException() throws CustomException {
         assertThrows(CustomException.class, () -> jwtTokenService.isAccessTokenValid("invalid"));
     }
 
-    @Test
-    public void buildAccessToken_ShouldReturnAccessToken() throws CustomException {
-        String accessToken = getAccessToken("admin", Collections.singleton(Role.ADMIN));
-
-        int parts = accessToken.split("\\.").length;
-        assertEquals(3, parts);
-        System.out.println("accessToken = " + accessToken);
-    }
 
     @Test
     public void buildRefreshToken_ShouldReturnRefreshToken() {
