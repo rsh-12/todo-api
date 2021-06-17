@@ -16,12 +16,14 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import ru.example.todo.controller.assembler.TodoTaskModelAssembler;
+import ru.example.todo.domain.CustomPrincipal;
 import ru.example.todo.dto.TodoTaskDto;
 import ru.example.todo.entity.TodoTask;
-import ru.example.todo.enums.filters.FilterByDate;
+import ru.example.todo.entity.User;
 import ru.example.todo.enums.filters.FilterByBoolean;
-import ru.example.todo.security.UserDetailsImpl;
+import ru.example.todo.enums.filters.FilterByDate;
 import ru.example.todo.service.TodoTaskService;
+import ru.example.todo.service.UserService;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -36,12 +38,15 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
 public class TodoTaskController {
 
+    private final UserService userService;
     private final TodoTaskService todoTaskService;
     private final TodoTaskModelAssembler assembler;
     private final ModelMapper modelMapper;
 
     @Autowired
-    public TodoTaskController(TodoTaskService todoTaskService, TodoTaskModelAssembler assembler, ModelMapper modelMapper) {
+    public TodoTaskController(UserService userService, TodoTaskService todoTaskService,
+                              TodoTaskModelAssembler assembler, ModelMapper modelMapper) {
+        this.userService = userService;
         this.todoTaskService = todoTaskService;
         this.assembler = assembler;
         this.modelMapper = modelMapper;
@@ -52,48 +57,47 @@ public class TodoTaskController {
     @ApiOperation(value = "List tasks", notes = "List all tasks")
     @GetMapping(produces = "application/json")
     public CollectionModel<EntityModel<TodoTask>> getTasks(
-            @AuthenticationPrincipal UserDetailsImpl uds,
+            @AuthenticationPrincipal CustomPrincipal principal,
             @RequestParam(value = "page", required = false, defaultValue = "0") Integer pageNo,
             @RequestParam(value = "size", required = false, defaultValue = "20") Integer pageSize,
             @RequestParam(value = "date", required = false, defaultValue = "ALL") FilterByDate date,
             @RequestParam(value = "sort", required = false, defaultValue = "createdAt") String sort) {
 
         List<EntityModel<TodoTask>> todos = todoTaskService
-                .findTasks(uds.getUser(), pageNo, pageSize, date, sort)
+                .findTasks(principal, pageNo, pageSize, date, sort)
                 .stream()
                 .map(assembler::toModel)
                 .collect(Collectors.toList());
 
         return CollectionModel.of(todos,
-                linkTo(methodOn(TodoTaskController.class).getTasks(uds, pageNo, pageSize, date, sort)).withSelfRel());
+                linkTo(methodOn(TodoTaskController.class).getTasks(principal, pageNo, pageSize, date, sort)).withSelfRel());
     }
 
     // get task by id
     @ApiOperation(value = "Find task", notes = "Find the task by ID")
     @GetMapping(value = "/{id}", produces = "application/json")
     public EntityModel<TodoTask> getTask(
-            @AuthenticationPrincipal UserDetailsImpl uds,
+            @AuthenticationPrincipal CustomPrincipal principal,
             @PathVariable("id") Long taskId) {
-        return assembler.toModel(todoTaskService.findTaskById(uds.getUser(), taskId));
+        return assembler.toModel(todoTaskService.findTaskById(principal, taskId));
     }
 
     // delete task by id
     @ApiOperation(value = "Remove task", notes = "It permits to remove a task")
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteTask(
-            @AuthenticationPrincipal UserDetailsImpl uds,
-            @PathVariable("id") Long taskId) {
-        todoTaskService.deleteTaskById(uds.getUser(), taskId);
+    public ResponseEntity<String> deleteTask(@AuthenticationPrincipal CustomPrincipal principal,
+                                             @PathVariable("id") Long taskId) {
+        todoTaskService.deleteTaskById(principal, taskId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     // create new task
     @ApiOperation(value = "Create task", notes = "It permits to create a new task")
     @PostMapping(consumes = "application/json")
-    public ResponseEntity<String> createTask(
-            @AuthenticationPrincipal UserDetailsImpl uds,
-            @Valid @RequestBody TodoTaskDto taskDto) {
-        todoTaskService.createTask(uds.getUser(), modelMapper.map(taskDto, TodoTask.class));
+    public ResponseEntity<String> createTask(@AuthenticationPrincipal CustomPrincipal principal,
+                                             @Valid @RequestBody TodoTaskDto taskDto) {
+        User user = userService.findUserByUsername(principal.getName());
+        todoTaskService.createTask(user, modelMapper.map(taskDto, TodoTask.class));
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
@@ -103,13 +107,13 @@ public class TodoTaskController {
     @ApiOperation(value = "Update task", notes = "It permits to update a task")
     @PatchMapping(value = "/{id}", consumes = "application/json")
     public ResponseEntity<String> updateTask(
-            @AuthenticationPrincipal UserDetailsImpl uds,
+            @AuthenticationPrincipal CustomPrincipal principal,
             @PathVariable("id") Long taskId,
             @Valid @RequestBody(required = false) TodoTaskDto taskDto,
             @RequestParam(value = "completed", required = false) FilterByBoolean completed,
             @RequestParam(value = "starred", required = false) FilterByBoolean starred) {
 
-        todoTaskService.updateTask(uds.getUser(), taskId, taskDto, completed, starred);
+        todoTaskService.updateTask(principal, taskId, taskDto, completed, starred);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }
