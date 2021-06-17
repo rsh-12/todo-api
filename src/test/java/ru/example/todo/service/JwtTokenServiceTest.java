@@ -29,7 +29,7 @@ public class JwtTokenServiceTest extends AbstractServiceTestClass {
     // buildAccessToken
     @Test
     public void buildAccessToken_ShouldReturnAccessToken() throws CustomException {
-        String accessToken = jwtTokenService.buildAccessToken("username", Set.of(Role.USER));
+        String accessToken = jwtTokenService.buildAccessToken(1L, "username", Set.of(Role.USER));
         assertNotNull(accessToken);
         assertEquals(3, accessToken.split("\\.").length);
         System.out.println("accessToken = " + accessToken);
