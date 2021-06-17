@@ -45,11 +45,9 @@ public class UserServiceImpl extends AbstractServiceClass implements UserService
     @Override
     public String login(UserDto userDto) {
         try {
-            Authentication auth = authManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(userDto.getUsername(), userDto.getPassword()));
-
+            Authentication auth = authManager
+                    .authenticate(new UsernamePasswordAuthenticationToken(userDto.getUsername(), userDto.getPassword()));
             User user = ((UserDetailsImpl) auth.getPrincipal()).getUser();
-
             return buildResponseBody(user);
         } catch (AuthenticationException ex) {
             throw new CustomException("Not Found", "Username Not Found / Incorrect Password", HttpStatus.NOT_FOUND);
@@ -128,7 +126,7 @@ public class UserServiceImpl extends AbstractServiceClass implements UserService
     }
 
     String buildResponseBody(User user) {
-        String accessToken = jwtTokenService.buildAccessToken(user.getUsername(), user.getRoles());
+        String accessToken = jwtTokenService.buildAccessToken(user.getId(), user.getUsername(), user.getRoles());
         String refreshToken = jwtTokenService.buildRefreshToken(user.getUsername()).getToken();
 
         JSONObject response = new JSONObject();
