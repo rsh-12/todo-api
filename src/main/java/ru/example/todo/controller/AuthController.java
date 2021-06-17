@@ -40,7 +40,7 @@ public class AuthController {
 
     @PostMapping(value = "/login", produces = "application/json")
     public ResponseEntity<String> login(@Valid @RequestBody UserDto userDto) {
-        String tokens = userService.login(userDto);
+        String tokens = userService.login(modelMapper.map(userDto, User.class));
         return ResponseEntity.ok(tokens);
     }
 
