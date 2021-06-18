@@ -16,12 +16,12 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import ru.example.todo.controller.assembler.TodoTaskModelAssembler;
-import ru.example.todo.domain.CustomPrincipal;
 import ru.example.todo.dto.TodoTaskDto;
 import ru.example.todo.entity.TodoTask;
 import ru.example.todo.entity.User;
 import ru.example.todo.enums.filters.FilterByBoolean;
 import ru.example.todo.enums.filters.FilterByDate;
+import ru.example.todo.security.UserDetailsImpl;
 import ru.example.todo.service.TodoTaskService;
 import ru.example.todo.service.UserService;
 
@@ -57,46 +57,46 @@ public class TodoTaskController {
     @ApiOperation(value = "List tasks", notes = "List all tasks")
     @GetMapping(produces = "application/json")
     public CollectionModel<EntityModel<TodoTask>> getTasks(
-            @AuthenticationPrincipal CustomPrincipal principal,
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
             @RequestParam(value = "page", required = false, defaultValue = "0") Integer pageNo,
             @RequestParam(value = "size", required = false, defaultValue = "20") Integer pageSize,
             @RequestParam(value = "date", required = false, defaultValue = "ALL") FilterByDate date,
             @RequestParam(value = "sort", required = false, defaultValue = "createdAt") String sort) {
 
         List<EntityModel<TodoTask>> todos = todoTaskService
-                .findTasks(principal, pageNo, pageSize, date, sort)
+                .findTasks(userDetails.getId(), pageNo, pageSize, date, sort)
                 .stream()
                 .map(assembler::toModel)
                 .collect(Collectors.toList());
 
-        return CollectionModel.of(todos,
-                linkTo(methodOn(TodoTaskController.class).getTasks(principal, pageNo, pageSize, date, sort)).withSelfRel());
+        return CollectionModel.of(todos, linkTo(methodOn(TodoTaskController.class)
+                        .getTasks(userDetails, pageNo, pageSize, date, sort)).withSelfRel());
     }
 
     // get task by id
     @ApiOperation(value = "Find task", notes = "Find the task by ID")
     @GetMapping(value = "/{id}", produces = "application/json")
     public EntityModel<TodoTask> getTask(
-            @AuthenticationPrincipal CustomPrincipal principal,
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
             @PathVariable("id") Long taskId) {
-        return assembler.toModel(todoTaskService.findTaskById(principal, taskId));
+        return assembler.toModel(todoTaskService.findTaskById(userDetails.getId(), taskId));
     }
 
     // delete task by id
     @ApiOperation(value = "Remove task", notes = "It permits to remove a task")
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteTask(@AuthenticationPrincipal CustomPrincipal principal,
+    public ResponseEntity<String> deleteTask(@AuthenticationPrincipal UserDetailsImpl userDetails,
                                              @PathVariable("id") Long taskId) {
-        todoTaskService.deleteTaskById(principal, taskId);
+        todoTaskService.deleteTaskById(userDetails.getUser(), taskId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     // create new task
     @ApiOperation(value = "Create task", notes = "It permits to create a new task")
     @PostMapping(consumes = "application/json")
-    public ResponseEntity<String> createTask(@AuthenticationPrincipal CustomPrincipal principal,
+    public ResponseEntity<String> createTask(@AuthenticationPrincipal UserDetailsImpl userDetails,
                                              @Valid @RequestBody TodoTaskDto taskDto) {
-        User user = userService.findUserByUsername(principal.getName());
+        User user = userService.findUserByUsername(userDetails.getUsername());
         todoTaskService.createTask(user, modelMapper.map(taskDto, TodoTask.class));
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
@@ -107,13 +107,13 @@ public class TodoTaskController {
     @ApiOperation(value = "Update task", notes = "It permits to update a task")
     @PatchMapping(value = "/{id}", consumes = "application/json")
     public ResponseEntity<String> updateTask(
-            @AuthenticationPrincipal CustomPrincipal principal,
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
             @PathVariable("id") Long taskId,
             @Valid @RequestBody(required = false) TodoTaskDto taskDto,
             @RequestParam(value = "completed", required = false) FilterByBoolean completed,
             @RequestParam(value = "starred", required = false) FilterByBoolean starred) {
 
-        todoTaskService.updateTask(principal, taskId, taskDto, completed, starred);
+        todoTaskService.updateTask(userDetails.getId(), taskId, taskDto, completed, starred);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }
