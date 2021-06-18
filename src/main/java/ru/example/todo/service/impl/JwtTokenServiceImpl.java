@@ -16,10 +16,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 import ru.example.todo.config.properties.TokenProperties;
-import ru.example.todo.domain.CustomPrincipal;
 import ru.example.todo.domain.RefreshToken;
+import ru.example.todo.entity.User;
 import ru.example.todo.enums.Role;
 import ru.example.todo.exception.CustomException;
+import ru.example.todo.security.UserDetailsImpl;
 import ru.example.todo.service.JwtTokenService;
 import ru.example.todo.service.TokenStore;
 
@@ -150,8 +151,10 @@ public class JwtTokenServiceImpl implements JwtTokenService {
         String username = String.valueOf(claims.get("username"));
         Set<Role> roles = extractRoles(claims);
 
-        CustomPrincipal principal = new CustomPrincipal(id, username, roles);
-        return new UsernamePasswordAuthenticationToken(principal, "", principal.getRoles());
+        User user = new User(id, username, roles);
+        UserDetailsImpl userDetails = new UserDetailsImpl(user);
+
+        return new UsernamePasswordAuthenticationToken(userDetails, "", user.getRoles());
     }
 
     private Claims getClaimsBody(String accessToken) {
