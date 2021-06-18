@@ -106,7 +106,7 @@ public class UserControllerTest extends AbstractControllerTestClass {
     @Test
     @WithUserDetails(ADMIN)
     public void updatePassword_ShouldReturnOk() throws Exception {
-        doNothing().when(userService).updatePassword(any(User.class), anyString());
+        doNothing().when(userService).updatePassword(anyString(), anyString());
 
         JSONObject body = new JSONObject();
         body.put("password", "somePassword");
@@ -117,14 +117,14 @@ public class UserControllerTest extends AbstractControllerTestClass {
                 .andDo(print())
                 .andExpect(status().isOk());
 
-        verify(userService, times(1)).updatePassword(any(User.class), anyString());
+        verify(userService, times(1)).updatePassword(anyString(), anyString());
     }
 
     @Test
     @WithUserDetails(ADMIN)
     public void updatePassword_ServiceException_ShouldReturnBadRequest() throws Exception {
         doThrow(new CustomException("Bad Request", "Invalid data", HttpStatus.BAD_REQUEST))
-                .when(userService).updatePassword(any(User.class), anyString());
+                .when(userService).updatePassword(anyString(), anyString());
 
         JSONObject body = new JSONObject();
         body.put("password", "somePassword");
@@ -136,7 +136,7 @@ public class UserControllerTest extends AbstractControllerTestClass {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("error", containsStringIgnoringCase("bad request")));
 
-        verify(userService, times(1)).updatePassword(any(User.class), anyString());
+        verify(userService, times(1)).updatePassword(anyString(), anyString());
     }
 
     @Test
@@ -147,7 +147,7 @@ public class UserControllerTest extends AbstractControllerTestClass {
                 .andDo(print())
                 .andExpect(status().isBadRequest());
 
-        verify(userService, times(0)).updatePassword(any(User.class), anyString());
+        verify(userService, times(0)).updatePassword(anyString(), anyString());
     }
 
 }

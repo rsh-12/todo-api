@@ -58,17 +58,17 @@ public class UserServiceTest extends AbstractServiceTestClass {
     @Test
     public void updatePassword_ShouldThrowCustomException_400() {
         User user = createAndGetUser("some@mail.com", null);
-        assertThrows(CustomException.class, () -> userService.updatePassword(user, null));
-        assertThrows(CustomException.class, () -> userService.updatePassword(user, ""));
-        assertThrows(CustomException.class, () -> userService.updatePassword(user, "1234567"));
-        assertThrows(CustomException.class, () -> userService.updatePassword(user, "                "));
+        assertThrows(CustomException.class, () -> userService.updatePassword(user.getUsername(), null));
+        assertThrows(CustomException.class, () -> userService.updatePassword(user.getUsername(), ""));
+        assertThrows(CustomException.class, () -> userService.updatePassword(user.getUsername(), "1234567"));
+        assertThrows(CustomException.class, () -> userService.updatePassword(user.getUsername(), "                "));
     }
 
     @Test
     public void updatePassword_ShouldUpdatePassword() throws InterruptedException {
         User user = createAndGetUser("some@mail.com", null);
         String newPassword = "newPassword";
-        userService.updatePassword(user, newPassword);
+        userService.updatePassword(user.getUsername(), newPassword);
 
         Thread.sleep(200);
         assertTrue(bCryptPasswordEncoder.matches(newPassword, user.getPassword()));

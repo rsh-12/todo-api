@@ -9,7 +9,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithUserDetails;
-import ru.example.todo.domain.CustomPrincipal;
 import ru.example.todo.dto.TodoSectionDto;
 import ru.example.todo.dto.TodoTaskDto;
 import ru.example.todo.entity.TodoTask;
@@ -40,7 +39,7 @@ public class TodoTaskControllerTest extends AbstractControllerTestClass {
     @WithUserDetails(ADMIN)
     public void getTasks_ShouldReturnListOfTasks() throws Exception {
         given(taskService.findTasks(
-                any(CustomPrincipal.class), anyInt(), anyInt(),
+                anyLong(), anyInt(), anyInt(),
                 any(FilterByDate.class), anyString()))
                 .willReturn(List.of(
                         new TodoTask("task1", LocalDate.now()),
@@ -54,27 +53,27 @@ public class TodoTaskControllerTest extends AbstractControllerTestClass {
                 .andExpect(status().isOk());
 
         verify(taskService, times(1)).findTasks(
-                any(CustomPrincipal.class), anyInt(), anyInt(),
+                anyLong(), anyInt(), anyInt(),
                 any(FilterByDate.class), anyString());
     }
 
     @Test
     @WithUserDetails(ADMIN)
     public void getTask_ShouldReturnTaskById() throws Exception {
-        given(taskService.findTaskById(any(CustomPrincipal.class), anyLong()))
+        given(taskService.findTaskById(anyLong(), anyLong()))
                 .willReturn(new TodoTask("task"));
 
         mvc.perform(get(API_TASKS + 1))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("title", containsStringIgnoringCase("task")));
 
-        verify(taskService, times(1)).findTaskById(any(CustomPrincipal.class), anyLong());
+        verify(taskService, times(1)).findTaskById(anyLong(), anyLong());
     }
 
     @Test
     @WithUserDetails(USER)
     public void getTask_ShouldReturnNotFound() throws Exception {
-        given(taskService.findTaskById(any(CustomPrincipal.class), anyLong()))
+        given(taskService.findTaskById(anyLong(), anyLong()))
                 .willThrow(new CustomException("Not Found", "Task not found", HttpStatus.NOT_FOUND));
 
         mvc.perform(get(API_TASKS + 1))
@@ -82,41 +81,41 @@ public class TodoTaskControllerTest extends AbstractControllerTestClass {
                 .andDo(print())
                 .andExpect(jsonPath("message", containsStringIgnoringCase("Task not found")));
 
-        verify(taskService, times(1)).findTaskById(any(CustomPrincipal.class), anyLong());
+        verify(taskService, times(1)).findTaskById(anyLong(), anyLong());
     }
 
     @Test
     @WithUserDetails(ADMIN)
     public void deleteTask_ShouldReturnNoContent() throws Exception {
-        doNothing().when(taskService).deleteTaskById(any(CustomPrincipal.class), anyLong());
+        doNothing().when(taskService).deleteTaskById(any(User.class), anyLong());
         mvc.perform(delete(API_TASKS + 1)).andExpect(status().isNoContent());
-        verify(taskService, times(1)).deleteTaskById(any(CustomPrincipal.class), anyLong());
+        verify(taskService, times(1)).deleteTaskById(any(User.class), anyLong());
     }
 
     @Test
     @WithUserDetails(USER)
     public void deleteTask_ShouldReturnNotFound() throws Exception {
         doThrow(new CustomException("Not Found", "Task not found", HttpStatus.NOT_FOUND))
-                .when(taskService).deleteTaskById(any(CustomPrincipal.class), anyLong());
+                .when(taskService).deleteTaskById(any(User.class), anyLong());
 
         mvc.perform(delete(API_TASKS + 1))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("message", containsStringIgnoringCase("Task not found")));
 
-        verify(taskService, times(1)).deleteTaskById(any(CustomPrincipal.class), anyLong());
+        verify(taskService, times(1)).deleteTaskById(any(User.class), anyLong());
     }
 
     @Test
     @WithUserDetails(USER)
     public void deleteTask_ShouldReturnForbidden() throws Exception {
         doThrow(new CustomException("Forbidden", "Not enough permissions", HttpStatus.FORBIDDEN))
-                .when(taskService).deleteTaskById(any(CustomPrincipal.class), anyLong());
+                .when(taskService).deleteTaskById(any(User.class), anyLong());
 
         mvc.perform(delete(API_TASKS + 1))
                 .andExpect(status().isForbidden())
                 .andExpect(jsonPath("error", containsStringIgnoringCase("forbidden")));
 
-        verify(taskService, times(1)).deleteTaskById(any(CustomPrincipal.class), anyLong());
+        verify(taskService, times(1)).deleteTaskById(any(User.class), anyLong());
     }
 
     @Test
@@ -159,7 +158,7 @@ public class TodoTaskControllerTest extends AbstractControllerTestClass {
     @WithUserDetails(USER)
     public void updateTask_ShouldReturnOk() throws Exception {
         doNothing().when(taskService).updateTask(
-                any(CustomPrincipal.class), anyLong(),
+                anyLong(), anyLong(),
                 any(TodoTaskDto.class),
                 any(), any());
 
@@ -176,7 +175,7 @@ public class TodoTaskControllerTest extends AbstractControllerTestClass {
     @WithUserDetails(USER)
     public void updateTask_ShouldReturnNotFound() throws Exception {
         doThrow(new CustomException("Not Found", "Task not found", HttpStatus.NOT_FOUND))
-                .when(taskService).updateTask(any(CustomPrincipal.class), anyLong(),
+                .when(taskService).updateTask(anyLong(), anyLong(),
                 any(TodoTaskDto.class),
                 any(), any());
 
