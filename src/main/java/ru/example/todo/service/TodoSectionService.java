@@ -1,6 +1,5 @@
 package ru.example.todo.service;
 
-import ru.example.todo.domain.CustomPrincipal;
 import ru.example.todo.dto.TodoSectionDto;
 import ru.example.todo.entity.TodoSection;
 import ru.example.todo.entity.TodoTask;
@@ -11,15 +10,15 @@ import java.util.List;
 
 public interface TodoSectionService {
 
-    TodoSection findSectionById(CustomPrincipal principal, Long sectionId);
+    TodoSection findSectionById(Long userId, Long sectionId);
 
-    List<TodoSectionDto> findSectionDtoList(CustomPrincipal principal);
+    List<TodoSectionDto> findSectionDtoList(Long userId);
 
-    void deleteSectionById(CustomPrincipal principal, Long sectionId);
+    void deleteSectionById(User principal, Long sectionId);
 
     void createSection(User user, TodoSectionDto sectionDto);
 
-    void updateSection(CustomPrincipal principal, Long sectionId, TodoSectionDto sectionDto);
+    void updateSection(User principal, Long sectionId, TodoSectionDto sectionDto);
 
     void addTasksToOrRemoveFromSection(Long userId, Long sectionId, List<TodoTask> tasks, FilterByOperation flag);
 }

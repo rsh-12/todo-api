@@ -12,7 +12,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import ru.example.todo.domain.CustomPrincipal;
 import ru.example.todo.dto.TodoTaskDto;
 import ru.example.todo.entity.TodoTask;
 import ru.example.todo.entity.User;
@@ -41,38 +40,37 @@ public class TodoTaskServiceImpl extends AbstractServiceClass implements TodoTas
 
     // get all tasks
     @Override
-    public List<TodoTask> findTasks(CustomPrincipal principal, Integer pageNo, Integer pageSize, FilterByDate date, String sort) {
+    public List<TodoTask> findTasks(Long userId, Integer pageNo, Integer pageSize, FilterByDate date, String sort) {
         pageSize = pageSize > 100 ? 100 : pageSize; // set max page size
         Pageable page = PageRequest.of(pageNo, pageSize, Sort.by(getSortDirection(sort), getSortAsString(sort)));
 
         if (date.equals(FilterByDate.TODAY)) {
             log.info("Get today's tasks");
-            return todoTaskRepository.findAllByCompletionDateEqualsAndUserId(LocalDate.now(), page, principal.getId());
+            return todoTaskRepository.findAllByCompletionDateEqualsAndUserId(LocalDate.now(), page, userId);
         } else if (date.equals(FilterByDate.OVERDUE)) {
             log.info("Get overdue tasks");
-            return todoTaskRepository.findAllByCompletionDateBeforeAndUserId(LocalDate.now(), page, principal.getId());
+            return todoTaskRepository.findAllByCompletionDateBeforeAndUserId(LocalDate.now(), page, userId);
         }
 
         log.info("Get all tasks");
-        return todoTaskRepository.findAllByUserId(principal.getId(), page).getContent();
+        return todoTaskRepository.findAllByUserId(userId, page).getContent();
     }
 
     // get task by id
     @Override
-    public TodoTask findTaskById(CustomPrincipal principal, Long taskId) {
+    public TodoTask findTaskById(Long userId, Long taskId) {
         log.info("Get the task by id: {}", taskId);
-        return todoTaskRepository.findByIdAndUserId(taskId, principal.getId())
+        return todoTaskRepository.findByIdAndUserId(taskId, userId)
                 .orElseThrow(() -> new CustomException("Not Found", "Task not found: " + taskId, HttpStatus.NOT_FOUND));
     }
 
     // delete task by id
     @Override
-    public void deleteTaskById(CustomPrincipal principal, Long taskId) {
+    public void deleteTaskById(User principal, Long taskId) {
         TodoTask task = todoTaskRepository.findById(taskId)
                 .orElseThrow(() -> new CustomException("Not Found", "Task not found: " + taskId, HttpStatus.NOT_FOUND));
 
-        User taskUser = task.getUser();
-        if (taskUser != null && isUserValidOrHasRoleAdmin(principal, taskUser.getUsername())) {
+        if (isUserValidOrHasRoleAdmin(principal, task)) {
             todoTaskRepository.deleteById(taskId);
         } else {
             throw new CustomException("Forbidden", "Not enough permissions", HttpStatus.FORBIDDEN);
@@ -98,11 +96,11 @@ public class TodoTaskServiceImpl extends AbstractServiceClass implements TodoTas
 
     // update task by id
     @Override
-    public void updateTask(CustomPrincipal principal, Long taskId, TodoTaskDto taskDto,
+    public void updateTask(Long userId, Long taskId, TodoTaskDto taskDto,
                            FilterByBoolean completed, FilterByBoolean starred) {
         // get task from DB
         log.info("Get the task from DB: id={}", taskId);
-        TodoTask task = todoTaskRepository.findByIdAndUserId(taskId, principal.getId())
+        TodoTask task = todoTaskRepository.findByIdAndUserId(taskId, userId)
                 .orElseThrow(() -> new CustomException("Not Found", "Task not found: " + taskId, HttpStatus.NOT_FOUND));
 
         // update task title or task completion date

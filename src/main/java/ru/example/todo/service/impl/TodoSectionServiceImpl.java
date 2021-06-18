@@ -8,7 +8,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import ru.example.todo.domain.CustomPrincipal;
 import ru.example.todo.dto.TodoSectionDto;
 import ru.example.todo.entity.TodoSection;
 import ru.example.todo.entity.TodoTask;
@@ -33,16 +32,16 @@ public class TodoSectionServiceImpl extends AbstractServiceClass implements Todo
 
     // get section by id
     @Override
-    public TodoSection findSectionById(CustomPrincipal principal, Long sectionId) {
+    public TodoSection findSectionById(Long userId, Long sectionId) {
         log.info("Get the section by id: {}", sectionId);
-        return todoSectionRepository.findByUserIdAndId(principal.getId(), sectionId)
+        return todoSectionRepository.findByUserIdAndId(userId, sectionId)
                 .orElseThrow(() -> new CustomException("Not Found", "Section not found: " + sectionId, HttpStatus.NOT_FOUND));
     }
 
     // get all sections
     @Override
-    public List<TodoSectionDto> findSectionDtoList(CustomPrincipal principal) {
-        List<TodoSectionDto> sections = todoSectionRepository.findAllByUserId(principal.getId());
+    public List<TodoSectionDto> findSectionDtoList(Long userId) {
+        List<TodoSectionDto> sections = todoSectionRepository.findAllByUserId(userId);
         log.info("Get all sections: {}", sections.size());
         return sections;
     }
@@ -50,12 +49,11 @@ public class TodoSectionServiceImpl extends AbstractServiceClass implements Todo
     // todo uds
     // delete section by id
     @Override
-    public void deleteSectionById(CustomPrincipal principal, Long sectionId) {
+    public void deleteSectionById(User principal, Long sectionId) {
         TodoSection section = todoSectionRepository.findById(sectionId)
                 .orElseThrow(() -> new CustomException("Not Found", "Section not found", HttpStatus.NOT_FOUND));
 
-        User sectionUser = section.getUser();
-        if (sectionUser != null && isUserValidOrHasRoleAdmin(principal, sectionUser.getUsername())) {
+        if (isUserValidOrHasRoleAdmin(principal, section)) {
             todoSectionRepository.delete(section);
         } else {
             throw new CustomException("Forbidden", "Not enough permissions", HttpStatus.FORBIDDEN);
@@ -65,7 +63,7 @@ public class TodoSectionServiceImpl extends AbstractServiceClass implements Todo
 
     // create new section
     @Override
-    public void createSection(final User user, final TodoSectionDto sectionDto) {
+    public void createSection(User user, TodoSectionDto sectionDto) {
         TodoSection section = new TodoSection();
         section.setUser(user);
         section.setTitle(sectionDto.getTitle());
@@ -76,13 +74,12 @@ public class TodoSectionServiceImpl extends AbstractServiceClass implements Todo
 
     // update section title
     @Override
-    public void updateSection(CustomPrincipal principal, Long sectionId, TodoSectionDto sectionDto) {
+    public void updateSection(User principal, Long sectionId, TodoSectionDto sectionDto) {
         // get a section by id
         TodoSection section = todoSectionRepository.findById(sectionId)
                 .orElseThrow(() -> new CustomException("Not Found", "Section not found: " + sectionId, HttpStatus.NOT_FOUND));
 
-        final User sectionUser = section.getUser();
-        if (sectionUser != null && isUserValidOrHasRoleAdmin(principal, sectionUser.getUsername())) {
+        if (isUserValidOrHasRoleAdmin(principal, section)) {
             section.setTitle(sectionDto.getTitle());
         } else {
             throw new CustomException("Forbidden", "Not enough permissions", HttpStatus.FORBIDDEN);
