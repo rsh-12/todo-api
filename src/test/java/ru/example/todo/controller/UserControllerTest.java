@@ -95,7 +95,7 @@ public class UserControllerTest extends AbstractControllerTestClass {
 
     @Test
     @WithUserDetails(USER)
-    public void deleteUser_ShouldReturnForbiddeb() throws Exception {
+    public void deleteUser_ShouldReturnForbidden() throws Exception {
         mvc.perform(delete(API_USERS + 1))
                 .andExpect(status().isForbidden())
                 .andDo(print());
