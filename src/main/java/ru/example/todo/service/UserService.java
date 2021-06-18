@@ -25,8 +25,6 @@ public interface UserService {
 
     User findUserById(Long userId);
 
-    void updatePassword(User user, String password);
-
     void updatePassword(String email, String password);
 
     boolean existsByUsername(String email);
