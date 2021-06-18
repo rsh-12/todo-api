@@ -66,6 +66,12 @@ public class User {
         this.password = password;
     }
 
+    public User(Long id, String username, Set<Role> roles) {
+        this.id = id;
+        this.username = username;
+        this.roles = roles;
+    }
+
     public Long getId() {
         return id;
     }
