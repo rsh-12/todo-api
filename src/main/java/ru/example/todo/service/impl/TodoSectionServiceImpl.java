@@ -54,7 +54,7 @@ public class TodoSectionServiceImpl extends AbstractServiceClass implements Todo
         TodoSection section = todoSectionRepository.findById(sectionId)
                 .orElseThrow(() -> new CustomException("Not Found", "Section not found", HttpStatus.NOT_FOUND));
 
-        if (isUserValidOrHasRoleAdmin(principal, section)) {
+        if (isUserValidOrHasRoleAdmin(principal, section.getUser())) {
             todoSectionRepository.delete(section);
         } else {
             throw new CustomException("Forbidden", "Not enough permissions", HttpStatus.FORBIDDEN);
@@ -80,7 +80,7 @@ public class TodoSectionServiceImpl extends AbstractServiceClass implements Todo
         TodoSection section = todoSectionRepository.findById(sectionId)
                 .orElseThrow(() -> new CustomException("Not Found", "Section not found: " + sectionId, HttpStatus.NOT_FOUND));
 
-        if (isUserValidOrHasRoleAdmin(principal, section)) {
+        if (isUserValidOrHasRoleAdmin(principal, section.getUser())) {
             section.setTitle(sectionDto.getTitle());
         } else {
             throw new CustomException("Forbidden", "Not enough permissions", HttpStatus.FORBIDDEN);
