@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import ru.example.todo.domain.TodoSectionProjection;
 import ru.example.todo.dto.TodoSectionDto;
 import ru.example.todo.entity.TodoSection;
 import ru.example.todo.entity.TodoTask;
@@ -40,8 +41,8 @@ public class TodoSectionServiceImpl extends AbstractServiceClass implements Todo
 
     // get all sections
     @Override
-    public List<TodoSection> findSections(Long userId) {
-        List<TodoSection> sections = todoSectionRepository.findAllByUserId(userId);
+    public List<TodoSectionProjection> findSections(Long userId) {
+        List<TodoSectionProjection> sections = todoSectionRepository.findAllByUserIdProjection(userId);
         log.info("Get all sections: {}", sections.size());
         return sections;
     }
