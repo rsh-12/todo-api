@@ -58,6 +58,11 @@ public class TodoSection {
     public TodoSection() {
     }
 
+    public TodoSection(Long id, String title) {
+        this.id = id;
+        this.title = title;
+    }
+
     public Long getId() {
         return id;
     }
