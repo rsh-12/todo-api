@@ -18,10 +18,10 @@ public interface TodoTaskService {
 
     void deleteTaskById(User principal, Long taskId);
 
-    void createTask(User user, TodoTask task);
+    TodoTask createTask(User user, TodoTask task);
 
-    void updateTask(Long userId, Long sectionId, TodoTaskDto task,
-                    FilterByBoolean completed, FilterByBoolean starred);
+    TodoTask updateTask(Long userId, Long sectionId, TodoTaskDto task,
+                        FilterByBoolean completed, FilterByBoolean starred);
 
     List<TodoTask> findTasksByIds(Set<Long> taskIds, Long userId);
 

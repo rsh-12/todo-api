@@ -81,10 +81,10 @@ public class TodoTaskServiceImpl extends AbstractServiceClass implements TodoTas
 
     // create new task
     @Override
-    public void createTask(User user, TodoTask task) {
+    public TodoTask createTask(User user, TodoTask task) {
         log.info("Create a new task");
         task.setUser(user);
-        todoTaskRepository.save(task);
+        return todoTaskRepository.save(task);
     }
 
     @Override
@@ -96,8 +96,8 @@ public class TodoTaskServiceImpl extends AbstractServiceClass implements TodoTas
 
     // update task by id
     @Override
-    public void updateTask(Long userId, Long taskId, TodoTaskDto taskDto,
-                           FilterByBoolean completed, FilterByBoolean starred) {
+    public TodoTask updateTask(Long userId, Long taskId, TodoTaskDto taskDto,
+                               FilterByBoolean completed, FilterByBoolean starred) {
         // get task from DB
         log.info("Get the task from DB: id={}", taskId);
         TodoTask task = todoTaskRepository.findByIdAndUserId(taskId, userId)
@@ -122,7 +122,7 @@ public class TodoTaskServiceImpl extends AbstractServiceClass implements TodoTas
         task.setUpdatedAt(new Date());
 
         log.info("Save the updated task: id={}", taskId);
-        todoTaskRepository.save(task);
+        return todoTaskRepository.save(task);
     }
 
 }
