@@ -66,6 +66,7 @@ public class User {
         this.password = password;
     }
 
+    // for principal initializing
     public User(Long id, String username, Set<Role> roles) {
         this.id = id;
         this.username = username;
