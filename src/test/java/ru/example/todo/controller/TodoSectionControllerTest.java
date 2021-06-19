@@ -44,8 +44,8 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
     @Test
     @WithUserDetails(ADMIN)
     public void getSections_ShouldReturnListOfSections() throws Exception {
-        given(sectionService.findSectionDtoList(anyLong()))
-                .willReturn(List.of(new TodoSectionDto("section1"), new TodoSectionDto("section2")));
+        given(sectionService.findSections(anyLong()))
+                .willReturn(List.of(new TodoSection("section1"), new TodoSection("section2")));
 
         mvc.perform(get(API_SECTIONS)
                 .contentType(MediaType.APPLICATION_JSON))
@@ -54,14 +54,14 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
                 .andExpect(jsonPath("_embedded.sections[1].title", is("section2")))
                 .andDo(print());
 
-        verify(sectionService, times(1)).findSectionDtoList(anyLong());
+        verify(sectionService, times(1)).findSections(anyLong());
     }
 
     @Ignore
     @Test
     @WithUserDetails(ADMIN)
     public void getSections_ShouldReturnEmptyList() throws Exception {
-        given(sectionService.findSectionDtoList(anyLong()))
+        given(sectionService.findSections(anyLong()))
                 .willReturn(Collections.emptyList());
 
         mvc.perform(get(API_SECTIONS)
@@ -70,7 +70,7 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
                 .andExpect(jsonPath("_embedded.sections.isEmpty()", is(true)))
                 .andDo(print());
 
-        verify(sectionService, times(1)).findSectionDtoList(anyLong());
+        verify(sectionService, times(1)).findSections(anyLong());
     }
 
     // get section by ID
@@ -155,7 +155,9 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
     @Test
     @WithUserDetails(ADMIN)
     public void createSection_ShouldReturnStatusCreated() throws Exception {
-        doNothing().when(sectionService).createSection(any(User.class), any(TodoSectionDto.class));
+//        doNothing().when(sectionService).createSection(any(User.class), any(TodoSectionDto.class));
+        given(sectionService.createSection(any(User.class), any(TodoSectionDto.class)))
+                .willReturn(new TodoSection(1L,"title"));
 
         mvc.perform(post(API_SECTIONS)
                 .contentType(MediaType.APPLICATION_JSON)
