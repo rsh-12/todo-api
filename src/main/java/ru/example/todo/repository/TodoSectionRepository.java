@@ -12,9 +12,8 @@ import java.util.Optional;
 
 public interface TodoSectionRepository extends JpaRepository<TodoSection, Long> {
 
-    @Query("select new ru.example.todo.dto.TodoSectionDto(s.id, s.title, s.updatedAt, s.createdAt) " +
-            "from TodoSection s where s.user.id = :userId")
-    List<TodoSectionDto> findAllByUserId(@Param("userId") Long id);
+    // todo: fix eager loading
+    List<TodoSection> findAllByUserId(@Param("userId") Long id);
 
     List<TodoSection> findAllByUser(User user);
 
