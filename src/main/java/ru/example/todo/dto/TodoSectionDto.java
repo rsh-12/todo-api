@@ -11,8 +11,6 @@ import java.util.Date;
 
 public class TodoSectionDto {
 
-    private Long id;
-
     @NotEmpty
     @NotBlank
     @Size(min = 3, max = 50, message = "Size must be between 3 and 50")
@@ -29,19 +27,10 @@ public class TodoSectionDto {
         this.title = title;
     }
 
-    public TodoSectionDto(Long id, String title, Date createdAt, Date updatedAt) {
-        this.id = id;
+    public TodoSectionDto(String title, Date createdAt, Date updatedAt) {
         this.title = title;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getTitle() {
@@ -71,8 +60,10 @@ public class TodoSectionDto {
     @Override
     public String toString() {
         return "TodoSectionDto{" +
-                "id=" + id +
-                ", title='" + title + '\'' +
+                "title='" + title + '\'' +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
                 '}';
     }
+
 }
