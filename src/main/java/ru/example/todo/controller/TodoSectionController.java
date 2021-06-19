@@ -6,7 +6,6 @@ package ru.example.todo.controller;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
@@ -15,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.example.todo.controller.assembler.TodoSectionModelAssembler;
 import ru.example.todo.controller.wrapper.TaskIdsWrapper;
 import ru.example.todo.dto.TodoSectionDto;
@@ -27,6 +27,7 @@ import ru.example.todo.service.TodoSectionService;
 import ru.example.todo.service.UserService;
 
 import javax.validation.Valid;
+import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -43,16 +44,14 @@ public class TodoSectionController {
     private final TodoSectionService todoSectionService;
     private final TasksFacade tasksFacade;
     private final TodoSectionModelAssembler assembler;
-    private final ModelMapper mapper;
 
     @Autowired
-    public TodoSectionController(UserService userService, TodoSectionService todoSectionService, TasksFacade tasksFacade,
-                                 TodoSectionModelAssembler assembler, ModelMapper mapper) {
+    public TodoSectionController(UserService userService, TodoSectionService todoSectionService,
+                                 TasksFacade tasksFacade, TodoSectionModelAssembler assembler) {
         this.userService = userService;
         this.todoSectionService = todoSectionService;
         this.tasksFacade = tasksFacade;
         this.assembler = assembler;
-        this.mapper = mapper;
     }
 
     // get all sections
@@ -60,9 +59,8 @@ public class TodoSectionController {
     @GetMapping(produces = "application/json")
     public CollectionModel<EntityModel<TodoSection>> getSections(@AuthenticationPrincipal UserDetailsImpl userDetails) {
 
-        List<EntityModel<TodoSection>> sections = todoSectionService.findSectionDtoList(userDetails.getId())
+        List<EntityModel<TodoSection>> sections = todoSectionService.findSections(userDetails.getId())
                 .stream()
-                .map(sectionDto -> mapper.map(sectionDto, TodoSection.class))
                 .map(assembler::toModel)
                 .collect(Collectors.toList());
 
@@ -93,8 +91,12 @@ public class TodoSectionController {
     public ResponseEntity<String> createSection(@AuthenticationPrincipal UserDetailsImpl userDetails,
                                                 @Valid @RequestBody TodoSectionDto sectionDto) {
         User user = userService.findUserByUsername(userDetails.getUsername());
-        todoSectionService.createSection(user, sectionDto);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        TodoSection section = todoSectionService.createSection(user, sectionDto);
+
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("/{id}").buildAndExpand(section.getId()).toUri();
+
+        return ResponseEntity.created(location).build();
     }
 
     // update section title by id
