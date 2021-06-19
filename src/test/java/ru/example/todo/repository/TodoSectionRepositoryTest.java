@@ -6,7 +6,6 @@ package ru.example.todo.repository;
 
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import ru.example.todo.dto.TodoSectionDto;
 import ru.example.todo.entity.TodoSection;
 
 import java.sql.Timestamp;
@@ -49,8 +48,8 @@ public class TodoSectionRepositoryTest extends AbstractRepositoryTestClass{
 
     @Test
     public void findAllByUserId_ShouldReturnListOfUserSections() {
-        List<TodoSectionDto> adminSections = repository.findAllByUserId(ADMIN_ID);
-        List<TodoSectionDto> userSections = repository.findAllByUserId(USER_ID);
+        List<TodoSection> adminSections = repository.findAllByUserId(ADMIN_ID);
+        List<TodoSection> userSections = repository.findAllByUserId(USER_ID);
 
         assertEquals(4, adminSections.size());
         assertEquals(1, userSections.size());
