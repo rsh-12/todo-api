@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.example.todo.controller.assembler.TodoTaskModelAssembler;
 import ru.example.todo.dto.TodoTaskDto;
 import ru.example.todo.entity.TodoTask;
@@ -26,6 +27,7 @@ import ru.example.todo.service.TodoTaskService;
 import ru.example.todo.service.UserService;
 
 import javax.validation.Valid;
+import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -70,7 +72,7 @@ public class TodoTaskController {
                 .collect(Collectors.toList());
 
         return CollectionModel.of(todos, linkTo(methodOn(TodoTaskController.class)
-                        .getTasks(userDetails, pageNo, pageSize, date, sort)).withSelfRel());
+                .getTasks(userDetails, pageNo, pageSize, date, sort)).withSelfRel());
     }
 
     // get task by id
@@ -97,8 +99,12 @@ public class TodoTaskController {
     public ResponseEntity<String> createTask(@AuthenticationPrincipal UserDetailsImpl userDetails,
                                              @Valid @RequestBody TodoTaskDto taskDto) {
         User user = userService.findUserByUsername(userDetails.getUsername());
-        todoTaskService.createTask(user, modelMapper.map(taskDto, TodoTask.class));
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        TodoTask task = todoTaskService.createTask(user, modelMapper.map(taskDto, TodoTask.class));
+
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("/{id}").buildAndExpand(task.getId()).toUri();
+
+        return ResponseEntity.created(location).build();
     }
 
     // update task title or task completion date
@@ -113,7 +119,11 @@ public class TodoTaskController {
             @RequestParam(value = "completed", required = false) FilterByBoolean completed,
             @RequestParam(value = "starred", required = false) FilterByBoolean starred) {
 
-        todoTaskService.updateTask(userDetails.getId(), taskId, taskDto, completed, starred);
-        return new ResponseEntity<>(HttpStatus.OK);
+        TodoTask task = todoTaskService.updateTask(userDetails.getId(), taskId, taskDto, completed, starred);
+
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("/{id}").buildAndExpand(task.getId()).toUri();
+
+        return ResponseEntity.ok().header("Location", location.toString()).build();
     }
 }
