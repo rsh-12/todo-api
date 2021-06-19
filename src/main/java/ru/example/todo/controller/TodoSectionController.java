@@ -111,8 +111,11 @@ public class TodoSectionController {
                                                 @PathVariable("id") Long sectionId,
                                                 @Valid @RequestBody TodoSectionDto sectionDto) {
 
-        todoSectionService.updateSection(userDetails.getUser(), sectionId, sectionDto);
-        return new ResponseEntity<>(HttpStatus.OK);
+        TodoSection section = todoSectionService.updateSection(userDetails.getUser(), sectionId, sectionDto);
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("/{id}").buildAndExpand(section.getId()).toUri();
+
+        return ResponseEntity.ok().header("Location", location.toString()).build();
     }
 
     // add tasks to the list

@@ -19,7 +19,7 @@ public interface TodoSectionService {
 
     TodoSection createSection(User user, TodoSectionDto sectionDto);
 
-    void updateSection(User principal, Long sectionId, TodoSectionDto sectionDto);
+    TodoSection updateSection(User principal, Long sectionId, TodoSectionDto sectionDto);
 
     void addTasksToOrRemoveFromSection(Long userId, Long sectionId, List<TodoTask> tasks, FilterByOperation flag);
 }
