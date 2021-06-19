@@ -184,8 +184,8 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
     @Test
     @WithUserDetails(ADMIN)
     public void updateSection_ShouldReturnOk() throws Exception {
-        doNothing().when(sectionService)
-                .updateSection(any(User.class), anyLong(), any(TodoSectionDto.class));
+        given(sectionService.updateSection(any(User.class), anyLong(), any(TodoSectionDto.class)))
+                .willReturn(new TodoSection(1L,"Title"));
 
         // update section by id: returns 200 OK
         mvc.perform(put(API_SECTIONS + 1)
