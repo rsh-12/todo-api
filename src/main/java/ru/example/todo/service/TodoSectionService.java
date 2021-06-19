@@ -12,11 +12,11 @@ public interface TodoSectionService {
 
     TodoSection findSectionById(Long userId, Long sectionId);
 
-    List<TodoSectionDto> findSectionDtoList(Long userId);
+    List<TodoSection> findSections(Long userId);
 
     void deleteSectionById(User principal, Long sectionId);
 
-    void createSection(User user, TodoSectionDto sectionDto);
+    TodoSection createSection(User user, TodoSectionDto sectionDto);
 
     void updateSection(User principal, Long sectionId, TodoSectionDto sectionDto);
 

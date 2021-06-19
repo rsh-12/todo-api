@@ -40,8 +40,8 @@ public class TodoSectionServiceImpl extends AbstractServiceClass implements Todo
 
     // get all sections
     @Override
-    public List<TodoSectionDto> findSectionDtoList(Long userId) {
-        List<TodoSectionDto> sections = todoSectionRepository.findAllByUserId(userId);
+    public List<TodoSection> findSections(Long userId) {
+        List<TodoSection> sections = todoSectionRepository.findAllByUserId(userId);
         log.info("Get all sections: {}", sections.size());
         return sections;
     }
@@ -63,13 +63,13 @@ public class TodoSectionServiceImpl extends AbstractServiceClass implements Todo
 
     // create new section
     @Override
-    public void createSection(User user, TodoSectionDto sectionDto) {
+    public TodoSection createSection(User user, TodoSectionDto sectionDto) {
         TodoSection section = new TodoSection();
         section.setUser(user);
         section.setTitle(sectionDto.getTitle());
 
         log.info("Create a new section");
-        todoSectionRepository.save(section);
+        return todoSectionRepository.save(section);
     }
 
     // update section title
