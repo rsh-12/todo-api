@@ -59,8 +59,8 @@ public class AbstractServiceClass {
                 .ifPresent(task::setTitle);
     }
 
-    <T> boolean isUserValidOrHasRoleAdmin(User principal, T entity) {
-        return (entity != null && entity.equals(principal)) ||
+     boolean isUserValidOrHasRoleAdmin(User principal, User user) {
+        return (user != null && user.equals(principal)) ||
                 principal.getRoles().contains(Role.ADMIN);
     }
 
