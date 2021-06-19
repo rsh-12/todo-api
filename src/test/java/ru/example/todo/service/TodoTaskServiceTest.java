@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import ru.example.todo.entity.TodoTask;
+import ru.example.todo.entity.User;
 import ru.example.todo.exception.CustomException;
 import ru.example.todo.repository.TodoTaskRepository;
 
@@ -19,8 +20,7 @@ import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anySet;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.*;
 
 public class TodoTaskServiceTest extends AbstractServiceTestClass {
 
@@ -54,7 +54,14 @@ public class TodoTaskServiceTest extends AbstractServiceTestClass {
     }
 
     //  deleteTaskById
+
     //  createTask
+    @Test
+    public void createTask_ShouldDoNothing() {
+        given(taskRepository.save(any())).willReturn(any());
+        taskService.createTask(new User("username", "password"), new TodoTask("Title"));
+    }
+
     //  updateTask
 
     //  findTasksByIds
