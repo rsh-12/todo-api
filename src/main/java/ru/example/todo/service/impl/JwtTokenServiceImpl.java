@@ -151,10 +151,10 @@ public class JwtTokenServiceImpl implements JwtTokenService {
         String username = String.valueOf(claims.get("username"));
         Set<Role> roles = extractRoles(claims);
 
-        User user = new User(id, username, roles);
-        UserDetailsImpl userDetails = new UserDetailsImpl(user);
+        User principal = new User(id, username, roles);
+        UserDetailsImpl userDetails = new UserDetailsImpl(principal);
 
-        return new UsernamePasswordAuthenticationToken(userDetails, "", user.getRoles());
+        return new UsernamePasswordAuthenticationToken(userDetails, "", roles);
     }
 
     private Claims getClaimsBody(String accessToken) {
