@@ -75,7 +75,7 @@ public class TodoSectionServiceImpl extends AbstractServiceClass implements Todo
 
     // update section title
     @Override
-    public void updateSection(User principal, Long sectionId, TodoSectionDto sectionDto) {
+    public TodoSection updateSection(User principal, Long sectionId, TodoSectionDto sectionDto) {
         // get a section by id
         TodoSection section = todoSectionRepository.findById(sectionId)
                 .orElseThrow(() -> new CustomException("Not Found", "Section not found: " + sectionId, HttpStatus.NOT_FOUND));
@@ -86,7 +86,7 @@ public class TodoSectionServiceImpl extends AbstractServiceClass implements Todo
             throw new CustomException("Forbidden", "Not enough permissions", HttpStatus.FORBIDDEN);
         }
 
-        todoSectionRepository.save(section);
+        return todoSectionRepository.save(section);
     }
 
 
