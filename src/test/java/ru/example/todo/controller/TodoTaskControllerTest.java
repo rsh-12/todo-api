@@ -121,7 +121,8 @@ public class TodoTaskControllerTest extends AbstractControllerTestClass {
     @Test
     @WithUserDetails(USER)
     public void createTask_ShouldReturnCreated() throws Exception {
-        doNothing().when(taskService).createTask(any(User.class), any(TodoTask.class));
+        given(taskService.createTask(any(User.class), any(TodoTask.class)))
+                .willReturn(new TodoTask( "title"));
 
         mvc.perform(post(API_TASKS)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -157,10 +158,8 @@ public class TodoTaskControllerTest extends AbstractControllerTestClass {
     @Test
     @WithUserDetails(USER)
     public void updateTask_ShouldReturnOk() throws Exception {
-        doNothing().when(taskService).updateTask(
-                anyLong(), anyLong(),
-                any(TodoTaskDto.class),
-                any(), any());
+        given(taskService.updateTask(anyLong(), anyLong(), any(TodoTaskDto.class), any(), any()))
+                .willReturn(new TodoTask("Title"));
 
         mvc.perform(patch(API_TASKS + 1)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -169,6 +168,9 @@ public class TodoTaskControllerTest extends AbstractControllerTestClass {
                 .content(convertToJson("{\"title\":\"some title\"")))
                 .andExpect(status().isOk())
                 .andDo(print());
+
+        verify(taskService).updateTask(anyLong(), anyLong(), any(TodoTaskDto.class), any(), any());
+        verifyNoMoreInteractions(taskService);
     }
 
     @Test
