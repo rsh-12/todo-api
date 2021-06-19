@@ -10,6 +10,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithUserDetails;
+import ru.example.todo.domain.TodoSectionProjection;
 import ru.example.todo.dto.TodoSectionDto;
 import ru.example.todo.entity.TodoSection;
 import ru.example.todo.entity.User;
@@ -45,7 +46,7 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
     @WithUserDetails(ADMIN)
     public void getSections_ShouldReturnListOfSections() throws Exception {
         given(sectionService.findSections(anyLong()))
-                .willReturn(List.of(new TodoSection("section1"), new TodoSection("section2")));
+                .willReturn(List.of(new TodoSectionProjection("section1"), new TodoSectionProjection("section2")));
 
         mvc.perform(get(API_SECTIONS)
                 .contentType(MediaType.APPLICATION_JSON))
