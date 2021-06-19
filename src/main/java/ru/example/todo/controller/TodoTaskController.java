@@ -122,7 +122,7 @@ public class TodoTaskController {
         TodoTask task = todoTaskService.updateTask(userDetails.getId(), taskId, taskDto, completed, starred);
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
-                .path("/{id}").buildAndExpand(task.getId()).toUri();
+                .buildAndExpand(task.getId()).toUri();
 
         return ResponseEntity.ok().header("Location", location.toString()).build();
     }

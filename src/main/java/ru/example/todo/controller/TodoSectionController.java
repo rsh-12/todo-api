@@ -113,7 +113,7 @@ public class TodoSectionController {
 
         TodoSection section = todoSectionService.updateSection(userDetails.getUser(), sectionId, sectionDto);
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
-                .path("/{id}").buildAndExpand(section.getId()).toUri();
+                .buildAndExpand(section.getId()).toUri();
 
         return ResponseEntity.ok().header("Location", location.toString()).build();
     }
