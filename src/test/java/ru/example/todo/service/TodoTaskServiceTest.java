@@ -83,6 +83,25 @@ public class TodoTaskServiceTest extends AbstractServiceTestClass {
         verify(taskRepository, times(0)).deleteById(anyLong());
     }
 
+    @Test
+    public void deleteTaskById_ShouldDeleteTaskById() {
+        User principal = mock(User.class);
+        given(principal.getId()).willReturn(1L);
+        given(principal.getRoles()).willReturn(Set.of(Role.ADMIN, Role.USER));
+
+        TodoTask task = mock(TodoTask.class);
+        given(task.getUser()).willReturn(principal);
+        given(task.getId()).willReturn(1L);
+
+        given(taskRepository.findById(anyLong())).willReturn(Optional.of(task));
+        doNothing().when(taskRepository).deleteById(anyLong());
+
+        taskService.deleteTaskById(principal, task.getId());
+
+        verify(taskRepository).findById(anyLong());
+        verify(taskRepository).deleteById(anyLong());
+    }
+
     //  createTask
     @Test
     public void createTask_ShouldReturnTask() {
