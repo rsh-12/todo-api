@@ -112,10 +112,12 @@ public class TodoTaskServiceTest extends AbstractServiceTestClass {
     //  createTask
     @Test
     public void createTask_ShouldReturnTask() {
-        TodoTask task = new TodoTask("task");
-        User user = new User("name", "pwd");
+        User user = mock(User.class);
 
-        given(taskRepository.save(any())).willReturn(task);
+        TodoTask task = mock(TodoTask.class);
+        given(task.getUser()).willReturn(user);
+
+        given(taskRepository.save(task)).willReturn(task);
         TodoTask createdTask = taskService.createTask(user, task);
 
         assertNotNull(createdTask);
