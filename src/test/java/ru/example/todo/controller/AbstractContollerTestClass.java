@@ -12,6 +12,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
@@ -36,6 +39,13 @@ abstract class AbstractControllerTestClass {
             e.printStackTrace();
             throw new RuntimeException("Conversion error");
         }
+    }
+
+    String usernamePasswordRequestBody(String username, String password) {
+        Map<String, String> body = new LinkedHashMap<>();
+        body.put("username", username);
+        body.put("password", password);
+        return convertToJson(body);
     }
 
 }

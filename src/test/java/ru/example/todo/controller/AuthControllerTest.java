@@ -21,7 +21,6 @@ import ru.example.todo.messaging.requests.TokenRequest;
 import ru.example.todo.service.UserService;
 
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 import static org.hamcrest.Matchers.containsInAnyOrder;
@@ -48,13 +47,6 @@ public class AuthControllerTest extends AbstractControllerTestClass {
     @SpyBean
     private MessagingService messagingService;
 
-    private String requestBody(String username, String password) {
-        Map<String, String> body = new LinkedHashMap<>();
-        body.put("username", username);
-        body.put("password", password);
-        return convertToJson(body);
-    }
-
     // Login: success
     @Test
     public void login_ShouldReturnTokens() throws Exception {
@@ -67,7 +59,7 @@ public class AuthControllerTest extends AbstractControllerTestClass {
 
         String response = mvc.perform(post(API_AUTH + "login")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody(userDto.getUsername(), userDto.getPassword())))
+                .content(usernamePasswordRequestBody(userDto.getUsername(), userDto.getPassword())))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andReturn()
@@ -91,7 +83,7 @@ public class AuthControllerTest extends AbstractControllerTestClass {
 
         mvc.perform(post(API_AUTH + "login")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody(userDto.getUsername(), userDto.getPassword())))
+                .content(usernamePasswordRequestBody(userDto.getUsername(), userDto.getPassword())))
                 .andDo(print())
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("message", containsStringIgnoringCase("Username not found / incorrect password")));
@@ -111,7 +103,7 @@ public class AuthControllerTest extends AbstractControllerTestClass {
 
         mvc.perform(post(API_AUTH + "login")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody(userDto.getUsername(), userDto.getPassword())))
+                .content(usernamePasswordRequestBody(userDto.getUsername(), userDto.getPassword())))
                 .andDo(print())
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("message",
@@ -131,7 +123,7 @@ public class AuthControllerTest extends AbstractControllerTestClass {
 
         MvcResult result = mvc.perform(post(API_AUTH + "register")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody(user.getUsername(), user.getPassword())))
+                .content(usernamePasswordRequestBody(user.getUsername(), user.getPassword())))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andReturn();
@@ -145,7 +137,7 @@ public class AuthControllerTest extends AbstractControllerTestClass {
     // Register: fail
     @Test
     public void register_InvalidUsername_ShouldReturnBadRequest() throws Exception {
-        String body = requestBody("notValidUsername", "password");
+        String body = usernamePasswordRequestBody("notValidUsername", "password");
 
         mvc.perform(post(API_AUTH + "register")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -157,7 +149,7 @@ public class AuthControllerTest extends AbstractControllerTestClass {
 
     @Test
     public void register_InvalidPwd_ShouldReturnBadRequest() throws Exception {
-        String body = requestBody("username@mail.com", "1");
+        String body = usernamePasswordRequestBody("username@mail.com", "1");
 
         mvc.perform(post(API_AUTH + "register")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -166,7 +158,6 @@ public class AuthControllerTest extends AbstractControllerTestClass {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("password", containsInAnyOrder("Password is required")));
     }
-
 
     // Token: fail
     @Test
@@ -287,7 +278,7 @@ public class AuthControllerTest extends AbstractControllerTestClass {
                 .andDo(print())
                 .andExpect(status().isBadRequest());
 
-        verify(passwordFacade, times(0)).updatePassword(any(TokenRequest.class), anyString());
+        verifyNoInteractions(passwordFacade);
     }
 
     @Test
@@ -301,7 +292,7 @@ public class AuthControllerTest extends AbstractControllerTestClass {
                 .andDo(print())
                 .andExpect(status().isBadRequest());
 
-        verify(passwordFacade, times(0)).updatePassword(any(TokenRequest.class), anyString());
+        verifyNoInteractions(passwordFacade);
     }
 
 }
