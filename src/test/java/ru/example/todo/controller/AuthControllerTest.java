@@ -58,14 +58,16 @@ public class AuthControllerTest extends AbstractControllerTestClass {
     // Login: success
     @Test
     public void login_ShouldReturnTokens() throws Exception {
-        UserDto admin = new UserDto(ADMIN, "admin");
+        UserDto userDto = mock(UserDto.class);
+        given(userDto.getUsername()).willReturn("username@mail.com");
+        given(userDto.getPassword()).willReturn("password");
 
         given(userService.login(any(UserDto.class)))
                 .willReturn("access_token");
 
         String response = mvc.perform(post(API_AUTH + "login")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody(admin.getUsername(), admin.getPassword())))
+                .content(requestBody(userDto.getUsername(), userDto.getPassword())))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andReturn()
@@ -79,7 +81,7 @@ public class AuthControllerTest extends AbstractControllerTestClass {
     // Login: fail
     @Test
     public void login_NotFound_ShouldThrowCustomException() throws Exception {
-        UserDto user = new UserDto("usernameNotExists@mail.com", "somePassword");
+        UserDto user = new UserDto("usernameNotExists@mail.com", "somePassword"); // todo: mock entites
 
         given(userService.login(any(UserDto.class)))
                 .willThrow(new CustomException("Not Found",
@@ -97,7 +99,7 @@ public class AuthControllerTest extends AbstractControllerTestClass {
 
     @Test
     public void login_WrongPassword_ShouldThrowCustomException() throws Exception {
-        UserDto user = new UserDto(USER, "wrongPassword");
+        UserDto user = new UserDto(USER, "wrongPassword"); // todo: mock entites
 
         given(userService.login(any(UserDto.class)))
                 .willThrow(new CustomException("Not Found",
@@ -117,7 +119,7 @@ public class AuthControllerTest extends AbstractControllerTestClass {
     // Register: success
     @Test
     public void register_ShouldReturnOk() throws Exception {
-        User user = new User("user@mail.com", "password1234");
+        User user = new User("user@mail.com", "password1234"); // todo: mock entites
 
         given(userService.register(any(User.class)))
                 .willReturn("ok");
