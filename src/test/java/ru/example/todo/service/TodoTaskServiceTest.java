@@ -16,6 +16,7 @@ import ru.example.todo.repository.TodoTaskRepository;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import static org.junit.Assert.*;
@@ -66,6 +67,20 @@ public class TodoTaskServiceTest extends AbstractServiceTestClass {
 
         verify(taskRepository).findById(anyLong());
         verifyNoMoreInteractions(taskRepository);
+    }
+
+    @Test
+    public void deleteTaskById_ShouldThrowCustomException_Forbidden() {
+        given(taskRepository.findById(anyLong()))
+                .willReturn(Optional.of(new TodoTask("title")));
+
+        assertThrows(CustomException.class, () -> taskService
+                .deleteTaskById(new User("name", "pwd"), 1L));
+
+        verify(taskRepository).findById(anyLong());
+        verifyNoMoreInteractions(taskRepository);
+
+        verify(taskRepository, times(0)).deleteById(anyLong());
     }
 
     //  createTask
