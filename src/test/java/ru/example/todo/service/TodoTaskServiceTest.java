@@ -38,12 +38,15 @@ public class TodoTaskServiceTest extends AbstractServiceTestClass {
     //  findTaskById
     @Test
     public void findTaskById_ShouldReturnTask() {
-        given(taskRepository.findByIdAndUserId(anyLong(), anyLong()))
-                .willReturn(java.util.Optional.of(new TodoTask("Title")));
-        TodoTask task = taskService.findTaskById(1L, 1L);
+        TodoTask task = mock(TodoTask.class);
+        given(task.getTitle()).willReturn("Title");
+
+        given(taskRepository.findByIdAndUserId(anyLong(), anyLong())).willReturn(java.util.Optional.of(task));
+
+        TodoTask taskFromDb = taskService.findTaskById(1L, 1L);
 
         assertNotNull(task);
-        assertEquals("Title", task.getTitle());
+        assertEquals("Title", taskFromDb.getTitle());
 
         verify(taskRepository).findByIdAndUserId(anyLong(), anyLong());
         verifyNoMoreInteractions(taskRepository);
