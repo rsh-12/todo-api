@@ -10,9 +10,11 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import ru.example.todo.entity.TodoTask;
 import ru.example.todo.entity.User;
+import ru.example.todo.enums.Role;
 import ru.example.todo.exception.CustomException;
 import ru.example.todo.repository.TodoTaskRepository;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -54,6 +56,17 @@ public class TodoTaskServiceTest extends AbstractServiceTestClass {
     }
 
     //  deleteTaskById
+    @Test
+    public void deleteTaskById_ShouldThrowCustomException_NotFound() {
+        given(taskRepository.findById(anyLong()))
+                .willThrow(new CustomException("Not Found", "Task not found", HttpStatus.NOT_FOUND));
+
+        assertThrows(CustomException.class, () -> taskService
+                .deleteTaskById(new User(1L, "name", Collections.singleton(Role.USER)), 1L));
+
+        verify(taskRepository).findById(anyLong());
+        verifyNoMoreInteractions(taskRepository);
+    }
 
     //  createTask
     @Test
