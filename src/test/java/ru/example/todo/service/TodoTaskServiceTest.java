@@ -129,8 +129,13 @@ public class TodoTaskServiceTest extends AbstractServiceTestClass {
     //  findTasksByIds
     @Test
     public void findTasksByIds_ShouldReturnListOfTasks() {
-        given(taskRepository.findAllByIdInAndUserId(anySet(), anyLong()))
-                .willReturn(List.of(new TodoTask("Task1"), new TodoTask("Task2")));
+        TodoTask task1 = mock(TodoTask.class);
+        given(task1.getTitle()).willReturn("Task1");
+
+        TodoTask task2 = mock(TodoTask.class);
+        given(task2.getTitle()).willReturn("Task2");
+
+        given(taskRepository.findAllByIdInAndUserId(anySet(), anyLong())).willReturn(List.of(task1, task2));
         List<TodoTask> tasks = taskService.findTasksByIds(Set.of(1L, 2L), 1L);
 
         assertNotNull(tasks);
