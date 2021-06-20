@@ -101,7 +101,9 @@ public class AuthControllerTest extends AbstractControllerTestClass {
 
     @Test
     public void login_WrongPassword_ShouldThrowCustomException() throws Exception {
-        UserDto user = new UserDto(USER, "wrongPassword"); // todo: mock entites
+        UserDto userDto = mock(UserDto.class);
+        given(userDto.getUsername()).willReturn("username@mail.com");
+        given(userDto.getPassword()).willReturn("password");
 
         given(userService.login(any(UserDto.class)))
                 .willThrow(new CustomException("Not Found",
@@ -109,7 +111,7 @@ public class AuthControllerTest extends AbstractControllerTestClass {
 
         mvc.perform(post(API_AUTH + "login")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody(user.getUsername(), user.getPassword())))
+                .content(requestBody(userDto.getUsername(), userDto.getPassword())))
                 .andDo(print())
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("message",
