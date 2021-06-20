@@ -123,10 +123,11 @@ public class AuthControllerTest extends AbstractControllerTestClass {
     // Register: success
     @Test
     public void register_ShouldReturnOk() throws Exception {
-        User user = new User("user@mail.com", "password1234"); // todo: mock entites
+        User user = mock(User.class);
+        given(user.getUsername()).willReturn("username@mail.com");
+        given(user.getPassword()).willReturn("password");
 
-        given(userService.register(any(User.class)))
-                .willReturn("ok");
+        given(userService.register(any(User.class))).willReturn("ok");
 
         MvcResult result = mvc.perform(post(API_AUTH + "register")
                 .contentType(MediaType.APPLICATION_JSON)
