@@ -71,16 +71,19 @@ public class TodoTaskServiceTest extends AbstractServiceTestClass {
 
     @Test
     public void deleteTaskById_ShouldThrowCustomException_Forbidden() {
-        given(taskRepository.findById(anyLong()))
-                .willReturn(Optional.of(new TodoTask("title")));
+        User principal = mock(User.class);
+        given(principal.getRoles()).willReturn(Collections.singleton(Role.USER));
 
-        assertThrows(CustomException.class, () -> taskService
-                .deleteTaskById(new User("name", "pwd"), 1L));
+        User taskUser = mock(User.class);
+        TodoTask task = mock(TodoTask.class);
+        given(task.getUser()).willReturn(taskUser);
+
+        given(taskRepository.findById(anyLong())).willReturn(Optional.of(task));
+
+        assertThrows(CustomException.class, () -> taskService.deleteTaskById(principal, 1L));
 
         verify(taskRepository).findById(anyLong());
         verifyNoMoreInteractions(taskRepository);
-
-        verify(taskRepository, times(0)).deleteById(anyLong());
     }
 
     @Test
