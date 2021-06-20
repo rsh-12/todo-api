@@ -59,11 +59,12 @@ public class TodoTaskServiceTest extends AbstractServiceTestClass {
     //  deleteTaskById
     @Test
     public void deleteTaskById_ShouldThrowCustomException_NotFound() {
+        User principal = mock(User.class);
+
         given(taskRepository.findById(anyLong()))
                 .willThrow(new CustomException("Not Found", "Task not found", HttpStatus.NOT_FOUND));
 
-        assertThrows(CustomException.class, () -> taskService
-                .deleteTaskById(new User(1L, "name", Collections.singleton(Role.USER)), 1L));
+        assertThrows(CustomException.class, () -> taskService.deleteTaskById(principal, 1L));
 
         verify(taskRepository).findById(anyLong());
         verifyNoMoreInteractions(taskRepository);
