@@ -32,7 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-// todo: mock some classes
+
 public class TodoSectionControllerTest extends AbstractControllerTestClass {
 
     @MockBean
@@ -162,7 +162,6 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
     @Test
     @WithUserDetails(ADMIN)
     public void createSection_ShouldReturnStatusCreated() throws Exception {
-//        doNothing().when(sectionService).createSection(any(User.class), any(TodoSectionDto.class));
         given(sectionService.createSection(any(User.class), any(TodoSectionDto.class)))
                 .willReturn(new TodoSection(1L,"title"));
 
@@ -190,8 +189,12 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
     @Test
     @WithUserDetails(ADMIN)
     public void updateSection_ShouldReturnOk() throws Exception {
+        TodoSection section = mock(TodoSection.class);
+        given(section.getId()).willReturn(1L);
+        given(section.getTitle()).willReturn("Title");
+
         given(sectionService.updateSection(any(User.class), anyLong(), any(TodoSectionDto.class)))
-                .willReturn(new TodoSection(1L,"Title"));
+                .willReturn(section);
 
         // update section by id: returns 200 OK
         mvc.perform(put(API_SECTIONS + 1)
