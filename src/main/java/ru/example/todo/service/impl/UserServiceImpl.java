@@ -75,10 +75,10 @@ public class UserServiceImpl extends AbstractServiceClass implements UserService
                     "Refresh token is not valid or expired, please, try to log in",
                     HttpStatus.BAD_REQUEST);
         }
-        User user = userRepository.findByUsername(oldRefreshToken.getUsername())
-                .orElseThrow(() -> new CustomException("Not Found", "Refresh token owner not found", HttpStatus.BAD_REQUEST));
+        User user = userRepository.findByUsername(oldRefreshToken.getUsername()).orElseThrow(() ->
+                new CustomException("Not Found", "Refresh token owner not found", HttpStatus.BAD_REQUEST));
 
-        return buildResponseBody(user);
+        return buildResponseBody(user); // generate new access and refresh tokens
     }
 
     @Override
