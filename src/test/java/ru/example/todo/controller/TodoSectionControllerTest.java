@@ -45,8 +45,14 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
     @Test
     @WithUserDetails(ADMIN)
     public void getSections_ShouldReturnListOfSections() throws Exception {
+        TodoSectionProjection section1 = mock(TodoSectionProjection.class);
+        given(section1.getTitle()).willReturn("section1");
+
+        TodoSectionProjection section2 = mock(TodoSectionProjection.class);
+        given(section2.getTitle()).willReturn("section2");
+
         given(sectionService.findSections(anyLong()))
-                .willReturn(List.of(new TodoSectionProjection("section1"), new TodoSectionProjection("section2")));
+                .willReturn(List.of(section1, section2));
 
         mvc.perform(get(API_SECTIONS)
                 .contentType(MediaType.APPLICATION_JSON))
