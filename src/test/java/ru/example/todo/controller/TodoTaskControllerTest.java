@@ -29,7 +29,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-// todo: mock some classes
 public class TodoTaskControllerTest extends AbstractControllerTestClass {
 
     @MockBean
@@ -38,10 +37,8 @@ public class TodoTaskControllerTest extends AbstractControllerTestClass {
     @Test
     @WithUserDetails(ADMIN)
     public void getTasks_ShouldReturnListOfTasks() throws Exception {
-        given(taskService.findTasks(
-                anyLong(), anyInt(), anyInt(),
-                any(FilterByDate.class), anyString()))
-                .willReturn(List.of(
+        given(taskService.findTasks(anyLong(), anyInt(), anyInt(),
+                any(FilterByDate.class), anyString())).willReturn(List.of(
                         new TodoTask("task1", LocalDate.now()),
                         new TodoTask("task2", LocalDate.now())));
 
@@ -52,16 +49,14 @@ public class TodoTaskControllerTest extends AbstractControllerTestClass {
                 .andExpect(jsonPath("_embedded.tasks[1].title", is("task2")))
                 .andExpect(status().isOk());
 
-        verify(taskService, times(1)).findTasks(
-                anyLong(), anyInt(), anyInt(),
+        verify(taskService, times(1)).findTasks(anyLong(), anyInt(), anyInt(),
                 any(FilterByDate.class), anyString());
     }
 
     @Test
     @WithUserDetails(ADMIN)
     public void getTask_ShouldReturnTaskById() throws Exception {
-        given(taskService.findTaskById(anyLong(), anyLong()))
-                .willReturn(new TodoTask("task"));
+        given(taskService.findTaskById(anyLong(), anyLong())).willReturn(new TodoTask("task"));
 
         mvc.perform(get(API_TASKS + 1))
                 .andExpect(status().isOk())
@@ -122,7 +117,7 @@ public class TodoTaskControllerTest extends AbstractControllerTestClass {
     @WithUserDetails(USER)
     public void createTask_ShouldReturnCreated() throws Exception {
         given(taskService.createTask(any(User.class), any(TodoTask.class)))
-                .willReturn(new TodoTask( "title"));
+                .willReturn(new TodoTask("title"));
 
         mvc.perform(post(API_TASKS)
                 .contentType(MediaType.APPLICATION_JSON)
