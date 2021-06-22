@@ -155,8 +155,13 @@ public class TodoTaskControllerTest extends AbstractControllerTestClass {
     @Test
     @WithUserDetails(USER)
     public void updateTask_ShouldReturnOk() throws Exception {
+        TodoTask task = mock(TodoTask.class);
+        given(task.getTitle()).willReturn("some title");
+        given(task.isStarred()).willReturn(true);
+        given(task.isCompleted()).willReturn(true);
+
         given(taskService.updateTask(anyLong(), anyLong(), any(TodoTaskDto.class), any(), any()))
-                .willReturn(new TodoTask("Title"));
+                .willReturn(task);
 
         mvc.perform(patch(API_TASKS + 1)
                 .contentType(MediaType.APPLICATION_JSON)
