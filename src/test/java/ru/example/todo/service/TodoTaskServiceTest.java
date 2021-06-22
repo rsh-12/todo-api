@@ -8,9 +8,11 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
+import ru.example.todo.dto.TodoTaskDto;
 import ru.example.todo.entity.TodoTask;
 import ru.example.todo.entity.User;
 import ru.example.todo.enums.Role;
+import ru.example.todo.enums.filters.FilterByBoolean;
 import ru.example.todo.exception.CustomException;
 import ru.example.todo.repository.TodoTaskRepository;
 
@@ -125,6 +127,18 @@ public class TodoTaskServiceTest extends AbstractServiceTestClass {
     }
 
     //  updateTask
+    @Test
+    public void updateTask_ShouldThrowCustomException() {
+        given(taskRepository.findByIdAndUserId(anyLong(), anyLong()))
+                .willThrow(new CustomException("Not found", "Task not found", HttpStatus.NOT_FOUND));
+
+        assertThrows(CustomException.class, () ->
+                taskService.updateTask(1L, 1L, new TodoTaskDto("title"),
+                        FilterByBoolean.TRUE, FilterByBoolean.TRUE));
+
+        verify(taskRepository).findByIdAndUserId(anyLong(), anyLong());
+        verifyNoMoreInteractions(taskRepository);
+    }
 
     //  findTasksByIds
     @Test
