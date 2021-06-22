@@ -39,8 +39,8 @@ public class TodoTaskControllerTest extends AbstractControllerTestClass {
     public void getTasks_ShouldReturnListOfTasks() throws Exception {
         given(taskService.findTasks(anyLong(), anyInt(), anyInt(),
                 any(FilterByDate.class), anyString())).willReturn(List.of(
-                        new TodoTask("task1", LocalDate.now()),
-                        new TodoTask("task2", LocalDate.now())));
+                new TodoTask("task1", LocalDate.now()),
+                new TodoTask("task2", LocalDate.now())));
 
         mvc.perform(get(API_TASKS)
                 .contentType(MediaType.APPLICATION_JSON))
@@ -116,8 +116,10 @@ public class TodoTaskControllerTest extends AbstractControllerTestClass {
     @Test
     @WithUserDetails(USER)
     public void createTask_ShouldReturnCreated() throws Exception {
-        given(taskService.createTask(any(User.class), any(TodoTask.class)))
-                .willReturn(new TodoTask("title"));
+        TodoTask task = mock(TodoTask.class);
+        given(task.getTitle()).willReturn("title");
+
+        given(taskService.createTask(any(User.class), any(TodoTask.class))).willReturn(task);
 
         mvc.perform(post(API_TASKS)
                 .contentType(MediaType.APPLICATION_JSON)
