@@ -9,7 +9,6 @@ import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -30,6 +29,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -65,6 +65,7 @@ public class JwtTokenServiceImpl implements JwtTokenService {
                 .compact();
     }
 
+    // todo: replace random alphanumeric with jwts
     @Override
     public RefreshToken buildRefreshToken(String username) {
         String randomToken = RandomStringUtils.randomAlphanumeric(64);
@@ -88,7 +89,7 @@ public class JwtTokenServiceImpl implements JwtTokenService {
         String bearerToken = request.getHeader("Authorization");
 
         if (bearerToken != null) {
-            return StringUtils.startsWithIgnoreCase(bearerToken, "Bearer ") ?
+            return (bearerToken.startsWith("Bearer") || bearerToken.startsWith("bearer")) ?
                     bearerToken.substring(7) :
                     bearerToken;
         }
