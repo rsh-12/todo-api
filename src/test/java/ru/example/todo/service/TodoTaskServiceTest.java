@@ -159,6 +159,23 @@ public class TodoTaskServiceTest extends AbstractServiceTestClass {
         verify(taskRepository, times(1)).save(task);
     }
 
+    @Test
+    public void updateTask_WithNullArgs_ShouldReturnTask() {
+        TodoTask task = new TodoTask("make a call", LocalDate.now().minusDays(1));
+        given(taskRepository.findByIdAndUserId(anyLong(), anyLong())).willReturn(Optional.ofNullable(task));
+        given(taskRepository.save(task)).willReturn(task);
+
+        TodoTask updatedTask = taskService.updateTask(1L, 1L, null,
+                null, null);
+
+        assertFalse(updatedTask.isCompleted());
+        assertFalse(updatedTask.isStarred());
+        assertEquals("make a call", updatedTask.getTitle());
+
+        verify(taskRepository, times(1)).findByIdAndUserId(anyLong(), anyLong());
+        verify(taskRepository, times(1)).save(task);
+    }
+
     //  findTasksByIds
     @Test
     public void findTasksByIds_ShouldReturnListOfTasks() {
