@@ -1,0 +1,32 @@
+version: '3.8'
+
+networks:
+  micrometer:
+
+services:
+
+  prometheus:
+    image: prom/prometheus
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    container_name: todo-prometheus
+    volumes:
+      - ./prometheus:/etc/prometheus/
+    ports:
+      - 9090:9090
+    networks:
+      - micrometer
+    restart: always
+
+  grafana:
+    image: grafana/grafana
+    container_name: todo-grafana
+    depends_on:
+      - prometheus
+    volumes:
+      - ./grafana/:/etc/grafana/
+    ports:
+      - 3000:3000
+    networks:
+      - micrometer
+    restart: always
