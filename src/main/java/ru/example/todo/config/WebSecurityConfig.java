@@ -42,6 +42,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.authorizeRequests()
                 .mvcMatchers("/").permitAll()
+                .mvcMatchers("/actuator/**").permitAll()
                 .mvcMatchers("/api/auth/**").permitAll()
                 .anyRequest().authenticated();
 
