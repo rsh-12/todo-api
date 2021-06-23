@@ -16,6 +16,7 @@ import ru.example.todo.enums.filters.FilterByBoolean;
 import ru.example.todo.exception.CustomException;
 import ru.example.todo.repository.TodoTaskRepository;
 
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -138,6 +139,24 @@ public class TodoTaskServiceTest extends AbstractServiceTestClass {
 
         verify(taskRepository).findByIdAndUserId(anyLong(), anyLong());
         verifyNoMoreInteractions(taskRepository);
+    }
+
+    @Test
+    public void updateTask_ShouldReturnTask() {
+        TodoTask task = new TodoTask("make a call", LocalDate.now().minusDays(1));
+        given(taskRepository.findByIdAndUserId(anyLong(), anyLong())).willReturn(Optional.ofNullable(task));
+        given(taskRepository.save(task)).willReturn(task);
+
+        TodoTask updatedTask = taskService.updateTask(1L, 1L, new TodoTaskDto("Title", LocalDate.now()),
+                FilterByBoolean.TRUE, FilterByBoolean.TRUE);
+
+        assertEquals("Title", updatedTask.getTitle());
+        assertEquals(LocalDate.now(), updatedTask.getCompletionDate());
+        assertTrue(updatedTask.isCompleted());
+        assertTrue(updatedTask.isStarred());
+
+        verify(taskRepository, times(1)).findByIdAndUserId(anyLong(), anyLong());
+        verify(taskRepository, times(1)).save(task);
     }
 
     //  findTasksByIds
