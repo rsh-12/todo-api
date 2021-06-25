@@ -22,5 +22,4 @@ public interface TodoTaskRepository extends JpaRepository<TodoTask, Long> {
 
     Optional<TodoTask> findByIdAndUserId(Long taskId, Long userId);
 
-    void deleteByIdAndUserId(Long taskId, Long userId);
 }
