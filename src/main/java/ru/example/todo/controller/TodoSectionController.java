@@ -95,7 +95,7 @@ public class TodoSectionController {
     @PostMapping(consumes = "application/json")
     public ResponseEntity<String> createSection(@AuthenticationPrincipal UserDetailsImpl userDetails,
                                                 @Valid @RequestBody TodoSectionDto sectionDto) {
-        User user = userService.findUserByUsername(userDetails.getUsername());
+        User user = userService.findUserById(userDetails.getId());
         TodoSection section = todoSectionService.createSection(user, sectionDto);
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()

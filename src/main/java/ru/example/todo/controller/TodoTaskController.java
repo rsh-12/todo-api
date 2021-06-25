@@ -98,7 +98,7 @@ public class TodoTaskController {
     @PostMapping(consumes = "application/json")
     public ResponseEntity<String> createTask(@AuthenticationPrincipal UserDetailsImpl userDetails,
                                              @Valid @RequestBody TodoTaskDto taskDto) {
-        User user = userService.findUserByUsername(userDetails.getUsername());
+        User user = userService.findUserById(userDetails.getId());
         TodoTask task = todoTaskService.createTask(user, modelMapper.map(taskDto, TodoTask.class));
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
