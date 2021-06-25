@@ -46,10 +46,9 @@ public class JwtTokenServiceImpl implements JwtTokenService {
     }
 
     @Override
-    public String buildAccessToken(Long userId, String username, Set<Role> roles) {
+    public String buildAccessToken(Long userId, Set<Role> roles) {
         Claims claims = Jwts.claims();
         claims.put("id", userId);
-        claims.put("username", username);
 
         if (roles != null) {
             claims.put("auth", roles.stream()
@@ -132,9 +131,9 @@ public class JwtTokenServiceImpl implements JwtTokenService {
     }
 
     @Override
-    public String getUsername(String accessToken) {
+    public Long getId(String accessToken) {
         Claims claims = getClaimsBody(accessToken);
-        return String.valueOf(claims.get("username"));
+        return Long.parseLong(String.valueOf(claims.get("id")));
     }
 
     @Override
@@ -148,10 +147,9 @@ public class JwtTokenServiceImpl implements JwtTokenService {
         Claims claims = getClaimsBody(accessToken);
 
         Long id = Long.parseLong(String.valueOf(claims.get("id")));
-        String username = String.valueOf(claims.get("username"));
         Set<Role> roles = extractRoles(claims);
 
-        User principal = new User(id, username, roles);
+        User principal = new User(id, roles);
         UserDetailsImpl userDetails = new UserDetailsImpl(principal);
 
         return new UsernamePasswordAuthenticationToken(userDetails, "", roles);
