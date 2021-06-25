@@ -29,7 +29,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -170,8 +169,8 @@ public class JwtTokenServiceImpl implements JwtTokenService {
         String[] authorities = claims.get("auth").toString().split(",");
         return Arrays.stream(authorities)
                 .map(authority -> authority
-                        .replaceAll("\\[\\{authority=", "")
-                        .replaceAll("}]", ""))
+                        .replaceAll("[{}\\[\\] ]", "")
+                        .replaceAll("authority=", ""))
                 .map(Role::valueOf)
                 .collect(Collectors.toSet());
     }
