@@ -15,8 +15,7 @@ import ru.example.todo.service.impl.JwtTokenServiceImpl;
 import java.util.Collections;
 import java.util.Set;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 // todo: mock TokenProperties
 public class JwtTokenServiceTest extends AbstractServiceTestClass {
@@ -71,6 +70,20 @@ public class JwtTokenServiceTest extends AbstractServiceTestClass {
     }
 
     // getUserRoles
+    @Test
+    public void getUserRoles_ShouldReturnRoles() {
+        String accessToken = jwtTokenService
+                .buildAccessToken(1L, "user@mail.com", Set.of(Role.ADMIN, Role.USER));
+        assertNotNull(accessToken);
+
+        Set<Role> userRoles = jwtTokenService.getUserRoles(accessToken);
+        assertNotNull(userRoles);
+
+        assertTrue(userRoles.contains(Role.USER));
+        assertTrue(userRoles.contains(Role.ADMIN));
+    }
+
+
     // getAuthentication
 
 }
