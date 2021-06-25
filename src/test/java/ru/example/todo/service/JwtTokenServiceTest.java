@@ -62,10 +62,11 @@ public class JwtTokenServiceTest extends AbstractServiceTestClass {
     public void getUsername_ShouldReturnUsername() {
         String accessToken = jwtTokenService
                 .buildAccessToken(1L, "user@mail.com", Collections.singleton(Role.USER));
-
         assertNotNull(accessToken);
 
         String username = jwtTokenService.getUsername(accessToken);
+        assertNotNull(username);
+
         assertEquals("user@mail.com", username);
     }
 
