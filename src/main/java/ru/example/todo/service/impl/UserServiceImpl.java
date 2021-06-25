@@ -90,12 +90,6 @@ public class UserServiceImpl extends AbstractServiceClass implements UserService
     }
 
     @Override
-    public User findUserByUsername(String username) {
-        return userRepository.findByUsername(username)
-                .orElseThrow(() -> new CustomException("Not Found", "Username not found", HttpStatus.NOT_FOUND));
-    }
-
-    @Override
     public User findUserById(Long userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException("Not Found", "User Not Found", HttpStatus.NOT_FOUND));
@@ -116,7 +110,7 @@ public class UserServiceImpl extends AbstractServiceClass implements UserService
     }
 
     String buildResponseBody(User user) {
-        String accessToken = jwtTokenService.buildAccessToken(user.getId(), user.getUsername(), user.getRoles());
+        String accessToken = jwtTokenService.buildAccessToken(user.getId(), user.getRoles());
         String refreshToken = jwtTokenService.buildRefreshToken(user.getUsername()).getToken();
 
         JSONObject response = new JSONObject();
