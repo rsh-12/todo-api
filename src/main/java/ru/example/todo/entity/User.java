@@ -67,9 +67,8 @@ public class User {
     }
 
     // for principal initializing
-    public User(Long id, String username, Set<Role> roles) {
+    public User(Long id, Set<Role> roles) {
         this.id = id;
-        this.username = username;
         this.roles = roles;
     }
 
