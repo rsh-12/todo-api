@@ -15,11 +15,10 @@ public interface JwtTokenService {
     /**
      * Builds an access JWT.
      *
-     * @param username the username for building access token.
-     * @param roles    the roles for building access token.
+     * @param roles the roles for building access token.
      * @return the access JWT
      */
-    String buildAccessToken(Long userId, String username, Set<Role> roles);
+    String buildAccessToken(Long userId, Set<Role> roles);
 
     /**
      * Builds a refresh JWT.
@@ -68,7 +67,7 @@ public interface JwtTokenService {
      */
     boolean hasRefreshTokenExpired(RefreshToken refreshToken);
 
-    String getUsername(String accessToken);
+    Long getId(String accessToken);
 
     Set<Role> getUserRoles(String accessToken);
 
