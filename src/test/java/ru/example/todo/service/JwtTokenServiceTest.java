@@ -29,7 +29,7 @@ public class JwtTokenServiceTest extends AbstractServiceTestClass {
     // buildAccessToken
     @Test
     public void buildAccessToken_ShouldReturnAccessToken() throws CustomException {
-        String accessToken = jwtTokenService.buildAccessToken(1L, "username", Set.of(Role.USER));
+        String accessToken = jwtTokenService.buildAccessToken(1L, Set.of(Role.USER));
         assertNotNull(accessToken);
         assertEquals(3, accessToken.split("\\.").length);
         System.out.println("accessToken = " + accessToken);
@@ -60,20 +60,20 @@ public class JwtTokenServiceTest extends AbstractServiceTestClass {
     @Test
     public void getUsername_ShouldReturnUsername() {
         String accessToken = jwtTokenService
-                .buildAccessToken(1L, "user@mail.com", Collections.singleton(Role.USER));
+                .buildAccessToken(1L, Collections.singleton(Role.USER));
         assertNotNull(accessToken);
 
-        String username = jwtTokenService.getUsername(accessToken);
-        assertNotNull(username);
+        Long id = jwtTokenService.getId(accessToken);
+        assertNotNull(id);
 
-        assertEquals("user@mail.com", username);
+        assertEquals(1L, (long) id);
     }
 
     // getUserRoles
     @Test
     public void getUserRoles_ShouldReturnRoles() {
         String accessToken = jwtTokenService
-                .buildAccessToken(1L, "user@mail.com", Set.of(Role.ADMIN, Role.USER));
+                .buildAccessToken(1L, Set.of(Role.ADMIN, Role.USER));
         assertNotNull(accessToken);
 
         Set<Role> userRoles = jwtTokenService.getUserRoles(accessToken);
