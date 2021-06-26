@@ -10,6 +10,7 @@ import ru.example.todo.service.TokenStore;
 
 import java.util.Date;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -18,8 +19,8 @@ public class InMemoryTokenStore implements TokenStore {
     private final Map<String, RefreshToken> tokenStore = new ConcurrentHashMap<>();
 
     @Override
-    public RefreshToken findRefreshToken(String token) {
-        return tokenStore.get(token);
+    public Optional<RefreshToken> findRefreshToken(String token) {
+        return Optional.ofNullable(tokenStore.get(token));
     }
 
     @Override

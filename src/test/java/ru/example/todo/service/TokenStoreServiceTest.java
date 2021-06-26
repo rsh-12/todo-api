@@ -38,26 +38,26 @@ public class TokenStoreServiceTest extends AbstractServiceTestClass {
 
 
     @Test
-    public void findRefreshToken_ShouldReturnToken() throws Exception {
-        RefreshToken refreshToken = tokenStore.findRefreshToken(TOKEN);
+    public void findRefreshToken_ShouldReturnToken() {
+        RefreshToken refreshToken = tokenStore.findRefreshToken(TOKEN).orElse(null);
         assertNotNull(refreshToken);
         assertEquals(TOKEN, refreshToken.getToken());
     }
 
     @Test
     public void findRefreshToken_ShouldReturnNull() {
-        RefreshToken refreshToken = tokenStore.findRefreshToken("notfound");
+        RefreshToken refreshToken = tokenStore.findRefreshToken("notfound").orElse(null);
         assertNull(refreshToken);
     }
 
     @Test
     public void removeIfExpired_ShouldRemoveTokenFromStore() {
-        RefreshToken before = tokenStore.findRefreshToken(TOKEN);
+        RefreshToken before = tokenStore.findRefreshToken(TOKEN).orElse(null);
         assertNotNull(before);
 
         tokenStore.deleteExpiredRefreshTokens();
 
-        RefreshToken after = tokenStore.findRefreshToken(TOKEN);
+        RefreshToken after = tokenStore.findRefreshToken(TOKEN).orElse(null);
         assertNull(after);
     }
 }

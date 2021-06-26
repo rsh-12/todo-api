@@ -114,10 +114,8 @@ public class JwtTokenServiceImpl implements JwtTokenService {
 
     @Override
     public RefreshToken findRefreshToken(String refreshToken) {
-        if (refreshToken == null) {
-            throw new CustomException("Bad Request", "Invalid token", HttpStatus.BAD_REQUEST);
-        }
-        return tokenStore.findRefreshToken(refreshToken);
+        return tokenStore.findRefreshToken(refreshToken)
+                .orElseThrow(() -> new CustomException("Bad Request", "Invalid token", HttpStatus.BAD_REQUEST));
     }
 
     @Override
