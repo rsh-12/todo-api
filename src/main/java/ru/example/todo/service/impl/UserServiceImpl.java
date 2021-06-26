@@ -70,7 +70,7 @@ public class UserServiceImpl extends AbstractServiceClass implements UserService
     public String generateNewTokens(String refreshToken) {
         RefreshToken oldRefreshToken = jwtTokenService.findRefreshToken(refreshToken);
 
-        if (oldRefreshToken == null || !jwtTokenService.hasRefreshTokenExpired(oldRefreshToken)) {
+        if (!jwtTokenService.hasRefreshTokenExpired(oldRefreshToken)) {
             throw new CustomException(
                     "Refresh token is not valid or expired, please, try to log in",
                     HttpStatus.BAD_REQUEST);
