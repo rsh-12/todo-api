@@ -12,12 +12,15 @@ import ru.example.todo.enums.Role;
 import ru.example.todo.exception.CustomException;
 import ru.example.todo.service.impl.JwtTokenServiceImpl;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Collections;
 import java.util.Set;
 
 import static org.junit.Assert.*;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
-// todo: mock TokenProperties
 public class JwtTokenServiceTest extends AbstractServiceTestClass {
 
     @Autowired
@@ -51,6 +54,17 @@ public class JwtTokenServiceTest extends AbstractServiceTestClass {
     }
 
     // resolveAccessToken
+    @Test
+    public void resolveAccessToken_ShouldReturnToken() {
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        given(request.getHeader("Authorization")).willReturn("Bearer someAccessToken");
+
+        String accessToken = jwtTokenService.resolveAccessToken(request);
+        assertNotNull(accessToken);
+        assertEquals("someAccessToken", accessToken);
+    }
+
+
     // isAccessTokenValid
     // findRefreshToken
     // removeRefreshTokenById
