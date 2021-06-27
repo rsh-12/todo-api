@@ -7,12 +7,14 @@ package ru.example.todo.service;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import ru.example.todo.dto.TodoTaskDto;
 import ru.example.todo.entity.TodoTask;
 import ru.example.todo.entity.User;
 import ru.example.todo.enums.Role;
 import ru.example.todo.enums.filters.FilterByBoolean;
+import ru.example.todo.enums.filters.FilterByDate;
 import ru.example.todo.exception.CustomException;
 import ru.example.todo.repository.TodoTaskRepository;
 
@@ -36,9 +38,28 @@ public class TodoTaskServiceTest extends AbstractServiceTestClass {
     @MockBean
     private TodoTaskRepository taskRepository;
 
-    //  findTasks
+    // findTasks
+    @Test
+    public void findTasks_ShouldReturnAllUserTasks() {
+        TodoTask task1 = mock(TodoTask.class);
+        given(task1.getTitle()).willReturn("task1");
 
-    //  findTaskById
+        TodoTask task2 = mock(TodoTask.class);
+        given(task2.getTitle()).willReturn("task2");
+
+        given(taskRepository.findAllByUserId(anyLong(), any(Pageable.class))).willReturn(List.of(task1, task2));
+
+        List<TodoTask> tasks = taskService.findTasks(1L, 0, 10, FilterByDate.ALL, "secId");
+        assertNotNull(tasks);
+        assertEquals(2, tasks.size());
+
+        assertTrue(tasks.get(0).getTitle().startsWith("task"));
+        assertTrue(tasks.get(1).getTitle().startsWith("task"));
+
+        verify(taskRepository, times(1)).findAllByUserId(anyLong(), any(Pageable.class));
+    }
+
+    // findTaskById
     @Test
     public void findTaskById_ShouldReturnTask() {
         TodoTask task = mock(TodoTask.class);
@@ -62,7 +83,7 @@ public class TodoTaskServiceTest extends AbstractServiceTestClass {
         assertThrows(CustomException.class, () -> taskService.findTaskById(1L, 1L));
     }
 
-    //  deleteTaskById
+    // deleteTaskById
     @Test
     public void deleteTaskById_ShouldThrowCustomException_NotFound() {
         User principal = mock(User.class);
@@ -112,7 +133,7 @@ public class TodoTaskServiceTest extends AbstractServiceTestClass {
         verify(taskRepository).deleteById(anyLong());
     }
 
-    //  createTask
+    // createTask
     @Test
     public void createTask_ShouldReturnTask() {
         User user = mock(User.class);
@@ -127,7 +148,7 @@ public class TodoTaskServiceTest extends AbstractServiceTestClass {
         assertEquals(createdTask.getUser(), user);
     }
 
-    //  updateTask
+    // updateTask
     @Test
     public void updateTask_ShouldThrowCustomException() {
         given(taskRepository.findByIdAndUserId(anyLong(), anyLong()))
@@ -176,7 +197,7 @@ public class TodoTaskServiceTest extends AbstractServiceTestClass {
         verify(taskRepository, times(1)).save(task);
     }
 
-    //  findTasksByIds
+    // findTasksByIds
     @Test
     public void findTasksByIds_ShouldReturnListOfTasks() {
         TodoTask task1 = mock(TodoTask.class);
