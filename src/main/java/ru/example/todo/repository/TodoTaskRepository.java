@@ -18,7 +18,7 @@ public interface TodoTaskRepository extends JpaRepository<TodoTask, Long> {
 
     List<TodoTask> findAllByIdInAndUserId(Set<Long> taskIds, Long userId);
 
-    Page<TodoTask> findAllByUserId(Long userId, Pageable pageable);
+    List<TodoTask> findAllByUserId(Long userId, Pageable pageable);
 
     Optional<TodoTask> findByIdAndUserId(Long taskId, Long userId);
 
