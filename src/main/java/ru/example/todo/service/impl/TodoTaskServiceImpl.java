@@ -53,7 +53,7 @@ public class TodoTaskServiceImpl extends AbstractServiceClass implements TodoTas
         }
 
         log.info("Get all tasks");
-        return todoTaskRepository.findAllByUserId(userId, page).getContent();
+        return todoTaskRepository.findAllByUserId(userId, page);
     }
 
     // get task by id
