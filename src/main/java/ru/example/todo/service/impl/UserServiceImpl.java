@@ -14,13 +14,14 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.example.todo.config.properties.TokenProperties;
-import ru.example.todo.domain.RefreshToken;
 import ru.example.todo.dto.UserDto;
+import ru.example.todo.entity.RefreshToken;
 import ru.example.todo.entity.User;
 import ru.example.todo.exception.CustomException;
 import ru.example.todo.repository.UserRepository;
 import ru.example.todo.security.UserDetailsImpl;
 import ru.example.todo.service.JwtTokenService;
+import ru.example.todo.service.RefreshTokenService;
 import ru.example.todo.service.UserService;
 
 @Service
@@ -29,26 +30,28 @@ public class UserServiceImpl extends AbstractServiceClass implements UserService
     private final AuthenticationManager authManager;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final JwtTokenService jwtTokenService;
+    private final RefreshTokenService refreshTokenService;
     private final UserRepository userRepository;
     private final TokenProperties tokenProperties;
 
     public UserServiceImpl(JwtTokenService jwtTokenService, UserRepository userRepository,
                            TokenProperties tokenProperties, AuthenticationManager authManager,
-                           BCryptPasswordEncoder bCryptPasswordEncoder) {
+                           BCryptPasswordEncoder bCryptPasswordEncoder, RefreshTokenService refreshTokenService) {
         this.jwtTokenService = jwtTokenService;
         this.userRepository = userRepository;
         this.tokenProperties = tokenProperties;
         this.authManager = authManager;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+        this.refreshTokenService = refreshTokenService;
     }
 
     @Override
-    public String login(UserDto userDto) {
+    public String login(UserDto userDto, String ip) {
         try {
             Authentication auth = authManager
                     .authenticate(new UsernamePasswordAuthenticationToken(userDto.getUsername(), userDto.getPassword()));
             User user = ((UserDetailsImpl) auth.getPrincipal()).getUser();
-            return buildResponseBody(user);
+            return buildResponseBody(user, ip);
         } catch (AuthenticationException ex) {
             throw new CustomException("Not Found", "Username Not Found / Incorrect Password", HttpStatus.NOT_FOUND);
         }
@@ -67,18 +70,13 @@ public class UserServiceImpl extends AbstractServiceClass implements UserService
     }
 
     @Override
-    public String generateNewTokens(String refreshToken) {
-        RefreshToken oldRefreshToken = jwtTokenService.findRefreshToken(refreshToken);
+    public String generateNewTokens(String refreshToken, String ip) {
+        RefreshToken oldRefreshToken = refreshTokenService.findRefreshTokenByValue(refreshToken);
 
-        if (!jwtTokenService.hasRefreshTokenExpired(oldRefreshToken)) {
-            throw new CustomException(
-                    "Refresh token is not valid or expired, please, try to log in",
-                    HttpStatus.BAD_REQUEST);
-        }
-        User user = userRepository.findByUsername(oldRefreshToken.getUsername()).orElseThrow(() ->
+        User user = userRepository.findById(oldRefreshToken.getUserId()).orElseThrow(() ->
                 new CustomException("Not Found", "Refresh token owner not found", HttpStatus.BAD_REQUEST));
 
-        return buildResponseBody(user); // generate new access and refresh tokens
+        return buildResponseBody(user, ip); // generate new access and refresh tokens
     }
 
     @Override
@@ -109,9 +107,9 @@ public class UserServiceImpl extends AbstractServiceClass implements UserService
         return userRepository.existsByUsername(email);
     }
 
-    String buildResponseBody(User user) {
+    String buildResponseBody(User user, String ip) {
         String accessToken = jwtTokenService.buildAccessToken(user.getId(), user.getRoles());
-        String refreshToken = jwtTokenService.buildRefreshToken(user.getUsername()).getToken();
+        String refreshToken = refreshTokenService.createRefreshToken(user.getId(), ip);
 
         JSONObject response = new JSONObject();
         try {
