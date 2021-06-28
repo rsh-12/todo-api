@@ -39,8 +39,8 @@ public class AuthController {
     }
 
     @PostMapping(value = "/login", produces = "application/json")
-    public ResponseEntity<String> login(@Valid @RequestBody UserDto userDto) {
-        String tokens = userService.login(userDto);
+    public ResponseEntity<String> login(@Valid @RequestBody UserDto userDto, HttpServletRequest request) {
+        String tokens = userService.login(userDto, getClientIp(request));
         return ResponseEntity.ok(tokens);
     }
 
@@ -52,7 +52,7 @@ public class AuthController {
 
     @PostMapping(value = "/token", produces = "application/json")
     public ResponseEntity<String> getTokens(HttpServletRequest request) {
-        String tokens = userService.generateNewTokens(request.getHeader("token"));
+        String tokens = userService.generateNewTokens(request.getHeader("token"), getClientIp(request));
         return ResponseEntity.ok(tokens);
     }
 
@@ -73,5 +73,13 @@ public class AuthController {
             passwordFacade.updatePassword(token, password.asText());
             return ResponseEntity.ok().build();
         }
+    }
+
+    private String getClientIp(HttpServletRequest request) {
+        String ip = request.getHeader("X-FORWARDED-FOR");
+        if (ip == null || "".equals(ip)) {
+            ip = request.getRemoteAddr();
+        }
+        return ip;
     }
 }
