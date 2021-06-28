@@ -19,12 +19,14 @@ public class InMemoryTokenStoreTest {
     private final InMemoryTokenStore inMemoryTokenStore = new InMemoryTokenStore();
 
     @Test
-    public void saveRefreshToken_ShouldRemoveDuplicateTokens() {
-
+    public void saveRefreshToken_ShouldSaveTokensDistinct() {
         Map<String, RefreshToken> tokenStore = initTokenStore();
-
         assertFalse(tokenStore.isEmpty());
         assertEquals(2, tokenStore.size());
+    }
+
+    public RefreshToken buildRefreshToken(String token, String username) {
+        return new RefreshToken(token, username, new Date(System.currentTimeMillis() + 30000));
     }
 
     private Map<String, RefreshToken> initTokenStore() {
@@ -40,10 +42,6 @@ public class InMemoryTokenStoreTest {
         inMemoryTokenStore.saveRefreshToken(rt3);
         inMemoryTokenStore.saveRefreshToken(rt4);
         return tokenStore;
-    }
-
-    public RefreshToken buildRefreshToken(String token, String username) {
-        return new RefreshToken(token, username, new Date(System.currentTimeMillis() + 30000));
     }
 
 }
