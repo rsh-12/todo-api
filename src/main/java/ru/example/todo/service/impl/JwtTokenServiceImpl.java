@@ -8,20 +8,17 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 import ru.example.todo.config.properties.TokenProperties;
-import ru.example.todo.domain.RefreshToken;
 import ru.example.todo.entity.User;
 import ru.example.todo.enums.Role;
 import ru.example.todo.exception.CustomException;
 import ru.example.todo.security.UserDetailsImpl;
 import ru.example.todo.service.JwtTokenService;
-import ru.example.todo.service.TokenStore;
 
 import javax.annotation.PostConstruct;
 import javax.crypto.SecretKey;
@@ -32,17 +29,13 @@ import java.util.Date;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static java.time.Instant.now;
-
 @Service
 public class JwtTokenServiceImpl implements JwtTokenService {
 
     private final TokenProperties tokenProperties;
-    private final TokenStore tokenStore;
 
-    public JwtTokenServiceImpl(TokenProperties tokenProperties, TokenStore tokenStore) {
+    public JwtTokenServiceImpl(TokenProperties tokenProperties) {
         this.tokenProperties = tokenProperties;
-        this.tokenStore = tokenStore;
     }
 
     @Override
@@ -63,19 +56,6 @@ public class JwtTokenServiceImpl implements JwtTokenService {
                 .compact();
     }
 
-    // todo: replace random alphanumeric with jwts
-    @Override
-    public RefreshToken buildRefreshToken(String username) {
-        String randomToken = RandomStringUtils.randomAlphanumeric(64);
-
-        long refreshTokenValidity = tokenProperties.getRefreshTokenValidity();
-        Date expiryTime = getValidity(refreshTokenValidity);
-
-        RefreshToken refreshToken = new RefreshToken(randomToken, username, expiryTime);
-        tokenStore.saveRefreshToken(refreshToken);
-
-        return refreshToken;
-    }
 
     private static Date getValidity(long millis) {
         Date now = new Date();
@@ -91,7 +71,7 @@ public class JwtTokenServiceImpl implements JwtTokenService {
                     bearerToken.substring(7) :
                     bearerToken;
         }
-        return null;
+        return "";
     }
 
     @Override
@@ -112,21 +92,6 @@ public class JwtTokenServiceImpl implements JwtTokenService {
         return Keys.hmacShaKeyFor(tokenProperties.getSecret().getBytes(StandardCharsets.UTF_8));
     }
 
-    @Override
-    public RefreshToken findRefreshToken(String refreshToken) {
-        return tokenStore.findRefreshToken(refreshToken)
-                .orElseThrow(() -> new CustomException("Bad Request", "Invalid token", HttpStatus.BAD_REQUEST));
-    }
-
-    @Override
-    public void removeRefreshTokenById(String tokenId) {
-        tokenStore.deleteRefreshTokenById(tokenId);
-    }
-
-    @Override
-    public boolean hasRefreshTokenExpired(RefreshToken refreshToken) {
-        return now().isBefore(refreshToken.getExpiryTime().toInstant());
-    }
 
     @Override
     public Long getId(String accessToken) {

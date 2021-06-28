@@ -1,7 +1,7 @@
 package ru.example.todo.service;
 
 import org.springframework.security.core.Authentication;
-import ru.example.todo.domain.RefreshToken;
+import ru.example.todo.entity.RefreshToken;
 import ru.example.todo.enums.Role;
 
 import javax.servlet.http.HttpServletRequest;
@@ -21,14 +21,6 @@ public interface JwtTokenService {
     String buildAccessToken(Long userId, Set<Role> roles);
 
     /**
-     * Builds a refresh JWT.
-     *
-     * @param username the username for building refresh token.
-     * @return the refresh JWT.
-     */
-    RefreshToken buildRefreshToken(String username);
-
-    /**
      * Gets the access token from header param "Authorization".
      *
      * @param request the http request
@@ -43,29 +35,6 @@ public interface JwtTokenService {
      * @return the boolean: <b>true</b> if the token is valid, <b>false</b> otherwise.
      */
     boolean isAccessTokenValid(String accessToken);
-
-    /**
-     * Looks for a refresh token in the store.
-     *
-     * @param refreshToken the refresh token.
-     * @return the refresh token.
-     */
-    RefreshToken findRefreshToken(String refreshToken);
-
-    /**
-     * Removes the refresh token by id.
-     *
-     * @param tokenId the refresh token id.
-     */
-    void removeRefreshTokenById(String tokenId);
-
-    /**
-     * Checks if the refresh token has expired.
-     *
-     * @param refreshToken the refresh token.
-     * @return the boolean: <и>true</и> if the token has not expired, <b>false</b> otherwise.
-     */
-    boolean hasRefreshTokenExpired(RefreshToken refreshToken);
 
     Long getId(String accessToken);
 
