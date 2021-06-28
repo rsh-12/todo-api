@@ -13,11 +13,11 @@ public interface UserService {
      * @return access, refresh tokens, token type and expiration time in milliseconds.
      * @throws CustomException if the user by username not found in the database.
      */
-    String login(UserDto userDto);
+    String login(UserDto userDto, String ip);
 
     String register(User user);
 
-    String generateNewTokens(String refreshToken);
+    String generateNewTokens(String refreshToken, String ip);
 
     void deleteUserById(Long userId);
 
