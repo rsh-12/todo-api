@@ -12,8 +12,6 @@ import org.springframework.format.FormatterRegistry;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import ru.example.todo.service.TokenStore;
-import ru.example.todo.service.impl.InMemoryTokenStore;
 import ru.example.todo.util.converters.StringToDateEnumConverter;
 import ru.example.todo.util.converters.StringToSetTasksEnumConverter;
 import ru.example.todo.util.converters.StringToStatusEnumConverter;
@@ -24,11 +22,6 @@ public class ProjectConfig implements WebMvcConfigurer {
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
         return new BCryptPasswordEncoder();
-    }
-
-    @Bean
-    public TokenStore tokenStore() {
-        return new InMemoryTokenStore();
     }
 
 
