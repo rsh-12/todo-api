@@ -1,9 +1,27 @@
-FROM openjdk:11
+# Start with a base image containing Java runtime
+FROM openjdk:11-slim as build
 
-ARG JAR_FILE=target/*.jar
+# The application's jar file
+ARG JAR_FILE=target/*jar
 
+# Add the application's jar to the container
 COPY ${JAR_FILE} app.jar
 
-EXPOSE 8080
+# unpackage jar file
+RUN mkdir -p target/dependency && (cd target/dependency; jar -xf /app.jar)
 
-CMD ["java", "-jar", "app.java"]
+# stage 2
+# Same Java runtime
+FROM openjdk:11-slim
+
+VOLUME /tmp
+
+#Copy unpackaged application to new container
+ARG DEPENDENCY=/target/dependency
+
+COPY --from=build ${DEPENDENCY}/BOOT-INF/lib /app/lib
+COPY --from=build ${DEPENDENCY}/META-INF /app/META-INF
+COPY --from=build ${DEPENDENCY}/BOOT-INF/classes /app
+
+#execute the application
+ENTRYPOINT ["java","-cp","app:app/lib/*","ru.example.todo.TodoApplication"]
