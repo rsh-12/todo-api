@@ -31,6 +31,15 @@ public class InMemoryTokenStoreTest {
         assertFalse(refreshToken.isPresent());
     }
 
+    @Test
+    public void deleteRefreshTokenById_ShouldDeleteToken() {
+        Map<String, RefreshToken> tokenStore = initTokenStore();
+        assertEquals(2, tokenStore.size());
+
+        inMemoryTokenStore.deleteRefreshTokenById("id4");
+        assertEquals(1, tokenStore.size());
+    }
+
     public RefreshToken buildRefreshToken(String token, String username) {
         return new RefreshToken(token, username, new Date(System.currentTimeMillis() + 30000));
     }
