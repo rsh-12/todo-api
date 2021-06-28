@@ -10,9 +10,9 @@ import ru.example.todo.service.impl.InMemoryTokenStore;
 
 import java.util.Date;
 import java.util.Map;
+import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class InMemoryTokenStoreTest {
 
@@ -23,6 +23,12 @@ public class InMemoryTokenStoreTest {
         Map<String, RefreshToken> tokenStore = initTokenStore();
         assertFalse(tokenStore.isEmpty());
         assertEquals(2, tokenStore.size());
+    }
+
+    @Test
+    public void findRefreshToken_ShouldReturnFalse() {
+        Optional<RefreshToken> refreshToken = inMemoryTokenStore.findRefreshToken("token");
+        assertFalse(refreshToken.isPresent());
     }
 
     public RefreshToken buildRefreshToken(String token, String username) {
