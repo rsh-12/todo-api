@@ -32,6 +32,14 @@ public class InMemoryTokenStoreTest {
     }
 
     @Test
+    public void findRefreshToken_ShouldReturnToken() {
+        initTokenStore();
+        Optional<RefreshToken> refreshToken = inMemoryTokenStore.findRefreshToken("id2");
+        assertTrue(refreshToken.isPresent());
+        assertEquals("id2", refreshToken.get().getToken());
+    }
+
+    @Test
     public void deleteRefreshTokenById_ShouldDeleteToken() {
         Map<String, RefreshToken> tokenStore = initTokenStore();
         assertEquals(2, tokenStore.size());
