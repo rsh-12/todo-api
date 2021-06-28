@@ -23,8 +23,7 @@ import ru.example.todo.service.UserService;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.hamcrest.Matchers.containsStringIgnoringCase;
+import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -54,7 +53,7 @@ public class AuthControllerTest extends AbstractControllerTestClass {
         given(userDto.getUsername()).willReturn("username@mail.com");
         given(userDto.getPassword()).willReturn("password");
 
-        given(userService.login(any(UserDto.class)))
+        given(userService.login(any(UserDto.class), anyString()))
                 .willReturn("access_token");
 
         String response = mvc.perform(post(API_AUTH + "login")
@@ -67,7 +66,7 @@ public class AuthControllerTest extends AbstractControllerTestClass {
                 .getContentAsString();
 
         assertTrue(response.contains("access_token"));
-        verify(userService, times(1)).login(any());
+        verify(userService, times(1)).login(any(), anyString());
     }
 
     // Login: fail
@@ -77,7 +76,7 @@ public class AuthControllerTest extends AbstractControllerTestClass {
         given(userDto.getUsername()).willReturn("username@mail.com");
         given(userDto.getPassword()).willReturn("password");
 
-        given(userService.login(any(UserDto.class)))
+        given(userService.login(any(UserDto.class), anyString()))
                 .willThrow(new CustomException("Not Found",
                         "Username Not Found / Incorrect Password", HttpStatus.NOT_FOUND));
 
@@ -88,7 +87,7 @@ public class AuthControllerTest extends AbstractControllerTestClass {
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("message", containsStringIgnoringCase("Username not found / incorrect password")));
 
-        verify(userService, times(1)).login(any(UserDto.class));
+        verify(userService, times(1)).login(any(UserDto.class), anyString());
     }
 
     @Test
@@ -97,7 +96,7 @@ public class AuthControllerTest extends AbstractControllerTestClass {
         given(userDto.getUsername()).willReturn("username@mail.com");
         given(userDto.getPassword()).willReturn("password");
 
-        given(userService.login(any(UserDto.class)))
+        given(userService.login(any(UserDto.class), anyString()))
                 .willThrow(new CustomException("Not Found",
                         "Username Not Found / Incorrect Password", HttpStatus.NOT_FOUND));
 
@@ -109,7 +108,7 @@ public class AuthControllerTest extends AbstractControllerTestClass {
                 .andExpect(jsonPath("message",
                         containsStringIgnoringCase("Username not found / incorrect password")));
 
-        verify(userService, times(1)).login(any(UserDto.class));
+        verify(userService, times(1)).login(any(UserDto.class), anyString());
     }
 
     // Register: success
@@ -164,7 +163,7 @@ public class AuthControllerTest extends AbstractControllerTestClass {
     public void getToken_NotFound_ShouldThrowCustomException() throws Exception {
         final String TOKEN = "tokenDoesNotExist";
 
-        given(userService.generateNewTokens(anyString()))
+        given(userService.generateNewTokens(anyString(), anyString()))
                 .willThrow(new CustomException(
                         "Refresh token is not valid or expired, please, try to log in",
                         HttpStatus.BAD_REQUEST));
@@ -176,12 +175,12 @@ public class AuthControllerTest extends AbstractControllerTestClass {
                 .andExpect(jsonPath("message",
                         containsStringIgnoringCase("Refresh token is not valid or expired, please, try to log in")));
 
-        verify(userService, times(1)).generateNewTokens(anyString());
+        verify(userService, times(1)).generateNewTokens(anyString(), anyString());
     }
 
     @Test
     public void getToken_ShouldReturnNewTokens() throws Exception {
-        given(userService.generateNewTokens(anyString()))
+        given(userService.generateNewTokens(anyString(), anyString()))
                 .willReturn("access_token, refresh_token");
 
         String response = mvc.perform(post(API_AUTH + "token")
@@ -193,7 +192,7 @@ public class AuthControllerTest extends AbstractControllerTestClass {
                 .getContentAsString();
 
         assertEquals(response, "access_token, refresh_token");
-        verify(userService, times(1)).generateNewTokens(anyString());
+        verify(userService, times(1)).generateNewTokens(anyString(), anyString());
     }
 
     @Test
