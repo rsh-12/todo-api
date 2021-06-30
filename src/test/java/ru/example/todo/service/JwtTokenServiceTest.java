@@ -47,6 +47,12 @@ public class JwtTokenServiceTest extends AbstractServiceTestClass {
     }
 
     // isAccessTokenValid
+    @Test
+    public void isAccessTokenValid_ShouldReturnTrue() {
+        String accessToken = jwtTokenService.buildAccessToken(1L, Collections.singleton(Role.USER));
+        boolean isAccessTokenValid = jwtTokenService.isAccessTokenValid(accessToken);
+        assertTrue(isAccessTokenValid);
+    }
 
     // getId
     @Test
