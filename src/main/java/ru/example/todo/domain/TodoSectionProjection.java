@@ -49,4 +49,14 @@ public class TodoSectionProjection {
         return createdAt;
     }
 
+    @Override
+    public String toString() {
+        return "TodoSectionProjection{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", updatedAt=" + updatedAt +
+                ", createdAt=" + createdAt +
+                '}';
+    }
+
 }
