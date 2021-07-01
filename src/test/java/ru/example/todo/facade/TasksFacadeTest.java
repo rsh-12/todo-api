@@ -12,12 +12,15 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 import ru.example.todo.entity.TodoTask;
 import ru.example.todo.enums.filters.FilterByOperation;
+import ru.example.todo.exception.CustomException;
 import ru.example.todo.service.TodoSectionService;
 import ru.example.todo.service.TodoTaskService;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
+import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
@@ -49,4 +52,12 @@ public class TasksFacadeTest {
         verify(sectionService).addTasksToOrRemoveFromSection(anyLong(), anyLong(), anyList(), any());
     }
 
+    @Test
+    public void addTasksToOrRemoveFromSection_ShouldThrowCustomException() {
+        assertThrows(CustomException.class, () -> tasksFacade
+                .addTasksToOrRemoveFromSection(1L, 1L, Collections.emptySet(), FilterByOperation.MOVE));
+
+        verifyNoInteractions(taskService);
+        verifyNoInteractions(sectionService);
+    }
 }
