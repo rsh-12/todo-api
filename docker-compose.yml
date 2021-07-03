@@ -1,9 +1,46 @@
 version: '3.8'
 
 networks:
-  micrometer:
+  backend:
+    driver: bridge
 
 services:
+
+  postgres:
+    image: postgres:11.4-alpine
+    container_name: postgres
+    ports:
+      - 5430:5432
+    volumes:
+      - ./pg_data:/var/lib/postgresql/data/pgdata
+    environment:
+      POSTGRES_USER: postgres # encrypt and replace later
+      POSTGRES_PASSWORD: postgres # encrypt and replace later
+      POSTGRES_DB: tododb # encrypt and replace later
+      PGDATA: /var/lib/postgresql/data/pgdata
+    networks:
+      backend:
+        aliases:
+          - "postgres"
+    restart: on-failure
+
+  todoapp:
+    image: rsh12/todo:0.0.1-SNAPSHOT
+    container_name: todo-app
+    ports:
+      - 8080:8080
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/tododb # encrypt and replace later
+      SPRING_DATASOURCE_USERNAME: postgres # encrypt and replace later
+      SPRING_DATASOURCE_PASSWORD: postgres # encrypt and replace later
+      TOKEN: someFakeToken # encrypt and replace later
+    networks:
+      backend:
+        aliases:
+          - "todoapp"
+    depends_on:
+      - postgres
+    restart: on-failure
 
   prometheus:
     image: prom/prometheus
@@ -15,18 +52,25 @@ services:
     ports:
       - 9090:9090
     networks:
-      - micrometer
-    restart: always
+      backend:
+        aliases:
+          - "prometheus"
+    depends_on:
+      - todoapp
+    restart: on-failure
 
   grafana:
     image: grafana/grafana
     container_name: todo-grafana
     depends_on:
-      - prometheus
+      prometheus:
+        condition: service_started
     volumes:
       - ./grafana/:/etc/grafana/
     ports:
       - 3000:3000
     networks:
-      - micrometer
-    restart: always
+      backend:
+        aliases:
+          - "grafana"
+    restart: on-failure
