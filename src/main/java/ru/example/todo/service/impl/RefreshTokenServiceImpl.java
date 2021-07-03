@@ -4,7 +4,6 @@ package ru.example.todo.service.impl;
  * Time: 12:54 AM
  * */
 
-import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import ru.example.todo.config.properties.TokenProperties;
@@ -12,6 +11,7 @@ import ru.example.todo.entity.RefreshToken;
 import ru.example.todo.exception.CustomException;
 import ru.example.todo.repository.RefreshTokenRepository;
 import ru.example.todo.service.RefreshTokenService;
+import ru.example.todo.util.RandomString;
 
 import java.time.Instant;
 import java.util.Date;
@@ -31,7 +31,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     @Override
     public String createRefreshToken(Long userId, String ip) {
         RefreshToken refreshToken;
-        String token = RandomStringUtils.randomAlphanumeric(64);
+        String token = new RandomString(64).nextString();
 
         long now = new Date().getTime();
         Date expiresAt = new Date(now + tokenProperties.getRefreshTokenValidity());
@@ -46,7 +46,9 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
         }
 
         if (ip != null) refreshToken.setCreatedByIp(ip);
-        return save(refreshToken).getValue();
+        save(refreshToken);
+
+        return token;
     }
 
     @Override
