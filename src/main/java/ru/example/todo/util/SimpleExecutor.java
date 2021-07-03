@@ -22,7 +22,7 @@ public class SimpleExecutor {
         executor.setCorePoolSize(2);
         executor.setMaxPoolSize(2);
         executor.setQueueCapacity(500);
-        executor.setThreadNamePrefix("TokenStoreCleaner-");
+        executor.setThreadNamePrefix("taskExecutor-");
         executor.initialize();
 
         return executor;
