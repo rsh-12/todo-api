@@ -8,7 +8,6 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import ru.example.todo.config.properties.TokenProperties;
 import ru.example.todo.enums.Role;
 import ru.example.todo.exception.CustomException;
 import ru.example.todo.service.impl.JwtTokenServiceImpl;
@@ -28,9 +27,6 @@ public class JwtTokenServiceTest extends AbstractServiceTestClass {
 
     @Autowired
     private JwtTokenServiceImpl jwtTokenService;
-
-    @Autowired
-    private TokenProperties tokenProperties;
 
     // buildAccessToken
     @Test
