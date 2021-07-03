@@ -40,7 +40,21 @@ services:
           - "todoapp"
     depends_on:
       - postgres
+      - rabbit
     restart: on-failure
+
+  rabbit:
+    image: rabbitmq:3-management-alpine
+    container_name: rabbitmq
+    ports:
+      - 5672:5672
+      - 15672:15672
+    networks:
+      backend:
+        aliases:
+          - "rabbitmq"
+
+  # add password-reset service
 
   prometheus:
     image: prom/prometheus
