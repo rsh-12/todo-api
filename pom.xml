@@ -240,6 +240,15 @@
                         </goals>
                     </execution>
                 </executions>
+                <configuration>
+                    <excludes>
+                        <exclude>ru/example/todo/dto/**/*</exclude>
+                        <exclude>ru/example/todo/domain/**/*</exclude>
+                        <exclude>ru/example/todo/util/**/*</exclude>
+                        <exclude>ru/example/todo/exception/**/*</exclude>
+                        <exclude>ru/example/todo/TodoApplication.class</exclude>
+                    </excludes>
+                </configuration>
             </plugin>
 
             <plugin>
