@@ -4,8 +4,6 @@ package ru.example.todo.service.impl;
  * Time: 4:39 PM
  * */
 
-import org.springframework.boot.configurationprocessor.json.JSONException;
-import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -23,6 +21,9 @@ import ru.example.todo.security.UserDetailsImpl;
 import ru.example.todo.service.JwtTokenService;
 import ru.example.todo.service.RefreshTokenService;
 import ru.example.todo.service.UserService;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 @Service
 public class UserServiceImpl extends AbstractServiceClass implements UserService {
@@ -111,17 +112,15 @@ public class UserServiceImpl extends AbstractServiceClass implements UserService
         String accessToken = jwtTokenService.buildAccessToken(user.getId(), user.getRoles());
         String refreshToken = refreshTokenService.createRefreshToken(user.getId(), ip);
 
-        JSONObject response = new JSONObject();
-        try {
-            response.put("access_token", accessToken);
-            response.put("refresh_token", refreshToken);
-            response.put("token_type", "Bearer");
-            response.put("access_token_expires", tokenProperties.getAccessTokenValidity());
-            response.put("refresh_token_expires", tokenProperties.getRefreshTokenValidity());
-        } catch (JSONException e) {
-            throw new CustomException("Error during building response");
-        }
-        return response.toString();
+        Map<String, String> response = new LinkedHashMap<>() {{
+            put("access_token", accessToken);
+            put("refresh_token", refreshToken);
+            put("token_type", "Bearer");
+            put("access_token_expires", String.valueOf(tokenProperties.getAccessTokenValidity()));
+            put("refresh_token_expires", String.valueOf(tokenProperties.getRefreshTokenValidity()));
+        }};
+
+        return String.valueOf(response);
     }
 
 }
