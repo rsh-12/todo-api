@@ -6,11 +6,11 @@ package ru.example.todo.facade;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 import ru.example.todo.exception.CustomException;
+import ru.example.todo.facade.impl.PasswordFacadeImpl;
 import ru.example.todo.messaging.MessagingService;
 import ru.example.todo.messaging.requests.TokenRequest;
 import ru.example.todo.service.UserService;
@@ -21,17 +21,16 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest
+@RunWith(MockitoJUnitRunner.class)
 public class PasswordFacadeTest {
 
-    @Autowired
-    private PasswordFacade passwordFacade;
+    @InjectMocks
+    private PasswordFacadeImpl passwordFacade;
 
-    @MockBean
+    @Mock
     private MessagingService messagingService;
 
-    @MockBean
+    @Mock
     private UserService userService;
 
     @Test
@@ -48,7 +47,6 @@ public class PasswordFacadeTest {
     @Test
     public void updatePassword_ShouldThrowCustomException() {
         given(messagingService.sendTokenAndReceiveEmail(any())).willReturn("");
-        doNothing().when(userService).updatePassword(anyString(), anyString());
 
         assertThrows(CustomException.class, () ->
                 passwordFacade.updatePassword(new TokenRequest("someToken"), "somePassword"));
