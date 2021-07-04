@@ -4,11 +4,16 @@ package ru.example.todo.service;
  * Time: 1:41 PM
  * */
 
+import org.junit.Before;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
+import ru.example.todo.config.properties.TokenProperties;
 import ru.example.todo.entity.RefreshToken;
 import ru.example.todo.repository.RefreshTokenRepository;
+import ru.example.todo.service.impl.RefreshTokenServiceImpl;
 
 import java.util.Optional;
 
@@ -20,13 +25,22 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
-public class RefreshTokenServiceTest extends AbstractServiceTestClass {
+@RunWith(MockitoJUnitRunner.class)
+public class RefreshTokenServiceTest {
 
-    @Autowired
-    private RefreshTokenService refreshTokenService;
+    @InjectMocks
+    private RefreshTokenServiceImpl refreshTokenService;
 
-    @MockBean
+    @Mock
     private RefreshTokenRepository refreshTokenRepository;
+
+    @Mock
+    private TokenProperties tokenProperties;
+
+    @Before
+    public void setUp() throws Exception {
+        given(tokenProperties.getRefreshTokenValidity()).willReturn(86_400_000L);
+    }
 
     // createRefreshToken
     @Test
