@@ -68,3 +68,5 @@ secrets.yml
 #
 run-report-tests.sh
 venv.sh
+
+pg_data/
