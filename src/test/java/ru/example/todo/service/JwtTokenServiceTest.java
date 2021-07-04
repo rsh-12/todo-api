@@ -6,8 +6,13 @@ package ru.example.todo.service;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import org.junit.Before;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
+import ru.example.todo.config.properties.TokenProperties;
 import ru.example.todo.enums.Role;
 import ru.example.todo.exception.CustomException;
 import ru.example.todo.service.impl.JwtTokenServiceImpl;
@@ -23,10 +28,20 @@ import static org.junit.Assert.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
-public class JwtTokenServiceTest extends AbstractServiceTestClass {
+@RunWith(MockitoJUnitRunner.class)
+public class JwtTokenServiceTest {
 
-    @Autowired
+    @InjectMocks
     private JwtTokenServiceImpl jwtTokenService;
+
+    @Mock
+    private TokenProperties tokenProperties;
+
+    @Before
+    public void setUp() throws Exception {
+        given(tokenProperties.getSecret()).willReturn("secretKey".repeat(5));
+        given(tokenProperties.getAccessTokenValidity()).willReturn(1_800_000L);
+    }
 
     // buildAccessToken
     @Test
