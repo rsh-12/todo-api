@@ -6,13 +6,13 @@ package ru.example.todo.facade;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 import ru.example.todo.entity.TodoTask;
 import ru.example.todo.enums.filters.FilterByOperation;
 import ru.example.todo.exception.CustomException;
+import ru.example.todo.facade.impl.TasksFacadeImpl;
 import ru.example.todo.service.TodoSectionService;
 import ru.example.todo.service.TodoTaskService;
 
@@ -25,17 +25,16 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest
+@RunWith(MockitoJUnitRunner.class)
 public class TasksFacadeTest {
 
-    @Autowired
-    private TasksFacade tasksFacade;
+    @InjectMocks
+    private TasksFacadeImpl tasksFacade;
 
-    @MockBean
+    @Mock
     private TodoTaskService taskService;
 
-    @MockBean
+    @Mock
     private TodoSectionService sectionService;
 
     @Test
