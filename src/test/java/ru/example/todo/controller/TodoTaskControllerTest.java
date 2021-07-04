@@ -123,7 +123,7 @@ public class TodoTaskControllerTest extends AbstractControllerTestClass {
 
         mvc.perform(post(API_TASKS)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(convertToJson(new TodoSectionDto("title"))))
+                .content(objectMapper.writeValueAsString(new TodoSectionDto("title"))))
                 .andExpect(status().isCreated());
 
         verify(taskService, times(1)).createTask(any(User.class), any(TodoTask.class));
@@ -144,7 +144,7 @@ public class TodoTaskControllerTest extends AbstractControllerTestClass {
     public void createTask_InvalidTitle_ShouldReturnBadRequest() throws Exception {
         mvc.perform(post(API_TASKS)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(convertToJson(new TodoTaskDto("T")))) // min=3
+                .content(objectMapper.writeValueAsString(new TodoTaskDto("T")))) // min=3
                 //.andExpect(jsonPath("title", containsInAnyOrder("Size must be between 3 and 80")))
                 .andExpect(status().isBadRequest())
                 .andDo(print());
@@ -167,7 +167,7 @@ public class TodoTaskControllerTest extends AbstractControllerTestClass {
                 .contentType(MediaType.APPLICATION_JSON)
                 .param("starred", "true")
                 .param("completed", "true")
-                .content(convertToJson("{\"title\":\"some title\"")))
+                .content(objectMapper.writeValueAsString("{\"title\":\"some title\"")))
                 .andExpect(status().isOk())
                 .andDo(print());
 
@@ -187,7 +187,7 @@ public class TodoTaskControllerTest extends AbstractControllerTestClass {
                 .contentType(MediaType.APPLICATION_JSON)
                 .param("starred", "true")
                 .param("completed", "true")
-                .content(convertToJson("{\"title\":\"some title\"")))
+                .content(objectMapper.writeValueAsString("{\"title\":\"some title\"")))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("error", containsStringIgnoringCase("not found")))
                 .andDo(print());

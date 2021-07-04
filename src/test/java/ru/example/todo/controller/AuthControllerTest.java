@@ -263,7 +263,7 @@ public class AuthControllerTest extends AbstractControllerTestClass {
         mvc.perform(post(API_AUTH + "password/reset")
                 .contentType(MediaType.APPLICATION_JSON)
                 .param("token", "someToken")
-                .content(convertToJson(body)))
+                .content(objectMapper.writeValueAsString(body)))
                 .andExpect(status().isOk());
 
         verify(passwordFacade, times(1)).updatePassword(any(TokenRequest.class), anyString());

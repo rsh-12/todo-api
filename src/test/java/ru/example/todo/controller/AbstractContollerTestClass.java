@@ -4,13 +4,16 @@ package ru.example.todo.controller;
  * Time: 7:05 AM
  * */
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import ru.example.todo.service.UserService;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -31,21 +34,14 @@ abstract class AbstractControllerTestClass {
     @Autowired
     protected MockMvc mvc;
 
-    protected static String convertToJson(final Object obj) {
-        try {
-            final ObjectMapper mapper = new ObjectMapper();
-            return mapper.writeValueAsString(obj);
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException("Conversion error");
-        }
-    }
+    @Autowired
+    protected ObjectMapper objectMapper;
 
-    String usernamePasswordRequestBody(String username, String password) {
+    String usernamePasswordRequestBody(String username, String password) throws JsonProcessingException {
         Map<String, String> body = new LinkedHashMap<>();
         body.put("username", username);
         body.put("password", password);
-        return convertToJson(body);
+        return objectMapper.writeValueAsString(body);
     }
 
 }

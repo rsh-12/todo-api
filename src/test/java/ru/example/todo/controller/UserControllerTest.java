@@ -113,7 +113,7 @@ public class UserControllerTest extends AbstractControllerTestClass {
 
         mvc.perform(post(API_USERS + "password/update")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(convertToJson(body.toString())))
+                .content(objectMapper.writeValueAsString(body.toString())))
                 .andDo(print())
                 .andExpect(status().isOk());
 
@@ -131,7 +131,7 @@ public class UserControllerTest extends AbstractControllerTestClass {
 
         mvc.perform(post(API_USERS + "password/update")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(convertToJson(body.toString())))
+                .content(objectMapper.writeValueAsString(body.toString())))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("error", containsStringIgnoringCase("bad request")));

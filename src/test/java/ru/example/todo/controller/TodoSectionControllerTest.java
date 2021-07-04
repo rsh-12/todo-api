@@ -167,7 +167,7 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
 
         mvc.perform(post(API_SECTIONS)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(convertToJson(new TodoSectionDto("Created Section"))))
+                .content(objectMapper.writeValueAsString(new TodoSectionDto("Created Section"))))
                 .andExpect(status().isCreated())
                 .andDo(print());
 
@@ -199,7 +199,7 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
         // update section by id: returns 200 OK
         mvc.perform(put(API_SECTIONS + 1)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(convertToJson(new TodoSectionDto("Title"))))
+                .content(objectMapper.writeValueAsString(new TodoSectionDto("Title"))))
                 .andExpect(status().isOk())
                 .andDo(print());
 
@@ -216,7 +216,7 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
 
         mvc.perform(put(API_SECTIONS + 1)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(convertToJson(new TodoSectionDto("Title"))))
+                .content(objectMapper.writeValueAsString(new TodoSectionDto("Title"))))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("error", containsStringIgnoringCase("not found")))
                 .andDo(print());
@@ -234,7 +234,7 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
 
         mvc.perform(put(API_SECTIONS + 1)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(convertToJson(new TodoSectionDto("Title"))))
+                .content(objectMapper.writeValueAsString(new TodoSectionDto("Title"))))
                 .andExpect(status().isForbidden())
                 .andExpect(jsonPath("error", containsStringIgnoringCase("forbidden")))
                 .andDo(print());
@@ -267,7 +267,7 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
         mvc.perform(post(API_SECTIONS + "1/tasks")
                 .contentType(MediaType.APPLICATION_JSON)
                 .param("do", "move")
-                .content(convertToJson(body)))
+                .content(objectMapper.writeValueAsString(body)))
                 .andExpect(status().isOk())
                 .andDo(print());
 
@@ -302,7 +302,7 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
 
         mvc.perform(post(API_SECTIONS + "1/tasks")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(convertToJson(body)))
+                .content(objectMapper.writeValueAsString(body)))
                 .andExpect(status().isBadRequest())
                 .andDo(print());
 
