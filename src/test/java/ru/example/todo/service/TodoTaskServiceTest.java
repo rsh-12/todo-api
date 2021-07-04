@@ -5,8 +5,10 @@ package ru.example.todo.service;
  * */
 
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import ru.example.todo.dto.TodoTaskDto;
@@ -17,6 +19,7 @@ import ru.example.todo.enums.filters.FilterByBoolean;
 import ru.example.todo.enums.filters.FilterByDate;
 import ru.example.todo.exception.CustomException;
 import ru.example.todo.repository.TodoTaskRepository;
+import ru.example.todo.service.impl.TodoTaskServiceImpl;
 
 import java.time.LocalDate;
 import java.util.Collections;
@@ -30,12 +33,13 @@ import static org.mockito.ArgumentMatchers.anySet;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
-public class TodoTaskServiceTest extends AbstractServiceTestClass {
+@RunWith(MockitoJUnitRunner.class)
+public class TodoTaskServiceTest {
 
-    @Autowired
-    private TodoTaskService taskService;
+    @InjectMocks
+    private TodoTaskServiceImpl taskService;
 
-    @MockBean
+    @Mock
     private TodoTaskRepository taskRepository;
 
     // findTasks
@@ -117,8 +121,6 @@ public class TodoTaskServiceTest extends AbstractServiceTestClass {
     @Test
     public void deleteTaskById_ShouldDeleteTaskById() {
         User principal = mock(User.class);
-        given(principal.getId()).willReturn(1L);
-        given(principal.getRoles()).willReturn(Set.of(Role.ADMIN, Role.USER));
 
         TodoTask task = mock(TodoTask.class);
         given(task.getUser()).willReturn(principal);
