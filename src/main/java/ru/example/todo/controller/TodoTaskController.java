@@ -107,6 +107,7 @@ public class TodoTaskController {
         return ResponseEntity.created(location).build();
     }
 
+    // todo: rewrite method
     // update task title or task completion date
     // or
     // update task status (completed, starred)
