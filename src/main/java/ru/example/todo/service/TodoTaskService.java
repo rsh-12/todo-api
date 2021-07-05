@@ -1,9 +1,7 @@
 package ru.example.todo.service;
 
-import ru.example.todo.dto.TodoTaskDto;
 import ru.example.todo.entity.TodoTask;
 import ru.example.todo.entity.User;
-import ru.example.todo.enums.filters.FilterByBoolean;
 import ru.example.todo.enums.filters.FilterByDate;
 
 import java.util.List;
@@ -20,9 +18,7 @@ public interface TodoTaskService {
 
     TodoTask createTask(User user, TodoTask task);
 
-    TodoTask updateTask(Long userId, Long sectionId, TodoTaskDto task,
-                        FilterByBoolean completed, FilterByBoolean starred);
-
     List<TodoTask> findTasksByIds(Set<Long> taskIds, Long userId);
 
+    void save(TodoTask task);
 }
