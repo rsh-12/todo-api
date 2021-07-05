@@ -25,7 +25,6 @@ import ru.example.todo.enums.filters.FilterByOperation;
 import ru.example.todo.facade.TasksFacade;
 import ru.example.todo.security.UserDetailsImpl;
 import ru.example.todo.service.TodoSectionService;
-import ru.example.todo.service.UserService;
 
 import javax.validation.Valid;
 import java.net.URI;
@@ -41,17 +40,14 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
 public class TodoSectionController {
 
-    private final UserService userService;
     private final TodoSectionService todoSectionService;
     private final TasksFacade tasksFacade;
     private final TodoSectionModelAssembler assembler;
     private final ModelMapper modelMapper;
 
     @Autowired
-    public TodoSectionController(UserService userService, TodoSectionService todoSectionService,
-                                 TasksFacade tasksFacade, TodoSectionModelAssembler assembler,
-                                 ModelMapper modelMapper) {
-        this.userService = userService;
+    public TodoSectionController(TodoSectionService todoSectionService, TasksFacade tasksFacade,
+                                 TodoSectionModelAssembler assembler, ModelMapper modelMapper) {
         this.todoSectionService = todoSectionService;
         this.tasksFacade = tasksFacade;
         this.assembler = assembler;
@@ -95,8 +91,9 @@ public class TodoSectionController {
     @PostMapping(consumes = "application/json")
     public ResponseEntity<String> createSection(@AuthenticationPrincipal UserDetailsImpl userDetails,
                                                 @Valid @RequestBody TodoSectionDto sectionDto) {
-        User user = userService.findUserById(userDetails.getId());
-        TodoSection section = todoSectionService.createSection(user, sectionDto);
+        // User user = userService.findUserById(userDetails.getId());
+        User user = userDetails.getUser();
+        TodoSection section = todoSectionService.createSection(user, modelMapper.map(sectionDto, TodoSection.class));
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}").buildAndExpand(section.getId()).toUri();
@@ -111,7 +108,8 @@ public class TodoSectionController {
                                                 @PathVariable("id") Long sectionId,
                                                 @Valid @RequestBody TodoSectionDto sectionDto) {
 
-        TodoSection section = todoSectionService.updateSection(userDetails.getUser(), sectionId, sectionDto);
+        TodoSection mappedSection = modelMapper.map(sectionDto, TodoSection.class);
+        TodoSection section = todoSectionService.updateSection(userDetails.getUser(), sectionId, mappedSection);
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                 .buildAndExpand(section.getId()).toUri();
 
