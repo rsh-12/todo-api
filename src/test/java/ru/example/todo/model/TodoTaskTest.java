@@ -5,7 +5,15 @@ package ru.example.todo.model;
  * */
 
 import org.junit.Before;
+import org.junit.Test;
 import org.modelmapper.ModelMapper;
+import ru.example.todo.dto.TodoTaskDto;
+import ru.example.todo.entity.TodoTask;
+
+import java.time.LocalDate;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class TodoTaskTest {
 
@@ -14,6 +22,15 @@ public class TodoTaskTest {
     @Before
     public void setUp() {
         modelMapper.getConfiguration().setSkipNullEnabled(true);
+    }
+
+    @Test
+    public void mapTodoTask_WithTitleAndCompletionDate() {
+        TodoTaskDto todoTaskDto = new TodoTaskDto("title", LocalDate.now());
+        TodoTask todoTask = modelMapper.map(todoTaskDto, TodoTask.class);
+
+        assertNotNull(todoTask);
+        assertEquals("title", todoTask.getTitle());
     }
 
 }
