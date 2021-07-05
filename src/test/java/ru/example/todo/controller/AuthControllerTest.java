@@ -23,7 +23,8 @@ import ru.example.todo.service.UserService;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.containsStringIgnoringCase;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -53,8 +54,8 @@ public class AuthControllerTest extends AbstractControllerTestClass {
         given(userDto.getUsername()).willReturn("username@mail.com");
         given(userDto.getPassword()).willReturn("password");
 
-        given(userService.login(any(UserDto.class), anyString()))
-                .willReturn("access_token");
+        given(userService.login(any(User.class), anyString()))
+                .willReturn(Map.of("access_token", "access_token"));
 
         String response = mvc.perform(post(API_AUTH + "login")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -76,8 +77,8 @@ public class AuthControllerTest extends AbstractControllerTestClass {
         given(userDto.getUsername()).willReturn("username@mail.com");
         given(userDto.getPassword()).willReturn("password");
 
-        given(userService.login(any(UserDto.class), anyString()))
-                .willThrow(new CustomException("Not Found",
+        given(userService.login(any(User.class), anyString()))
+                .willThrow(new CustomException(
                         "Username Not Found / Incorrect Password", HttpStatus.NOT_FOUND));
 
         mvc.perform(post(API_AUTH + "login")
@@ -87,7 +88,7 @@ public class AuthControllerTest extends AbstractControllerTestClass {
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("message", containsStringIgnoringCase("Username not found / incorrect password")));
 
-        verify(userService, times(1)).login(any(UserDto.class), anyString());
+        verify(userService, times(1)).login(any(User.class), anyString());
     }
 
     @Test
@@ -96,8 +97,8 @@ public class AuthControllerTest extends AbstractControllerTestClass {
         given(userDto.getUsername()).willReturn("username@mail.com");
         given(userDto.getPassword()).willReturn("password");
 
-        given(userService.login(any(UserDto.class), anyString()))
-                .willThrow(new CustomException("Not Found",
+        given(userService.login(any(User.class), anyString()))
+                .willThrow(new CustomException(
                         "Username Not Found / Incorrect Password", HttpStatus.NOT_FOUND));
 
         mvc.perform(post(API_AUTH + "login")
@@ -108,7 +109,7 @@ public class AuthControllerTest extends AbstractControllerTestClass {
                 .andExpect(jsonPath("message",
                         containsStringIgnoringCase("Username not found / incorrect password")));
 
-        verify(userService, times(1)).login(any(UserDto.class), anyString());
+        verify(userService, times(1)).login(any(User.class), anyString());
     }
 
     // Register: success
@@ -181,7 +182,7 @@ public class AuthControllerTest extends AbstractControllerTestClass {
     @Test
     public void getToken_ShouldReturnNewTokens() throws Exception {
         given(userService.generateNewTokens(anyString(), anyString()))
-                .willReturn("access_token, refresh_token");
+                .willReturn(Map.of("access_token", "access_token", "refresh_token", "refresh_token"));
 
         String response = mvc.perform(post(API_AUTH + "token")
                 .header("token", "refreshToken"))
@@ -215,7 +216,7 @@ public class AuthControllerTest extends AbstractControllerTestClass {
     @Test
     public void sendPasswordResetToken_ShouldThrowCustomExceptionAndReturnNotFound() throws Exception {
         String email = "test@mail.com";
-        doThrow(new CustomException("Not Found", "Username Not Found", HttpStatus.NOT_FOUND))
+        doThrow(new CustomException("Username Not Found", HttpStatus.NOT_FOUND))
                 .when(messagingService).send(any(EmailRequest.class));
 
         JSONObject body = new JSONObject();
@@ -234,7 +235,7 @@ public class AuthControllerTest extends AbstractControllerTestClass {
     @Test
     public void sendPasswordResetToken_ShouldThrowCustomExceptionAndReturnInternalServerError() throws Exception {
         String email = "test@mail.com";
-        doThrow(new CustomException("Internal Server Error", "An error occurred while generating the token",
+        doThrow(new CustomException("An error occurred while generating the token",
                 HttpStatus.INTERNAL_SERVER_ERROR))
                 .when(messagingService).send(any(EmailRequest.class));
 

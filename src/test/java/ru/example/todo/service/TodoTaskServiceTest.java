@@ -83,7 +83,7 @@ public class TodoTaskServiceTest {
     @Test
     public void findTaskById_ShouldThrowException() {
         given(taskRepository.findByIdAndUserId(anyLong(), anyLong()))
-                .willThrow(new CustomException("Not Found", "Task not found", HttpStatus.NOT_FOUND));
+                .willThrow(new CustomException("Task not found", HttpStatus.NOT_FOUND));
         assertThrows(CustomException.class, () -> taskService.findTaskById(1L, 1L));
     }
 
@@ -93,7 +93,7 @@ public class TodoTaskServiceTest {
         User principal = mock(User.class);
 
         given(taskRepository.findById(anyLong()))
-                .willThrow(new CustomException("Not Found", "Task not found", HttpStatus.NOT_FOUND));
+                .willThrow(new CustomException("Task not found", HttpStatus.NOT_FOUND));
 
         assertThrows(CustomException.class, () -> taskService.deleteTaskById(principal, 1L));
 
@@ -154,7 +154,7 @@ public class TodoTaskServiceTest {
     @Test
     public void updateTask_ShouldThrowCustomException() {
         given(taskRepository.findByIdAndUserId(anyLong(), anyLong()))
-                .willThrow(new CustomException("Not found", "Task not found", HttpStatus.NOT_FOUND));
+                .willThrow(new CustomException("Task not found", HttpStatus.NOT_FOUND));
 
         assertThrows(CustomException.class, () ->
                 taskService.updateTask(1L, 1L, new TodoTaskDto("title"),

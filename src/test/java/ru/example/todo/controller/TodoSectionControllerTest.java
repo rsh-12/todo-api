@@ -100,7 +100,7 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
     @WithUserDetails(USER)
     public void getSection_ShouldReturnBadRequest() throws Exception {
         given(sectionService.findSectionById(anyLong(), anyLong()))
-                .willThrow(new CustomException("Not Found", "Section not found: " + 1, HttpStatus.NOT_FOUND));
+                .willThrow(new CustomException("Section not found: " + 1, HttpStatus.NOT_FOUND));
 
         mvc.perform(get(API_SECTIONS + 1)
                 .contentType(MediaType.APPLICATION_JSON))
@@ -131,7 +131,7 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
     @Test
     @WithUserDetails(USER)
     public void deleteSection_ShouldReturnNotFound() throws Exception {
-        doThrow(new CustomException("Not Found", "Section not found", HttpStatus.NOT_FOUND))
+        doThrow(new CustomException("Section not found", HttpStatus.NOT_FOUND))
                 .when(sectionService).deleteSectionById(any(User.class), anyLong());
 
         mvc.perform(delete(API_SECTIONS + 1)
@@ -146,7 +146,7 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
     @Test
     @WithUserDetails(USER)
     public void deleteSection_ShouldReturnForbidden() throws Exception {
-        doThrow(new CustomException("Forbidden", "Not enough permissions", HttpStatus.FORBIDDEN))
+        doThrow(new CustomException("Not enough permissions", HttpStatus.FORBIDDEN))
                 .when(sectionService).deleteSectionById(any(User.class), anyLong());
 
         mvc.perform(delete(API_SECTIONS + 1)
@@ -162,8 +162,8 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
     @Test
     @WithUserDetails(ADMIN)
     public void createSection_ShouldReturnStatusCreated() throws Exception {
-        given(sectionService.createSection(any(User.class), any(TodoSectionDto.class)))
-                .willReturn(new TodoSection(1L,"title"));
+        given(sectionService.createSection(any(User.class), any(TodoSection.class)))
+                .willReturn(new TodoSection(1L, "title"));
 
         mvc.perform(post(API_SECTIONS)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -171,7 +171,7 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
                 .andExpect(status().isCreated())
                 .andDo(print());
 
-        verify(sectionService, times(1)).createSection(any(User.class), any(TodoSectionDto.class));
+        verify(sectionService, times(1)).createSection(any(User.class), any(TodoSection.class));
     }
 
     @Test
@@ -182,7 +182,7 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
                 .andExpect(status().isBadRequest())
                 .andDo(print());
 
-        verify(sectionService, times(0)).createSection(any(User.class), any(TodoSectionDto.class));
+        verify(sectionService, times(0)).createSection(any(User.class), any(TodoSection.class));
     }
 
     // update section
@@ -193,7 +193,7 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
         given(section.getId()).willReturn(1L);
         given(section.getTitle()).willReturn("Title");
 
-        given(sectionService.updateSection(any(User.class), anyLong(), any(TodoSectionDto.class)))
+        given(sectionService.updateSection(any(User.class), anyLong(), any(TodoSection.class)))
                 .willReturn(section);
 
         // update section by id: returns 200 OK
@@ -204,15 +204,15 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
                 .andDo(print());
 
         verify(sectionService, times(1))
-                .updateSection(any(User.class), anyLong(), any(TodoSectionDto.class));
+                .updateSection(any(User.class), anyLong(), any(TodoSection.class));
     }
 
     @Test
     @WithUserDetails(ADMIN)
     public void updateSection_ShouldReturnNotFound() throws Exception {
-        doThrow(new CustomException("Not Found", "Section Not Found", HttpStatus.NOT_FOUND))
+        doThrow(new CustomException("Section Not Found", HttpStatus.NOT_FOUND))
                 .when(sectionService)
-                .updateSection(any(User.class), anyLong(), any(TodoSectionDto.class));
+                .updateSection(any(User.class), anyLong(), any(TodoSection.class));
 
         mvc.perform(put(API_SECTIONS + 1)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -222,15 +222,15 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
                 .andDo(print());
 
         verify(sectionService, times(1))
-                .updateSection(any(User.class), anyLong(), any(TodoSectionDto.class));
+                .updateSection(any(User.class), anyLong(), any(TodoSection.class));
     }
 
     @Test
     @WithUserDetails(USER)
     public void updateSection_ShouldReturnForbidden() throws Exception {
-        doThrow(new CustomException("Forbidden", "Not enough permissions", HttpStatus.FORBIDDEN))
+        doThrow(new CustomException("Not enough permissions", HttpStatus.FORBIDDEN))
                 .when(sectionService)
-                .updateSection(any(User.class), anyLong(), any(TodoSectionDto.class));
+                .updateSection(any(User.class), anyLong(), any(TodoSection.class));
 
         mvc.perform(put(API_SECTIONS + 1)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -240,7 +240,7 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
                 .andDo(print());
 
         verify(sectionService, times(1))
-                .updateSection(any(User.class), anyLong(), any(TodoSectionDto.class));
+                .updateSection(any(User.class), anyLong(), any(TodoSection.class));
     }
 
     @Test
@@ -252,7 +252,7 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
                 .andDo(print());
 
         verify(sectionService, times(0))
-                .updateSection(any(User.class), anyLong(), any(TodoSectionDto.class));
+                .updateSection(any(User.class), anyLong(), any(TodoSection.class));
     }
 
     @Test

@@ -69,7 +69,7 @@ public class TodoTaskControllerTest extends AbstractControllerTestClass {
     @WithUserDetails(USER)
     public void getTask_ShouldReturnNotFound() throws Exception {
         given(taskService.findTaskById(anyLong(), anyLong()))
-                .willThrow(new CustomException("Not Found", "Task not found", HttpStatus.NOT_FOUND));
+                .willThrow(new CustomException("Task not found", HttpStatus.NOT_FOUND));
 
         mvc.perform(get(API_TASKS + 1))
                 .andExpect(status().isNotFound())
@@ -90,7 +90,7 @@ public class TodoTaskControllerTest extends AbstractControllerTestClass {
     @Test
     @WithUserDetails(USER)
     public void deleteTask_ShouldReturnNotFound() throws Exception {
-        doThrow(new CustomException("Not Found", "Task not found", HttpStatus.NOT_FOUND))
+        doThrow(new CustomException("Task not found", HttpStatus.NOT_FOUND))
                 .when(taskService).deleteTaskById(any(User.class), anyLong());
 
         mvc.perform(delete(API_TASKS + 1))
@@ -103,7 +103,7 @@ public class TodoTaskControllerTest extends AbstractControllerTestClass {
     @Test
     @WithUserDetails(USER)
     public void deleteTask_ShouldReturnForbidden() throws Exception {
-        doThrow(new CustomException("Forbidden", "Not enough permissions", HttpStatus.FORBIDDEN))
+        doThrow(new CustomException("Not enough permissions", HttpStatus.FORBIDDEN))
                 .when(taskService).deleteTaskById(any(User.class), anyLong());
 
         mvc.perform(delete(API_TASKS + 1))
@@ -178,7 +178,7 @@ public class TodoTaskControllerTest extends AbstractControllerTestClass {
     @Test
     @WithUserDetails(USER)
     public void updateTask_ShouldReturnNotFound() throws Exception {
-        doThrow(new CustomException("Not Found", "Task not found", HttpStatus.NOT_FOUND))
+        doThrow(new CustomException("Task not found", HttpStatus.NOT_FOUND))
                 .when(taskService).updateTask(anyLong(), anyLong(),
                 any(TodoTaskDto.class),
                 any(), any());

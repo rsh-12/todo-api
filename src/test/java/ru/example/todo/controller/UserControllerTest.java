@@ -47,7 +47,7 @@ public class UserControllerTest extends AbstractControllerTestClass {
     @WithUserDetails(ADMIN)
     public void getUser_ShouldReturnNotFound() throws Exception {
         given(userService.findUserById(anyLong()))
-                .willThrow(new CustomException("Not Found", "User Not Found", HttpStatus.NOT_FOUND));
+                .willThrow(new CustomException("User Not Found", HttpStatus.NOT_FOUND));
 
         mvc.perform(get(API_USERS + 1))
                 .andExpect(status().isNotFound())
@@ -82,7 +82,7 @@ public class UserControllerTest extends AbstractControllerTestClass {
     @Test
     @WithUserDetails(ADMIN)
     public void deleteUser_ShouldReturnNotFound() throws Exception {
-        doThrow(new CustomException("Not Found", "User Not Found", HttpStatus.NOT_FOUND))
+        doThrow(new CustomException("User Not Found", HttpStatus.NOT_FOUND))
                 .when(userService).deleteUserById(anyLong());
 
         mvc.perform(delete(API_USERS + 1))
@@ -123,7 +123,7 @@ public class UserControllerTest extends AbstractControllerTestClass {
     @Test
     @WithUserDetails(ADMIN)
     public void updatePassword_ServiceException_ShouldReturnBadRequest() throws Exception {
-        doThrow(new CustomException("Bad Request", "Invalid data", HttpStatus.BAD_REQUEST))
+        doThrow(new CustomException("Invalid data", HttpStatus.BAD_REQUEST))
                 .when(userService).updatePassword(anyString(), anyString());
 
         JSONObject body = new JSONObject();
