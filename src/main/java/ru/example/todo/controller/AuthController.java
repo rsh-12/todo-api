@@ -19,6 +19,7 @@ import ru.example.todo.service.UserService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.Map;
 
 @Api(tags = "Auth")
 @RestController
@@ -39,8 +40,9 @@ public class AuthController {
     }
 
     @PostMapping(value = "/login", produces = "application/json")
-    public ResponseEntity<String> login(@Valid @RequestBody UserDto userDto, HttpServletRequest request) {
-        String tokens = userService.login(userDto, getClientIp(request));
+    public ResponseEntity<Map<String, String>> login(@Valid @RequestBody UserDto userDto, HttpServletRequest request) {
+        User user = modelMapper.map(userDto, User.class);
+        Map<String, String> tokens = userService.login(user, getClientIp(request));
         return ResponseEntity.ok(tokens);
     }
 
@@ -51,8 +53,8 @@ public class AuthController {
     }
 
     @PostMapping(value = "/token", produces = "application/json")
-    public ResponseEntity<String> getTokens(HttpServletRequest request) {
-        String tokens = userService.generateNewTokens(request.getHeader("token"), getClientIp(request));
+    public ResponseEntity<Map<String, String>> getTokens(HttpServletRequest request) {
+        Map<String, String> tokens = userService.generateNewTokens(request.getHeader("token"), getClientIp(request));
         return ResponseEntity.ok(tokens);
     }
 
