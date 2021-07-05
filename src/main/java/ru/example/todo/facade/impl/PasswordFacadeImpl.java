@@ -28,7 +28,7 @@ public class PasswordFacadeImpl implements PasswordFacade {
 
         String email = messagingService.sendTokenAndReceiveEmail(token);
         if (email == null || email.isBlank()) {
-            throw new CustomException("Internal Server Error", "An error occurred while generating the token",
+            throw new CustomException("An error occurred while generating the token",
                     HttpStatus.INTERNAL_SERVER_ERROR);
         }
 

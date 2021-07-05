@@ -32,7 +32,7 @@ public class TasksFacadeImpl implements TasksFacade {
     public void addTasksToOrRemoveFromSection(Long userId, Long sectionId, Set<Long> taskIds, FilterByOperation flag) {
 
         if (taskIds == null || taskIds.isEmpty()) {
-            throw new CustomException("Bad Request", "Tasks IDs are required", HttpStatus.BAD_REQUEST);
+            throw new CustomException("Tasks IDs are required", HttpStatus.BAD_REQUEST);
         }
 
         List<TodoTask> tasks = taskService.findTasksByIds(taskIds, userId);

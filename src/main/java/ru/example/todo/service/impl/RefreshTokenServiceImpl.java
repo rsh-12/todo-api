@@ -77,7 +77,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
         if (token.isPresent() && !hasRefreshTokenExpired(token.get())) {
             return token.get();
         } else {
-            throw new CustomException("Not Found", "Refresh token not found or expired", HttpStatus.NOT_FOUND);
+            throw new CustomException("Refresh token not found or expired", HttpStatus.NOT_FOUND);
         }
     }
 
