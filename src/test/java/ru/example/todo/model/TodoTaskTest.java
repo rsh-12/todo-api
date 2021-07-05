@@ -33,4 +33,18 @@ public class TodoTaskTest {
         assertEquals("title", todoTask.getTitle());
     }
 
+    @Test
+    public void mapTodoTask_WithTitle() {
+        TodoTask task = new TodoTask();
+        task.setTitle("title");
+
+        TodoTaskDto todoTaskDto = new TodoTaskDto();
+        todoTaskDto.setCompletionDate(LocalDate.now());
+
+        modelMapper.map(todoTaskDto, task);
+
+        assertNotNull(task);
+        assertEquals("title", task.getTitle());
+    }
+
 }
