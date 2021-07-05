@@ -12,17 +12,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import ru.example.todo.dto.TodoTaskDto;
 import ru.example.todo.entity.TodoTask;
 import ru.example.todo.entity.User;
-import ru.example.todo.enums.filters.FilterByBoolean;
 import ru.example.todo.enums.filters.FilterByDate;
 import ru.example.todo.exception.CustomException;
 import ru.example.todo.repository.TodoTaskRepository;
 import ru.example.todo.service.TodoTaskService;
 
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -94,35 +91,9 @@ public class TodoTaskServiceImpl extends AbstractServiceClass implements TodoTas
         return tasksByIds;
     }
 
-    // update task by id
     @Override
-    public TodoTask updateTask(Long userId, Long taskId, TodoTaskDto taskDto,
-                               FilterByBoolean completed, FilterByBoolean starred) {
-        // get task from DB
-        log.info("Get the task from DB: id={}", taskId);
-        TodoTask task = todoTaskRepository.findByIdAndUserId(taskId, userId)
-                .orElseThrow(() -> new CustomException("Task not found: " + taskId, HttpStatus.NOT_FOUND));
-
-        // update task title or task completion date
-        if (taskDto != null) {
-            setTitleOrDate(taskDto, task);
-        }
-
-        if (completed != null) {
-            log.info("Update task 'completed' field");
-            task.setCompleted(toABoolean(completed));
-        }
-
-        if (starred != null) {
-            log.info("Update task 'starred' field");
-            task.setStarred(toABoolean(starred));
-        }
-
-        log.info("Update task 'updatedAt' field");
-        task.setUpdatedAt(new Date());
-
-        log.info("Save the updated task: id={}", taskId);
-        return todoTaskRepository.save(task);
+    public void save(TodoTask task) {
+        todoTaskRepository.save(task);
     }
 
 }
