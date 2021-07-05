@@ -43,11 +43,9 @@ public class JwtTokenServiceImpl implements JwtTokenService {
         Claims claims = Jwts.claims();
         claims.put("id", userId);
 
-        if (roles != null) {
-            claims.put("auth", roles.stream()
-                    .map(role -> new SimpleGrantedAuthority(role.getAuthority()))
-                    .collect(Collectors.toList()));
-        }
+        if (roles != null) claims.put("auth", roles.stream()
+                .map(role -> new SimpleGrantedAuthority(role.getAuthority()))
+                .collect(Collectors.toList()));
 
         return Jwts.builder()
                 .setClaims(claims)
@@ -83,7 +81,7 @@ public class JwtTokenServiceImpl implements JwtTokenService {
                     .parseClaimsJws(accessToken);
             return true;
         } catch (JwtException | IllegalArgumentException ex) {
-            throw new CustomException("Forbidden", "Expired or invalid JWT token", HttpStatus.FORBIDDEN);
+            throw new CustomException("Expired or invalid JWT token", HttpStatus.FORBIDDEN);
         }
     }
 
