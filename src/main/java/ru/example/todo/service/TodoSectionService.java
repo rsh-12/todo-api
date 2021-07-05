@@ -1,7 +1,6 @@
 package ru.example.todo.service;
 
 import ru.example.todo.domain.TodoSectionProjection;
-import ru.example.todo.dto.TodoSectionDto;
 import ru.example.todo.entity.TodoSection;
 import ru.example.todo.entity.TodoTask;
 import ru.example.todo.entity.User;
@@ -17,9 +16,9 @@ public interface TodoSectionService {
 
     void deleteSectionById(User principal, Long sectionId);
 
-    TodoSection createSection(User user, TodoSectionDto sectionDto);
+    TodoSection createSection(User user, TodoSection section);
 
-    TodoSection updateSection(User principal, Long sectionId, TodoSectionDto sectionDto);
+    TodoSection updateSection(User principal, Long sectionId, TodoSection section);
 
     void addTasksToOrRemoveFromSection(Long userId, Long sectionId, List<TodoTask> tasks, FilterByOperation flag);
 }
