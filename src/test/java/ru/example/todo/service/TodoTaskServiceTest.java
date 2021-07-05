@@ -11,17 +11,14 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
-import ru.example.todo.dto.TodoTaskDto;
 import ru.example.todo.entity.TodoTask;
 import ru.example.todo.entity.User;
 import ru.example.todo.enums.Role;
-import ru.example.todo.enums.filters.FilterByBoolean;
 import ru.example.todo.enums.filters.FilterByDate;
 import ru.example.todo.exception.CustomException;
 import ru.example.todo.repository.TodoTaskRepository;
 import ru.example.todo.service.impl.TodoTaskServiceImpl;
 
-import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -148,55 +145,6 @@ public class TodoTaskServiceTest {
 
         assertNotNull(createdTask);
         assertEquals(createdTask.getUser(), user);
-    }
-
-    // updateTask
-    @Test
-    public void updateTask_ShouldThrowCustomException() {
-        given(taskRepository.findByIdAndUserId(anyLong(), anyLong()))
-                .willThrow(new CustomException("Task not found", HttpStatus.NOT_FOUND));
-
-        assertThrows(CustomException.class, () ->
-                taskService.updateTask(1L, 1L, new TodoTaskDto("title"),
-                        FilterByBoolean.TRUE, FilterByBoolean.TRUE));
-
-        verify(taskRepository).findByIdAndUserId(anyLong(), anyLong());
-        verifyNoMoreInteractions(taskRepository);
-    }
-
-    @Test
-    public void updateTask_ShouldReturnTask() {
-        TodoTask task = new TodoTask("make a call", LocalDate.now().minusDays(1));
-        given(taskRepository.findByIdAndUserId(anyLong(), anyLong())).willReturn(Optional.ofNullable(task));
-        given(taskRepository.save(task)).willReturn(task);
-
-        TodoTask updatedTask = taskService.updateTask(1L, 1L, new TodoTaskDto("Title", LocalDate.now()),
-                FilterByBoolean.TRUE, FilterByBoolean.TRUE);
-
-        assertEquals("Title", updatedTask.getTitle());
-        assertEquals(LocalDate.now(), updatedTask.getCompletionDate());
-        assertTrue(updatedTask.isCompleted());
-        assertTrue(updatedTask.isStarred());
-
-        verify(taskRepository, times(1)).findByIdAndUserId(anyLong(), anyLong());
-        verify(taskRepository, times(1)).save(task);
-    }
-
-    @Test
-    public void updateTask_WithNullArgs_ShouldReturnTask() {
-        TodoTask task = new TodoTask("make a call", LocalDate.now().minusDays(1));
-        given(taskRepository.findByIdAndUserId(anyLong(), anyLong())).willReturn(Optional.ofNullable(task));
-        given(taskRepository.save(task)).willReturn(task);
-
-        TodoTask updatedTask = taskService.updateTask(1L, 1L, null,
-                null, null);
-
-        assertFalse(updatedTask.isCompleted());
-        assertFalse(updatedTask.isStarred());
-        assertEquals("make a call", updatedTask.getTitle());
-
-        verify(taskRepository, times(1)).findByIdAndUserId(anyLong(), anyLong());
-        verify(taskRepository, times(1)).save(task);
     }
 
     // findTasksByIds
