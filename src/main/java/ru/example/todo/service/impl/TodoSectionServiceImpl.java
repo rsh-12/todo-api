@@ -36,7 +36,7 @@ public class TodoSectionServiceImpl extends AbstractServiceClass implements Todo
     public TodoSection findSectionById(Long userId, Long sectionId) {
         log.info("Get the section by id: {}", sectionId);
         return todoSectionRepository.findByUserIdAndId(userId, sectionId)
-                .orElseThrow(() -> new CustomException("Not Found", "Section not found: " + sectionId, HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new CustomException("Section not found: " + sectionId, HttpStatus.NOT_FOUND));
     }
 
     // get all sections
@@ -52,41 +52,35 @@ public class TodoSectionServiceImpl extends AbstractServiceClass implements Todo
     @Override
     public void deleteSectionById(User principal, Long sectionId) {
         TodoSection section = todoSectionRepository.findById(sectionId)
-                .orElseThrow(() -> new CustomException("Not Found", "Section not found", HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new CustomException("Section not found", HttpStatus.NOT_FOUND));
 
         if (isUserValidOrHasRoleAdmin(principal, section.getUser())) {
             todoSectionRepository.delete(section);
         } else {
-            throw new CustomException("Forbidden", "Not enough permissions", HttpStatus.FORBIDDEN);
+            throw new CustomException("Not enough permissions", HttpStatus.FORBIDDEN);
         }
     }
 
 
     // create new section
     @Override
-    public TodoSection createSection(User user, TodoSectionDto sectionDto) {
-        TodoSection section = new TodoSection();
+    public TodoSection createSection(User user, TodoSection section) {
         section.setUser(user);
-        section.setTitle(sectionDto.getTitle());
-
         log.info("Create a new section");
         return todoSectionRepository.save(section);
     }
 
     // update section title
     @Override
-    public TodoSection updateSection(User principal, Long sectionId, TodoSectionDto sectionDto) {
-        // get a section by id
-        TodoSection section = todoSectionRepository.findById(sectionId)
-                .orElseThrow(() -> new CustomException("Not Found", "Section not found: " + sectionId, HttpStatus.NOT_FOUND));
+    public TodoSection updateSection(User principal, Long sectionId, TodoSection section) {
+        todoSectionRepository.findById(sectionId)
+                .orElseThrow(() -> new CustomException("Section not found: " + sectionId, HttpStatus.NOT_FOUND));
 
         if (isUserValidOrHasRoleAdmin(principal, section.getUser())) {
-            section.setTitle(sectionDto.getTitle());
+            return todoSectionRepository.save(section);
         } else {
-            throw new CustomException("Forbidden", "Not enough permissions", HttpStatus.FORBIDDEN);
+            throw new CustomException("Not enough permissions", HttpStatus.FORBIDDEN);
         }
-
-        return todoSectionRepository.save(section);
     }
 
 
@@ -95,7 +89,7 @@ public class TodoSectionServiceImpl extends AbstractServiceClass implements Todo
     public void addTasksToOrRemoveFromSection(Long userId, Long sectionId, List<TodoTask> tasks, FilterByOperation flag) {
         log.info("Get the section by id: {}", sectionId);
         TodoSection section = todoSectionRepository.findByUserIdAndId(userId, sectionId)
-                .orElseThrow(() -> new CustomException("Not Found", "Section not found: " + sectionId, HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new CustomException("Section not found: " + sectionId, HttpStatus.NOT_FOUND));
 
         // add or remove
         addOrRemoveTasks(flag, section, tasks);
