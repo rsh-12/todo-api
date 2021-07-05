@@ -35,12 +35,12 @@ public class MessagingClient implements MessagingService {
     @Override
     public void send(EmailRequest email) {
         if (!userService.existsByUsername(email.getEmail())) {
-            throw new CustomException("Not Found", "Username Not Found", HttpStatus.NOT_FOUND);
+            throw new CustomException("Username Not Found", HttpStatus.NOT_FOUND);
         }
 
         Object response = getResponse(emailExchange, email, "todo.email.replies");
         if (response == null || ((boolean) response == false)) {
-            throw new CustomException("Internal Server Error", "An error occurred while generating the token",
+            throw new CustomException("An error occurred while generating the token",
                     HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
