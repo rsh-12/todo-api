@@ -6,6 +6,8 @@ package ru.example.todo.model;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.modelmapper.ModelMapper;
+import ru.example.todo.dto.TodoSectionDto;
 import ru.example.todo.entity.TodoSection;
 import ru.example.todo.entity.TodoTask;
 
@@ -15,14 +17,14 @@ import static org.junit.Assert.*;
 
 public class TodoSectionTest {
 
+    private final ModelMapper modelMapper = new ModelMapper();
     private TodoSection section;
     private final TodoTask task = new TodoTask("First task", LocalDate.of(2021, 5, 5));
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         section = new TodoSection("Important");
         section.addTask(task);
-        assertEquals(1, section.getTodoTasks().size());
     }
 
     @Test
@@ -45,6 +47,15 @@ public class TodoSectionTest {
     @Test
     public void removeTask_ShouldThrowNPE() {
         assertThrows(NullPointerException.class, () -> section.removeTask(null));
+    }
+
+    @Test
+    public void mapTodoSection() {
+        TodoSectionDto sectionDto = new TodoSectionDto("Important");
+        TodoSection todoSection = modelMapper.map(sectionDto, TodoSection.class);
+
+        assertNotNull(todoSection);
+        assertEquals("Important", todoSection.getTitle());
     }
 
 }
