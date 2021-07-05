@@ -38,7 +38,7 @@ public class JwtTokenServiceTest {
     private TokenProperties tokenProperties;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         given(tokenProperties.getSecret()).willReturn("secretKey".repeat(5));
         given(tokenProperties.getAccessTokenValidity()).willReturn(1_800_000L);
     }
@@ -58,6 +58,16 @@ public class JwtTokenServiceTest {
     public void resolveAccessToken_ShouldReturnToken() {
         HttpServletRequest request = mock(HttpServletRequest.class);
         given(request.getHeader("Authorization")).willReturn("Bearer someAccessToken");
+
+        String accessToken = jwtTokenService.resolveAccessToken(request);
+        assertFalse(accessToken.isEmpty());
+        assertEquals("someAccessToken", accessToken);
+    }
+
+    @Test
+    public void resolveAccessToken_WithoutPrefix_ShouldReturnToken() {
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        given(request.getHeader("Authorization")).willReturn("someAccessToken");
 
         String accessToken = jwtTokenService.resolveAccessToken(request);
         assertFalse(accessToken.isEmpty());
