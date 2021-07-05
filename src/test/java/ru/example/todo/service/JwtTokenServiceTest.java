@@ -74,6 +74,13 @@ public class JwtTokenServiceTest {
         assertEquals("someAccessToken", accessToken);
     }
 
+    @Test
+    public void resolveAccessToken_ShouldReturnEmptyString() {
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        String accessToken = jwtTokenService.resolveAccessToken(request);
+        assertEquals("", accessToken);
+    }
+
     // isAccessTokenValid
     @Test
     public void isAccessTokenValid_ShouldReturnTrue() {
