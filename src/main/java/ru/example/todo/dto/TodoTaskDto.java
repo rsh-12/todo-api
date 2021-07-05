@@ -18,6 +18,10 @@ public class TodoTaskDto {
     @FutureOrPresent
     private LocalDate completionDate = LocalDate.now();
 
+    private boolean completed;
+
+    private boolean starred;
+
     public TodoTaskDto() {
     }
 
@@ -28,6 +32,13 @@ public class TodoTaskDto {
     public TodoTaskDto(String title, LocalDate completionDate) {
         this.title = title;
         this.completionDate = completionDate;
+    }
+
+    public TodoTaskDto(String title, LocalDate completionDate, boolean completed, boolean starred) {
+        this.title = title;
+        this.completionDate = completionDate;
+        this.completed = completed;
+        this.starred = starred;
     }
 
     public String getTitle() {
@@ -47,11 +58,29 @@ public class TodoTaskDto {
         this.completionDate = completionDate;
     }
 
+    public boolean isCompleted() {
+        return completed;
+    }
+
+    public void setCompleted(boolean completed) {
+        this.completed = completed;
+    }
+
+    public boolean isStarred() {
+        return starred;
+    }
+
+    public void setStarred(boolean starred) {
+        this.starred = starred;
+    }
+
     @Override
     public String toString() {
-        return "TodoTaskRequest{" +
+        return "TodoTaskDto{" +
                 "title='" + title + '\'' +
                 ", completionDate=" + completionDate +
+                ", completed=" + completed +
+                ", starred=" + starred +
                 '}';
     }
 }
