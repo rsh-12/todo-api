@@ -12,7 +12,6 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.example.todo.config.properties.TokenProperties;
-import ru.example.todo.dto.UserDto;
 import ru.example.todo.entity.RefreshToken;
 import ru.example.todo.entity.User;
 import ru.example.todo.exception.CustomException;
@@ -22,6 +21,7 @@ import ru.example.todo.service.JwtTokenService;
 import ru.example.todo.service.RefreshTokenService;
 import ru.example.todo.service.UserService;
 
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -47,22 +47,21 @@ public class UserServiceImpl extends AbstractServiceClass implements UserService
     }
 
     @Override
-    public String login(UserDto userDto, String ip) {
+    public Map<String, String> login(User user, String ip) {
         try {
             Authentication auth = authManager
-                    .authenticate(new UsernamePasswordAuthenticationToken(userDto.getUsername(), userDto.getPassword()));
-            User user = ((UserDetailsImpl) auth.getPrincipal()).getUser();
-            return buildResponseBody(user, ip);
+                    .authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
+            User userFromDb = ((UserDetailsImpl) auth.getPrincipal()).getUser();
+            return buildResponseBody(userFromDb, ip);
         } catch (AuthenticationException ex) {
-            throw new CustomException("Not Found", "Username Not Found / Incorrect Password", HttpStatus.NOT_FOUND);
+            throw new CustomException("Username Not Found / Incorrect Password", HttpStatus.NOT_FOUND);
         }
     }
-
 
     @Override
     public String register(User user) {
         if (userRepository.existsByUsername(user.getUsername())) {
-            throw new CustomException("Bad Request", "Username already in use", HttpStatus.BAD_REQUEST);
+            throw new CustomException("Username already in use", HttpStatus.BAD_REQUEST);
         }
 
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
@@ -71,11 +70,11 @@ public class UserServiceImpl extends AbstractServiceClass implements UserService
     }
 
     @Override
-    public String generateNewTokens(String refreshToken, String ip) {
+    public Map<String, String> generateNewTokens(String refreshToken, String ip) {
         RefreshToken oldRefreshToken = refreshTokenService.findRefreshTokenByValue(refreshToken);
 
         User user = userRepository.findById(oldRefreshToken.getUserId()).orElseThrow(() ->
-                new CustomException("Not Found", "Refresh token owner not found", HttpStatus.BAD_REQUEST));
+                new CustomException("Refresh token owner not found", HttpStatus.BAD_REQUEST));
 
         return buildResponseBody(user, ip); // generate new access and refresh tokens
     }
@@ -83,7 +82,7 @@ public class UserServiceImpl extends AbstractServiceClass implements UserService
     @Override
     public void deleteUserById(Long userId) {
         if (!userRepository.existsById(userId)) {
-            throw new CustomException("Not Found", "User Not Found: " + userId, HttpStatus.NOT_FOUND);
+            throw new CustomException("User Not Found: " + userId, HttpStatus.NOT_FOUND);
         }
         userRepository.deleteById(userId);
     }
@@ -91,13 +90,13 @@ public class UserServiceImpl extends AbstractServiceClass implements UserService
     @Override
     public User findUserById(Long userId) {
         return userRepository.findById(userId)
-                .orElseThrow(() -> new CustomException("Not Found", "User Not Found", HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new CustomException("User Not Found", HttpStatus.NOT_FOUND));
     }
 
     @Override
     public void updatePassword(String email, String password) {
         User user = userRepository.findByUsername(email)
-                .orElseThrow(() -> new CustomException("Not Found", "Username Not Found", HttpStatus.BAD_REQUEST));
+                .orElseThrow(() -> new CustomException("Username Not Found", HttpStatus.BAD_REQUEST));
 
         user.setPassword(bCryptPasswordEncoder.encode(password));
         userRepository.save(user);
@@ -108,19 +107,17 @@ public class UserServiceImpl extends AbstractServiceClass implements UserService
         return userRepository.existsByUsername(email);
     }
 
-    String buildResponseBody(User user, String ip) {
+    Map<String, String> buildResponseBody(User user, String ip) {
         String accessToken = jwtTokenService.buildAccessToken(user.getId(), user.getRoles());
         String refreshToken = refreshTokenService.createRefreshToken(user.getId(), ip);
 
-        Map<String, String> response = new LinkedHashMap<>() {{
+        return Collections.unmodifiableMap(new LinkedHashMap<>() {{
             put("access_token", accessToken);
             put("refresh_token", refreshToken);
             put("token_type", "Bearer");
             put("access_token_expires", String.valueOf(tokenProperties.getAccessTokenValidity()));
             put("refresh_token_expires", String.valueOf(tokenProperties.getRefreshTokenValidity()));
-        }};
-
-        return String.valueOf(response);
+        }});
     }
 
 }
