@@ -14,9 +14,9 @@ services:
     volumes:
       - ./pg_data:/var/lib/postgresql/data/pgdata
     environment:
-      POSTGRES_USER: postgres # encrypt and replace later
-      POSTGRES_PASSWORD: postgres # encrypt and replace later
-      POSTGRES_DB: tododb # encrypt and replace later
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PWD}
+      POSTGRES_DB: tododb
       PGDATA: /var/lib/postgresql/data/pgdata
     networks:
       backend:
@@ -30,10 +30,10 @@ services:
     ports:
       - 8080:8080
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/tododb # encrypt and replace later
-      SPRING_DATASOURCE_USERNAME: postgres # encrypt and replace later
-      SPRING_DATASOURCE_PASSWORD: postgres # encrypt and replace later
-      TOKEN: someFakeToken # encrypt and replace later
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/tododb
+      SPRING_DATASOURCE_USERNAME: ${DB_USER}
+      SPRING_DATASOURCE_PASSWORD: ${DB_PWD}
+      TOKEN: ${TOKEN}
     networks:
       backend:
         aliases:
@@ -54,7 +54,7 @@ services:
         aliases:
           - "rabbitmq"
 
-  # add password-reset service
+  # todo: add password-reset service
 
   prometheus:
     image: prom/prometheus
