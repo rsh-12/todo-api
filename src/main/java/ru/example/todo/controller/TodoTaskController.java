@@ -20,7 +20,6 @@ import ru.example.todo.controller.assembler.TodoTaskModelAssembler;
 import ru.example.todo.dto.TodoTaskDto;
 import ru.example.todo.entity.TodoTask;
 import ru.example.todo.entity.User;
-import ru.example.todo.enums.filters.FilterByBoolean;
 import ru.example.todo.enums.filters.FilterByDate;
 import ru.example.todo.security.UserDetailsImpl;
 import ru.example.todo.service.TodoTaskService;
@@ -107,24 +106,20 @@ public class TodoTaskController {
         return ResponseEntity.created(location).build();
     }
 
-    // todo: rewrite method
-    // update task title or task completion date
-    // or
-    // update task status (completed, starred)
     @ApiOperation(value = "Update task", notes = "It permits to update a task")
     @PatchMapping(value = "/{id}", consumes = "application/json")
-    public ResponseEntity<String> updateTask(
-            @AuthenticationPrincipal UserDetailsImpl userDetails,
-            @PathVariable("id") Long taskId,
-            @Valid @RequestBody(required = false) TodoTaskDto taskDto,
-            @RequestParam(value = "completed", required = false) FilterByBoolean completed,
-            @RequestParam(value = "starred", required = false) FilterByBoolean starred) {
+    public ResponseEntity<String> updateTask(@AuthenticationPrincipal UserDetailsImpl userDetails,
+                                             @PathVariable("id") Long taskId,
+                                             @Valid @RequestBody TodoTaskDto taskDto) {
 
-        TodoTask task = todoTaskService.updateTask(userDetails.getId(), taskId, taskDto, completed, starred);
+        TodoTask task = todoTaskService.findTaskById(userDetails.getId(), taskId);
+        modelMapper.map(taskDto, task);
+        todoTaskService.save(task);
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                 .buildAndExpand(task.getId()).toUri();
 
         return ResponseEntity.ok().header("Location", location.toString()).build();
     }
+
 }
