@@ -42,8 +42,7 @@ public class JwtTokenServiceImpl implements JwtTokenService {
     public String buildAccessToken(Long userId, Set<Role> roles) {
         Claims claims = Jwts.claims();
         claims.put("id", userId);
-
-        if (roles != null) claims.put("auth", roles.stream()
+        claims.put("auth", roles.stream()
                 .map(role -> new SimpleGrantedAuthority(role.getAuthority()))
                 .collect(Collectors.toList()));
 
