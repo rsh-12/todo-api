@@ -65,6 +65,16 @@ public class JwtTokenServiceTest {
     }
 
     @Test
+    public void resolveAccessToken_WithLowerCasePrefix_ShouldReturnToken() {
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        given(request.getHeader("Authorization")).willReturn("bearer someAccessToken");
+
+        String accessToken = jwtTokenService.resolveAccessToken(request);
+        assertFalse(accessToken.isEmpty());
+        assertEquals("someAccessToken", accessToken);
+    }
+
+    @Test
     public void resolveAccessToken_WithoutPrefix_ShouldReturnToken() {
         HttpServletRequest request = mock(HttpServletRequest.class);
         given(request.getHeader("Authorization")).willReturn("someAccessToken");
