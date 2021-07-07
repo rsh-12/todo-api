@@ -12,6 +12,8 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import ru.example.todo.config.properties.TokenProperties;
 import ru.example.todo.enums.Role;
 import ru.example.todo.exception.CustomException;
@@ -137,7 +139,14 @@ public class JwtTokenServiceTest {
         assertTrue(userRoles.contains(Role.ADMIN));
     }
 
-
     // getAuthentication
+    @Test
+    public void getAuthentication_ShouldReturnAuthInstance() {
+        String accessToken = jwtTokenService.buildAccessToken(1L, Set.of(Role.USER));
+        assertNotNull(accessToken);
+
+        Authentication auth = jwtTokenService.getAuthentication(accessToken);
+        assertNotNull(auth);
+    }
 
 }
