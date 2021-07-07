@@ -38,7 +38,7 @@ public class RefreshTokenServiceTest {
     private TokenProperties tokenProperties;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         given(tokenProperties.getRefreshTokenValidity()).willReturn(86_400_000L);
     }
 
@@ -50,6 +50,20 @@ public class RefreshTokenServiceTest {
         given(refreshTokenRepository.save(any(RefreshToken.class))).willReturn(mockRefreshToken);
 
         String refreshTokenValue = refreshTokenService.createRefreshToken(1L, "0.0.0.0:8080");
+        assertNotNull(refreshTokenValue);
+        assertEquals(64, refreshTokenValue.length());
+
+        verify(refreshTokenRepository).findByUserId(anyLong());
+        verify(refreshTokenRepository).save(any(RefreshToken.class));
+    }
+
+    @Test
+    public void createRefreshToken_ShouldReturnUpdatedRefreshTokenValue() {
+        RefreshToken mockRefreshToken = mock(RefreshToken.class);
+        given(refreshTokenRepository.findByUserId(anyLong())).willReturn(Optional.of(mockRefreshToken));
+        given(refreshTokenRepository.save(any(RefreshToken.class))).willReturn(mockRefreshToken);
+
+        String refreshTokenValue = refreshTokenService.createRefreshToken(1L, null);
         assertNotNull(refreshTokenValue);
         assertEquals(64, refreshTokenValue.length());
 
