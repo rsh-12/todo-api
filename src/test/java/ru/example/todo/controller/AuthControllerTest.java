@@ -192,7 +192,7 @@ public class AuthControllerTest extends AbstractControllerTestClass {
                 .getResponse()
                 .getContentAsString();
 
-        assertEquals(response, "access_token, refresh_token");
+        assertTrue(response.contains("access_token") && response.contains("refresh_token"));
         verify(userService, times(1)).generateNewTokens(anyString(), anyString());
     }
 
