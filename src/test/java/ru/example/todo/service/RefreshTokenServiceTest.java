@@ -15,15 +15,13 @@ import ru.example.todo.entity.RefreshToken;
 import ru.example.todo.repository.RefreshTokenRepository;
 import ru.example.todo.service.impl.RefreshTokenServiceImpl;
 
-import java.text.SimpleDateFormat;
 import java.time.Instant;
-import java.time.LocalDate;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Optional;
 
 import static org.junit.Assert.*;
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
