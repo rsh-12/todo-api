@@ -99,4 +99,12 @@ public class RefreshTokenServiceTest {
         assertTrue(refreshTokenService.hasRefreshTokenExpired(refreshToken));
     }
 
+    @Test
+    public void hasRefreshTokenExpired_ShouldReturnFalse() {
+        RefreshToken refreshToken = mock(RefreshToken.class);
+        Instant instant = new Date().toInstant().plusSeconds(60);
+        given(refreshToken.getExpiresAt()).willReturn(Date.from(instant));
+        assertFalse(refreshTokenService.hasRefreshTokenExpired(refreshToken));
+    }
+
 }
