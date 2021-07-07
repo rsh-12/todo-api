@@ -11,7 +11,3 @@
 #### [Password Reset Service](https://github.com/rsh-12/password-reset-service)
 Learn more on the project's [website](https://rsh-12.github.io/todo-api/)
 
-<br>
-
-TODO: 
-- [ ] Add more unit tests and mock some components
