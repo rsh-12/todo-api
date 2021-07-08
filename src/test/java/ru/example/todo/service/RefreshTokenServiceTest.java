@@ -131,6 +131,13 @@ public class RefreshTokenServiceTest {
         assertEquals(1L, (long) refreshToken.getUserId());
     }
 
+    @Test
+    public void findRefreshTokenByUserId_NotFound_ShouldThrowCustomException() {
+        given(refreshTokenRepository.findByUserId(anyLong())).willReturn(Optional.empty());
+        assertThrows(CustomException.class, () ->
+                refreshTokenService.findRefreshTokenByUserId(1L));
+    }
+
     // hasRefreshTokenExpired
     @Test
     public void hasRefreshTokenExpired_ShouldReturnTrue() {
