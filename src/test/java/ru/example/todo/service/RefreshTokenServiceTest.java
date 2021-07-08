@@ -86,8 +86,23 @@ public class RefreshTokenServiceTest {
 
 
     // findRefreshTokenByValue
+    @Test
+    public void findRefreshTokenByValue_ShouldRetunToken() {
+        RefreshToken mockRefreshToken = mock(RefreshToken.class);
+        given(mockRefreshToken.getValue()).willReturn("someRefreshToken");
+        given(mockRefreshToken.getExpiresAt()).willReturn(Date.from(new Date().toInstant().plusSeconds(60)));
+
+        given(refreshTokenRepository.findByValue(mockRefreshToken.getValue()))
+                .willReturn(Optional.of(mockRefreshToken));
+
+        RefreshToken refreshToken = refreshTokenService.findRefreshTokenByValue(mockRefreshToken.getValue());
+        assertNotNull(refreshToken);
+        assertEquals("someRefreshToken", refreshToken.getValue());
+    }
+
+
     // findRefreshTokenByUserId
-    
+
     // hasRefreshTokenExpired
     @Test
     public void hasRefreshTokenExpired_ShouldReturnTrue() {
