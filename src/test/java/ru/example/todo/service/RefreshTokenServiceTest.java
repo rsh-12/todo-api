@@ -106,6 +106,16 @@ public class RefreshTokenServiceTest {
                 refreshTokenService.findRefreshTokenByValue("someRefreshToken"));
     }
 
+    @Test
+    public void findRefreshTokenByValue_Expired_ShouldThrowCustomException() {
+        RefreshToken mockRefreshToken = mock(RefreshToken.class);
+        given(mockRefreshToken.getValue()).willReturn("someRefreshToken");
+        given(mockRefreshToken.getExpiresAt()).willReturn(Date.from(new Date().toInstant().minusSeconds(60)));
+
+        given(refreshTokenRepository.findByValue(anyString())).willReturn(Optional.of(mockRefreshToken));
+        assertThrows(CustomException.class, () ->
+                refreshTokenService.findRefreshTokenByValue(mockRefreshToken.getValue()));
+    }
 
     // findRefreshTokenByUserId
 
