@@ -101,12 +101,9 @@ public class RefreshTokenServiceTest {
 
     @Test
     public void findRefreshTokenByValue_NotFound_ShouldThrowCustomException() {
-        RefreshToken mockRefreshToken = mock(RefreshToken.class);
-        given(mockRefreshToken.getValue()).willReturn("someRefreshToken");
-
         given(refreshTokenRepository.findByValue(anyString())).willReturn(Optional.empty());
         assertThrows(CustomException.class, () ->
-                refreshTokenService.findRefreshTokenByValue(mockRefreshToken.getValue()));
+                refreshTokenService.findRefreshTokenByValue("someRefreshToken"));
     }
 
 
