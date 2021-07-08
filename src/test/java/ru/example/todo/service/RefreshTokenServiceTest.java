@@ -12,6 +12,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import ru.example.todo.config.properties.TokenProperties;
 import ru.example.todo.entity.RefreshToken;
+import ru.example.todo.exception.CustomException;
 import ru.example.todo.repository.RefreshTokenRepository;
 import ru.example.todo.service.impl.RefreshTokenServiceImpl;
 
@@ -20,8 +21,7 @@ import java.util.Date;
 import java.util.Optional;
 
 import static org.junit.Assert.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -92,12 +92,21 @@ public class RefreshTokenServiceTest {
         given(mockRefreshToken.getValue()).willReturn("someRefreshToken");
         given(mockRefreshToken.getExpiresAt()).willReturn(Date.from(new Date().toInstant().plusSeconds(60)));
 
-        given(refreshTokenRepository.findByValue(mockRefreshToken.getValue()))
-                .willReturn(Optional.of(mockRefreshToken));
-
+        given(refreshTokenRepository.findByValue(anyString())).willReturn(Optional.of(mockRefreshToken));
         RefreshToken refreshToken = refreshTokenService.findRefreshTokenByValue(mockRefreshToken.getValue());
+
         assertNotNull(refreshToken);
         assertEquals("someRefreshToken", refreshToken.getValue());
+    }
+
+    @Test
+    public void findRefreshTokenByValue_NotFound_ShouldThrowCustomException() {
+        RefreshToken mockRefreshToken = mock(RefreshToken.class);
+        given(mockRefreshToken.getValue()).willReturn("someRefreshToken");
+
+        given(refreshTokenRepository.findByValue(anyString())).willReturn(Optional.empty());
+        assertThrows(CustomException.class, () ->
+                refreshTokenService.findRefreshTokenByValue(mockRefreshToken.getValue()));
     }
 
 
