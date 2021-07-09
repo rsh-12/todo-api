@@ -79,8 +79,7 @@ public class TodoTaskServiceTest {
 
     @Test
     public void findTaskById_ShouldThrowException() {
-        given(taskRepository.findByIdAndUserId(anyLong(), anyLong()))
-                .willThrow(new CustomException("Task not found", HttpStatus.NOT_FOUND));
+        given(taskRepository.findByIdAndUserId(anyLong(), anyLong())).willReturn(Optional.empty());
         assertThrows(CustomException.class, () -> taskService.findTaskById(1L, 1L));
     }
 
