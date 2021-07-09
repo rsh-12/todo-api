@@ -10,7 +10,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import ru.example.todo.entity.TodoTask;
 import ru.example.todo.entity.User;
 import ru.example.todo.enums.Role;
@@ -66,7 +65,7 @@ public class TodoTaskServiceTest {
         TodoTask task = mock(TodoTask.class);
         given(task.getTitle()).willReturn("Title");
 
-        given(taskRepository.findByIdAndUserId(anyLong(), anyLong())).willReturn(java.util.Optional.of(task));
+        given(taskRepository.findByIdAndUserId(anyLong(), anyLong())).willReturn(Optional.of(task));
 
         TodoTask taskFromDb = taskService.findTaskById(1L, 1L);
 
