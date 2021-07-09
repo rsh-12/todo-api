@@ -237,6 +237,7 @@
                 </executions>
                 <configuration>
                     <excludes>
+                        <exclude>ru/example/todo/actuator/**/*</exclude>
                         <exclude>ru/example/todo/dto/**/*</exclude>
                         <exclude>ru/example/todo/domain/**/*</exclude>
                         <exclude>ru/example/todo/util/**/*</exclude>
