@@ -41,16 +41,18 @@ public class TodoTaskServiceImpl extends AbstractServiceClass implements TodoTas
         pageSize = pageSize > 100 ? 100 : pageSize; // set max page size
         Pageable page = PageRequest.of(pageNo, pageSize, Sort.by(getSortDirection(sort), getSortAsString(sort)));
 
-        if (date.equals(FilterByDate.TODAY)) {
-            log.info("Get today's tasks");
-            return todoTaskRepository.findAllByCompletionDateEqualsAndUserId(LocalDate.now(), page, userId);
-        } else if (date.equals(FilterByDate.OVERDUE)) {
-            log.info("Get overdue tasks");
-            return todoTaskRepository.findAllByCompletionDateBeforeAndUserId(LocalDate.now(), page, userId);
+        switch (date) {
+            case TODAY:
+                log.info("Get today's tasks");
+                return todoTaskRepository.findAllByCompletionDateEqualsAndUserId(LocalDate.now(), page, userId);
+            case OVERDUE:
+                log.info("Get overdue tasks");
+                return todoTaskRepository.findAllByCompletionDateBeforeAndUserId(LocalDate.now(), page, userId);
+            default:
+                log.info("Get all tasks");
+                return todoTaskRepository.findAllByUserId(userId, page);
         }
 
-        log.info("Get all tasks");
-        return todoTaskRepository.findAllByUserId(userId, page);
     }
 
     // get task by id
