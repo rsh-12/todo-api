@@ -166,4 +166,12 @@ public class TodoTaskServiceTest {
         assertTrue(tasks.get(1).getTitle().startsWith("Task"));
     }
 
+    // saveTask
+    @Test
+    public void saveTask_ShouldSaveTask() {
+        given(taskRepository.save(any(TodoTask.class))).willReturn(new TodoTask());
+        taskService.save(new TodoTask());
+        verify(taskRepository).save(any(TodoTask.class));
+    }
+
 }
