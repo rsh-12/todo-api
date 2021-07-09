@@ -88,9 +88,7 @@ public class TodoTaskServiceTest {
     @Test
     public void deleteTaskById_ShouldThrowCustomException_NotFound() {
         User principal = mock(User.class);
-
-        given(taskRepository.findById(anyLong()))
-                .willThrow(new CustomException("Task not found", HttpStatus.NOT_FOUND));
+        given(taskRepository.findById(anyLong())).willReturn(Optional.empty());
 
         assertThrows(CustomException.class, () -> taskService.deleteTaskById(principal, 1L));
 
