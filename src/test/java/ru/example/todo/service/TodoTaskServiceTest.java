@@ -59,6 +59,18 @@ public class TodoTaskServiceTest {
         verify(taskRepository, times(1)).findAllByUserId(anyLong(), any(Pageable.class));
     }
 
+    @Test
+    public void findTasks_ShouldReturnTodaysTasks() {
+        TodoTask task = mock(TodoTask.class);
+        given(task.getTitle()).willReturn("task");
+
+        given(taskRepository.findAllByCompletionDateEqualsAndUserId(any(), any(), anyLong()))
+                .willReturn(List.of(task));
+
+        List<TodoTask> tasks = taskService.findTasks(1L, 0, 1000, FilterByDate.TODAY, "secId");
+        assertFalse(tasks.isEmpty());
+        assertEquals("task", tasks.get(0).getTitle());
+    }
 
     @Test
     public void findTasks_ShouldReturnOverdueTasks() {
