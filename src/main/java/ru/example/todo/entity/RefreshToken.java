@@ -22,6 +22,7 @@ public class RefreshToken {
     private Long id;
 
     @NotBlank
+    @Column(unique = true)
     private String value;
 
     @NotNull
