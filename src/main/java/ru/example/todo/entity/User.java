@@ -66,7 +66,17 @@ public class User {
         this.password = password;
     }
 
-    // for principal initializing
+
+    /**
+     * This is <b>a special constructor</b> that used
+     * to create an instance of the User classs as a Principal.
+     *
+     * <b>The Principal only has an id and roles, the other
+     * fields are null</b>.
+     *
+     * @param id    the user id
+     * @param roles the user roles
+     */
     public User(Long id, Set<Role> roles) {
         this.id = id;
         this.roles = roles;
