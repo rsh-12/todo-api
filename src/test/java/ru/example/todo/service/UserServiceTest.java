@@ -13,16 +13,18 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import ru.example.todo.config.properties.TokenProperties;
 import ru.example.todo.entity.User;
+import ru.example.todo.exception.CustomException;
 import ru.example.todo.repository.UserRepository;
 import ru.example.todo.security.UserDetailsImpl;
 import ru.example.todo.service.impl.UserServiceImpl;
 
 import java.util.Map;
-import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
@@ -73,6 +75,13 @@ public class UserServiceTest {
         assertEquals("Bearer", response.get("token_type"));
         assertEquals("1800000", response.get("access_token_expires"));
         assertEquals("86400000", response.get("refresh_token_expires"));
+    }
+
+    @Test
+    public void login_ShouldThrowCustomException() {
+        given(authManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
+                .willThrow(UsernameNotFoundException.class);
+        assertThrows(CustomException.class, () -> userService.login(new User(), ""));
     }
 
 
