@@ -23,8 +23,7 @@ import ru.example.todo.service.impl.UserServiceImpl;
 
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
@@ -84,12 +83,18 @@ public class UserServiceTest {
         assertThrows(CustomException.class, () -> userService.login(new User(), ""));
     }
 
-
     // register
     // generateNewTokens
     // deleteUserById
     // findUserById
     // updatePassword
+
     // existsByUsername
+    @Test
+    public void existsByUsername_ShouldReturnTrue() {
+        given(userRepository.existsByUsername(anyString())).willReturn(true);
+        boolean userExists = userService.existsByUsername("user@mail.com");
+        assertTrue(userExists);
+    }
 
 }
