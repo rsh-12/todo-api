@@ -97,4 +97,11 @@ public class UserServiceTest {
         assertTrue(userExists);
     }
 
+    @Test
+    public void existsByUsername_ShouldReturnFalse() {
+        given(userRepository.existsByUsername(anyString())).willReturn(false);
+        boolean userExists = userService.existsByUsername("user@mail.com");
+        assertFalse(userExists);
+    }
+
 }
