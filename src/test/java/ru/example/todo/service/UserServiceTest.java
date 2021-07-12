@@ -89,16 +89,20 @@ public class UserServiceTest {
     // deleteUserById
 
     // findUserById
-
     @Test
     public void findUserById_ShouldReturnUser() {
         User mockUser = mock(User.class);
         given(userRepository.findById(anyLong())).willReturn(Optional.of(mockUser));
 
-        User user = userService.findUserById(anyLong());
+        User user = userService.findUserById(1L);
         assertNotNull(user);
     }
 
+    @Test
+    public void findUserById_ShouldThrowCustomException() {
+        given(userRepository.findById(anyLong())).willReturn(Optional.empty());
+        assertThrows(CustomException.class, () -> userService.findUserById(1L));
+    }
 
     // updatePassword
 
