@@ -22,6 +22,7 @@ import ru.example.todo.security.UserDetailsImpl;
 import ru.example.todo.service.impl.UserServiceImpl;
 
 import java.util.Map;
+import java.util.Optional;
 
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.*;
@@ -86,7 +87,19 @@ public class UserServiceTest {
     // register
     // generateNewTokens
     // deleteUserById
+
     // findUserById
+
+    @Test
+    public void findUserById_ShouldReturnUser() {
+        User mockUser = mock(User.class);
+        given(userRepository.findById(anyLong())).willReturn(Optional.of(mockUser));
+
+        User user = userService.findUserById(anyLong());
+        assertNotNull(user);
+    }
+
+
     // updatePassword
 
     // existsByUsername
