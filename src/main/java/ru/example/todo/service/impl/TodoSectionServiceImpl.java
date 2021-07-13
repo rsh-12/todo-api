@@ -46,18 +46,10 @@ public class TodoSectionServiceImpl extends AbstractServiceClass implements Todo
         return sections;
     }
 
-    // todo uds
     // delete section by id
     @Override
     public void deleteSectionById(User principal, Long sectionId) {
-        TodoSection section = todoSectionRepository.findById(sectionId)
-                .orElseThrow(() -> new CustomException("Section not found", HttpStatus.NOT_FOUND));
-
-        if (isUserValidOrHasRoleAdmin(principal, section.getUser())) {
-            todoSectionRepository.delete(section);
-        } else {
-            throw new CustomException("Not enough permissions", HttpStatus.FORBIDDEN);
-        }
+        todoSectionRepository.deleteById(sectionId);
     }
 
 
@@ -72,14 +64,9 @@ public class TodoSectionServiceImpl extends AbstractServiceClass implements Todo
     // update section title
     @Override
     public TodoSection updateSection(User principal, Long sectionId, TodoSection section) {
-        todoSectionRepository.findById(sectionId)
-                .orElseThrow(() -> new CustomException("Section not found: " + sectionId, HttpStatus.NOT_FOUND));
-
-        if (isUserValidOrHasRoleAdmin(principal, section.getUser())) {
-            return todoSectionRepository.save(section);
-        } else {
-            throw new CustomException("Not enough permissions", HttpStatus.FORBIDDEN);
-        }
+        section.setId(sectionId);
+        section.setUser(principal);
+        return todoSectionRepository.save(section);
     }
 
 
