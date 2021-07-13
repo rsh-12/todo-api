@@ -66,15 +66,7 @@ public class TodoTaskServiceImpl extends AbstractServiceClass implements TodoTas
     // delete task by id
     @Override
     public void deleteTaskById(User principal, Long taskId) {
-        TodoTask task = todoTaskRepository.findById(taskId)
-                .orElseThrow(() -> new CustomException("Task not found: " + taskId, HttpStatus.NOT_FOUND));
-
-        if (isUserValidOrHasRoleAdmin(principal, task.getUser())) {
-            todoTaskRepository.deleteById(taskId);
-        } else {
-            throw new CustomException("Not enough permissions", HttpStatus.FORBIDDEN);
-        }
-
+        todoTaskRepository.deleteById(taskId);
         log.info("The task with id={} was deleted successfully", taskId);
     }
 
