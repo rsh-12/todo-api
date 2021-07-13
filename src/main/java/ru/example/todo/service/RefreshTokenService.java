@@ -4,6 +4,8 @@ import ru.example.todo.entity.RefreshToken;
 
 /**
  * This interface consists methods for working with the Refresh token.
+ *
+ * @see RefreshToken
  */
 public interface RefreshTokenService {
 
