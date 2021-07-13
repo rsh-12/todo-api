@@ -122,7 +122,6 @@ public class User {
         this.roles = Collections.emptySet();
     }
 
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -131,13 +130,13 @@ public class User {
         User user = (User) o;
 
         if (!Objects.equals(id, user.id)) return false;
-        return Objects.equals(username, user.username);
+        return Objects.equals(roles, user.roles);
     }
 
     @Override
     public int hashCode() {
         int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (username != null ? username.hashCode() : 0);
+        result = 31 * result + (roles != null ? roles.hashCode() : 0);
         return result;
     }
 
