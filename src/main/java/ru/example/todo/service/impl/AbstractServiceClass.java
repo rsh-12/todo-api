@@ -7,24 +7,15 @@ package ru.example.todo.service.impl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Sort;
-import ru.example.todo.dto.TodoTaskDto;
 import ru.example.todo.entity.TodoSection;
 import ru.example.todo.entity.TodoTask;
-import ru.example.todo.entity.User;
-import ru.example.todo.enums.Role;
-import ru.example.todo.enums.filters.FilterByBoolean;
 import ru.example.todo.enums.filters.FilterByOperation;
 
 import java.util.List;
-import java.util.Optional;
 
 public class AbstractServiceClass {
 
     private static final Logger log = LoggerFactory.getLogger(AbstractServiceClass.class.getName());
-
-    boolean toABoolean(FilterByBoolean status) {
-        return Boolean.parseBoolean(status.toString());
-    }
 
     Sort.Direction getSortDirection(String sort) {
         if (sort.contains(",asc")) return Sort.Direction.ASC;
@@ -46,22 +37,6 @@ public class AbstractServiceClass {
             section.removeTodoTasks(tasksByIds);
         }
 
-    }
-
-    void setTitleOrDate(TodoTaskDto taskDto, TodoTask task) {
-
-        // if completionDate != null -> set completion date
-        Optional.ofNullable(taskDto.getCompletionDate())
-                .ifPresent(task::setCompletionDate);
-
-        // if title != null -> set title
-        Optional.ofNullable(taskDto.getTitle())
-                .ifPresent(task::setTitle);
-    }
-
-     boolean isUserValidOrHasRoleAdmin(User principal, User user) {
-        return (user != null && user.equals(principal)) ||
-                principal.getRoles().contains(Role.ADMIN);
     }
 
 }
