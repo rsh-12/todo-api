@@ -17,6 +17,7 @@ import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "section")
@@ -35,6 +36,7 @@ public class TodoSection {
 
     @JsonFormat(timezone = "Asia/Yekaterinburg")
     @CreationTimestamp
+    @Column(updatable = false)
     private Date createdAt;
 
     @JsonFormat(timezone = "Asia/Yekaterinburg")
@@ -61,6 +63,10 @@ public class TodoSection {
     public TodoSection(Long id, String title) {
         this.id = id;
         this.title = title;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Long getId() {
@@ -126,6 +132,26 @@ public class TodoSection {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        TodoSection that = (TodoSection) o;
+
+        if (!Objects.equals(id, that.id)) return false;
+        if (!Objects.equals(title, that.title)) return false;
+        return Objects.equals(user, that.user);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (title != null ? title.hashCode() : 0);
+        result = 31 * result + (user != null ? user.hashCode() : 0);
+        return result;
     }
 
     @Override
