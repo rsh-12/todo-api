@@ -15,7 +15,6 @@ public class TodoSectionDto {
     @Size(min = 3, max = 50, message = "Size must be between 3 and 50")
     private String title;
 
-
     public TodoSectionDto() {
     }
 
