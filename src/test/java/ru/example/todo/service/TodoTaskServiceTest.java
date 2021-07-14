@@ -12,13 +12,11 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.data.domain.Pageable;
 import ru.example.todo.entity.TodoTask;
 import ru.example.todo.entity.User;
-import ru.example.todo.enums.Role;
 import ru.example.todo.enums.filters.FilterByDate;
 import ru.example.todo.exception.CustomException;
 import ru.example.todo.repository.TodoTaskRepository;
 import ru.example.todo.service.impl.TodoTaskServiceImpl;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -110,47 +108,14 @@ public class TodoTaskServiceTest {
 
     // deleteTaskById
     @Test
-    public void deleteTaskById_ShouldThrowCustomException_NotFound() {
-        User principal = mock(User.class);
-        given(taskRepository.findById(anyLong())).willReturn(Optional.empty());
-
-        assertThrows(CustomException.class, () -> taskService.deleteTaskById(principal, 1L));
-
-        verify(taskRepository).findById(anyLong());
-        verifyNoMoreInteractions(taskRepository);
-    }
-
-    @Test
-    public void deleteTaskById_ShouldThrowCustomException_Forbidden() {
-        User principal = mock(User.class);
-        given(principal.getRoles()).willReturn(Collections.singleton(Role.USER));
-
-        User taskUser = mock(User.class);
-        TodoTask task = mock(TodoTask.class);
-        given(task.getUser()).willReturn(taskUser);
-
-        given(taskRepository.findById(anyLong())).willReturn(Optional.of(task));
-
-        assertThrows(CustomException.class, () -> taskService.deleteTaskById(principal, 1L));
-
-        verify(taskRepository).findById(anyLong());
-        verifyNoMoreInteractions(taskRepository);
-    }
-
-    @Test
     public void deleteTaskById_ShouldDeleteTaskById() {
         User principal = mock(User.class);
-
         TodoTask task = mock(TodoTask.class);
-        given(task.getUser()).willReturn(principal);
         given(task.getId()).willReturn(1L);
 
-        given(taskRepository.findById(anyLong())).willReturn(Optional.of(task));
         doNothing().when(taskRepository).deleteById(anyLong());
-
         taskService.deleteTaskById(principal, task.getId());
 
-        verify(taskRepository).findById(anyLong());
         verify(taskRepository).deleteById(anyLong());
     }
 
