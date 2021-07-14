@@ -65,7 +65,7 @@ public class TodoTaskServiceTest {
         given(taskRepository.findAllByCompletionDateEqualsAndUserId(any(), any(), anyLong()))
                 .willReturn(List.of(task));
 
-        List<TodoTask> tasks = taskService.findTasks(1L, 0, 1000, FilterByDate.TODAY, "secId");
+        List<TodoTask> tasks = taskService.findTasks(1L, 0, 1000, FilterByDate.TODAY, "secId,asc");
         assertFalse(tasks.isEmpty());
         assertEquals("task", tasks.get(0).getTitle());
     }
