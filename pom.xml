@@ -184,6 +184,20 @@
             <artifactId>spring-boot-starter-aop</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>org.codehaus.groovy</groupId>
+            <artifactId>groovy-all</artifactId>
+            <version>3.0.8</version>
+            <type>pom</type>
+        </dependency>
+
+        <!-- overrides 2.5.14 version -->
+        <dependency>
+            <groupId>org.codehaus.groovy</groupId>
+            <artifactId>groovy</artifactId>
+            <version>3.0.8</version>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -287,7 +301,7 @@
                         <phase>install</phase>
                         <goals>
                             <goal>build</goal>
-<!--                            <goal>push</goal>-->
+                            <!--                            <goal>push</goal>-->
                         </goals>
                     </execution>
                 </executions>
