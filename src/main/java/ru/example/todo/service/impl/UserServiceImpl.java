@@ -26,7 +26,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 @Service
-public class UserServiceImpl extends AbstractServiceClass implements UserService {
+public class UserServiceImpl implements UserService {
 
     private final AuthenticationManager authManager;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
