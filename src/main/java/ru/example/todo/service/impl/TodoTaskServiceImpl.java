@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Set;
 
 @Service
-public class TodoTaskServiceImpl extends AbstractServiceClass implements TodoTaskService {
+public class TodoTaskServiceImpl implements TodoTaskService {
 
     private static final Logger log = LoggerFactory.getLogger(TodoTaskServiceImpl.class.getName());
 
@@ -88,6 +88,16 @@ public class TodoTaskServiceImpl extends AbstractServiceClass implements TodoTas
     @Override
     public void save(TodoTask task) {
         todoTaskRepository.save(task);
+    }
+
+    private Sort.Direction getSortDirection(String sort) {
+        if (sort.contains(",asc")) return Sort.Direction.ASC;
+        return Sort.Direction.DESC;
+    }
+
+    private String getSortAsString(String sort) {
+        if (sort.contains(",")) return sort.split(",")[0];
+        return sort;
     }
 
 }
