@@ -20,7 +20,7 @@ import ru.example.todo.service.TodoSectionService;
 import java.util.List;
 
 @Service
-public class TodoSectionServiceImpl extends AbstractServiceClass implements TodoSectionService {
+public class TodoSectionServiceImpl implements TodoSectionService {
 
     private static final Logger log = LoggerFactory.getLogger(TodoSectionServiceImpl.class.getName());
 
@@ -69,7 +69,6 @@ public class TodoSectionServiceImpl extends AbstractServiceClass implements Todo
         return todoSectionRepository.save(section);
     }
 
-
     // add to or remove from the task section
     @Override
     public void addTasksToOrRemoveFromSection(Long userId, Long sectionId, List<TodoTask> tasks, FilterByOperation flag) {
@@ -78,7 +77,14 @@ public class TodoSectionServiceImpl extends AbstractServiceClass implements Todo
                 .orElseThrow(() -> new CustomException("Section not found: " + sectionId, HttpStatus.NOT_FOUND));
 
         // add or remove
-        addOrRemoveTasks(flag, section, tasks);
+        if (flag.equals(FilterByOperation.MOVE)) {
+            log.info("Add tasks to the section");
+            section.setTodoTasks(tasks);
+        } else if (flag.equals(FilterByOperation.REMOVE)) {
+            log.info("Remove tasks from the section");
+            section.removeTodoTasks(tasks);
+        }
+
         todoSectionRepository.save(section);
     }
 
