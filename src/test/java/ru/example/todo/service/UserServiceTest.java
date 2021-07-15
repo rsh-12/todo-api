@@ -96,6 +96,12 @@ public class UserServiceTest {
         userService.deleteUserById(1L);
     }
 
+    @Test
+    public void deleteUserById_ShouldThrowException() {
+        given(userRepository.existsById(anyLong())).willReturn(false);
+        assertThrows(CustomException.class, () -> userService.deleteUserById(1L));
+    }
+
     // findUserById
     @Test
     public void findUserById_ShouldReturnUser() {
