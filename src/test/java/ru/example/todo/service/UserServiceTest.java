@@ -27,6 +27,7 @@ import java.util.Optional;
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -86,7 +87,14 @@ public class UserServiceTest {
 
     // register
     // generateNewTokens
+
     // deleteUserById
+    @Test
+    public void deleteUserById_ShouldDoNoting() {
+        given(userRepository.existsById(anyLong())).willReturn(true);
+        doNothing().when(userRepository).deleteById(anyLong());
+        userService.deleteUserById(1L);
+    }
 
     // findUserById
     @Test
