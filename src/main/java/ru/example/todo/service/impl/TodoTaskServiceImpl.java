@@ -18,6 +18,7 @@ import ru.example.todo.enums.filters.FilterByDate;
 import ru.example.todo.exception.CustomException;
 import ru.example.todo.repository.TodoTaskRepository;
 import ru.example.todo.service.TodoTaskService;
+import ru.example.todo.service.impl.util.TodoTaskServiceUtil;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -39,7 +40,8 @@ public class TodoTaskServiceImpl implements TodoTaskService {
     @Override
     public List<TodoTask> findTasks(Long userId, Integer pageNo, Integer pageSize, FilterByDate date, String sort) {
         pageSize = pageSize > 100 ? 100 : pageSize; // set max page size
-        Pageable page = PageRequest.of(pageNo, pageSize, Sort.by(getSortDirection(sort), getSortAsString(sort)));
+        Pageable page = PageRequest.of(pageNo, pageSize,
+                Sort.by(TodoTaskServiceUtil.getSortDirection(sort), TodoTaskServiceUtil.getSortAsString(sort)));
 
         switch (date) {
             case TODAY:
@@ -88,16 +90,6 @@ public class TodoTaskServiceImpl implements TodoTaskService {
     @Override
     public void save(TodoTask task) {
         todoTaskRepository.save(task);
-    }
-
-    private Sort.Direction getSortDirection(String sort) {
-        if (sort.contains(",asc")) return Sort.Direction.ASC;
-        return Sort.Direction.DESC;
-    }
-
-    private String getSortAsString(String sort) {
-        if (sort.contains(",")) return sort.split(",")[0];
-        return sort;
     }
 
 }
