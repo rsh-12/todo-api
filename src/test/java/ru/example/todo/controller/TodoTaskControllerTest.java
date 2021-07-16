@@ -4,7 +4,6 @@ package ru.example.todo.controller;
  * Time: 7:17 AM
  * */
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
@@ -153,17 +152,5 @@ public class TodoTaskControllerTest extends AbstractControllerTestClass {
         verify(taskService, times(0)).createTask(any(User.class), any(TodoTask.class));
     }
 
-    @Ignore
-    @Test
-    @WithUserDetails(USER)
-    public void updateTask_ShouldReturnOk() throws Exception {
-    }
-
-    @Ignore
-    @Test
-    @WithUserDetails(USER)
-    public void updateTask_ShouldReturnNotFound() throws Exception {
-
-    }
 
 }
