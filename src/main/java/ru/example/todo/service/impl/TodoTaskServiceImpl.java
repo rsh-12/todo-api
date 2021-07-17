@@ -18,7 +18,7 @@ import ru.example.todo.enums.filters.FilterByDate;
 import ru.example.todo.exception.CustomException;
 import ru.example.todo.repository.TodoTaskRepository;
 import ru.example.todo.service.TodoTaskService;
-import ru.example.todo.service.impl.util.TodoTaskServiceUtil;
+import ru.example.todo.service.impl.util.TaskServiceUtil;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -41,18 +41,21 @@ public class TodoTaskServiceImpl implements TodoTaskService {
     public List<TodoTask> findTasks(Long userId, Integer pageNo, Integer pageSize, FilterByDate date, String sort) {
         pageSize = pageSize > 100 ? 100 : pageSize; // set max page size
         Pageable page = PageRequest.of(pageNo, pageSize,
-                Sort.by(TodoTaskServiceUtil.getSortDirection(sort), TodoTaskServiceUtil.getSortAsString(sort)));
+                Sort.by(TaskServiceUtil.getSortDirection(sort), TaskServiceUtil.getSortAsString(sort)));
 
         switch (date) {
-            case TODAY:
+            case TODAY -> {
                 log.info("Get today's tasks");
                 return todoTaskRepository.findAllByCompletionDateEqualsAndUserId(LocalDate.now(), page, userId);
-            case OVERDUE:
+            }
+            case OVERDUE -> {
                 log.info("Get overdue tasks");
                 return todoTaskRepository.findAllByCompletionDateBeforeAndUserId(LocalDate.now(), page, userId);
-            default:
+            }
+            default -> {
                 log.info("Get all tasks");
                 return todoTaskRepository.findAllByUserId(userId, page);
+            }
         }
 
     }
