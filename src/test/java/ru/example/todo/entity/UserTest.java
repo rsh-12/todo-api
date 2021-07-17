@@ -5,13 +5,12 @@ package ru.example.todo.entity;
  * */
 
 import org.junit.Test;
-import ru.example.todo.entity.User;
 import ru.example.todo.enums.Role;
 
+import java.util.Collections;
 import java.util.Set;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class UserTest {
 
@@ -39,4 +38,19 @@ public class UserTest {
         assertFalse(user.getRoles().stream()
                 .anyMatch(role -> role.equals(Role.USER) || role.equals(Role.ADMIN)));
     }
+
+    @Test
+    public void equals_ShouldBeEqual() {
+        User user1 = new User(1L, Collections.singleton(Role.USER));
+        User user2 = new User(1L, Collections.singleton(Role.USER));
+        assertEquals(user1, user2);
+    }
+
+    @Test
+    public void equals_ShouldNotBeEqual() {
+        User user1 = new User(1L, Collections.singleton(Role.USER));
+        User user2 = new User(1L, Collections.singleton(Role.ADMIN));
+        assertNotEquals(user1, user2);
+    }
+
 }
