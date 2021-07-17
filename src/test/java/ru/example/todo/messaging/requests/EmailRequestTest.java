@@ -1,4 +1,4 @@
-package ru.example.todo.model;
+package ru.example.todo.messaging.requests;
 /*
  * Date: 6/5/21
  * Time: 8:09 AM
