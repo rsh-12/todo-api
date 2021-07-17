@@ -2,14 +2,14 @@ language: java
 sudo: required
 dist: xenial
 jdk:
-  - openjdk11
+  - openjdk14
 
 cache:
   directories:
     - $HOME/.m2/repository
 
 script:
-  - ./mvnw clean test jacoco:report coveralls:report
+  - ./mvnw test jacoco:report coveralls:report
 #  - ./mvnw test -e
 
 #after_success:
