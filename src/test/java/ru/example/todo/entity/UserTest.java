@@ -1,4 +1,4 @@
-package ru.example.todo.model;
+package ru.example.todo.entity;
 /*
  * Date: 5/13/21
  * Time: 7:40 AM
