@@ -6,32 +6,7 @@ package ru.example.todo.domain;
 
 import java.util.Date;
 
-public class TodoSectionProjection {
-
-    private Long id;
-    private String title;
-    private Date updatedAt;
-    private Date createdAt;
-
-    public TodoSectionProjection(Long id) {
-        this.id = id;
-    }
-
-    public TodoSectionProjection(String title) {
-        this.title = title;
-    }
-
-    public TodoSectionProjection(Long id, String title) {
-        this.id = id;
-        this.title = title;
-    }
-
-    public TodoSectionProjection(Long id, String title, Date updatedAt, Date createdAt) {
-        this.id = id;
-        this.title = title;
-        this.updatedAt = updatedAt;
-        this.createdAt = createdAt;
-    }
+public record TodoSectionProjection(Long id, String title, Date updatedAt, Date createdAt) {
 
     public Long getId() {
         return id;
@@ -47,16 +22,6 @@ public class TodoSectionProjection {
 
     public Date getCreatedAt() {
         return createdAt;
-    }
-
-    @Override
-    public String toString() {
-        return "TodoSectionProjection{" +
-                "id=" + id +
-                ", title='" + title + '\'' +
-                ", updatedAt=" + updatedAt +
-                ", createdAt=" + createdAt +
-                '}';
     }
 
 }
