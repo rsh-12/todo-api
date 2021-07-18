@@ -18,10 +18,7 @@ import ru.example.todo.exception.CustomException;
 import ru.example.todo.facade.TasksFacade;
 import ru.example.todo.service.TodoSectionService;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.WeakHashMap;
+import java.util.*;
 
 import static org.hamcrest.Matchers.containsStringIgnoringCase;
 import static org.hamcrest.Matchers.is;
@@ -45,11 +42,8 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
     @Test
     @WithUserDetails(ADMIN)
     public void getSections_ShouldReturnListOfSections() throws Exception {
-        TodoSectionProjection section1 = mock(TodoSectionProjection.class);
-        given(section1.getTitle()).willReturn("section1");
-
-        TodoSectionProjection section2 = mock(TodoSectionProjection.class);
-        given(section2.getTitle()).willReturn("section2");
+        TodoSectionProjection section1 = new TodoSectionProjection(1L, "section1", new Date(), new Date());
+        TodoSectionProjection section2 = new TodoSectionProjection(2L, "section2", new Date(), new Date());
 
         given(sectionService.findSections(anyLong()))
                 .willReturn(List.of(section1, section2));
