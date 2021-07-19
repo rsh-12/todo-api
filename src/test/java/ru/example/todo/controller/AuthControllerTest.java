@@ -119,7 +119,7 @@ public class AuthControllerTest extends AbstractControllerTestClass {
         given(user.getUsername()).willReturn("username@mail.com");
         given(user.getPassword()).willReturn("password");
 
-        given(userService.register(any(User.class))).willReturn("ok");
+        doNothing().when(userService).register(any(User.class));
 
         MvcResult result = mvc.perform(post(API_AUTH + "register")
                 .contentType(MediaType.APPLICATION_JSON)

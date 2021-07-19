@@ -26,10 +26,9 @@ public interface UserService {
      * otherwise throws the CustomException.
      *
      * @param user containes useraname (email) and password
-     * @return the string <b>ok</b>
      * @throws CustomException if the username already in use
      */
-    String register(User user);
+    void register(User user);
 
     /**
      * Generates new access and refresh tokens if the old refresh token is valid.

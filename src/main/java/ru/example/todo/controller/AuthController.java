@@ -48,8 +48,8 @@ public class AuthController {
 
     @PostMapping(value = "/register", produces = "application/json")
     public ResponseEntity<String> register(@Valid @RequestBody UserDto userDto) {
-        String register = userService.register(modelMapper.map(userDto, User.class));
-        return ResponseEntity.ok(register);
+        userService.register(modelMapper.map(userDto, User.class));
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping(value = "/token", produces = "application/json")

@@ -59,14 +59,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String register(User user) {
+    public void register(User user) {
         if (userRepository.existsByUsername(user.getUsername())) {
             throw new CustomException("Username already in use", HttpStatus.BAD_REQUEST);
         }
 
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         userRepository.save(user);
-        return "ok";
     }
 
     @Override
