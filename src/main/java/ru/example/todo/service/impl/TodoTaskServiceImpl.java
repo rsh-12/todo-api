@@ -24,6 +24,9 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 
+import static ru.example.todo.enums.filters.FilterByDate.OVERDUE;
+import static ru.example.todo.enums.filters.FilterByDate.TODAY;
+
 @Service
 public class TodoTaskServiceImpl implements TodoTaskService {
 
@@ -43,21 +46,12 @@ public class TodoTaskServiceImpl implements TodoTaskService {
         Pageable page = PageRequest.of(pageNo, pageSize,
                 Sort.by(TaskServiceUtil.getSortDirection(sort), TaskServiceUtil.getSortAsString(sort)));
 
-        switch (date) {
-            case TODAY -> {
-                log.info("Get today's tasks");
-                return todoTaskRepository.findAllByCompletionDateEqualsAndUserId(LocalDate.now(), page, userId);
-            }
-            case OVERDUE -> {
-                log.info("Get overdue tasks");
-                return todoTaskRepository.findAllByCompletionDateBeforeAndUserId(LocalDate.now(), page, userId);
-            }
-            default -> {
-                log.info("Get all tasks");
-                return todoTaskRepository.findAllByUserId(userId, page);
-            }
+        if (date == TODAY) {
+            return todoTaskRepository.findAllByCompletionDateEqualsAndUserId(LocalDate.now(), page, userId);
+        } else if (date == OVERDUE) {
+            return todoTaskRepository.findAllByCompletionDateBeforeAndUserId(LocalDate.now(), page, userId);
         }
-
+        return todoTaskRepository.findAllByUserId(userId, page);
     }
 
     // get task by id
