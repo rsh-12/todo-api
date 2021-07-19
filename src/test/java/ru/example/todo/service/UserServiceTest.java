@@ -86,6 +86,12 @@ public class UserServiceTest {
     }
 
     // register
+    @Test
+    public void register_ShouldThrowException() {
+        given(userRepository.existsByUsername(anyString())).willReturn(true);
+        assertThrows(CustomException.class, () -> userService.register(new User("user", "pwd")));
+    }
+
     // generateNewTokens
 
     // deleteUserById
