@@ -14,6 +14,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import ru.example.todo.config.properties.TokenProperties;
 import ru.example.todo.entity.User;
 import ru.example.todo.exception.CustomException;
@@ -50,6 +51,9 @@ public class UserServiceTest {
 
     @Mock
     private TokenProperties tokenProperties;
+
+    @Mock
+    private BCryptPasswordEncoder passwordEncoder;
 
     @Before
     public void setUp() {
@@ -90,6 +94,14 @@ public class UserServiceTest {
     public void register_ShouldThrowException() {
         given(userRepository.existsByUsername(anyString())).willReturn(true);
         assertThrows(CustomException.class, () -> userService.register(new User("user", "pwd")));
+    }
+
+    @Test
+    public void register_ShouldDoNoting() {
+        given(userRepository.existsByUsername(anyString())).willReturn(false);
+        given(userRepository.save(any(User.class))).willReturn(new User());
+        given(passwordEncoder.encode(anyString())).willReturn("$ecryptedString");
+        userService.register(new User("user", "pwd"));
     }
 
     // generateNewTokens
