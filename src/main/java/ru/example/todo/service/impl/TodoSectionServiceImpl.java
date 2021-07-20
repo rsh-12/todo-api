@@ -6,7 +6,6 @@ package ru.example.todo.service.impl;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import ru.example.todo.domain.TodoSectionProjection;
 import ru.example.todo.entity.TodoSection;
@@ -18,6 +17,9 @@ import ru.example.todo.repository.TodoSectionRepository;
 import ru.example.todo.service.TodoSectionService;
 
 import java.util.List;
+
+import static ru.example.todo.enums.filters.FilterByOperation.MOVE;
+import static ru.example.todo.enums.filters.FilterByOperation.REMOVE;
 
 @Service
 public class TodoSectionServiceImpl implements TodoSectionService {
@@ -35,7 +37,7 @@ public class TodoSectionServiceImpl implements TodoSectionService {
     public TodoSection findSectionById(Long userId, Long sectionId) {
         log.info("Get the section by id: {}", sectionId);
         return todoSectionRepository.findByUserIdAndId(userId, sectionId)
-                .orElseThrow(() -> new CustomException("Section not found: " + sectionId, HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> CustomException.notFound("Section not found: " + sectionId));
     }
 
     // get all sections
@@ -74,17 +76,18 @@ public class TodoSectionServiceImpl implements TodoSectionService {
     public void addTasksToOrRemoveFromSection(Long userId, Long sectionId, List<TodoTask> tasks, FilterByOperation flag) {
         log.info("Get the section by id: {}", sectionId);
         TodoSection section = todoSectionRepository.findByUserIdAndId(userId, sectionId)
-                .orElseThrow(() -> new CustomException("Section not found: " + sectionId, HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> CustomException.notFound("Section not found"));
 
         // add or remove
-        if (flag.equals(FilterByOperation.MOVE)) {
+        if (flag.equals(MOVE)) {
             log.info("Add tasks to the section");
             section.setTodoTasks(tasks);
-        } else if (flag.equals(FilterByOperation.REMOVE)) {
+        } else if (flag.equals(REMOVE)) {
             log.info("Remove tasks from the section");
             section.removeTodoTasks(tasks);
+        } else {
+            throw CustomException.internalServerError("Flag not found/Bad request");
         }
-
         todoSectionRepository.save(section);
     }
 
