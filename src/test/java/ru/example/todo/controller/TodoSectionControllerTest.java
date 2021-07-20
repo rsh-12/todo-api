@@ -7,7 +7,6 @@ package ru.example.todo.controller;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithUserDetails;
 import ru.example.todo.domain.TodoSectionProjection;
@@ -94,7 +93,7 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
     @WithUserDetails(USER)
     public void getSection_ShouldReturnBadRequest() throws Exception {
         given(sectionService.findSectionById(anyLong(), anyLong()))
-                .willThrow(new CustomException("Section not found: " + 1, HttpStatus.NOT_FOUND));
+                .willThrow(CustomException.notFound("Section not found: " + 1));
 
         mvc.perform(get(API_SECTIONS + 1)
                 .contentType(MediaType.APPLICATION_JSON))
@@ -125,7 +124,7 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
     @Test
     @WithUserDetails(USER)
     public void deleteSection_ShouldReturnNotFound() throws Exception {
-        doThrow(new CustomException("Section not found", HttpStatus.NOT_FOUND))
+        doThrow(CustomException.notFound("Section not found"))
                 .when(sectionService).deleteSectionById(any(User.class), anyLong());
 
         mvc.perform(delete(API_SECTIONS + 1)
@@ -140,7 +139,7 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
     @Test
     @WithUserDetails(USER)
     public void deleteSection_ShouldReturnForbidden() throws Exception {
-        doThrow(new CustomException("Not enough permissions", HttpStatus.FORBIDDEN))
+        doThrow(CustomException.forbidden("Not enough permissions"))
                 .when(sectionService).deleteSectionById(any(User.class), anyLong());
 
         mvc.perform(delete(API_SECTIONS + 1)
@@ -204,7 +203,7 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
     @Test
     @WithUserDetails(ADMIN)
     public void updateSection_ShouldReturnNotFound() throws Exception {
-        doThrow(new CustomException("Section Not Found", HttpStatus.NOT_FOUND))
+        doThrow(CustomException.notFound("Section Not Found"))
                 .when(sectionService)
                 .updateSection(any(User.class), anyLong(), any(TodoSection.class));
 
@@ -222,7 +221,7 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
     @Test
     @WithUserDetails(USER)
     public void updateSection_ShouldReturnForbidden() throws Exception {
-        doThrow(new CustomException("Not enough permissions", HttpStatus.FORBIDDEN))
+        doThrow(CustomException.forbidden("Not enough permissions"))
                 .when(sectionService)
                 .updateSection(any(User.class), anyLong(), any(TodoSection.class));
 

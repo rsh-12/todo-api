@@ -8,7 +8,6 @@ import org.json.JSONObject;
 import org.junit.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MvcResult;
 import ru.example.todo.dto.UserDto;
@@ -78,15 +77,15 @@ public class AuthControllerTest extends AbstractControllerTestClass {
         given(userDto.getPassword()).willReturn("password");
 
         given(userService.login(any(User.class), anyString()))
-                .willThrow(new CustomException(
-                        "Username Not Found / Incorrect Password", HttpStatus.NOT_FOUND));
+                .willThrow(CustomException.notFound("Username Not Found/Incorrect Password"));
 
         mvc.perform(post(API_AUTH + "login")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(usernamePasswordRequestBody(userDto.getUsername(), userDto.getPassword())))
                 .andDo(print())
                 .andExpect(status().isNotFound())
-                .andExpect(jsonPath("message", containsStringIgnoringCase("Username not found / incorrect password")));
+                .andExpect(jsonPath("message",
+                        containsStringIgnoringCase("Username not found/incorrect password")));
 
         verify(userService, times(1)).login(any(User.class), anyString());
     }
@@ -98,8 +97,7 @@ public class AuthControllerTest extends AbstractControllerTestClass {
         given(userDto.getPassword()).willReturn("password");
 
         given(userService.login(any(User.class), anyString()))
-                .willThrow(new CustomException(
-                        "Username Not Found / Incorrect Password", HttpStatus.NOT_FOUND));
+                .willThrow(CustomException.notFound("Username Not Found/Incorrect Password"));
 
         mvc.perform(post(API_AUTH + "login")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -107,7 +105,7 @@ public class AuthControllerTest extends AbstractControllerTestClass {
                 .andDo(print())
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("message",
-                        containsStringIgnoringCase("Username not found / incorrect password")));
+                        containsStringIgnoringCase("Username not found/incorrect password")));
 
         verify(userService, times(1)).login(any(User.class), anyString());
     }
@@ -165,9 +163,7 @@ public class AuthControllerTest extends AbstractControllerTestClass {
         final String TOKEN = "tokenDoesNotExist";
 
         given(userService.generateNewTokens(anyString(), anyString()))
-                .willThrow(new CustomException(
-                        "Refresh token is not valid or expired, please, try to log in",
-                        HttpStatus.BAD_REQUEST));
+                .willThrow(CustomException.badRequest("Refresh token is not valid or expired, please, try to log in"));
 
         mvc.perform(post(API_AUTH + "token")
                 .header("token", TOKEN))
@@ -216,8 +212,7 @@ public class AuthControllerTest extends AbstractControllerTestClass {
     @Test
     public void sendPasswordResetToken_ShouldThrowCustomExceptionAndReturnNotFound() throws Exception {
         String email = "test@mail.com";
-        doThrow(new CustomException("Username Not Found", HttpStatus.NOT_FOUND))
-                .when(messagingService).send(any(EmailRequest.class));
+        doThrow(CustomException.notFound("Username Not Found")).when(messagingService).send(any(EmailRequest.class));
 
         JSONObject body = new JSONObject();
         body.put("email", email);
@@ -235,8 +230,7 @@ public class AuthControllerTest extends AbstractControllerTestClass {
     @Test
     public void sendPasswordResetToken_ShouldThrowCustomExceptionAndReturnInternalServerError() throws Exception {
         String email = "test@mail.com";
-        doThrow(new CustomException("An error occurred while generating the token",
-                HttpStatus.INTERNAL_SERVER_ERROR))
+        doThrow(CustomException.internalServerError("An error occurred while generating the token"))
                 .when(messagingService).send(any(EmailRequest.class));
 
         JSONObject body = new JSONObject();

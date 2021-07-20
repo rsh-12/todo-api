@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import ru.example.todo.entity.TodoTask;
 import ru.example.todo.entity.User;
@@ -59,7 +58,7 @@ public class TodoTaskServiceImpl implements TodoTaskService {
     public TodoTask findTaskById(Long userId, Long taskId) {
         log.info("Get the task by id: {}", taskId);
         return todoTaskRepository.findByIdAndUserId(taskId, userId)
-                .orElseThrow(() -> new CustomException("Task not found: " + taskId, HttpStatus.NOT_FOUND));
+                .orElseThrow(()-> CustomException.notFound("Task Not Found"));
     }
 
     // delete task by id

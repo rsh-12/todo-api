@@ -4,7 +4,6 @@ package ru.example.todo.service.impl;
  * Time: 4:39 PM
  * */
 
-import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -54,16 +53,15 @@ public class UserServiceImpl implements UserService {
             User userFromDb = ((UserDetailsImpl) auth.getPrincipal()).getUser();
             return buildResponseBody(userFromDb, ip);
         } catch (AuthenticationException ex) {
-            throw new CustomException("Username Not Found / Incorrect Password", HttpStatus.NOT_FOUND);
+            throw CustomException.notFound("Username not found/Incorrect password");
         }
     }
 
     @Override
     public void register(User user) {
         if (userRepository.existsByUsername(user.getUsername())) {
-            throw new CustomException("Username already in use", HttpStatus.BAD_REQUEST);
+            throw CustomException.badRequest("Username already in use");
         }
-
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         userRepository.save(user);
     }
@@ -71,9 +69,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public Map<String, String> generateNewTokens(String refreshToken, String ip) {
         RefreshToken oldRefreshToken = refreshTokenService.findRefreshTokenByValue(refreshToken);
-
-        User user = userRepository.findById(oldRefreshToken.getUserId()).orElseThrow(() ->
-                new CustomException("Refresh token owner not found", HttpStatus.BAD_REQUEST));
+        User user = userRepository.findById(oldRefreshToken.getUserId())
+                .orElseThrow(() -> CustomException.notFound("Refresh token owner not found"));
 
         return buildResponseBody(user, ip); // generate new access and refresh tokens
     }
@@ -81,7 +78,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteUserById(Long userId) {
         if (!userRepository.existsById(userId)) {
-            throw new CustomException("User Not Found: " + userId, HttpStatus.NOT_FOUND);
+            throw CustomException.notFound("User not found: id=" + userId);
         }
         userRepository.deleteById(userId);
     }
@@ -89,13 +86,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public User findUserById(Long userId) {
         return userRepository.findById(userId)
-                .orElseThrow(() -> new CustomException("User Not Found", HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> CustomException.notFound("User not found: id=" + userId));
     }
 
     @Override
     public void updatePassword(String email, String password) {
         User user = userRepository.findByUsername(email)
-                .orElseThrow(() -> new CustomException("Username Not Found", HttpStatus.BAD_REQUEST));
+                .orElseThrow(() -> CustomException.notFound("Username not found: email=" + email));
 
         user.setPassword(bCryptPasswordEncoder.encode(password));
         userRepository.save(user);

@@ -7,7 +7,6 @@ package ru.example.todo.aop;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import ru.example.todo.entity.TodoSection;
 import ru.example.todo.entity.TodoTask;
@@ -54,21 +53,21 @@ public class ValidatingAspect {
 
     private void validateSectionOps(User principal, Long sectionId) {
         TodoSection section = sectionRepository.findById(sectionId)
-                .orElseThrow(() -> new CustomException("Section Not Found", HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> CustomException.notFound("Section not found: id=" + sectionId));
         equalsOrHasRoleAdmin(principal, section.getUser());
     }
 
     @Before(value = "deleteTask() && args(principal, taskId)", argNames = "principal,taskId")
     public void validateTaskDeleting(User principal, Long taskId) {
         TodoTask task = taskRepository.findById(taskId)
-                .orElseThrow(() -> new CustomException("Task Not Found", HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> CustomException.notFound("Task not found: id=" + taskId));
         equalsOrHasRoleAdmin(principal, task.getUser());
     }
 
     private void equalsOrHasRoleAdmin(User principal, User user) {
         boolean isValid = (user != null && user.equals(principal)) || principal.getRoles().contains(Role.ADMIN);
         if (!isValid) {
-            throw new CustomException("Not enough permissions", HttpStatus.FORBIDDEN);
+            throw CustomException.forbidden("Not enough permissions");
         }
     }
 

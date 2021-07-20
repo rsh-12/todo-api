@@ -4,7 +4,6 @@ package ru.example.todo.facade.impl;
  * Time: 10:47 PM
  * */
 
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import ru.example.todo.exception.CustomException;
 import ru.example.todo.facade.PasswordFacade;
@@ -28,10 +27,8 @@ public class PasswordFacadeImpl implements PasswordFacade {
 
         String email = messagingService.sendTokenAndReceiveEmail(token);
         if (email == null || email.isBlank()) {
-            throw new CustomException("An error occurred while generating the token",
-                    HttpStatus.INTERNAL_SERVER_ERROR);
+            throw CustomException.internalServerError("An error occurred while generating the token");
         }
-
         userService.updatePassword(email, password);
     }
 }

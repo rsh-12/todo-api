@@ -8,7 +8,6 @@ import org.springframework.amqp.core.DirectExchange;
 import org.springframework.amqp.core.MessageProperties;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import ru.example.todo.exception.CustomException;
 import ru.example.todo.messaging.requests.EmailRequest;
@@ -35,13 +34,12 @@ public class MessagingClient implements MessagingService {
     @Override
     public void send(EmailRequest email) {
         if (!userService.existsByUsername(email.getEmail())) {
-            throw new CustomException("Username Not Found", HttpStatus.NOT_FOUND);
+            throw CustomException.notFound("Username not found: email=" + email);
         }
 
         Object response = getResponse(emailExchange, email, "todo.email.replies");
         if (response == null || ((boolean) response == false)) {
-            throw new CustomException("An error occurred while generating the token",
-                    HttpStatus.INTERNAL_SERVER_ERROR);
+            throw CustomException.internalServerError("An error occurred while generating the token");
         }
     }
 

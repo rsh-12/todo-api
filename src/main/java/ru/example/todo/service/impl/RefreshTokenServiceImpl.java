@@ -4,7 +4,6 @@ package ru.example.todo.service.impl;
  * Time: 12:54 AM
  * */
 
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import ru.example.todo.config.properties.TokenProperties;
 import ru.example.todo.entity.RefreshToken;
@@ -76,9 +75,8 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     private RefreshToken validateToken(Optional<RefreshToken> token) {
         if (token.isPresent() && !hasRefreshTokenExpired(token.get())) {
             return token.get();
-        } else {
-            throw new CustomException("Refresh token not found or expired", HttpStatus.NOT_FOUND);
         }
+        throw CustomException.notFound("Refresh token not found/expired");
     }
 
 

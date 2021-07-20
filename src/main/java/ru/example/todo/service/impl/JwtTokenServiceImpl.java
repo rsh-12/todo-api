@@ -8,7 +8,6 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -80,7 +79,7 @@ public class JwtTokenServiceImpl implements JwtTokenService {
                     .parseClaimsJws(accessToken);
             return true;
         } catch (JwtException | IllegalArgumentException ex) {
-            throw new CustomException("Expired or invalid JWT token", HttpStatus.FORBIDDEN);
+            throw CustomException.forbidden("Expired/Invalid JWT token");
         }
     }
 
