@@ -19,6 +19,22 @@ public class CustomException extends RuntimeException {
         this.httpStatus = httpStatus;
     }
 
+    public static CustomException notFound(String message) {
+        return new CustomException(message, HttpStatus.NOT_FOUND);
+    }
+
+    public static CustomException badRequest(String message) {
+        return new CustomException(message, HttpStatus.BAD_REQUEST);
+    }
+
+    public static CustomException forbidden(String message) {
+        return new CustomException(message, HttpStatus.FORBIDDEN);
+    }
+
+    public static CustomException internalServerError(String message) {
+        return new CustomException(message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
     public String getError() {
         return error;
     }
