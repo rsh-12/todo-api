@@ -6,9 +6,14 @@ package ru.example.todo.repository;
 
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import ru.example.todo.entity.TodoTask;
-import ru.example.todo.exception.CustomException;
 
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -24,6 +29,19 @@ public class TodoTaskRepositoryTest extends AbstractRepositoryTestClass {
     public void findAll_ShouldReturnListOfTasks() {
         List<TodoTask> tasks = repository.findAll();
         assertEquals(7, tasks.size());
+    }
+
+    @Test
+    public void findAllByCompletionDateEqualsAndUserId() {
+        Pageable page = PageRequest.of(0, 10, Sort.by("id"));
+        List<TodoTask> tasks = repository.findAllByCompletionDateEqualsAndUserId(LocalDate.now(), page, 1L);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        long count = tasks.stream().filter(task -> {
+            String currentDate = simpleDateFormat.format(new Date());
+            return task.getCompletionDate().toString().equals(currentDate);
+        }).count();
+
+        assertEquals(tasks.size(), count);
     }
 
     // get by id
