@@ -9,7 +9,6 @@ import org.junit.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MvcResult;
 import ru.example.todo.dto.UserDto;
 import ru.example.todo.entity.User;
 import ru.example.todo.exception.CustomException;
@@ -24,7 +23,6 @@ import java.util.Map;
 
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.containsStringIgnoringCase;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -119,15 +117,11 @@ public class AuthControllerTest extends AbstractControllerTestClass {
 
         doNothing().when(userService).register(any(User.class));
 
-        MvcResult result = mvc.perform(post(API_AUTH + "register")
+        mvc.perform(post(API_AUTH + "register")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(usernamePasswordRequestBody(user.getUsername(), user.getPassword())))
                 .andDo(print())
-                .andExpect(status().isOk())
-                .andReturn();
-
-        String response = result.getResponse().getContentAsString();
-        assertEquals("ok", response);
+                .andExpect(status().isOk());
 
         verify(userService, times(1)).register(any(User.class));
     }
