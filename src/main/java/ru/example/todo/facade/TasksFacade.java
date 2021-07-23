@@ -6,6 +6,6 @@ import java.util.Set;
 
 public interface TasksFacade {
 
-    void addTasksToOrRemoveFromSection(Long userId, Long sectionId, Set<Long> taskIds, FilterByOperation flag);
+    void addTasksToOrRemoveFromSection(Long sectionId, Set<Long> taskIds, FilterByOperation flag);
 
 }

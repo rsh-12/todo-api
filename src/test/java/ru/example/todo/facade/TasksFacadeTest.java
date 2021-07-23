@@ -21,9 +21,15 @@ import java.util.List;
 import java.util.Set;
 
 import static org.junit.Assert.assertThrows;
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anySet;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 
 @RunWith(MockitoJUnitRunner.class)
 public class TasksFacadeTest {
@@ -45,7 +51,7 @@ public class TasksFacadeTest {
         given(taskService.findTasksByIds(anySet(), anyLong())).willReturn(List.of(task1, task2));
         doNothing().when(sectionService).addTasksToOrRemoveFromSection(anyLong(), anyLong(), anyList(), any());
 
-        tasksFacade.addTasksToOrRemoveFromSection(1L, 1L, Set.of(1L, 2L), FilterByOperation.MOVE);
+        tasksFacade.addTasksToOrRemoveFromSection(1L, Set.of(1L, 2L), FilterByOperation.MOVE);
 
         verify(taskService).findTasksByIds(anySet(), anyLong());
         verify(sectionService).addTasksToOrRemoveFromSection(anyLong(), anyLong(), anyList(), any());
@@ -54,7 +60,7 @@ public class TasksFacadeTest {
     @Test
     public void addTasksToOrRemoveFromSection_ShouldThrowCustomException() {
         assertThrows(CustomException.class, () -> tasksFacade
-                .addTasksToOrRemoveFromSection(1L, 1L, Collections.emptySet(), FilterByOperation.MOVE));
+                .addTasksToOrRemoveFromSection(1L, Collections.emptySet(), FilterByOperation.MOVE));
 
         verifyNoInteractions(taskService);
         verifyNoInteractions(sectionService);
