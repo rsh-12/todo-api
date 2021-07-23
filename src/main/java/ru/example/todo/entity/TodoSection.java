@@ -12,7 +12,6 @@ import org.springframework.hateoas.server.core.Relation;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.Date;
@@ -29,7 +28,6 @@ public class TodoSection {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotEmpty
     @NotBlank
     @Size(min = 3, max = 50, message = "Size must be between 3 and 50")
     private String title;

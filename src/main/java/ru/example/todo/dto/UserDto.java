@@ -7,24 +7,21 @@ package ru.example.todo.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 public class UserDto {
 
+    @NotBlank
     @Pattern(regexp = "^[a-z_-]{2,}[0-9a-z_-]*@[a-z]{2,5}\\.(ru|com)",
             flags = Pattern.Flag.CASE_INSENSITIVE,
             message = "Not a valid email address")
     @Size(min = 4, max = 127, message = "Email is required: minimum 4 characters")
-    @NotBlank
-    @NotEmpty
     private String username;
 
+    @NotBlank
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Size(min = 4, message = "Password is required")
-    @NotBlank
-    @NotEmpty
     private String password;
 
     public UserDto() {
