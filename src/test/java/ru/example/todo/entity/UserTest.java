@@ -4,19 +4,30 @@ package ru.example.todo.entity;
  * Time: 7:40 AM
  * */
 
+import org.junit.Before;
 import org.junit.Test;
 import ru.example.todo.enums.Role;
 
 import java.util.Collections;
+import java.util.Date;
 import java.util.Set;
 
 import static org.junit.Assert.*;
 
 public class UserTest {
 
+    private User user;
+
+    @Before
+    public void setUp() {
+        user = new User(1L, Collections.singleton(Role.USER));
+        user.setUsername("username");
+        user.setPassword("password");
+        user.setCreatedAt(new Date());
+    }
+
     @Test
     public void createUser_ShouldContainRoleUser() {
-        User user = new User();
         assertTrue(user.getRoles().contains(Role.USER));
         assertFalse(user.getRoles().contains(Role.ADMIN));
     }
