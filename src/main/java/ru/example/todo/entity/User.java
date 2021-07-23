@@ -126,14 +126,14 @@ public class User {
 
         User user = (User) o;
 
-        if (!Objects.equals(id, user.id)) return false;
-        return Objects.equals(roles, user.roles);
+        if (!id.equals(user.id)) return false;
+        return Objects.equals(username, user.username);
     }
 
     @Override
     public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (roles != null ? roles.hashCode() : 0);
+        int result = id.hashCode();
+        result = 31 * result + (username != null ? username.hashCode() : 0);
         return result;
     }
 
