@@ -8,7 +8,7 @@ import java.security.SecureRandom;
 import java.util.Locale;
 import java.util.Random;
 
-public final class RandomString {
+public final class RandomStringGenerator {
 
     private final Random random;
     private final char[] symbols;
@@ -19,7 +19,7 @@ public final class RandomString {
     public static final String DIGITS = "0123456789";
     public static final String ALPHANUM = UPPER + LOWER + DIGITS;
 
-    public RandomString(int length) {
+    public RandomStringGenerator(int length) {
         if (length < 32) throw new IllegalArgumentException();
         this.random = new SecureRandom();
         this.symbols = ALPHANUM.toCharArray();
