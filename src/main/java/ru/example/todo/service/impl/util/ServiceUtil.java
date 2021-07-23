@@ -6,7 +6,7 @@ package ru.example.todo.service.impl.util;
 
 import org.springframework.data.domain.Sort;
 
-public record TaskServiceUtil() {
+public record ServiceUtil() {
 
     public static Sort.Direction getSortDirection(String sort) {
         if (sort.contains(",asc")) return Sort.Direction.ASC;
