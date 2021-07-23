@@ -21,7 +21,7 @@ public class AuthUserFacadeImpl implements AuthUserFacade {
     }
 
     @Override
-    public User getPrincipal() {
+    public User getLoggedUser() {
         UserDetailsImpl principal = (UserDetailsImpl) SecurityContextHolder.getContext()
                 .getAuthentication()
                 .getPrincipal();

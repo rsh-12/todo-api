@@ -8,6 +8,6 @@ import ru.example.todo.entity.User;
 
 public interface AuthUserFacade {
 
-    User getPrincipal();
+    User getLoggedUser();
 
 }

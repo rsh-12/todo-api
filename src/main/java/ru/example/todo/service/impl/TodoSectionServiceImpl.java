@@ -38,14 +38,14 @@ public class TodoSectionServiceImpl implements TodoSectionService {
     @Override
     public TodoSection findSectionById(Long sectionId) {
         log.info("Get the section by id: {}", sectionId);
-        return todoSectionRepository.findByUserIdAndId(authUserFacade.getPrincipal().getId(), sectionId)
+        return todoSectionRepository.findByUserIdAndId(authUserFacade.getLoggedUser().getId(), sectionId)
                 .orElseThrow(() -> CustomException.notFound("Section not found: " + sectionId));
     }
 
     // get all sections
     @Override
     public List<TodoSectionProjection> findSections() {
-        Long userId = authUserFacade.getPrincipal().getId();
+        Long userId = authUserFacade.getLoggedUser().getId();
         List<TodoSectionProjection> sections = todoSectionRepository.findAllByUserIdProjection(userId);
         log.info("Get all sections: {}", sections.size());
         return sections;
@@ -62,7 +62,7 @@ public class TodoSectionServiceImpl implements TodoSectionService {
     // create new section
     @Override
     public TodoSection createSection(TodoSection section) {
-        section.setUser(authUserFacade.getPrincipal());
+        section.setUser(authUserFacade.getLoggedUser());
         log.info("Create a new section");
         return todoSectionRepository.save(section);
     }
@@ -71,7 +71,7 @@ public class TodoSectionServiceImpl implements TodoSectionService {
     @Override
     public TodoSection updateSection(Long sectionId, TodoSection section) {
         section.setId(sectionId);
-        section.setUser(authUserFacade.getPrincipal());
+        section.setUser(authUserFacade.getLoggedUser());
         return todoSectionRepository.save(section);
     }
 
