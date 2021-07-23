@@ -51,6 +51,7 @@ public class UserTest {
     @Test
     public void equals_ShouldBeEqual() {
         User user2 = new User(1L, Collections.singleton(Role.USER));
+        user2.setUsername("username");
         assertEquals(user, user2);
     }
 
@@ -63,6 +64,7 @@ public class UserTest {
     @Test
     public void equals_Symmetric_ShouldBeEqual() {
         User user2 = new User(1L, Collections.singleton(Role.USER));
+        user2.setUsername("username");
         assertTrue(user.equals(user2) && user2.equals(user));
         assertEquals(user.hashCode(), user2.hashCode());
     }
