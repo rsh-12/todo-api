@@ -14,7 +14,7 @@ import ru.example.todo.security.UserDetailsImpl;
 public class AuthUserFacadeImpl implements AuthUserFacade {
 
     @Override
-    public User getLoggedUser() {
+    public User getPrincipal() {
         UserDetailsImpl principal = (UserDetailsImpl) SecurityContextHolder.getContext()
                 .getAuthentication()
                 .getPrincipal();
