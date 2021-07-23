@@ -47,7 +47,7 @@ public interface JwtTokenService {
      * @param accessToken the access token as a string
      * @return the user id as a Long
      */
-    Long getId(String accessToken);
+    Long getUserIdFromAccessToken(String accessToken);
 
     /**
      * Gets user roles from the access token body.
@@ -55,7 +55,7 @@ public interface JwtTokenService {
      * @param accessToken the access token as a string
      * @return the user roles
      */
-    Set<Role> getUserRoles(String accessToken);
+    Set<Role> getUserRolesFromAccessToken(String accessToken);
 
     /**
      * Retrieves the user data from the access token body:

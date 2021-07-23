@@ -12,7 +12,6 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import ru.example.todo.config.properties.TokenProperties;
 import ru.example.todo.enums.Role;
@@ -112,27 +111,27 @@ public class JwtTokenServiceTest {
         assertThrows(CustomException.class, () -> jwtTokenService.isAccessTokenValid(accessToken));
     }
 
-    // getId
+    // getIdFromAccessToken
     @Test
     public void getId_ShouldReturnUserId() {
         String accessToken = jwtTokenService
                 .buildAccessToken(1L, Collections.singleton(Role.USER));
         assertNotNull(accessToken);
 
-        Long id = jwtTokenService.getId(accessToken);
+        Long id = jwtTokenService.getUserIdFromAccessToken(accessToken);
         assertNotNull(id);
 
         assertEquals(1L, (long) id);
     }
 
-    // getUserRoles
+    // getUserRolesFromAccessToken
     @Test
     public void getUserRoles_ShouldReturnRoles() {
         String accessToken = jwtTokenService
                 .buildAccessToken(1L, Set.of(Role.ADMIN, Role.USER));
         assertNotNull(accessToken);
 
-        Set<Role> userRoles = jwtTokenService.getUserRoles(accessToken);
+        Set<Role> userRoles = jwtTokenService.getUserRolesFromAccessToken(accessToken);
         assertNotNull(userRoles);
 
         assertTrue(userRoles.contains(Role.USER));
