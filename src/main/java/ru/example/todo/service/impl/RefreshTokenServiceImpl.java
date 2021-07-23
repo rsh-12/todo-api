@@ -45,13 +45,13 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
         }
 
         if (ip != null) refreshToken.setCreatedByIp(ip);
-        save(refreshToken);
+        saveRefreshToken(refreshToken);
 
         return token;
     }
 
     @Override
-    public RefreshToken save(RefreshToken refreshToken) {
+    public RefreshToken saveRefreshToken(RefreshToken refreshToken) {
         return refreshTokenRepository.save(refreshToken);
     }
 
