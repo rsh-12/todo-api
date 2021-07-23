@@ -1,4 +1,4 @@
-package ru.example.todo.actuator;
+package ru.example.todo.util;
 /*
  * Date: 06.07.2021
  * Time: 8:05 AM
