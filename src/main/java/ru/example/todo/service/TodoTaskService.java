@@ -83,5 +83,6 @@ public interface TodoTaskService {
      * @param task the TodoTask instance
      * @see TodoTask
      */
-    void save(TodoTask task);
+    void saveTodoTask(TodoTask task);
+
 }

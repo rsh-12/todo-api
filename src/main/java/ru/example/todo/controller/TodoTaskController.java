@@ -114,7 +114,7 @@ public class TodoTaskController {
 
         TodoTask task = todoTaskService.findTaskById(userDetails.getId(), taskId);
         modelMapper.map(taskDto, task);
-        todoTaskService.save(task);
+        todoTaskService.saveTodoTask(task);
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                 .buildAndExpand(task.getId()).toUri();

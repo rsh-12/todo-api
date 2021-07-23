@@ -84,7 +84,7 @@ public class TodoTaskServiceImpl implements TodoTaskService {
     }
 
     @Override
-    public void save(TodoTask task) {
+    public void saveTodoTask(TodoTask task) {
         todoTaskRepository.save(task);
     }
 

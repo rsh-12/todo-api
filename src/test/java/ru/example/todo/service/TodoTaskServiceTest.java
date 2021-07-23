@@ -157,7 +157,7 @@ public class TodoTaskServiceTest {
     @Test
     public void saveTask_ShouldSaveTask() {
         given(taskRepository.save(any(TodoTask.class))).willReturn(new TodoTask());
-        taskService.save(new TodoTask());
+        taskService.saveTodoTask(new TodoTask());
         verify(taskRepository).save(any(TodoTask.class));
     }
 
