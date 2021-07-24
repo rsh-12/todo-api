@@ -9,14 +9,33 @@ import ru.example.todo.enums.Role;
 import java.util.Objects;
 import java.util.Set;
 
-public record UserPrincipal(Long id, Set<Role> roles) {
+public class CustomPrincipal {
+
+    private Long id;
+    private Set<Role> roles;
 
     public Long getId() {
         return id;
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public Set<Role> getRoles() {
         return roles;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
+    }
+
+    public CustomPrincipal() {
+    }
+
+    public CustomPrincipal(Long id, Set<Role> roles) {
+        this.id = id;
+        this.roles = roles;
     }
 
     @Override
@@ -24,7 +43,7 @@ public record UserPrincipal(Long id, Set<Role> roles) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        UserPrincipal that = (UserPrincipal) o;
+        CustomPrincipal that = (CustomPrincipal) o;
 
         return Objects.equals(id, that.id);
     }
