@@ -9,8 +9,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import ru.example.todo.domain.CustomPrincipal;
 import ru.example.todo.entity.User;
+import ru.example.todo.enums.Role;
 import ru.example.todo.facade.AuthUserFacade;
 import ru.example.todo.security.UserDetailsImpl;
+
+import java.util.Set;
 
 @Component
 public class AuthUserFacadeImpl implements AuthUserFacade {
@@ -43,6 +46,16 @@ public class AuthUserFacadeImpl implements AuthUserFacade {
     @Override
     public CustomPrincipal mapToPrincipal(User user) {
         return modelMapper.map(user, CustomPrincipal.class);
+    }
+
+    @Override
+    public Long getUserId() {
+        return getLoggedUser().getId();
+    }
+
+    @Override
+    public Set<Role> getUserRoles() {
+        return getLoggedUser().getRoles();
     }
 
 }
