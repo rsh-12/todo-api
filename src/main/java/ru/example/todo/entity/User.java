@@ -81,22 +81,6 @@ public class User {
         this.password = password;
     }
 
-
-    /**
-     * This is <b>a special constructor</b> that used
-     * to create an instance of the User classs as a Principal.
-     *
-     * <b>The Principal only has an id and roles, the other
-     * fields are null</b>.
-     *
-     * @param id    the user id
-     * @param roles the user roles
-     */
-    public User(Long id, Set<Role> roles) {
-        this.id = id;
-        this.roles = roles;
-    }
-
     public void setId(Long id) {
         this.id = id;
     }
@@ -106,7 +90,7 @@ public class User {
     }
 
     public String getUsername() {
-        return username;
+        return username == null ? "" : username;
     }
 
     public void setUsername(String username) {
@@ -114,7 +98,7 @@ public class User {
     }
 
     public String getPassword() {
-        return password;
+        return password == null ? "" : password;
     }
 
     public void setPassword(String password) {
@@ -122,7 +106,7 @@ public class User {
     }
 
     public Date getCreatedAt() {
-        return createdAt;
+        return createdAt == null ? new Date() : createdAt;
     }
 
     public void setCreatedAt(Date createdAt) {
@@ -130,7 +114,7 @@ public class User {
     }
 
     public Set<Role> getRoles() {
-        return roles;
+        return roles == null ? Collections.emptySet() : roles;
     }
 
     public void setRoles(Set<Role> roles) {
