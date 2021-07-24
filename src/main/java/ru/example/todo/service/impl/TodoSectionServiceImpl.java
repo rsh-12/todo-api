@@ -72,6 +72,7 @@ public class TodoSectionServiceImpl implements TodoSectionService {
     // update section title
     @Override
     public TodoSection updateSection(Long sectionId, TodoSection section) {
+        validateUser(authUserFacade.getLoggedUser(), sectionId, todoSectionRepository);
         section.setId(sectionId);
         section.setUser(authUserFacade.getLoggedUser());
         return todoSectionRepository.save(section);
