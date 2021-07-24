@@ -5,6 +5,11 @@ package ru.example.todo.service.impl.util;
  * */
 
 import org.springframework.data.domain.Sort;
+import ru.example.todo.entity.TodoSection;
+import ru.example.todo.entity.User;
+import ru.example.todo.enums.Role;
+import ru.example.todo.exception.CustomException;
+import ru.example.todo.repository.TodoSectionRepository;
 
 public record ServiceUtil() {
 
@@ -16,6 +21,17 @@ public record ServiceUtil() {
     public static String getSortAsString(String sort) {
         if (sort.contains(",")) return sort.split(",")[0];
         return sort;
+    }
+
+    public static void validateUser(User principal, Long sectionId, TodoSectionRepository sectionRepository) {
+        TodoSection section = sectionRepository.findById(sectionId)
+                .orElseThrow(() -> CustomException.notFound("Section not found: id=" + sectionId));
+
+        User user = section.getUser();
+        boolean isValid = (user != null && user.equals(principal)) || principal.getRoles().contains(Role.ADMIN);
+        if (!isValid) {
+            throw CustomException.forbidden("Not enough permissions");
+        }
     }
 
 }
