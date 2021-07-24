@@ -7,6 +7,7 @@ package ru.example.todo.facade.impl;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+import ru.example.todo.domain.CustomPrincipal;
 import ru.example.todo.entity.User;
 import ru.example.todo.facade.AuthUserFacade;
 import ru.example.todo.security.UserDetailsImpl;
@@ -28,4 +29,20 @@ public class AuthUserFacadeImpl implements AuthUserFacade {
 
         return principal.getUser();
     }
+
+    @Override
+    public CustomPrincipal getPrincipal() {
+        return modelMapper.map(getLoggedUser(), CustomPrincipal.class);
+    }
+
+    @Override
+    public User mapToUser(CustomPrincipal principal) {
+        return modelMapper.map(principal, User.class);
+    }
+
+    @Override
+    public CustomPrincipal mapToPrincipal(User user) {
+        return modelMapper.map(user, CustomPrincipal.class);
+    }
+
 }
