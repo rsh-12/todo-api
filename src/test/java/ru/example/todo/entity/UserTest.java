@@ -23,7 +23,9 @@ public class UserTest {
 
     @Before
     public void setUp() {
-        user = new User(1L, Collections.singleton(Role.USER));
+        user = new User();
+        user.setId(1L);
+        user.setRoles(Collections.singleton(Role.USER));
         user.setUsername("username");
         user.setPassword("password");
         user.setCreatedAt(new Date());
@@ -53,20 +55,26 @@ public class UserTest {
 
     @Test
     public void equals_ShouldBeEqual() {
-        User user2 = new User(1L, Collections.singleton(Role.USER));
+        User user2 = new User();
+        user2.setId(1L);
+        user2.setRoles(Collections.singleton(Role.USER));
         user2.setUsername("username");
         assertEquals(user, user2);
     }
 
     @Test
     public void equals_ShouldNotBeEqual() {
-        User user2 = new User(1L, Collections.singleton(Role.ADMIN));
+        User user2 = new User();
+        user2.setId(1L);
+        user2.setRoles(Collections.singleton(Role.USER));
         assertNotEquals(user, user2);
     }
 
     @Test
     public void equals_Symmetric_ShouldBeEqual() {
-        User user2 = new User(1L, Collections.singleton(Role.USER));
+        User user2 = new User();
+        user2.setId(1L);
+        user2.setRoles(Collections.singleton(Role.USER));
         user2.setUsername("username");
         assertTrue(user.equals(user2) && user2.equals(user));
         assertEquals(user.hashCode(), user2.hashCode());
