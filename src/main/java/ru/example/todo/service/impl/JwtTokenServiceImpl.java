@@ -108,7 +108,9 @@ public class JwtTokenServiceImpl implements JwtTokenService {
         Long id = Long.parseLong(String.valueOf(claims.get("id")));
         Set<Role> roles = extractRoles(claims);
 
-        User principal = new User(id, roles);
+        User principal = new User();
+        principal.setId(id);
+        principal.setRoles(roles);
         UserDetailsImpl userDetails = new UserDetailsImpl(principal);
 
         return new UsernamePasswordAuthenticationToken(userDetails, "", roles);
