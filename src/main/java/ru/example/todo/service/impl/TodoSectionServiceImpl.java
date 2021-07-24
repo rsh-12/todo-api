@@ -20,6 +20,7 @@ import java.util.List;
 
 import static ru.example.todo.enums.filters.FilterByOperation.MOVE;
 import static ru.example.todo.enums.filters.FilterByOperation.REMOVE;
+import static ru.example.todo.service.impl.util.ServiceUtil.validateUser;
 
 @Service
 public class TodoSectionServiceImpl implements TodoSectionService {
@@ -38,14 +39,14 @@ public class TodoSectionServiceImpl implements TodoSectionService {
     @Override
     public TodoSection findSectionById(Long sectionId) {
         log.info("Get the section by id: {}", sectionId);
-        return todoSectionRepository.findByUserIdAndId(authUserFacade.getLoggedUser().getId(), sectionId)
+        return todoSectionRepository.findByUserIdAndId(authUserFacade.getUserId(), sectionId)
                 .orElseThrow(() -> CustomException.notFound("Section not found: " + sectionId));
     }
 
     // get all sections
     @Override
     public List<TodoSectionProjection> findSections() {
-        Long userId = authUserFacade.getLoggedUser().getId();
+        Long userId = authUserFacade.getUserId();
         List<TodoSectionProjection> sections = todoSectionRepository.findAllByUserIdProjection(userId);
         log.info("Get all sections: {}", sections.size());
         return sections;
@@ -55,7 +56,8 @@ public class TodoSectionServiceImpl implements TodoSectionService {
     // todo: fix section deleting
     @Override
     public void deleteSectionById(Long sectionId) {
-//        todoSectionRepository.deleteById(sectionId);
+        validateUser(authUserFacade.getLoggedUser(), sectionId, todoSectionRepository);
+        todoSectionRepository.deleteById(sectionId);
     }
 
 
