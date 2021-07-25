@@ -18,7 +18,6 @@ public interface TodoTaskService {
      * Returns a list of TodoTask objects with some applied filters.
      * By default, it returns 10 objects sorted by date(ALL).
      *
-     * @param userId   the User id
      * @param pageNo   the page number
      * @param pageSize the number of objects to return
      * @param date     the date filter: overdue, today, all
@@ -28,31 +27,29 @@ public interface TodoTaskService {
      * @see TodoTask
      * @see FilterByDate
      */
-    List<TodoTask> findTasks(Long userId, Integer pageNo, Integer pageSize, FilterByDate date, String sort);
+    List<TodoTask> findTasks(Integer pageNo, Integer pageSize, FilterByDate date, String sort);
 
     /**
      * Finds the TodoTask by id and user id.
      *
-     * @param userId the User id
      * @param taskId the TodoTask id
      * @return the TodoTask by id
      * @throws ru.example.todo.exception.CustomException if the TodoTask by id is not found
      * @see User
      * @see TodoTask
      */
-    TodoTask findTaskById(Long userId, Long taskId);
+    TodoTask findTaskById(Long taskId);
 
     /**
      * Deletes the user's task by id
      * if the aspect class does not throw an exception.
      *
-     * @param principal the User instance
      * @param taskId    the TodoTask id
      * @see User
      * @see TodoTask
      * @see ru.example.todo.aop.ValidatingAspect
      */
-    void deleteTaskById(User principal, Long taskId);
+    void deleteTaskById(Long taskId);
 
     /**
      * Creates a new TodoTask object with the user, saves to database.
