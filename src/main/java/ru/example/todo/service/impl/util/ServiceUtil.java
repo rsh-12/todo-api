@@ -23,12 +23,8 @@ public record ServiceUtil() {
         return sort;
     }
 
-    public static void validateUser(User principal, Long sectionId, TodoSectionRepository sectionRepository) {
-        TodoSection section = sectionRepository.findById(sectionId)
-                .orElseThrow(() -> CustomException.notFound("Section not found: id=" + sectionId));
-
-        User user = section.getUser();
-        boolean isValid = (user != null && user.equals(principal)) || principal.getRoles().contains(Role.ADMIN);
+    public static void validateUser(User principal, User owner) {
+        boolean isValid = (owner != null && owner.equals(principal)) || principal.getRoles().contains(Role.ADMIN);
         if (!isValid) {
             throw CustomException.forbidden("Not enough permissions");
         }
