@@ -22,8 +22,18 @@ import java.util.List;
 import static org.hamcrest.Matchers.containsStringIgnoringCase;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyInt;
+import static org.mockito.Mockito.anyLong;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -36,7 +46,7 @@ public class TodoTaskControllerTest extends AbstractControllerTestClass {
     @Test
     @WithUserDetails(ADMIN)
     public void getTasks_ShouldReturnListOfTasks() throws Exception {
-        given(taskService.findTasks(anyLong(), anyInt(), anyInt(),
+        given(taskService.findTasks(anyInt(), anyInt(),
                 any(FilterByDate.class), anyString())).willReturn(List.of(
                 new TodoTask("task1", LocalDate.now()),
                 new TodoTask("task2", LocalDate.now())));
@@ -48,26 +58,26 @@ public class TodoTaskControllerTest extends AbstractControllerTestClass {
                 .andExpect(jsonPath("_embedded.tasks[1].title", is("task2")))
                 .andExpect(status().isOk());
 
-        verify(taskService, times(1)).findTasks(anyLong(), anyInt(), anyInt(),
+        verify(taskService, times(1)).findTasks(anyInt(), anyInt(),
                 any(FilterByDate.class), anyString());
     }
 
     @Test
     @WithUserDetails(ADMIN)
     public void getTask_ShouldReturnTaskById() throws Exception {
-        given(taskService.findTaskById(anyLong(), anyLong())).willReturn(new TodoTask("task"));
+        given(taskService.findTaskById(anyLong())).willReturn(new TodoTask("task"));
 
         mvc.perform(get(API_TASKS + 1))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("title", containsStringIgnoringCase("task")));
 
-        verify(taskService, times(1)).findTaskById(anyLong(), anyLong());
+        verify(taskService, times(1)).findTaskById(anyLong());
     }
 
     @Test
     @WithUserDetails(USER)
     public void getTask_ShouldReturnNotFound() throws Exception {
-        given(taskService.findTaskById(anyLong(), anyLong()))
+        given(taskService.findTaskById(anyLong()))
                 .willThrow(CustomException.notFound("Task not found"));
 
         mvc.perform(get(API_TASKS + 1))
@@ -75,41 +85,41 @@ public class TodoTaskControllerTest extends AbstractControllerTestClass {
                 .andDo(print())
                 .andExpect(jsonPath("message", containsStringIgnoringCase("Task not found")));
 
-        verify(taskService, times(1)).findTaskById(anyLong(), anyLong());
+        verify(taskService, times(1)).findTaskById(anyLong());
     }
 
     @Test
     @WithUserDetails(ADMIN)
     public void deleteTask_ShouldReturnNoContent() throws Exception {
-        doNothing().when(taskService).deleteTaskById(any(User.class), anyLong());
+        doNothing().when(taskService).deleteTaskById(anyLong());
         mvc.perform(delete(API_TASKS + 1)).andExpect(status().isNoContent());
-        verify(taskService, times(1)).deleteTaskById(any(User.class), anyLong());
+        verify(taskService, times(1)).deleteTaskById(anyLong());
     }
 
     @Test
     @WithUserDetails(USER)
     public void deleteTask_ShouldReturnNotFound() throws Exception {
         doThrow(CustomException.notFound("Task not found"))
-                .when(taskService).deleteTaskById(any(User.class), anyLong());
+                .when(taskService).deleteTaskById(anyLong());
 
         mvc.perform(delete(API_TASKS + 1))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("message", containsStringIgnoringCase("Task not found")));
 
-        verify(taskService, times(1)).deleteTaskById(any(User.class), anyLong());
+        verify(taskService, times(1)).deleteTaskById(anyLong());
     }
 
     @Test
     @WithUserDetails(USER)
     public void deleteTask_ShouldReturnForbidden() throws Exception {
         doThrow(CustomException.forbidden("Not enough permissions"))
-                .when(taskService).deleteTaskById(any(User.class), anyLong());
+                .when(taskService).deleteTaskById(anyLong());
 
         mvc.perform(delete(API_TASKS + 1))
                 .andExpect(status().isForbidden())
                 .andExpect(jsonPath("error", containsStringIgnoringCase("forbidden")));
 
-        verify(taskService, times(1)).deleteTaskById(any(User.class), anyLong());
+        verify(taskService, times(1)).deleteTaskById(anyLong());
     }
 
     @Test

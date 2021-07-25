@@ -21,11 +21,20 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anySet;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 @RunWith(MockitoJUnitRunner.class)
 public class TodoTaskServiceTest {
@@ -47,7 +56,7 @@ public class TodoTaskServiceTest {
 
         given(taskRepository.findAllByUserId(anyLong(), any(Pageable.class))).willReturn(List.of(task1, task2));
 
-        List<TodoTask> tasks = taskService.findTasks(1L, 0, 10, FilterByDate.ALL, "secId");
+        List<TodoTask> tasks = taskService.findTasks(0, 10, FilterByDate.ALL, "secId");
         assertFalse(tasks.isEmpty());
         assertEquals(2, tasks.size());
 
@@ -65,7 +74,7 @@ public class TodoTaskServiceTest {
         given(taskRepository.findAllByCompletionDateEqualsAndUserId(any(), any(), anyLong()))
                 .willReturn(List.of(task));
 
-        List<TodoTask> tasks = taskService.findTasks(1L, 0, 1000, FilterByDate.TODAY, "secId,asc");
+        List<TodoTask> tasks = taskService.findTasks(0, 1000, FilterByDate.TODAY, "secId,asc");
         assertFalse(tasks.isEmpty());
         assertEquals("task", tasks.get(0).getTitle());
     }
@@ -78,7 +87,7 @@ public class TodoTaskServiceTest {
         given(taskRepository.findAllByCompletionDateBeforeAndUserId(any(), any(), anyLong()))
                 .willReturn(List.of(task));
 
-        List<TodoTask> tasks = taskService.findTasks(1L, 0, 1000, FilterByDate.OVERDUE, "secId");
+        List<TodoTask> tasks = taskService.findTasks(0, 1000, FilterByDate.OVERDUE, "secId");
         assertFalse(tasks.isEmpty());
         assertEquals("task", tasks.get(0).getTitle());
     }
@@ -91,7 +100,7 @@ public class TodoTaskServiceTest {
 
         given(taskRepository.findByIdAndUserId(anyLong(), anyLong())).willReturn(Optional.of(task));
 
-        TodoTask taskFromDb = taskService.findTaskById(1L, 1L);
+        TodoTask taskFromDb = taskService.findTaskById(1L);
 
         assertNotNull(task);
         assertEquals("Title", taskFromDb.getTitle());
@@ -103,7 +112,7 @@ public class TodoTaskServiceTest {
     @Test
     public void findTaskById_ShouldThrowException() {
         given(taskRepository.findByIdAndUserId(anyLong(), anyLong())).willReturn(Optional.empty());
-        assertThrows(CustomException.class, () -> taskService.findTaskById(1L, 1L));
+        assertThrows(CustomException.class, () -> taskService.findTaskById(1L));
     }
 
     // deleteTaskById
@@ -114,7 +123,7 @@ public class TodoTaskServiceTest {
         given(task.getId()).willReturn(1L);
 
         doNothing().when(taskRepository).deleteById(anyLong());
-        taskService.deleteTaskById(principal, task.getId());
+        taskService.deleteTaskById(task.getId());
 
         verify(taskRepository).deleteById(anyLong());
     }
