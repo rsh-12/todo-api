@@ -56,7 +56,9 @@ public class TodoSectionServiceImpl implements TodoSectionService {
     // todo: fix section deleting
     @Override
     public void deleteSectionById(Long sectionId) {
-        validateUser(authUserFacade.getLoggedUser(), sectionId, todoSectionRepository);
+        TodoSection section = todoSectionRepository.findById(sectionId)
+                .orElseThrow(() -> CustomException.notFound("Section not found"));
+        validateUser(authUserFacade.getLoggedUser(), section.getUser());
         todoSectionRepository.deleteById(sectionId);
     }
 
@@ -71,11 +73,14 @@ public class TodoSectionServiceImpl implements TodoSectionService {
 
     // update section title
     @Override
-    public TodoSection updateSection(Long sectionId, TodoSection section) {
-        validateUser(authUserFacade.getLoggedUser(), sectionId, todoSectionRepository);
-        section.setId(sectionId);
-        section.setUser(authUserFacade.getLoggedUser());
-        return todoSectionRepository.save(section);
+    public TodoSection updateSection(Long sectionId, TodoSection sectionRequest) {
+        TodoSection section = todoSectionRepository.findById(sectionId)
+                .orElseThrow(() -> CustomException.notFound("Section not found: id=" + sectionId));
+        validateUser(authUserFacade.getLoggedUser(), section.getUser());
+
+        sectionRequest.setId(sectionId);
+        sectionRequest.setUser(authUserFacade.getLoggedUser());
+        return todoSectionRepository.save(sectionRequest);
     }
 
     // add to or remove from the task section
