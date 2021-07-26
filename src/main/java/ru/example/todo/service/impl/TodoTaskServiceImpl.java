@@ -15,6 +15,7 @@ import ru.example.todo.entity.TodoTask;
 import ru.example.todo.entity.User;
 import ru.example.todo.enums.filters.FilterByDate;
 import ru.example.todo.exception.CustomException;
+import ru.example.todo.facade.AuthUserFacade;
 import ru.example.todo.repository.TodoTaskRepository;
 import ru.example.todo.service.TodoTaskService;
 import ru.example.todo.service.impl.util.ServiceUtil;
@@ -25,6 +26,7 @@ import java.util.Set;
 
 import static ru.example.todo.enums.filters.FilterByDate.OVERDUE;
 import static ru.example.todo.enums.filters.FilterByDate.TODAY;
+import static ru.example.todo.service.impl.util.ServiceUtil.validateUser;
 
 @Service
 public class TodoTaskServiceImpl implements TodoTaskService {
@@ -32,19 +34,22 @@ public class TodoTaskServiceImpl implements TodoTaskService {
     private static final Logger log = LoggerFactory.getLogger(TodoTaskServiceImpl.class.getName());
 
     private final TodoTaskRepository todoTaskRepository;
+    private final AuthUserFacade authUserFacade;
 
     @Autowired
-    public TodoTaskServiceImpl(TodoTaskRepository todoTaskRepository) {
+    public TodoTaskServiceImpl(TodoTaskRepository todoTaskRepository, AuthUserFacade authUserFacade) {
         this.todoTaskRepository = todoTaskRepository;
+        this.authUserFacade = authUserFacade;
     }
 
     // get all tasks
     @Override
-    public List<TodoTask> findTasks(Long userId, Integer pageNo, Integer pageSize, FilterByDate date, String sort) {
+    public List<TodoTask> findTasks(Integer pageNo, Integer pageSize, FilterByDate date, String sort) {
         pageSize = pageSize > 100 ? 100 : pageSize; // set max page size
         Pageable page = PageRequest.of(pageNo, pageSize,
                 Sort.by(ServiceUtil.getSortDirection(sort), ServiceUtil.getSortAsString(sort)));
 
+        Long userId = authUserFacade.getUserId();
         if (date == TODAY) {
             return todoTaskRepository.findAllByCompletionDateEqualsAndUserId(LocalDate.now(), page, userId);
         } else if (date == OVERDUE) {
@@ -55,15 +60,19 @@ public class TodoTaskServiceImpl implements TodoTaskService {
 
     // get task by id
     @Override
-    public TodoTask findTaskById(Long userId, Long taskId) {
+    public TodoTask findTaskById(Long taskId) {
         log.info("Get the task by id: {}", taskId);
-        return todoTaskRepository.findByIdAndUserId(taskId, userId)
-                .orElseThrow(()-> CustomException.notFound("Task Not Found"));
+        return todoTaskRepository.findByIdAndUserId(taskId, authUserFacade.getUserId())
+                .orElseThrow(() -> CustomException.notFound("Task Not Found"));
     }
 
     // delete task by id
     @Override
-    public void deleteTaskById(User principal, Long taskId) {
+    public void deleteTaskById(Long taskId) {
+        TodoTask task = todoTaskRepository.findById(taskId)
+                .orElseThrow(() -> CustomException.notFound("Task not found: id=" + taskId));
+        validateUser(authUserFacade.getLoggedUser(), task.getUser());
+
         todoTaskRepository.deleteById(taskId);
         log.info("The task with id={} was deleted successfully", taskId);
     }
