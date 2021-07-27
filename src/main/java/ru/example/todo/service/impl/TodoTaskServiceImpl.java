@@ -12,7 +12,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.example.todo.entity.TodoTask;
-import ru.example.todo.entity.User;
 import ru.example.todo.enums.filters.FilterByDate;
 import ru.example.todo.exception.CustomException;
 import ru.example.todo.facade.AuthUserFacade;
@@ -79,9 +78,9 @@ public class TodoTaskServiceImpl implements TodoTaskService {
 
     // create new task
     @Override
-    public TodoTask createTask(User user, TodoTask task) {
+    public TodoTask createTask(TodoTask task) {
         log.info("Create a new task");
-        task.setUser(user);
+        task.setUser(authUserFacade.getLoggedUser());
         return todoTaskRepository.save(task);
     }
 
