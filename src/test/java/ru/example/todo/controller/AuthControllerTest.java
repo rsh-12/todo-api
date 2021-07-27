@@ -13,7 +13,7 @@ import ru.example.todo.dto.UserDto;
 import ru.example.todo.entity.User;
 import ru.example.todo.exception.CustomException;
 import ru.example.todo.facade.PasswordFacade;
-import ru.example.todo.messaging.MessagingService;
+import ru.example.todo.messaging.MessagingClient;
 import ru.example.todo.messaging.requests.EmailRequest;
 import ru.example.todo.messaging.requests.TokenRequest;
 import ru.example.todo.service.UserService;
@@ -42,7 +42,7 @@ public class AuthControllerTest extends AbstractControllerTestClass {
     private UserService userService;
 
     @SpyBean
-    private MessagingService messagingService;
+    private MessagingClient messagingService;
 
     // Login: success
     @Test
