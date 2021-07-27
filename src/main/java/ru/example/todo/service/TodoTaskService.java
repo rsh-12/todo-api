@@ -47,20 +47,18 @@ public interface TodoTaskService {
      * @param taskId    the TodoTask id
      * @see User
      * @see TodoTask
-     * @see ru.example.todo.aop.ValidatingAspect
      */
     void deleteTaskById(Long taskId);
 
     /**
      * Creates a new TodoTask object with the user, saves to database.
      *
-     * @param user the User instance
      * @param task the TodoTask instance
      * @return the created TodoTask
      * @see User
      * @see TodoTask
      */
-    TodoTask createTask(User user, TodoTask task);
+    TodoTask createTask(TodoTask task);
 
     /**
      * Finds TodoTask objects by set of provided ids and user id.
