@@ -12,9 +12,7 @@ import org.springframework.context.annotation.Configuration;
 public class TokenProperties {
 
     private String secret;
-
     private long accessTokenValidity;
-
     private long refreshTokenValidity;
 
     public String getSecret() {
