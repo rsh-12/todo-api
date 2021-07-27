@@ -11,7 +11,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import ru.example.todo.exception.CustomException;
 import ru.example.todo.facade.impl.PasswordFacadeImpl;
-import ru.example.todo.messaging.MessagingService;
+import ru.example.todo.messaging.MessagingClient;
 import ru.example.todo.messaging.requests.TokenRequest;
 import ru.example.todo.service.UserService;
 
@@ -28,7 +28,7 @@ public class PasswordFacadeTest {
     private PasswordFacadeImpl passwordFacade;
 
     @Mock
-    private MessagingService messagingService;
+    private MessagingClient messagingService;
 
     @Mock
     private UserService userService;
