@@ -137,7 +137,7 @@ public class TodoTaskServiceTest {
         given(task.getUser()).willReturn(user);
 
         given(taskRepository.save(task)).willReturn(task);
-        TodoTask createdTask = taskService.createTask(user, task);
+        TodoTask createdTask = taskService.createTask(task);
 
         assertNotNull(createdTask);
         assertEquals(createdTask.getUser(), user);
