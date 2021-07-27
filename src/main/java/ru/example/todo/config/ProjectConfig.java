@@ -14,7 +14,6 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import ru.example.todo.util.converters.StringToDateEnumConverter;
 import ru.example.todo.util.converters.StringToSetTasksEnumConverter;
-import ru.example.todo.util.converters.StringToStatusEnumConverter;
 
 @Configuration
 public class ProjectConfig implements WebMvcConfigurer {
@@ -24,10 +23,8 @@ public class ProjectConfig implements WebMvcConfigurer {
         return new BCryptPasswordEncoder();
     }
 
-
     @Override
     public void addFormatters(FormatterRegistry registry) {
-        registry.addConverter(new StringToStatusEnumConverter());
         registry.addConverter(new StringToDateEnumConverter());
         registry.addConverter(new StringToSetTasksEnumConverter());
     }
