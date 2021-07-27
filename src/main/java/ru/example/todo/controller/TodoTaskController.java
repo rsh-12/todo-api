@@ -13,7 +13,6 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -27,11 +26,8 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.example.todo.controller.assembler.TodoTaskModelAssembler;
 import ru.example.todo.dto.TodoTaskDto;
 import ru.example.todo.entity.TodoTask;
-import ru.example.todo.entity.User;
 import ru.example.todo.enums.filters.FilterByDate;
-import ru.example.todo.security.UserDetailsImpl;
 import ru.example.todo.service.TodoTaskService;
-import ru.example.todo.service.UserService;
 
 import javax.validation.Valid;
 import java.net.URI;
@@ -47,15 +43,13 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
 public class TodoTaskController {
 
-    private final UserService userService;
     private final TodoTaskService todoTaskService;
     private final TodoTaskModelAssembler assembler;
     private final ModelMapper modelMapper;
 
     @Autowired
-    public TodoTaskController(UserService userService, TodoTaskService todoTaskService,
-                              TodoTaskModelAssembler assembler, ModelMapper modelMapper) {
-        this.userService = userService;
+    public TodoTaskController(TodoTaskService todoTaskService, TodoTaskModelAssembler assembler,
+                              ModelMapper modelMapper) {
         this.todoTaskService = todoTaskService;
         this.assembler = assembler;
         this.modelMapper = modelMapper;
@@ -99,10 +93,8 @@ public class TodoTaskController {
     // create new task
     @ApiOperation(value = "Create task", notes = "It permits to create a new task")
     @PostMapping(consumes = "application/json")
-    public ResponseEntity<String> createTask(@AuthenticationPrincipal UserDetailsImpl userDetails,
-                                             @Valid @RequestBody TodoTaskDto taskDto) {
-        User user = userService.findUserById(userDetails.getId());
-        TodoTask task = todoTaskService.createTask(user, modelMapper.map(taskDto, TodoTask.class));
+    public ResponseEntity<String> createTask(@Valid @RequestBody TodoTaskDto taskDto) {
+        TodoTask task = todoTaskService.createTask(modelMapper.map(taskDto, TodoTask.class));
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}").buildAndExpand(task.getId()).toUri();
