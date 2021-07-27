@@ -47,17 +47,6 @@ public class TodoSectionRepositoryTest extends AbstractRepositoryTestClass{
     }
 
     @Test
-    public void findAllByUserId_ShouldReturnListOfUserSections() {
-        List<TodoSection> adminSections = repository.findAllByUserId(ADMIN_ID);
-        List<TodoSection> userSections = repository.findAllByUserId(USER_ID);
-
-        assertEquals(4, adminSections.size());
-        assertEquals(1, userSections.size());
-
-        assertEquals("Starred", userSections.get(0).getTitle());
-    }
-
-    @Test
     public void findAll_ShouldReturnListOfSections() {
         List<TodoSection> sections = repository.findAll();
         assertEquals(5, sections.size());
