@@ -41,6 +41,9 @@ public class TasksFacadeTest {
     private TodoTaskService taskService;
 
     @Mock
+    private AuthUserFacade authUserFacade;
+
+    @Mock
     private TodoSectionService sectionService;
 
     @Test
@@ -48,6 +51,7 @@ public class TasksFacadeTest {
         TodoTask task1 = mock(TodoTask.class);
         TodoTask task2 = mock(TodoTask.class);
 
+        given(authUserFacade.getUserId()).willReturn(1L);
         given(taskService.findTasksByIds(anySet(), anyLong())).willReturn(List.of(task1, task2));
         doNothing().when(sectionService).addTasksToOrRemoveFromSection(anyLong(), anyLong(), anyList(), any());
 
