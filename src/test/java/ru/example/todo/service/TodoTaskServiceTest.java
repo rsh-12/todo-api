@@ -14,6 +14,7 @@ import ru.example.todo.entity.TodoTask;
 import ru.example.todo.entity.User;
 import ru.example.todo.enums.filters.FilterByDate;
 import ru.example.todo.exception.CustomException;
+import ru.example.todo.facade.AuthUserFacade;
 import ru.example.todo.repository.TodoTaskRepository;
 import ru.example.todo.service.impl.TodoTaskServiceImpl;
 
@@ -44,6 +45,9 @@ public class TodoTaskServiceTest {
 
     @Mock
     private TodoTaskRepository taskRepository;
+
+    @Mock
+    private AuthUserFacade authUserFacade;
 
     // findTasks
     @Test
@@ -112,6 +116,7 @@ public class TodoTaskServiceTest {
     @Test
     public void findTaskById_ShouldThrowException() {
         given(taskRepository.findByIdAndUserId(anyLong(), anyLong())).willReturn(Optional.empty());
+        given(authUserFacade.getUserId()).willReturn(1L);
         assertThrows(CustomException.class, () -> taskService.findTaskById(1L));
     }
 
