@@ -65,7 +65,7 @@ public class UserTest {
     @Test
     public void equals_ShouldNotBeEqual() {
         User user2 = new User();
-        user2.setId(1L);
+        user2.setId(2L);
         user2.setRoles(Collections.singleton(Role.USER));
         assertNotEquals(user, user2);
     }
