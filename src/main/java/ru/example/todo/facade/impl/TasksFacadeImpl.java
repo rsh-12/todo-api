@@ -35,7 +35,7 @@ public class TasksFacadeImpl implements TasksFacade {
         if (taskIds == null || taskIds.isEmpty()) {
             throw CustomException.badRequest("Tasks IDs are required");
         }
-        Long userId = authUserFacade.getLoggedUser().getId();
+        Long userId = authUserFacade.getUserId();
         List<TodoTask> tasks = taskService.findTasksByIds(taskIds, userId);
         sectionService.addTasksToOrRemoveFromSection(userId, sectionId, tasks, flag);
     }
