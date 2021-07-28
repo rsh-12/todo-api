@@ -123,9 +123,14 @@ public class TodoTaskServiceTest {
     // deleteTaskById
     @Test
     public void deleteTaskById_ShouldDeleteTaskById() {
-        User principal = mock(User.class);
+        User user = mock(User.class);
         TodoTask task = mock(TodoTask.class);
+
         given(task.getId()).willReturn(1L);
+        given(task.getUser()).willReturn(user);
+        given(user.getId()).willReturn(1L);
+        given(authUserFacade.getLoggedUser()).willReturn(user);
+        given(taskRepository.findById(task.getId())).willReturn(Optional.of(task));
 
         doNothing().when(taskRepository).deleteById(anyLong());
         taskService.deleteTaskById(task.getId());
