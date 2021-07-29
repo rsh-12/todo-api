@@ -7,17 +7,17 @@ package ru.example.todo.facade.impl;
 import org.springframework.stereotype.Component;
 import ru.example.todo.exception.CustomException;
 import ru.example.todo.facade.PasswordFacade;
-import ru.example.todo.messaging.MessagingService;
+import ru.example.todo.messaging.MessagingClient;
 import ru.example.todo.messaging.requests.TokenRequest;
 import ru.example.todo.service.UserService;
 
 @Component
 public class PasswordFacadeImpl implements PasswordFacade {
 
-    private final MessagingService messagingService;
+    private final MessagingClient messagingService;
     private final UserService userService;
 
-    public PasswordFacadeImpl(MessagingService messagingService, UserService userService) {
+    public PasswordFacadeImpl(MessagingClient messagingService, UserService userService) {
         this.messagingService = messagingService;
         this.userService = userService;
     }

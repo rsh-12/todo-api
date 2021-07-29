@@ -90,13 +90,13 @@ public class JwtTokenServiceImpl implements JwtTokenService {
 
 
     @Override
-    public Long getId(String accessToken) {
+    public Long getUserIdFromAccessToken(String accessToken) {
         Claims claims = getClaimsBody(accessToken);
         return Long.parseLong(String.valueOf(claims.get("id")));
     }
 
     @Override
-    public Set<Role> getUserRoles(String accessToken) {
+    public Set<Role> getUserRolesFromAccessToken(String accessToken) {
         Claims claims = getClaimsBody(accessToken);
         return extractRoles(claims);
     }
@@ -108,7 +108,9 @@ public class JwtTokenServiceImpl implements JwtTokenService {
         Long id = Long.parseLong(String.valueOf(claims.get("id")));
         Set<Role> roles = extractRoles(claims);
 
-        User principal = new User(id, roles);
+        User principal = new User();
+        principal.setId(id);
+        principal.setRoles(roles);
         UserDetailsImpl userDetails = new UserDetailsImpl(principal);
 
         return new UsernamePasswordAuthenticationToken(userDetails, "", roles);

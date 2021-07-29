@@ -4,6 +4,7 @@ package ru.example.todo.config;
  * Time: 8:47 AM
  * */
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -24,6 +25,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final JwtTokenService jwtTokenService;
 
+    @Autowired
     public WebSecurityConfig(JwtTokenService jwtTokenService) {
         this.jwtTokenService = jwtTokenService;
     }

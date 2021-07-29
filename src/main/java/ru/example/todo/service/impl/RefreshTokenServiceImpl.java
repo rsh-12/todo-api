@@ -10,7 +10,7 @@ import ru.example.todo.entity.RefreshToken;
 import ru.example.todo.exception.CustomException;
 import ru.example.todo.repository.RefreshTokenRepository;
 import ru.example.todo.service.RefreshTokenService;
-import ru.example.todo.util.RandomString;
+import ru.example.todo.util.RandomStringGenerator;
 
 import java.time.Instant;
 import java.util.Date;
@@ -30,7 +30,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     @Override
     public String createRefreshToken(Long userId, String ip) {
         RefreshToken refreshToken;
-        String token = new RandomString(64).nextString();
+        String token = new RandomStringGenerator(64).nextString();
 
         long now = new Date().getTime();
         Date expiresAt = new Date(now + tokenProperties.getRefreshTokenValidity());
@@ -45,13 +45,13 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
         }
 
         if (ip != null) refreshToken.setCreatedByIp(ip);
-        save(refreshToken);
+        saveRefreshToken(refreshToken);
 
         return token;
     }
 
     @Override
-    public RefreshToken save(RefreshToken refreshToken) {
+    public RefreshToken saveRefreshToken(RefreshToken refreshToken) {
         return refreshTokenRepository.save(refreshToken);
     }
 

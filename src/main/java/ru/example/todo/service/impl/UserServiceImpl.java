@@ -4,6 +4,7 @@ package ru.example.todo.service.impl;
  * Time: 4:39 PM
  * */
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -34,6 +35,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final TokenProperties tokenProperties;
 
+    @Autowired
     public UserServiceImpl(JwtTokenService jwtTokenService, UserRepository userRepository,
                            TokenProperties tokenProperties, AuthenticationManager authManager,
                            BCryptPasswordEncoder bCryptPasswordEncoder, RefreshTokenService refreshTokenService) {

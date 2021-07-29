@@ -18,31 +18,28 @@ public interface TodoSectionService {
     /**
      * Finds a section by id.
      *
-     * @param userId    the user id
      * @param sectionId the TodoSection id
      * @return the TodoSection
      * @throws ru.example.todo.exception.CustomException if the TodoSection is not found
      * @see TodoSection
      */
-    TodoSection findSectionById(Long userId, Long sectionId);
+    TodoSection findSectionById(Long sectionId);
 
     /**
      * Finds specific fields of the TodoSection by user id:
      * id, title, createdAt, updatedAt.
      *
-     * @param userId the user id
      * @return the TodoSectionProjection list
      * @see TodoSectionProjection
      * @see TodoSection
      */
-    List<TodoSectionProjection> findSections(Long userId);
+    List<TodoSectionProjection> findSections();
 
     /**
      * Deletes the TodoSection by id. Checks if the Principal
      * equals to User of the TodoSection or Principal has an Admin role,
      * then deletes the TodoSection or throws an exception.
      *
-     * @param principal the User
      * @param sectionId the TodoSection id
      * @throws ru.example.todo.exception.CustomException if the TodoSection by id is not found
      *                                                   or if the Principal is not equal to the User
@@ -50,18 +47,17 @@ public interface TodoSectionService {
      *                                                   an Admin role
      * @see User
      */
-    void deleteSectionById(User principal, Long sectionId);
+    void deleteSectionById(Long sectionId);
 
     /**
      * Creates a new TodoSection.
      *
-     * @param user    the User
      * @param section the TodoSection
      * @return the created TodoSection
      * @see TodoSection
      * @see User
      */
-    TodoSection createSection(User user, TodoSection section);
+    TodoSection createSection(TodoSection section);
 
     /**
      * Updates the TodoSection by id.
@@ -76,7 +72,7 @@ public interface TodoSectionService {
      *                                                   an Admin role
      * @see TodoSection
      */
-    TodoSection updateSection(User principal, Long sectionId, TodoSection section);
+    TodoSection updateSection(Long sectionId, TodoSection section);
 
     /**
      * Add tasks or removes them from the TodoSection object.

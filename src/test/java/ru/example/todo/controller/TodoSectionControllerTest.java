@@ -12,18 +12,31 @@ import org.springframework.security.test.context.support.WithUserDetails;
 import ru.example.todo.domain.TodoSectionProjection;
 import ru.example.todo.dto.TodoSectionDto;
 import ru.example.todo.entity.TodoSection;
-import ru.example.todo.entity.User;
 import ru.example.todo.exception.CustomException;
 import ru.example.todo.facade.TasksFacade;
 import ru.example.todo.service.TodoSectionService;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.WeakHashMap;
 
 import static org.hamcrest.Matchers.containsStringIgnoringCase;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyLong;
+import static org.mockito.Mockito.anySet;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -44,7 +57,7 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
         TodoSectionProjection section1 = new TodoSectionProjection(1L, "section1", new Date(), new Date());
         TodoSectionProjection section2 = new TodoSectionProjection(2L, "section2", new Date(), new Date());
 
-        given(sectionService.findSections(anyLong()))
+        given(sectionService.findSections())
                 .willReturn(List.of(section1, section2));
 
         mvc.perform(get(API_SECTIONS)
@@ -54,14 +67,14 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
                 .andExpect(jsonPath("_embedded.sections[1].title", is("section2")))
                 .andDo(print());
 
-        verify(sectionService, times(1)).findSections(anyLong());
+        verify(sectionService, times(1)).findSections();
     }
 
     @Ignore
     @Test
     @WithUserDetails(ADMIN)
     public void getSections_ShouldReturnEmptyList() throws Exception {
-        given(sectionService.findSections(anyLong()))
+        given(sectionService.findSections())
                 .willReturn(Collections.emptyList());
 
         mvc.perform(get(API_SECTIONS)
@@ -70,14 +83,14 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
                 .andExpect(jsonPath("_embedded.sections.isEmpty()", is(true)))
                 .andDo(print());
 
-        verify(sectionService, times(1)).findSections(anyLong());
+        verify(sectionService, times(1)).findSections();
     }
 
     // get section by ID
     @Test
     @WithUserDetails(ADMIN)
     public void getSection_ShouldReturnSectionById() throws Exception {
-        given(sectionService.findSectionById(anyLong(), anyLong()))
+        given(sectionService.findSectionById(1L))
                 .willReturn(new TodoSection("Important"));
 
         mvc.perform(get(API_SECTIONS + 1))
@@ -85,14 +98,14 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
                 .andExpect(jsonPath("title", is("Important")))
                 .andDo(print());
 
-        verify(sectionService, times(1)).findSectionById(anyLong(), anyLong());
+        verify(sectionService, times(1)).findSectionById(1L);
     }
 
     // get section by non-existent id: returns 404 NOT FOUND
     @Test
     @WithUserDetails(USER)
     public void getSection_ShouldReturnBadRequest() throws Exception {
-        given(sectionService.findSectionById(anyLong(), anyLong()))
+        given(sectionService.findSectionById(1L))
                 .willThrow(CustomException.notFound("Section not found: " + 1));
 
         mvc.perform(get(API_SECTIONS + 1)
@@ -102,14 +115,14 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("message", containsStringIgnoringCase("section not found")));
 
-        verify(sectionService, times(1)).findSectionById(anyLong(), anyLong());
+        verify(sectionService, times(1)).findSectionById(1L);
     }
 
     // delete section
     @Test
     @WithUserDetails(ADMIN)
     public void deleteSection_ShouldDeleteSectionById() throws Exception {
-        doNothing().when(sectionService).deleteSectionById(any(User.class), anyLong());
+        doNothing().when(sectionService).deleteSectionById(anyLong());
 
         // delete by id: returns 204 NO CONTENT
         mvc.perform(delete(API_SECTIONS + 1)
@@ -117,7 +130,7 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
                 .andExpect(status().isNoContent())
                 .andDo(print());
 
-        verify(sectionService, times(1)).deleteSectionById(any(User.class), anyLong());
+        verify(sectionService, times(1)).deleteSectionById(anyLong());
     }
 
     // delete section by non-existent id: returns 204 NO CONTENT
@@ -125,7 +138,7 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
     @WithUserDetails(USER)
     public void deleteSection_ShouldReturnNotFound() throws Exception {
         doThrow(CustomException.notFound("Section not found"))
-                .when(sectionService).deleteSectionById(any(User.class), anyLong());
+                .when(sectionService).deleteSectionById(anyLong());
 
         mvc.perform(delete(API_SECTIONS + 1)
                 .contentType(MediaType.APPLICATION_JSON))
@@ -133,14 +146,14 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
                 .andExpect(jsonPath("error", containsStringIgnoringCase("not found")))
                 .andDo(print());
 
-        verify(sectionService, times(1)).deleteSectionById(any(User.class), anyLong());
+        verify(sectionService, times(1)).deleteSectionById(anyLong());
     }
 
     @Test
     @WithUserDetails(USER)
     public void deleteSection_ShouldReturnForbidden() throws Exception {
         doThrow(CustomException.forbidden("Not enough permissions"))
-                .when(sectionService).deleteSectionById(any(User.class), anyLong());
+                .when(sectionService).deleteSectionById(anyLong());
 
         mvc.perform(delete(API_SECTIONS + 1)
                 .contentType(MediaType.APPLICATION_JSON))
@@ -148,14 +161,14 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
                 .andExpect(jsonPath("error", containsStringIgnoringCase("Forbidden")))
                 .andDo(print());
 
-        verify(sectionService, times(1)).deleteSectionById(any(User.class), anyLong());
+        verify(sectionService, times(1)).deleteSectionById(anyLong());
     }
 
     // create new section
     @Test
     @WithUserDetails(ADMIN)
     public void createSection_ShouldReturnStatusCreated() throws Exception {
-        given(sectionService.createSection(any(User.class), any(TodoSection.class)))
+        given(sectionService.createSection(any(TodoSection.class)))
                 .willReturn(new TodoSection(1L, "title"));
 
         mvc.perform(post(API_SECTIONS)
@@ -164,7 +177,7 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
                 .andExpect(status().isCreated())
                 .andDo(print());
 
-        verify(sectionService, times(1)).createSection(any(User.class), any(TodoSection.class));
+        verify(sectionService, times(1)).createSection(any(TodoSection.class));
     }
 
     @Test
@@ -175,7 +188,7 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
                 .andExpect(status().isBadRequest())
                 .andDo(print());
 
-        verify(sectionService, times(0)).createSection(any(User.class), any(TodoSection.class));
+        verify(sectionService, times(0)).createSection(any(TodoSection.class));
     }
 
     // update section
@@ -186,7 +199,7 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
         given(section.getId()).willReturn(1L);
         given(section.getTitle()).willReturn("Title");
 
-        given(sectionService.updateSection(any(User.class), anyLong(), any(TodoSection.class)))
+        given(sectionService.updateSection(anyLong(), any(TodoSection.class)))
                 .willReturn(section);
 
         // update section by id: returns 200 OK
@@ -197,7 +210,7 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
                 .andDo(print());
 
         verify(sectionService, times(1))
-                .updateSection(any(User.class), anyLong(), any(TodoSection.class));
+                .updateSection(anyLong(), any(TodoSection.class));
     }
 
     @Test
@@ -205,7 +218,7 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
     public void updateSection_ShouldReturnNotFound() throws Exception {
         doThrow(CustomException.notFound("Section Not Found"))
                 .when(sectionService)
-                .updateSection(any(User.class), anyLong(), any(TodoSection.class));
+                .updateSection(anyLong(), any(TodoSection.class));
 
         mvc.perform(put(API_SECTIONS + 1)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -215,7 +228,7 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
                 .andDo(print());
 
         verify(sectionService, times(1))
-                .updateSection(any(User.class), anyLong(), any(TodoSection.class));
+                .updateSection(anyLong(), any(TodoSection.class));
     }
 
     @Test
@@ -223,7 +236,7 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
     public void updateSection_ShouldReturnForbidden() throws Exception {
         doThrow(CustomException.forbidden("Not enough permissions"))
                 .when(sectionService)
-                .updateSection(any(User.class), anyLong(), any(TodoSection.class));
+                .updateSection(anyLong(), any(TodoSection.class));
 
         mvc.perform(put(API_SECTIONS + 1)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -233,7 +246,7 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
                 .andDo(print());
 
         verify(sectionService, times(1))
-                .updateSection(any(User.class), anyLong(), any(TodoSection.class));
+                .updateSection(anyLong(), any(TodoSection.class));
     }
 
     @Test
@@ -245,14 +258,14 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
                 .andDo(print());
 
         verify(sectionService, times(0))
-                .updateSection(any(User.class), anyLong(), any(TodoSection.class));
+                .updateSection(anyLong(), any(TodoSection.class));
     }
 
     @Test
     @WithUserDetails(USER)
     public void addOrRemoveTasks_ShouldReturnOk() throws Exception {
         doNothing().when(tasksFacade)
-                .addTasksToOrRemoveFromSection(anyLong(), anyLong(), anySet(), any());
+                .addTasksToOrRemoveFromSection(anyLong(), anySet(), any());
 
         Map<String, Integer[]> body = new WeakHashMap<>();
         body.put("tasks", new Integer[]{1, 2});
@@ -265,14 +278,14 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
                 .andDo(print());
 
         verify(tasksFacade, times(1))
-                .addTasksToOrRemoveFromSection(anyLong(), anyLong(), anySet(), any());
+                .addTasksToOrRemoveFromSection(anyLong(), anySet(), any());
     }
 
     @Test
     @WithUserDetails(USER)
     public void addOrRemoveTasks_EmptyBody_ShouldReturnBadRequest() throws Exception {
         doNothing().when(tasksFacade)
-                .addTasksToOrRemoveFromSection(anyLong(), anyLong(), anySet(), any());
+                .addTasksToOrRemoveFromSection(anyLong(), anySet(), any());
 
         mvc.perform(post(API_SECTIONS + "1/tasks")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -281,14 +294,14 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
                 .andDo(print());
 
         verify(tasksFacade, times(0))
-                .addTasksToOrRemoveFromSection(anyLong(), anyLong(), anySet(), any());
+                .addTasksToOrRemoveFromSection(anyLong(), anySet(), any());
     }
 
     @Test
     @WithUserDetails(USER)
     public void addOrRemoveTasks_NoParam_ShouldReturnBadRequest() throws Exception {
         doNothing().when(tasksFacade)
-                .addTasksToOrRemoveFromSection(anyLong(), anyLong(), anySet(), any());
+                .addTasksToOrRemoveFromSection(anyLong(), anySet(), any());
 
         Map<String, Integer[]> body = new WeakHashMap<>();
         body.put("tasks", new Integer[]{1, 2});
@@ -300,7 +313,7 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
                 .andDo(print());
 
         verify(tasksFacade, times(0))
-                .addTasksToOrRemoveFromSection(anyLong(), anyLong(), anySet(), any());
+                .addTasksToOrRemoveFromSection(anyLong(), anySet(), any());
     }
 
 }

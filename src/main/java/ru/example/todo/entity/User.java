@@ -9,9 +9,27 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.annotations.CreationTimestamp;
 import ru.example.todo.enums.Role;
 
-import javax.persistence.*;
-import javax.validation.constraints.*;
-import java.util.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "app_user")
@@ -22,7 +40,6 @@ public class User {
     private Long id;
 
     @NotBlank
-    @NotEmpty
     @Pattern(regexp = "^[a-z_-]{2,}[0-9a-z_-]*@[a-z]{2,5}\\.(ru|com)",
             flags = Pattern.Flag.CASE_INSENSITIVE, message = "Not a valid email address")
     @Size(min = 4, max = 127, message = "Email is required: minimum 4 characters")
@@ -30,9 +47,7 @@ public class User {
     private String username;
 
     // todo set min=8
-    @NotNull
     @NotBlank
-    @NotEmpty
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Size(min = 4, message = "Password is required")
     private String password;
@@ -66,20 +81,8 @@ public class User {
         this.password = password;
     }
 
-
-    /**
-     * This is <b>a special constructor</b> that used
-     * to create an instance of the User classs as a Principal.
-     *
-     * <b>The Principal only has an id and roles, the other
-     * fields are null</b>.
-     *
-     * @param id    the user id
-     * @param roles the user roles
-     */
-    public User(Long id, Set<Role> roles) {
+    public void setId(Long id) {
         this.id = id;
-        this.roles = roles;
     }
 
     public Long getId() {
@@ -87,7 +90,7 @@ public class User {
     }
 
     public String getUsername() {
-        return username;
+        return username == null ? "" : username;
     }
 
     public void setUsername(String username) {
@@ -95,7 +98,7 @@ public class User {
     }
 
     public String getPassword() {
-        return password;
+        return password == null ? "" : password;
     }
 
     public void setPassword(String password) {
@@ -103,7 +106,7 @@ public class User {
     }
 
     public Date getCreatedAt() {
-        return createdAt;
+        return createdAt == null ? new Date() : createdAt;
     }
 
     public void setCreatedAt(Date createdAt) {
@@ -111,7 +114,7 @@ public class User {
     }
 
     public Set<Role> getRoles() {
-        return roles;
+        return roles == null ? Collections.emptySet() : roles;
     }
 
     public void setRoles(Set<Role> roles) {
@@ -129,15 +132,12 @@ public class User {
 
         User user = (User) o;
 
-        if (!Objects.equals(id, user.id)) return false;
-        return Objects.equals(roles, user.roles);
+        return Objects.equals(id, user.id);
     }
 
     @Override
     public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (roles != null ? roles.hashCode() : 0);
-        return result;
+        return id != null ? id.hashCode() : 0;
     }
 
     @Override

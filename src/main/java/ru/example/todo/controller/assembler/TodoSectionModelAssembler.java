@@ -19,7 +19,7 @@ public class TodoSectionModelAssembler implements RepresentationModelAssembler<T
     @Override
     public EntityModel<TodoSection> toModel(TodoSection section) {
         return EntityModel.of(section,
-                linkTo(methodOn(TodoSectionController.class).getSection(null, section.getId())).withSelfRel(),
-                linkTo(methodOn(TodoSectionController.class).getSections(null)).withRel("sections"));
+                linkTo(methodOn(TodoSectionController.class).getSection(section.getId())).withSelfRel(),
+                linkTo(methodOn(TodoSectionController.class).getSections()).withRel("sections"));
     }
 }

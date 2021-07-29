@@ -10,9 +10,9 @@ import org.springframework.stereotype.Service;
 import ru.example.todo.domain.TodoSectionProjection;
 import ru.example.todo.entity.TodoSection;
 import ru.example.todo.entity.TodoTask;
-import ru.example.todo.entity.User;
 import ru.example.todo.enums.filters.FilterByOperation;
 import ru.example.todo.exception.CustomException;
+import ru.example.todo.facade.AuthUserFacade;
 import ru.example.todo.repository.TodoSectionRepository;
 import ru.example.todo.service.TodoSectionService;
 
@@ -20,6 +20,7 @@ import java.util.List;
 
 import static ru.example.todo.enums.filters.FilterByOperation.MOVE;
 import static ru.example.todo.enums.filters.FilterByOperation.REMOVE;
+import static ru.example.todo.service.impl.util.ServiceUtil.validateUser;
 
 @Service
 public class TodoSectionServiceImpl implements TodoSectionService {
@@ -27,48 +28,59 @@ public class TodoSectionServiceImpl implements TodoSectionService {
     private static final Logger log = LoggerFactory.getLogger(TodoSectionServiceImpl.class.getName());
 
     private final TodoSectionRepository todoSectionRepository;
+    private final AuthUserFacade authUserFacade;
 
-    public TodoSectionServiceImpl(TodoSectionRepository todoSectionRepository) {
+    public TodoSectionServiceImpl(TodoSectionRepository todoSectionRepository, AuthUserFacade authUserFacade) {
         this.todoSectionRepository = todoSectionRepository;
+        this.authUserFacade = authUserFacade;
     }
 
     // get section by id
     @Override
-    public TodoSection findSectionById(Long userId, Long sectionId) {
+    public TodoSection findSectionById(Long sectionId) {
         log.info("Get the section by id: {}", sectionId);
-        return todoSectionRepository.findByUserIdAndId(userId, sectionId)
+        return todoSectionRepository.findByUserIdAndId(authUserFacade.getUserId(), sectionId)
                 .orElseThrow(() -> CustomException.notFound("Section not found: " + sectionId));
     }
 
     // get all sections
     @Override
-    public List<TodoSectionProjection> findSections(Long userId) {
+    public List<TodoSectionProjection> findSections() {
+        Long userId = authUserFacade.getUserId();
         List<TodoSectionProjection> sections = todoSectionRepository.findAllByUserIdProjection(userId);
         log.info("Get all sections: {}", sections.size());
         return sections;
     }
 
     // delete section by id
+    // todo: fix section deleting
     @Override
-    public void deleteSectionById(User principal, Long sectionId) {
+    public void deleteSectionById(Long sectionId) {
+        TodoSection section = todoSectionRepository.findById(sectionId)
+                .orElseThrow(() -> CustomException.notFound("Section not found"));
+        validateUser(authUserFacade.getLoggedUser(), section.getUser());
         todoSectionRepository.deleteById(sectionId);
     }
 
 
     // create new section
     @Override
-    public TodoSection createSection(User user, TodoSection section) {
-        section.setUser(user);
+    public TodoSection createSection(TodoSection section) {
+        section.setUser(authUserFacade.getLoggedUser());
         log.info("Create a new section");
         return todoSectionRepository.save(section);
     }
 
     // update section title
     @Override
-    public TodoSection updateSection(User principal, Long sectionId, TodoSection section) {
-        section.setId(sectionId);
-        section.setUser(principal);
-        return todoSectionRepository.save(section);
+    public TodoSection updateSection(Long sectionId, TodoSection sectionRequest) {
+        TodoSection section = todoSectionRepository.findById(sectionId)
+                .orElseThrow(() -> CustomException.notFound("Section not found: id=" + sectionId));
+        validateUser(authUserFacade.getLoggedUser(), section.getUser());
+
+        sectionRequest.setId(sectionId);
+        sectionRequest.setUser(authUserFacade.getLoggedUser());
+        return todoSectionRepository.save(sectionRequest);
     }
 
     // add to or remove from the task section

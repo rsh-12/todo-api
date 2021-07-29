@@ -27,7 +27,7 @@ public interface RefreshTokenService {
      * @return the refresh token
      * @see RefreshToken
      */
-    RefreshToken save(RefreshToken refreshToken);
+    RefreshToken saveRefreshToken(RefreshToken refreshToken);
 
     /**
      * Finds a refresh token by value in the database.

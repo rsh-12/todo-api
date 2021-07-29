@@ -5,12 +5,10 @@ package ru.example.todo.dto;
  * */
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
 public class TodoSectionDto {
 
-    @NotEmpty
     @NotBlank
     @Size(min = 3, max = 50, message = "Size must be between 3 and 50")
     private String title;
