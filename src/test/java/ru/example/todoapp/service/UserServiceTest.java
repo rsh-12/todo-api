@@ -16,6 +16,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import ru.example.todoapp.config.properties.TokenProperties;
+import ru.example.todoapp.controller.request.CredentialsRequest;
 import ru.example.todoapp.entity.User;
 import ru.example.todoapp.exception.CustomException;
 import ru.example.todoapp.repository.UserRepository;
@@ -25,8 +26,15 @@ import ru.example.todoapp.service.impl.UserServiceImpl;
 import java.util.Map;
 import java.util.Optional;
 
-import static org.junit.Assert.*;
-import static org.mockito.ArgumentMatchers.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anySet;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
@@ -73,7 +81,8 @@ public class UserServiceTest {
         given(jwtTokenService.buildAccessToken(anyLong(), anySet())).willReturn("accessToken");
         given(refreshTokenService.createRefreshToken(anyLong(), anyString())).willReturn("refreshToken");
 
-        Map<String, String> response = userService.login(new User(), "");
+        Map<String, String> response = userService
+                .login(new CredentialsRequest("username", "password"), "");
 
         assertEquals("accessToken", response.get("access_token"));
         assertEquals("refreshToken", response.get("refresh_token"));
@@ -86,7 +95,7 @@ public class UserServiceTest {
     public void login_ShouldThrowCustomException() {
         given(authManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
                 .willThrow(UsernameNotFoundException.class);
-        assertThrows(CustomException.class, () -> userService.login(new User(), ""));
+        assertThrows(CustomException.class, () -> userService.login(new CredentialsRequest("username", "password"), ""));
     }
 
     // register
