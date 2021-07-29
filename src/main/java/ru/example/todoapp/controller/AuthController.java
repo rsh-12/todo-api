@@ -8,7 +8,12 @@ import com.fasterxml.jackson.databind.JsonNode;
 import io.swagger.annotations.Api;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import ru.example.todoapp.controller.request.CredentialsRequest;
 import ru.example.todoapp.dto.UserDto;
 import ru.example.todoapp.entity.User;
 import ru.example.todoapp.facade.PasswordFacade;
@@ -40,9 +45,9 @@ public class AuthController {
     }
 
     @PostMapping(value = "/login", produces = "application/json")
-    public ResponseEntity<Map<String, String>> login(@Valid @RequestBody UserDto userDto, HttpServletRequest request) {
-        User user = modelMapper.map(userDto, User.class);
-        Map<String, String> tokens = userService.login(user, getClientIp(request));
+    public ResponseEntity<Map<String, String>> login(@Valid @RequestBody CredentialsRequest credentials,
+                                                     HttpServletRequest request) {
+        Map<String, String> tokens = userService.login(credentials, getClientIp(request));
         return ResponseEntity.ok(tokens);
     }
 
