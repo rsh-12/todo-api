@@ -116,7 +116,7 @@ public class AuthControllerTest extends AbstractControllerTestClass {
         given(user.getUsername()).willReturn("username@mail.com");
         given(user.getPassword()).willReturn("password");
 
-        doNothing().when(userService).register(any(User.class));
+        doNothing().when(userService).register(any(CredentialsRequest.class));
 
         mvc.perform(post(API_AUTH + "register")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -124,7 +124,7 @@ public class AuthControllerTest extends AbstractControllerTestClass {
                 .andDo(print())
                 .andExpect(status().isOk());
 
-        verify(userService, times(1)).register(any(User.class));
+        verify(userService, times(1)).register(any(CredentialsRequest.class));
     }
 
     // Register: fail

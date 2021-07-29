@@ -102,7 +102,7 @@ public class UserServiceTest {
     @Test
     public void register_ShouldThrowException() {
         given(userRepository.existsByUsername(anyString())).willReturn(true);
-        assertThrows(CustomException.class, () -> userService.register(new User("user", "pwd")));
+        assertThrows(CustomException.class, () -> userService.register(new CredentialsRequest("user", "pwd")));
     }
 
     @Test
@@ -110,7 +110,7 @@ public class UserServiceTest {
         given(userRepository.existsByUsername(anyString())).willReturn(false);
         given(userRepository.save(any(User.class))).willReturn(new User());
         given(passwordEncoder.encode(anyString())).willReturn("$ecryptedString");
-        userService.register(new User("user", "pwd"));
+        userService.register(new CredentialsRequest("user", "pwd"));
     }
 
     // generateNewTokens
