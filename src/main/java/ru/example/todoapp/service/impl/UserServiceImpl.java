@@ -12,6 +12,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.example.todoapp.config.properties.TokenProperties;
+import ru.example.todoapp.controller.request.CredentialsRequest;
 import ru.example.todoapp.entity.RefreshToken;
 import ru.example.todoapp.entity.User;
 import ru.example.todoapp.exception.CustomException;
@@ -48,10 +49,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Map<String, String> login(User user, String ip) {
+    public Map<String, String> login(CredentialsRequest credentials, String ip) {
         try {
-            Authentication auth = authManager
-                    .authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
+            Authentication auth = authManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(credentials.username(), credentials.password()));
             User userFromDb = ((UserDetailsImpl) auth.getPrincipal()).getUser();
             return buildResponseBody(userFromDb, ip);
         } catch (AuthenticationException ex) {

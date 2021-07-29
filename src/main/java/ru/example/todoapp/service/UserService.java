@@ -1,8 +1,10 @@
 package ru.example.todoapp.service;
 
+import ru.example.todoapp.controller.request.CredentialsRequest;
 import ru.example.todoapp.entity.User;
 import ru.example.todoapp.exception.CustomException;
 
+import javax.validation.Valid;
 import java.util.Map;
 
 /**
@@ -14,12 +16,12 @@ public interface UserService {
     /**
      * Authenticates the user and returns access and refresh tokens.
      *
-     * @param user contains username (email) and password
+     * @param credentials contains username (email) and password
      * @param ip   the ip
      * @return access, refresh tokens, token type and expiration time in milliseconds
      * @throws CustomException if the user by username not found in the database
      */
-    Map<String, String> login(User user, String ip);
+    Map<String, String> login(CredentialsRequest credentials, String ip);
 
     /**
      * Saves the user's name and password to the database, if the name is available,
