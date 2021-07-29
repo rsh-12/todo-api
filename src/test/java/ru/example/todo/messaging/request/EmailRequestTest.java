@@ -1,4 +1,4 @@
-package ru.example.todo.messaging.requests;
+package ru.example.todo.messaging.request;
 /*
  * Date: 6/5/21
  * Time: 8:09 AM
@@ -6,7 +6,6 @@ package ru.example.todo.messaging.requests;
 
 import org.junit.Before;
 import org.junit.Test;
-import ru.example.todo.messaging.requests.EmailRequest;
 
 import static org.junit.Assert.assertEquals;
 

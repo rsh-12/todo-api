@@ -1,6 +1,6 @@
 package ru.example.todo.facade;
 
-import ru.example.todo.messaging.requests.TokenRequest;
+import ru.example.todo.messaging.request.TokenRequest;
 
 public interface PasswordFacade {
 

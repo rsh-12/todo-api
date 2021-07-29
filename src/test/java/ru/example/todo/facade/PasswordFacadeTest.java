@@ -12,7 +12,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import ru.example.todo.exception.CustomException;
 import ru.example.todo.facade.impl.PasswordFacadeImpl;
 import ru.example.todo.messaging.MessagingClient;
-import ru.example.todo.messaging.requests.TokenRequest;
+import ru.example.todo.messaging.request.TokenRequest;
 import ru.example.todo.service.UserService;
 
 import static org.junit.Assert.assertThrows;

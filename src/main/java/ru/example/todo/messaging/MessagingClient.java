@@ -1,7 +1,7 @@
 package ru.example.todo.messaging;
 
-import ru.example.todo.messaging.requests.EmailRequest;
-import ru.example.todo.messaging.requests.TokenRequest;
+import ru.example.todo.messaging.request.EmailRequest;
+import ru.example.todo.messaging.request.TokenRequest;
 
 public interface MessagingClient {
 

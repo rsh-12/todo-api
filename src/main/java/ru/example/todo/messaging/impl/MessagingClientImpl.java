@@ -11,8 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.example.todo.exception.CustomException;
 import ru.example.todo.messaging.MessagingClient;
-import ru.example.todo.messaging.requests.EmailRequest;
-import ru.example.todo.messaging.requests.TokenRequest;
+import ru.example.todo.messaging.request.EmailRequest;
+import ru.example.todo.messaging.request.TokenRequest;
 import ru.example.todo.service.UserService;
 
 @Service
