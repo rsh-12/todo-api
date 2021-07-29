@@ -4,7 +4,6 @@ import ru.example.todoapp.controller.request.CredentialsRequest;
 import ru.example.todoapp.entity.User;
 import ru.example.todoapp.exception.CustomException;
 
-import javax.validation.Valid;
 import java.util.Map;
 
 /**
@@ -27,10 +26,10 @@ public interface UserService {
      * Saves the user's name and password to the database, if the name is available,
      * otherwise throws the CustomException.
      *
-     * @param user containes useraname (email) and password
+     * @param credentials containes useraname (email) and password
      * @throws CustomException if the username already in use
      */
-    void register(User user);
+    void register(CredentialsRequest credentials);
 
     /**
      * Generates new access and refresh tokens if the old refresh token is valid.
