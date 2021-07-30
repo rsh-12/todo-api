@@ -64,7 +64,7 @@ public interface TodoSectionService {
      * Updates the TodoSection by id.
      *
      * @param sectionId the TodoSection id
-     * @param section   the TodoSection
+     * @param sectionRequest   the TodoSection
      * @return the updated TodoSeciton
      * @throws ru.example.todoapp.exception.CustomException if the TodoSection by id is not found
      *                                                   or if the Principal is not equal to the User
@@ -72,7 +72,7 @@ public interface TodoSectionService {
      *                                                   an Admin role
      * @see TodoSection
      */
-    TodoSection updateSection(Long sectionId, TodoSection section);
+    TodoSection updateSection(Long sectionId, TodoSectionRequest sectionRequest);
 
     /**
      * Add tasks or removes them from the TodoSection object.

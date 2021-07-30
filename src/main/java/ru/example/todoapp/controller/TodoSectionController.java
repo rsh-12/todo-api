@@ -106,10 +106,8 @@ public class TodoSectionController {
     @ApiOperation(value = "Update section", notes = "It permits to update a section")
     @PutMapping(value = "/{id}", consumes = "application/json")
     public ResponseEntity<String> updateSection(@PathVariable("id") Long sectionId,
-                                                @Valid @RequestBody TodoSectionDto sectionDto) {
-
-        TodoSection mappedSection = modelMapper.map(sectionDto, TodoSection.class);
-        TodoSection section = todoSectionService.updateSection(sectionId, mappedSection);
+                                                @Valid @RequestBody TodoSectionRequest sectionRequest) {
+        TodoSection section = todoSectionService.updateSection(sectionId, sectionRequest);
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                 .buildAndExpand(section.getId()).toUri();
 

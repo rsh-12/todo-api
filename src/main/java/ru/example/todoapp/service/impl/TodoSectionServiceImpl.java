@@ -75,14 +75,14 @@ public class TodoSectionServiceImpl implements TodoSectionService {
 
     // update section title
     @Override
-    public TodoSection updateSection(Long sectionId, TodoSection sectionRequest) {
+    public TodoSection updateSection(Long sectionId, TodoSectionRequest sectionRequest) {
         TodoSection section = todoSectionRepository.findById(sectionId)
                 .orElseThrow(() -> CustomException.notFound("Section not found: id=" + sectionId));
         validateUser(authUserFacade.getLoggedUser(), section.getUser());
 
-        sectionRequest.setId(sectionId);
-        sectionRequest.setUser(authUserFacade.getLoggedUser());
-        return todoSectionRepository.save(sectionRequest);
+        section.setTitle(section.getTitle());
+        section.setUser(authUserFacade.getLoggedUser());
+        return todoSectionRepository.save(section);
     }
 
     // add to or remove from the task section
