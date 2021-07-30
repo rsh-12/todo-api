@@ -7,6 +7,7 @@ package ru.example.todoapp.service.impl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import ru.example.todoapp.controller.request.TodoSectionRequest;
 import ru.example.todoapp.domain.TodoSectionProjection;
 import ru.example.todoapp.entity.TodoSection;
 import ru.example.todoapp.entity.TodoTask;
@@ -65,7 +66,8 @@ public class TodoSectionServiceImpl implements TodoSectionService {
 
     // create new section
     @Override
-    public TodoSection createSection(TodoSection section) {
+    public TodoSection createSection(TodoSectionRequest sectionRequest) {
+        TodoSection section = new TodoSection(sectionRequest.title());
         section.setUser(authUserFacade.getLoggedUser());
         log.info("Create a new section");
         return todoSectionRepository.save(section);

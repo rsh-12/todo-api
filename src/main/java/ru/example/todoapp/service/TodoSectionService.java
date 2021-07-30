@@ -1,5 +1,6 @@
 package ru.example.todoapp.service;
 
+import ru.example.todoapp.controller.request.TodoSectionRequest;
 import ru.example.todoapp.domain.TodoSectionProjection;
 import ru.example.todoapp.entity.TodoSection;
 import ru.example.todoapp.entity.TodoTask;
@@ -52,12 +53,12 @@ public interface TodoSectionService {
     /**
      * Creates a new TodoSection.
      *
-     * @param section the TodoSection
+     * @param sectionRequest the TodoSection
      * @return the created TodoSection
      * @see TodoSection
      * @see User
      */
-    TodoSection createSection(TodoSection section);
+    TodoSection createSection(TodoSectionRequest sectionRequest);
 
     /**
      * Updates the TodoSection by id.
