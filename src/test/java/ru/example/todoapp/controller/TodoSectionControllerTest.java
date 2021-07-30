@@ -9,6 +9,7 @@ import org.junit.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithUserDetails;
+import ru.example.todoapp.controller.request.TodoSectionRequest;
 import ru.example.todoapp.domain.TodoSectionProjection;
 import ru.example.todoapp.dto.TodoSectionDto;
 import ru.example.todoapp.entity.TodoSection;
@@ -168,7 +169,7 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
     @Test
     @WithUserDetails(ADMIN)
     public void createSection_ShouldReturnStatusCreated() throws Exception {
-        given(sectionService.createSection(any(TodoSection.class)))
+        given(sectionService.createSection(any(TodoSectionRequest.class)))
                 .willReturn(new TodoSection(1L, "title"));
 
         mvc.perform(post(API_SECTIONS)
@@ -177,7 +178,7 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
                 .andExpect(status().isCreated())
                 .andDo(print());
 
-        verify(sectionService, times(1)).createSection(any(TodoSection.class));
+        verify(sectionService, times(1)).createSection(any(TodoSectionRequest.class));
     }
 
     @Test
@@ -188,7 +189,7 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
                 .andExpect(status().isBadRequest())
                 .andDo(print());
 
-        verify(sectionService, times(0)).createSection(any(TodoSection.class));
+        verify(sectionService, times(0)).createSection(any(TodoSectionRequest.class));
     }
 
     // update section
