@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.example.todoapp.controller.assembler.TodoSectionModelAssembler;
+import ru.example.todoapp.controller.request.TodoSectionRequest;
 import ru.example.todoapp.controller.wrapper.TaskIdsWrapper;
 import ru.example.todoapp.dto.TodoSectionDto;
 import ru.example.todoapp.entity.TodoSection;
@@ -92,8 +93,8 @@ public class TodoSectionController {
     // create new section
     @ApiOperation(value = "Create section", notes = "It permits to create a new section")
     @PostMapping(consumes = "application/json")
-    public ResponseEntity<String> createSection(@Valid @RequestBody TodoSectionDto sectionDto) {
-        TodoSection section = todoSectionService.createSection(modelMapper.map(sectionDto, TodoSection.class));
+    public ResponseEntity<String> createSection(@Valid @RequestBody TodoSectionRequest sectionRequest) {
+        TodoSection section = todoSectionService.createSection(sectionRequest);
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}").buildAndExpand(section.getId()).toUri();
