@@ -55,7 +55,9 @@ public class CustomPrincipal {
 
     @Override
     public String toString() {
-        return "UserPrincipal{id=" + id + ", roles=" + roles + '}';
+        return "CustomPrincipal{" +
+                "id=" + id +
+                ", roles=" + roles +
+                '}';
     }
-
 }
