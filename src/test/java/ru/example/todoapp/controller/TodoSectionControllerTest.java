@@ -200,7 +200,7 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
         given(section.getId()).willReturn(1L);
         given(section.getTitle()).willReturn("Title");
 
-        given(sectionService.updateSection(anyLong(), any(TodoSection.class)))
+        given(sectionService.updateSection(anyLong(), any(TodoSectionRequest.class)))
                 .willReturn(section);
 
         // update section by id: returns 200 OK
@@ -211,7 +211,7 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
                 .andDo(print());
 
         verify(sectionService, times(1))
-                .updateSection(anyLong(), any(TodoSection.class));
+                .updateSection(anyLong(), any(TodoSectionRequest.class));
     }
 
     @Test
@@ -219,7 +219,7 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
     public void updateSection_ShouldReturnNotFound() throws Exception {
         doThrow(CustomException.notFound("Section Not Found"))
                 .when(sectionService)
-                .updateSection(anyLong(), any(TodoSection.class));
+                .updateSection(anyLong(), any(TodoSectionRequest.class));
 
         mvc.perform(put(API_SECTIONS + 1)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -229,7 +229,7 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
                 .andDo(print());
 
         verify(sectionService, times(1))
-                .updateSection(anyLong(), any(TodoSection.class));
+                .updateSection(anyLong(), any(TodoSectionRequest.class));
     }
 
     @Test
@@ -237,7 +237,7 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
     public void updateSection_ShouldReturnForbidden() throws Exception {
         doThrow(CustomException.forbidden("Not enough permissions"))
                 .when(sectionService)
-                .updateSection(anyLong(), any(TodoSection.class));
+                .updateSection(anyLong(), any(TodoSectionRequest.class));
 
         mvc.perform(put(API_SECTIONS + 1)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -247,7 +247,7 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
                 .andDo(print());
 
         verify(sectionService, times(1))
-                .updateSection(anyLong(), any(TodoSection.class));
+                .updateSection(anyLong(), any(TodoSectionRequest.class));
     }
 
     @Test
@@ -259,7 +259,7 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
                 .andDo(print());
 
         verify(sectionService, times(0))
-                .updateSection(anyLong(), any(TodoSection.class));
+                .updateSection(anyLong(), any(TodoSectionRequest.class));
     }
 
     @Test
