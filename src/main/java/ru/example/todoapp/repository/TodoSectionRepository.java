@@ -3,7 +3,7 @@ package ru.example.todoapp.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import ru.example.todoapp.domain.TodoSectionProjection;
+import ru.example.todoapp.repository.projection.TodoSectionProjection;
 import ru.example.todoapp.entity.TodoSection;
 
 import java.util.List;

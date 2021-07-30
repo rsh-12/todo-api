@@ -10,7 +10,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithUserDetails;
 import ru.example.todoapp.controller.request.TodoSectionRequest;
-import ru.example.todoapp.domain.TodoSectionProjection;
+import ru.example.todoapp.repository.projection.TodoSectionProjection;
 import ru.example.todoapp.dto.TodoSectionDto;
 import ru.example.todoapp.entity.TodoSection;
 import ru.example.todoapp.exception.CustomException;

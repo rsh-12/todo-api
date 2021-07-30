@@ -1,4 +1,4 @@
-package ru.example.todoapp.domain;
+package ru.example.todoapp.repository.projection;
 /*
  * Date: 6/19/21
  * Time: 2:10 PM

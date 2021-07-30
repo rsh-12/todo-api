@@ -8,7 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import ru.example.todoapp.controller.request.TodoSectionRequest;
-import ru.example.todoapp.domain.TodoSectionProjection;
+import ru.example.todoapp.repository.projection.TodoSectionProjection;
 import ru.example.todoapp.entity.TodoSection;
 import ru.example.todoapp.entity.TodoTask;
 import ru.example.todoapp.enums.filters.FilterByOperation;
