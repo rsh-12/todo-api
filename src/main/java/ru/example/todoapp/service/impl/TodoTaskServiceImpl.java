@@ -11,6 +11,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import ru.example.todoapp.controller.request.TodoTaskRequest;
 import ru.example.todoapp.entity.TodoTask;
 import ru.example.todoapp.enums.filters.FilterByDate;
 import ru.example.todoapp.exception.CustomException;
@@ -21,6 +22,7 @@ import ru.example.todoapp.service.impl.util.ServiceUtil;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import static ru.example.todoapp.enums.filters.FilterByDate.OVERDUE;
@@ -78,10 +80,18 @@ public class TodoTaskServiceImpl implements TodoTaskService {
 
     // create new task
     @Override
-    public TodoTask createTask(TodoTask task) {
+    public TodoTask createTask(TodoTaskRequest taskRequest) {
         log.info("Create a new task");
-        task.setUser(authUserFacade.getLoggedUser());
-        return todoTaskRepository.save(task);
+
+        final Boolean completed = Optional.ofNullable(taskRequest.completed()).orElse(false);
+        final Boolean starred = Optional.ofNullable(taskRequest.starred()).orElse(false);
+
+        TodoTask todoTask = new TodoTask(taskRequest.title(), taskRequest.completionDate());
+        todoTask.setCompleted(completed);
+        todoTask.setStarred(starred);
+        todoTask.setUser(authUserFacade.getLoggedUser());
+
+        return todoTaskRepository.save(todoTask);
     }
 
     @Override
@@ -92,8 +102,14 @@ public class TodoTaskServiceImpl implements TodoTaskService {
     }
 
     @Override
-    public void saveTodoTask(TodoTask task) {
-        todoTaskRepository.save(task);
+    public TodoTask saveTodoTask(Long taskId, TodoTaskRequest request) {
+        TodoTask task = findTaskById(taskId);
+        Optional.ofNullable(request.title()).ifPresent(task::setTitle);
+        Optional.ofNullable(request.completed()).ifPresentOrElse(task::setCompleted, () -> task.setCompleted(false));
+        Optional.ofNullable(request.completed()).ifPresentOrElse(task::setStarred, () -> task.setStarred(false));
+        task.setCompletionDate(request.completionDate());
+
+        return todoTaskRepository.save(task);
     }
 
 }

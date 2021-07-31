@@ -1,5 +1,6 @@
 package ru.example.todoapp.service;
 
+import ru.example.todoapp.controller.request.TodoTaskRequest;
 import ru.example.todoapp.entity.TodoTask;
 import ru.example.todoapp.entity.User;
 import ru.example.todoapp.enums.filters.FilterByDate;
@@ -44,7 +45,7 @@ public interface TodoTaskService {
      * Deletes the user's task by id
      * if the aspect class does not throw an exception.
      *
-     * @param taskId    the TodoTask id
+     * @param taskId the TodoTask id
      * @see User
      * @see TodoTask
      */
@@ -53,12 +54,12 @@ public interface TodoTaskService {
     /**
      * Creates a new TodoTask object with the user, saves to database.
      *
-     * @param task the TodoTask instance
+     * @param taskRequest the TodoTask instance
      * @return the created TodoTask
      * @see User
      * @see TodoTask
      */
-    TodoTask createTask(TodoTask task);
+    TodoTask createTask(TodoTaskRequest taskRequest);
 
     /**
      * Finds TodoTask objects by set of provided ids and user id.
@@ -78,6 +79,6 @@ public interface TodoTaskService {
      * @param task the TodoTask instance
      * @see TodoTask
      */
-    void saveTodoTask(TodoTask task);
+    TodoTask saveTodoTask(Long taskId, TodoTaskRequest taskRequest);
 
 }
