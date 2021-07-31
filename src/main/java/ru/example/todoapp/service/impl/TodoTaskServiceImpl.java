@@ -102,7 +102,7 @@ public class TodoTaskServiceImpl implements TodoTaskService {
     }
 
     @Override
-    public TodoTask saveTodoTask(Long taskId, TodoTaskRequest request) {
+    public TodoTask saveTask(Long taskId, TodoTaskRequest request) {
         TodoTask task = findTaskById(taskId);
         Optional.ofNullable(request.title()).ifPresent(task::setTitle);
         Optional.ofNullable(request.completed()).ifPresentOrElse(task::setCompleted, () -> task.setCompleted(false));

@@ -103,7 +103,7 @@ public class TodoTaskController {
     public ResponseEntity<String> updateTask(@PathVariable("id") Long taskId,
                                              @Valid @RequestBody TodoTaskRequest taskRequest) {
 
-        final TodoTask task = todoTaskService.saveTodoTask(taskId, taskRequest);
+        final TodoTask task = todoTaskService.saveTask(taskId, taskRequest);
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                 .buildAndExpand(task.getId()).toUri();
 

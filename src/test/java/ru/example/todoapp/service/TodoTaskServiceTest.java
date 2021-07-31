@@ -168,7 +168,7 @@ public class TodoTaskServiceTest {
     @Ignore
     @Test
     public void saveTodoTask_ShouldSaveTask() {
-        // todo fix saveTodoTask test method
+        // todo fix saveTask test method
     }
 
 }

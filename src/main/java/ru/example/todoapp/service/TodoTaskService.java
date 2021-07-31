@@ -76,9 +76,9 @@ public interface TodoTaskService {
     /**
      * Saves the TodoTask object to database.
      *
-     * @param task the TodoTask instance
+     * @param taskRequest the TodoTaskRequest instance
      * @see TodoTask
      */
-    TodoTask saveTodoTask(Long taskId, TodoTaskRequest taskRequest);
+    TodoTask saveTask(Long taskId, TodoTaskRequest taskRequest);
 
 }
