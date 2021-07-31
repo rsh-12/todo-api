@@ -14,6 +14,7 @@ public record CredentialsRequest(@NotBlank
                                          message = "Not a valid email address")
                                  @Size(min = 4, max = 127, message = "Email is required: minimum 4 characters")
                                  String username,
+
                                  @NotBlank
                                  @Size(min = 4, message = "Password is required")
                                  String password) {
