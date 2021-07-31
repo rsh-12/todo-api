@@ -8,6 +8,7 @@ import org.junit.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithUserDetails;
+import ru.example.todoapp.controller.request.TodoTaskRequest;
 import ru.example.todoapp.dto.TodoSectionDto;
 import ru.example.todoapp.dto.TodoTaskDto;
 import ru.example.todoapp.entity.TodoTask;
@@ -127,14 +128,14 @@ public class TodoTaskControllerTest extends AbstractControllerTestClass {
         TodoTask task = mock(TodoTask.class);
         given(task.getTitle()).willReturn("title");
 
-        given(taskService.createTask(any(TodoTask.class))).willReturn(task);
+        given(taskService.createTask(any(TodoTaskRequest.class))).willReturn(task);
 
         mvc.perform(post(API_TASKS)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(new TodoSectionDto("title"))))
                 .andExpect(status().isCreated());
 
-        verify(taskService, times(1)).createTask(any(TodoTask.class));
+        verify(taskService, times(1)).createTask(any(TodoTaskRequest.class));
     }
 
     @Test
@@ -144,7 +145,7 @@ public class TodoTaskControllerTest extends AbstractControllerTestClass {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
 
-        verify(taskService, times(0)).createTask(any(TodoTask.class));
+        verify(taskService, times(0)).createTask(any(TodoTaskRequest.class));
     }
 
     @Test
@@ -157,7 +158,7 @@ public class TodoTaskControllerTest extends AbstractControllerTestClass {
                 .andExpect(status().isBadRequest())
                 .andDo(print());
 
-        verify(taskService, times(0)).createTask(any(TodoTask.class));
+        verify(taskService, times(0)).createTask(any(TodoTaskRequest.class));
     }
 
 
