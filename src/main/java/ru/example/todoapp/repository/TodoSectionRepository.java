@@ -11,7 +11,7 @@ import java.util.Optional;
 
 public interface TodoSectionRepository extends JpaRepository<TodoSection, Long> {
 
-    @Query("select new ru.example.todoapp.domain.TodoSectionProjection(s.id, s.title, s.updatedAt, s.createdAt) " +
+    @Query("select new ru.example.todoapp.repository.projection.TodoSectionProjection(s.id, s.title, s.updatedAt, s.createdAt) " +
             "from TodoSection s where s.user.id = :userId")
     List<TodoSectionProjection> findAllByUserIdProjection(@Param("userId") Long id);
 
