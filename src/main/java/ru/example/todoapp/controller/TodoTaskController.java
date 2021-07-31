@@ -6,7 +6,6 @@ package ru.example.todoapp.controller;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
@@ -24,7 +23,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.example.todoapp.controller.assembler.TodoTaskModelAssembler;
-import ru.example.todoapp.dto.TodoTaskDto;
+import ru.example.todoapp.controller.request.TodoTaskRequest;
 import ru.example.todoapp.entity.TodoTask;
 import ru.example.todoapp.enums.filters.FilterByDate;
 import ru.example.todoapp.service.TodoTaskService;
@@ -45,14 +44,11 @@ public class TodoTaskController {
 
     private final TodoTaskService todoTaskService;
     private final TodoTaskModelAssembler assembler;
-    private final ModelMapper modelMapper;
 
     @Autowired
-    public TodoTaskController(TodoTaskService todoTaskService, TodoTaskModelAssembler assembler,
-                              ModelMapper modelMapper) {
+    public TodoTaskController(TodoTaskService todoTaskService, TodoTaskModelAssembler assembler) {
         this.todoTaskService = todoTaskService;
         this.assembler = assembler;
-        this.modelMapper = modelMapper;
     }
 
     // todo: filter by completed or starred params
@@ -93,8 +89,8 @@ public class TodoTaskController {
     // create new task
     @ApiOperation(value = "Create task", notes = "It permits to create a new task")
     @PostMapping(consumes = "application/json")
-    public ResponseEntity<String> createTask(@Valid @RequestBody TodoTaskDto taskDto) {
-        TodoTask task = todoTaskService.createTask(modelMapper.map(taskDto, TodoTask.class));
+    public ResponseEntity<String> createTask(@Valid @RequestBody TodoTaskRequest taskRequest) {
+        TodoTask task = todoTaskService.createTask(taskRequest);
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}").buildAndExpand(task.getId()).toUri();
@@ -105,12 +101,9 @@ public class TodoTaskController {
     @ApiOperation(value = "Update task", notes = "It permits to update a task")
     @PatchMapping(value = "/{id}", consumes = "application/json")
     public ResponseEntity<String> updateTask(@PathVariable("id") Long taskId,
-                                             @Valid @RequestBody TodoTaskDto taskDto) {
+                                             @Valid @RequestBody TodoTaskRequest taskRequest) {
 
-        TodoTask task = todoTaskService.findTaskById(taskId);
-        modelMapper.map(taskDto, task);
-        todoTaskService.saveTodoTask(task);
-
+        final TodoTask task = todoTaskService.saveTodoTask(taskId, taskRequest);
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                 .buildAndExpand(task.getId()).toUri();
 
