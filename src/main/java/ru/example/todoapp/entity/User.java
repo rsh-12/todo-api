@@ -5,7 +5,7 @@ package ru.example.todoapp.entity;
  * */
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.CreationTimestamp;
 import ru.example.todoapp.enums.Role;
 
@@ -25,6 +25,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -47,14 +48,14 @@ public class User {
     private String username;
 
     // todo set min=8
+    @JsonIgnore
     @NotBlank
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Size(min = 4, message = "Password is required")
     private String password;
 
     @JsonFormat(timezone = "Asia/Yekaterinburg")
     @CreationTimestamp
-    private Date createdAt;
+    private LocalDateTime createdAt;
 
     @NotNull
     @ElementCollection(fetch = FetchType.EAGER)
@@ -105,11 +106,11 @@ public class User {
         this.password = password;
     }
 
-    public Date getCreatedAt() {
-        return createdAt == null ? new Date() : createdAt;
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
     }
 
-    public void setCreatedAt(Date createdAt) {
+    public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
 
