@@ -10,7 +10,6 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 import ru.example.todoapp.config.properties.TokenProperties;
 import ru.example.todoapp.entity.User;
@@ -23,8 +22,8 @@ import javax.annotation.PostConstruct;
 import javax.crypto.SecretKey;
 import javax.servlet.http.HttpServletRequest;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -41,9 +40,7 @@ public class JwtTokenServiceImpl implements JwtTokenService {
     public String buildAccessToken(Long userId, Set<Role> roles) {
         Claims claims = Jwts.claims();
         claims.put("id", userId);
-        claims.put("auth", roles.stream()
-                .map(role -> new SimpleGrantedAuthority(role.getAuthority()))
-                .collect(Collectors.toList()));
+        claims.put("auth", roles);
 
         return Jwts.builder()
                 .setClaims(claims)
@@ -113,7 +110,7 @@ public class JwtTokenServiceImpl implements JwtTokenService {
         principal.setRoles(roles);
         UserDetailsImpl userDetails = new UserDetailsImpl(principal);
 
-        return new UsernamePasswordAuthenticationToken(userDetails, "", roles);
+        return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
 
     private Claims getClaimsBody(String accessToken) {
@@ -125,11 +122,8 @@ public class JwtTokenServiceImpl implements JwtTokenService {
     }
 
     private Set<Role> extractRoles(Claims claims) {
-        String[] authorities = claims.get("auth").toString().split(",");
-        return Arrays.stream(authorities)
-                .map(authority -> authority
-                        .replaceAll("[{}\\[\\] ]", "")
-                        .replaceAll("authority=", ""))
+        List<String> roles = claims.get("auth", List.class);
+        return roles.stream()
                 .map(Role::valueOf)
                 .collect(Collectors.toSet());
     }
