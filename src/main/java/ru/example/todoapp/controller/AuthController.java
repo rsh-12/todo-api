@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.example.todoapp.controller.request.CredentialsRequest;
+import ru.example.todoapp.dto.UserDto;
+import ru.example.todoapp.entity.User;
 import ru.example.todoapp.facade.PasswordFacade;
 import ru.example.todoapp.messaging.MessagingClient;
 import ru.example.todoapp.messaging.request.EmailRequest;
@@ -46,9 +48,9 @@ public class AuthController {
     }
 
     @PostMapping(value = "/register", produces = "application/json")
-    public ResponseEntity<String> register(@Valid @RequestBody CredentialsRequest credentials) {
-        userService.register(credentials);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<UserDto> register(@Valid @RequestBody CredentialsRequest credentials) {
+        User user = userService.register(credentials);
+        return ResponseEntity.ok(userService.mapToUserDto(user));
     }
 
     @PostMapping(value = "/token", produces = "application/json")
