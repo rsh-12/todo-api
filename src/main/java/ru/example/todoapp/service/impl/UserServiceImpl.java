@@ -13,6 +13,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.example.todoapp.config.properties.TokenProperties;
 import ru.example.todoapp.controller.request.CredentialsRequest;
+import ru.example.todoapp.dto.UserDto;
 import ru.example.todoapp.entity.RefreshToken;
 import ru.example.todoapp.entity.User;
 import ru.example.todoapp.exception.CustomException;
@@ -107,6 +108,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean existsByUsername(String email) {
         return userRepository.existsByUsername(email);
+    }
+
+    @Override
+    public UserDto mapToUserDto(User user) {
+        return new UserDto(user.getUsername(), user.getCreatedAt());
     }
 
     Map<String, String> buildResponseBody(User user, String ip) {

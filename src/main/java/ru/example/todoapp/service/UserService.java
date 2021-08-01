@@ -1,6 +1,7 @@
 package ru.example.todoapp.service;
 
 import ru.example.todoapp.controller.request.CredentialsRequest;
+import ru.example.todoapp.dto.UserDto;
 import ru.example.todoapp.entity.User;
 import ru.example.todoapp.exception.CustomException;
 
@@ -77,4 +78,6 @@ public interface UserService {
      * @return <b>true</b>, if user exists, otherwise <b>false</b>
      */
     boolean existsByUsername(String email);
+
+    UserDto mapToUserDto(User user);
 }
