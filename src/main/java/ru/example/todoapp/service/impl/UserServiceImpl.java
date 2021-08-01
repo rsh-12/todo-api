@@ -61,7 +61,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void register(CredentialsRequest credentials) {
+    public User register(CredentialsRequest credentials) {
         if (userRepository.existsByUsername(credentials.username())) {
             throw CustomException.badRequest("Username already in use");
         }
@@ -69,7 +69,7 @@ public class UserServiceImpl implements UserService {
         user.setUsername(credentials.username());
         user.setPassword(bCryptPasswordEncoder.encode(credentials.password()));
 
-        userRepository.save(user);
+        return userRepository.save(user);
     }
 
     @Override

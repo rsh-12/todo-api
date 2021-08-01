@@ -28,8 +28,9 @@ public interface UserService {
      *
      * @param credentials containes useraname (email) and password
      * @throws CustomException if the username already in use
+     * @return
      */
-    void register(CredentialsRequest credentials);
+    User register(CredentialsRequest credentials);
 
     /**
      * Generates new access and refresh tokens if the old refresh token is valid.
