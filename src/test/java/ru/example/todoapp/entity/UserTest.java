@@ -8,6 +8,7 @@ import org.junit.Before;
 import org.junit.Test;
 import ru.example.todoapp.enums.Role;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Set;
@@ -28,7 +29,7 @@ public class UserTest {
         user.setRoles(Collections.singleton(Role.USER));
         user.setUsername("username");
         user.setPassword("password");
-        user.setCreatedAt(new Date());
+        user.setCreatedAt(LocalDateTime.now());
     }
 
     @Test
