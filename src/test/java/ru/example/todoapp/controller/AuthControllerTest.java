@@ -54,28 +54,24 @@ public class AuthControllerTest extends AbstractControllerTestClass {
     private MessagingClient messagingService;
 
     // Login: success
-    // todo fix login test method
-    @Ignore
     @Test
     public void login_ShouldReturnTokens() throws Exception {
-//        UserDto userDto = mock(UserDto.class);
-//        given(userDto.getUsername()).willReturn("username@mail.com");
-//        given(userDto.getPassword()).willReturn("password");
-//
-//        given(userService.login(any(CredentialsRequest.class), anyString()))
-//                .willReturn(Map.of("access_token", "access_token"));
-//
-//        String response = mvc.perform(post(API_AUTH + "login")
-//                .contentType(MediaType.APPLICATION_JSON)
-//                .content(usernamePasswordRequestBody(userDto.getUsername(), userDto.getPassword())))
-//                .andDo(print())
-//                .andExpect(status().isOk())
-//                .andReturn()
-//                .getResponse()
-//                .getContentAsString();
-//
-//        assertTrue(response.contains("access_token"));
-//        verify(userService, times(1)).login(any(), anyString());
+        CredentialsRequest request = new CredentialsRequest("username@mail.ru", "password");
+
+        given(userService.login(any(CredentialsRequest.class), anyString()))
+                .willReturn(Map.of("access_token", "access_token"));
+
+        String response = mvc.perform(post(API_AUTH + "login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(usernamePasswordRequestBody(request.username(), request.password())))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        assertTrue(response.contains("access_token"));
+        verify(userService, times(1)).login(any(), anyString());
     }
 
     // Login: fail
