@@ -4,10 +4,13 @@ package ru.example.todoapp.controller.request;
  * Time: 10:09 AM
  * */
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public record CredentialsRequest(@NotBlank
                                  @Pattern(regexp = "^[a-z_-]{2,}[0-9a-z_-]*@[a-z]{2,5}\\.(ru|com)",
                                          flags = Pattern.Flag.CASE_INSENSITIVE,
