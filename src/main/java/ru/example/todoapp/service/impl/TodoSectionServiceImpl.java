@@ -54,7 +54,6 @@ public class TodoSectionServiceImpl implements TodoSectionService {
     }
 
     // delete section by id
-    // todo: fix section deleting
     @Override
     public void deleteSectionById(Long sectionId) {
         TodoSection section = todoSectionRepository.findById(sectionId)
@@ -62,7 +61,6 @@ public class TodoSectionServiceImpl implements TodoSectionService {
         validateUser(authUserFacade.getLoggedUser(), section.getUser());
         todoSectionRepository.deleteById(sectionId);
     }
-
 
     // create new section
     @Override
