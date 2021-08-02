@@ -75,25 +75,22 @@ public class AuthControllerTest extends AbstractControllerTestClass {
     }
 
     // Login: fail
-    @Ignore // todo fix login test method
     @Test
     public void login_NotFound_ShouldThrowCustomException() throws Exception {
-//        UserDto userDto = mock(UserDto.class);
-//        given(userDto.getUsername()).willReturn("username@mail.com");
-//        given(userDto.getPassword()).willReturn("password");
-//
-//        given(userService.login(any(CredentialsRequest.class), anyString()))
-//                .willThrow(CustomException.notFound("Username Not Found/Incorrect Password"));
-//
-//        mvc.perform(post(API_AUTH + "login")
-//                .contentType(MediaType.APPLICATION_JSON)
-//                .content(usernamePasswordRequestBody(userDto.getUsername(), userDto.getPassword())))
-//                .andDo(print())
-//                .andExpect(status().isNotFound())
-//                .andExpect(jsonPath("message",
-//                        containsStringIgnoringCase("Username not found/incorrect password")));
-//
-//        verify(userService, times(1)).login(any(CredentialsRequest.class), anyString());
+        CredentialsRequest request = new CredentialsRequest("username@mail.ru", "password");
+
+        given(userService.login(any(CredentialsRequest.class), anyString()))
+                .willThrow(CustomException.notFound("Username Not Found/Incorrect Password"));
+
+        mvc.perform(post(API_AUTH + "login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(usernamePasswordRequestBody(request.username(), request.password())))
+                .andDo(print())
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("message",
+                        containsStringIgnoringCase("Username not found/incorrect password")));
+
+        verify(userService, times(1)).login(any(CredentialsRequest.class), anyString());
     }
 
     @Ignore // todo fix login test method
