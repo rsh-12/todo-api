@@ -5,7 +5,6 @@ package ru.example.todoapp.controller;
  * */
 
 import org.json.JSONObject;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
@@ -19,7 +18,6 @@ import ru.example.todoapp.messaging.MessagingClient;
 import ru.example.todoapp.messaging.request.EmailRequest;
 import ru.example.todoapp.messaging.request.TokenRequest;
 import ru.example.todoapp.service.UserService;
-import ru.example.todoapp.service.impl.UserServiceImpl;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -93,25 +91,22 @@ public class AuthControllerTest extends AbstractControllerTestClass {
         verify(userService, times(1)).login(any(CredentialsRequest.class), anyString());
     }
 
-    @Ignore // todo fix login test method
     @Test
     public void login_WrongPassword_ShouldThrowCustomException() throws Exception {
-//        UserDto userDto = mock(UserDto.class);
-//        given(userDto.getUsername()).willReturn("username@mail.com");
-//        given(userDto.getPassword()).willReturn("password");
-//
-//        given(userService.login(any(CredentialsRequest.class), anyString()))
-//                .willThrow(CustomException.notFound("Username Not Found/Incorrect Password"));
-//
-//        mvc.perform(post(API_AUTH + "login")
-//                .contentType(MediaType.APPLICATION_JSON)
-//                .content(usernamePasswordRequestBody(userDto.getUsername(), userDto.getPassword())))
-//                .andDo(print())
-//                .andExpect(status().isNotFound())
-//                .andExpect(jsonPath("message",
-//                        containsStringIgnoringCase("Username not found/incorrect password")));
-//
-//        verify(userService, times(1)).login(any(CredentialsRequest.class), anyString());
+        CredentialsRequest request = new CredentialsRequest("username@mail.ru", "password");
+
+        given(userService.login(any(CredentialsRequest.class), anyString()))
+                .willThrow(CustomException.notFound("Username Not Found/Incorrect Password"));
+
+        mvc.perform(post(API_AUTH + "login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(usernamePasswordRequestBody(request.username(), request.password())))
+                .andDo(print())
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("message",
+                        containsStringIgnoringCase("Username not found/incorrect password")));
+
+        verify(userService, times(1)).login(any(CredentialsRequest.class), anyString());
     }
 
     // Register: success
