@@ -11,6 +11,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.data.domain.Pageable;
+import ru.example.todoapp.controller.request.TodoTaskRequest;
 import ru.example.todoapp.entity.TodoTask;
 import ru.example.todoapp.entity.User;
 import ru.example.todoapp.enums.filters.FilterByDate;
@@ -19,6 +20,7 @@ import ru.example.todoapp.facade.AuthUserFacade;
 import ru.example.todoapp.repository.TodoTaskRepository;
 import ru.example.todoapp.service.impl.TodoTaskServiceImpl;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -138,11 +140,17 @@ public class TodoTaskServiceTest {
         verify(taskRepository).deleteById(anyLong());
     }
 
-    // createTask
-    @Ignore
     @Test
     public void createTask_ShouldReturnTask() {
-        // todo fix createTask test method
+        TodoTaskRequest request = new TodoTaskRequest("Task", LocalDate.now(), true);
+
+        User user = mock(User.class);
+        TodoTask task = mock(TodoTask.class);
+
+        given(authUserFacade.getLoggedUser()).willReturn(user);
+        given(taskRepository.save(any(TodoTask.class))).willReturn(task);
+
+        assertNotNull(taskService.createTask(request));
     }
 
     // findTasksByIds
