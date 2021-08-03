@@ -82,12 +82,9 @@ public class TodoTaskServiceImpl implements TodoTaskService {
     @Override
     public TodoTask createTask(TodoTaskRequest taskRequest) {
         log.info("Create a new task");
-
-        final Boolean completed = Optional.ofNullable(taskRequest.completed()).orElse(false);
         final Boolean starred = Optional.ofNullable(taskRequest.starred()).orElse(false);
 
         TodoTask todoTask = new TodoTask(taskRequest.title(), taskRequest.completionDate());
-        todoTask.setCompleted(completed);
         todoTask.setStarred(starred);
         todoTask.setUser(authUserFacade.getLoggedUser());
 
@@ -105,8 +102,7 @@ public class TodoTaskServiceImpl implements TodoTaskService {
     public TodoTask saveTask(Long taskId, TodoTaskRequest request) {
         TodoTask task = findTaskById(taskId);
         Optional.ofNullable(request.title()).ifPresent(task::setTitle);
-        Optional.ofNullable(request.completed()).ifPresentOrElse(task::setCompleted, () -> task.setCompleted(false));
-        Optional.ofNullable(request.completed()).ifPresentOrElse(task::setStarred, () -> task.setStarred(false));
+        Optional.ofNullable(request.starred()).ifPresentOrElse(task::setStarred, () -> task.setStarred(false));
         task.setCompletionDate(request.completionDate());
 
         return todoTaskRepository.save(task);
