@@ -130,13 +130,10 @@ public class TodoTaskControllerTest extends AbstractControllerTestClass {
 
         given(taskService.createTask(any(TodoTaskRequest.class))).willReturn(task);
 
-        String body = """
-                     "title": "Task",
-                """;
-
+        String body = "{\"title\": \"Task\"}";
         mvc.perform(post(API_TASKS)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(body)))
+                .content(body))
                 .andExpect(status().isCreated());
 
         verify(taskService, times(1)).createTask(any(TodoTaskRequest.class));
