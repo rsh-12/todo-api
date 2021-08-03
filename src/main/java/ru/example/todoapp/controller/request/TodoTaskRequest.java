@@ -19,6 +19,5 @@ public record TodoTaskRequest(
 
         @FutureOrPresent
         LocalDate completionDate,
-        boolean completed,
         boolean starred) {
 }
