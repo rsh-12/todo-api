@@ -9,7 +9,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithUserDetails;
 import ru.example.todoapp.controller.request.TodoTaskRequest;
-import ru.example.todoapp.dto.TodoSectionDto;
 import ru.example.todoapp.dto.TodoTaskDto;
 import ru.example.todoapp.entity.TodoTask;
 import ru.example.todoapp.enums.filters.FilterByDate;
@@ -19,6 +18,7 @@ import ru.example.todoapp.service.TodoTaskService;
 import java.time.LocalDate;
 import java.util.List;
 
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.containsStringIgnoringCase;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.BDDMockito.given;
@@ -130,9 +130,13 @@ public class TodoTaskControllerTest extends AbstractControllerTestClass {
 
         given(taskService.createTask(any(TodoTaskRequest.class))).willReturn(task);
 
+        String body = """
+                     "title": "Task",
+                """;
+
         mvc.perform(post(API_TASKS)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(new TodoSectionDto("title"))))
+                .content(objectMapper.writeValueAsString(body)))
                 .andExpect(status().isCreated());
 
         verify(taskService, times(1)).createTask(any(TodoTaskRequest.class));
@@ -154,7 +158,7 @@ public class TodoTaskControllerTest extends AbstractControllerTestClass {
         mvc.perform(post(API_TASKS)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(new TodoTaskDto("T")))) // min=3
-                //.andExpect(jsonPath("title", containsInAnyOrder("Size must be between 3 and 80")))
+                .andExpect(jsonPath("title", containsInAnyOrder("Size must be between 3 and 80")))
                 .andExpect(status().isBadRequest())
                 .andDo(print());
 
