@@ -10,6 +10,7 @@ import javax.validation.constraints.FutureOrPresent;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
+import java.util.Objects;
 
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public record TodoTaskRequest(
@@ -20,4 +21,9 @@ public record TodoTaskRequest(
         @FutureOrPresent
         LocalDate completionDate,
         boolean starred) {
+
+    public TodoTaskRequest {
+        completionDate = Objects.requireNonNullElse(completionDate, LocalDate.now());
+    }
+
 }
