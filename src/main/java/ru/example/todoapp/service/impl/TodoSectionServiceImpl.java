@@ -65,7 +65,7 @@ public class TodoSectionServiceImpl implements TodoSectionService {
     // create new section
     @Override
     public TodoSection createSection(TodoSectionRequest sectionRequest) {
-        TodoSection section = new TodoSection(sectionRequest.title());
+        TodoSection section = new TodoSection(sectionRequest.getTitle());
         section.setUser(authUserFacade.getLoggedUser());
         log.info("Create a new section");
         return todoSectionRepository.save(section);
