@@ -6,10 +6,10 @@ package ru.example.todoapp.repository.projection;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
-public record TodoSectionProjection(Long id, String title, Date updatedAt, Date createdAt) {
+public record TodoSectionProjection(Long id, String title, LocalDateTime updatedAt, LocalDateTime createdAt) {
 
     public Long getId() {
         return id;
@@ -19,11 +19,11 @@ public record TodoSectionProjection(Long id, String title, Date updatedAt, Date 
         return title;
     }
 
-    public Date getUpdatedAt() {
+    public LocalDateTime getUpdatedAt() {
         return updatedAt;
     }
 
-    public Date getCreatedAt() {
+    public LocalDateTime getCreatedAt() {
         return createdAt;
     }
 
