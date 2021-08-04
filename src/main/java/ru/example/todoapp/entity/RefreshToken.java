@@ -7,9 +7,15 @@ package ru.example.todoapp.entity;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Objects;
 
@@ -30,18 +36,18 @@ public class RefreshToken {
 
     private String createdByIp;
 
-    private Date expiresAt;
+    private LocalDateTime expiresAt;
 
     @CreationTimestamp
-    private Date createdAt;
+    private LocalDateTime createdAt;
 
     @UpdateTimestamp
-    private Date updatedAt;
+    private LocalDateTime updatedAt;
 
     public RefreshToken() {
     }
 
-    public RefreshToken(String value, Long userId, Date expiresAt) {
+    public RefreshToken(String value, Long userId, LocalDateTime expiresAt) {
         this.value = value;
         this.userId = userId;
         this.expiresAt = expiresAt;
@@ -55,40 +61,48 @@ public class RefreshToken {
         return value;
     }
 
-    public Long getUserId() {
-        return userId;
-    }
-
-    public String getCreatedByIp() {
-        return createdByIp;
-    }
-
-    public Date getCreatedAt() {
-        return createdAt;
-    }
-
-    public Date getUpdatedAt() {
-        return updatedAt;
-    }
-
     public void setValue(String value) {
         this.value = value;
+    }
+
+    public Long getUserId() {
+        return userId;
     }
 
     public void setUserId(Long userId) {
         this.userId = userId;
     }
 
+    public String getCreatedByIp() {
+        return createdByIp;
+    }
+
     public void setCreatedByIp(String createdByIp) {
         this.createdByIp = createdByIp;
     }
 
-    public Date getExpiresAt() {
+    public LocalDateTime getExpiresAt() {
         return expiresAt;
     }
 
-    public void setExpiresAt(Date expiresAt) {
+    public void setExpiresAt(LocalDateTime expiresAt) {
         this.expiresAt = expiresAt;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
     }
 
     @Override
