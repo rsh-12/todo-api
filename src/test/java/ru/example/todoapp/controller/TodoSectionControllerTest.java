@@ -17,8 +17,8 @@ import ru.example.todoapp.facade.TasksFacade;
 import ru.example.todoapp.repository.projection.TodoSectionProjection;
 import ru.example.todoapp.service.TodoSectionService;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
@@ -55,8 +55,8 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
     @Test
     @WithUserDetails(ADMIN)
     public void getSections_ShouldReturnListOfSections() throws Exception {
-        TodoSectionProjection section1 = new TodoSectionProjection(1L, "section1", new Date(), new Date());
-        TodoSectionProjection section2 = new TodoSectionProjection(2L, "section2", new Date(), new Date());
+        var section1 = new TodoSectionProjection(1L, "section1", LocalDateTime.now(), LocalDateTime.now());
+        var section2 = new TodoSectionProjection(2L, "section2", LocalDateTime.now(), LocalDateTime.now());
 
         given(sectionService.findSections())
                 .willReturn(List.of(section1, section2));

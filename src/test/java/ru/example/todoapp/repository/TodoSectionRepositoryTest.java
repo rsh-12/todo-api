@@ -8,13 +8,18 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import ru.example.todoapp.entity.TodoSection;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
-public class TodoSectionRepositoryTest extends AbstractRepositoryTestClass{
+public class TodoSectionRepositoryTest extends AbstractRepositoryTestClass {
 
     @Autowired
     private TodoSectionRepository repository;
@@ -63,9 +68,8 @@ public class TodoSectionRepositoryTest extends AbstractRepositoryTestClass{
     public void createSection_ShouldCreateSection() {
         TodoSection section = new TodoSection("Tomorrow");
 
-        Date date = new Date();
-        section.setCreatedAt(new Timestamp(date.getTime()));
-        section.setUpdatedAt(new Timestamp(date.getTime()));
+        section.setCreatedAt(LocalDateTime.now());
+        section.setUpdatedAt(LocalDateTime.now());
 
         entityManager.persistAndFlush(section);
 
@@ -106,7 +110,7 @@ public class TodoSectionRepositoryTest extends AbstractRepositoryTestClass{
 
         section.setTitle("New title");
         Date date = new Date();
-        section.setUpdatedAt(new Timestamp(date.getTime()));
+        section.setUpdatedAt(LocalDateTime.now());
         entityManager.persistAndFlush(section);
 
         TodoSection updatedSection = repository.findById(2L).orElse(null);
