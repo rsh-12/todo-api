@@ -12,8 +12,8 @@ import ru.example.todoapp.repository.RefreshTokenRepository;
 import ru.example.todoapp.service.RefreshTokenService;
 import ru.example.todoapp.util.RandomStringGenerator;
 
-import java.time.Instant;
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 
 @Service
@@ -31,9 +31,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     public String createRefreshToken(Long userId, String ip) {
         RefreshToken refreshToken;
         String token = new RandomStringGenerator(64).nextString();
-
-        long now = new Date().getTime();
-        Date expiresAt = new Date(now + tokenProperties.getRefreshTokenValidity());
+        LocalDateTime expiresAt = LocalDateTime.now().plus(tokenProperties.getRefreshTokenValidity(), ChronoUnit.MILLIS);
 
         Optional<RefreshToken> optionalRefreshToken = refreshTokenRepository.findByUserId(userId);
         if (optionalRefreshToken.isPresent()) {
@@ -69,7 +67,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
 
     @Override
     public boolean hasRefreshTokenExpired(RefreshToken oldRefreshToken) {
-        return Instant.now().isAfter(oldRefreshToken.getExpiresAt().toInstant());
+        return LocalDateTime.now().isAfter(oldRefreshToken.getExpiresAt());
     }
 
     private RefreshToken validateToken(Optional<RefreshToken> token) {
