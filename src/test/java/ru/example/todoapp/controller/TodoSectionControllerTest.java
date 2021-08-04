@@ -10,11 +10,11 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithUserDetails;
 import ru.example.todoapp.controller.request.TodoSectionRequest;
-import ru.example.todoapp.repository.projection.TodoSectionProjection;
 import ru.example.todoapp.dto.TodoSectionDto;
 import ru.example.todoapp.entity.TodoSection;
 import ru.example.todoapp.exception.CustomException;
 import ru.example.todoapp.facade.TasksFacade;
+import ru.example.todoapp.repository.projection.TodoSectionProjection;
 import ru.example.todoapp.service.TodoSectionService;
 
 import java.util.Collections;
@@ -172,9 +172,10 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
         given(sectionService.createSection(any(TodoSectionRequest.class)))
                 .willReturn(new TodoSection(1L, "title"));
 
+        String json = objectMapper.writeValueAsString(new TodoSectionRequest("section"));
         mvc.perform(post(API_SECTIONS)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(new TodoSectionDto("Created Section"))))
+                .content(json))
                 .andExpect(status().isCreated())
                 .andDo(print());
 
