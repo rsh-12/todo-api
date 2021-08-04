@@ -16,12 +16,17 @@ import ru.example.todoapp.exception.CustomException;
 import ru.example.todoapp.repository.RefreshTokenRepository;
 import ru.example.todoapp.service.impl.RefreshTokenServiceImpl;
 
-import java.time.Instant;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
-import static org.junit.Assert.*;
-import static org.mockito.ArgumentMatchers.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -90,7 +95,7 @@ public class RefreshTokenServiceTest {
     public void findRefreshTokenByValue_ShouldRetunToken() {
         RefreshToken mockRefreshToken = mock(RefreshToken.class);
         given(mockRefreshToken.getValue()).willReturn("someRefreshToken");
-        given(mockRefreshToken.getExpiresAt()).willReturn(Date.from(new Date().toInstant().plusSeconds(60)));
+        given(mockRefreshToken.getExpiresAt()).willReturn(LocalDateTime.now().plusSeconds(60));
 
         given(refreshTokenRepository.findByValue(anyString())).willReturn(Optional.of(mockRefreshToken));
         RefreshToken refreshToken = refreshTokenService.findRefreshTokenByValue(mockRefreshToken.getValue());
@@ -110,7 +115,7 @@ public class RefreshTokenServiceTest {
     public void findRefreshTokenByValue_Expired_ShouldThrowCustomException() {
         RefreshToken mockRefreshToken = mock(RefreshToken.class);
         given(mockRefreshToken.getValue()).willReturn("someRefreshToken");
-        given(mockRefreshToken.getExpiresAt()).willReturn(Date.from(new Date().toInstant().minusSeconds(60)));
+        given(mockRefreshToken.getExpiresAt()).willReturn(LocalDateTime.now().minusSeconds(60));
 
         given(refreshTokenRepository.findByValue(anyString())).willReturn(Optional.of(mockRefreshToken));
         assertThrows(CustomException.class, () ->
@@ -122,7 +127,7 @@ public class RefreshTokenServiceTest {
     public void findRefreshTokenByUserId_ShouldRetunToken() {
         RefreshToken mockRefreshToken = mock(RefreshToken.class);
         given(mockRefreshToken.getUserId()).willReturn(1L);
-        given(mockRefreshToken.getExpiresAt()).willReturn(Date.from(new Date().toInstant().plusSeconds(60)));
+        given(mockRefreshToken.getExpiresAt()).willReturn(LocalDateTime.now().plusSeconds(60));
 
         given(refreshTokenRepository.findByUserId(anyLong())).willReturn(Optional.of(mockRefreshToken));
         RefreshToken refreshToken = refreshTokenService.findRefreshTokenByUserId(mockRefreshToken.getUserId());
@@ -142,7 +147,7 @@ public class RefreshTokenServiceTest {
     public void findRefreshTokenByUserId_Expired_ShouldThrowCustomException() {
         RefreshToken mockRefreshToken = mock(RefreshToken.class);
         given(mockRefreshToken.getUserId()).willReturn(1L);
-        given(mockRefreshToken.getExpiresAt()).willReturn(Date.from(new Date().toInstant().minusSeconds(60)));
+        given(mockRefreshToken.getExpiresAt()).willReturn(LocalDateTime.now().minusSeconds(60));
 
         given(refreshTokenRepository.findByUserId(anyLong())).willReturn(Optional.of(mockRefreshToken));
         assertThrows(CustomException.class, () ->
@@ -153,16 +158,16 @@ public class RefreshTokenServiceTest {
     @Test
     public void hasRefreshTokenExpired_ShouldReturnTrue() {
         RefreshToken refreshToken = mock(RefreshToken.class);
-        Instant instant = new Date().toInstant().minusSeconds(60);
-        given(refreshToken.getExpiresAt()).willReturn(Date.from(instant));
+        given(refreshToken.getExpiresAt()).willReturn(LocalDateTime.now().minusSeconds(60));
+
         assertTrue(refreshTokenService.hasRefreshTokenExpired(refreshToken));
     }
 
     @Test
     public void hasRefreshTokenExpired_ShouldReturnFalse() {
         RefreshToken refreshToken = mock(RefreshToken.class);
-        Instant instant = new Date().toInstant().plusSeconds(60);
-        given(refreshToken.getExpiresAt()).willReturn(Date.from(instant));
+        given(refreshToken.getExpiresAt()).willReturn(LocalDateTime.now().plusSeconds(60));
+
         assertFalse(refreshTokenService.hasRefreshTokenExpired(refreshToken));
     }
 
