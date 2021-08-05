@@ -4,5 +4,8 @@ package ru.example.todoapp.dto;
  * Time: 5:46 PM
  * */
 
-public record TodoSectionDto(String title) {
+import java.time.LocalDateTime;
+
+public record TodoSectionDto(String title, LocalDateTime updatedAt, LocalDateTime createdAt) {
+
 }
