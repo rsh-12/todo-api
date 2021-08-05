@@ -31,7 +31,6 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "section")
-@Relation(value = "section", collectionRelation = "sections")
 public class TodoSection {
 
     @Id
