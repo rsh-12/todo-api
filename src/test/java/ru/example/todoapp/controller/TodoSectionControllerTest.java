@@ -10,6 +10,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithUserDetails;
 import ru.example.todoapp.controller.request.TodoSectionRequest;
+import ru.example.todoapp.dto.TodoSectionDto;
 import ru.example.todoapp.entity.TodoSection;
 import ru.example.todoapp.exception.CustomException;
 import ru.example.todoapp.facade.TasksFacade;
@@ -57,8 +58,12 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
         var section1 = new TodoSectionProjection(1L, "section1", LocalDateTime.now(), LocalDateTime.now());
         var section2 = new TodoSectionProjection(2L, "section2", LocalDateTime.now(), LocalDateTime.now());
 
-        given(sectionService.findSections())
-                .willReturn(List.of(section1, section2));
+        var sectionDto1 = new TodoSectionDto(1L, "section1", LocalDateTime.now(), LocalDateTime.now());
+        var sectionDto2 = new TodoSectionDto(2L, "section2", LocalDateTime.now(), LocalDateTime.now());
+
+        given(sectionService.findSections()).willReturn(List.of(section1, section2));
+        given(sectionService.mapToSectionDto(section1)).willReturn(sectionDto1);
+        given(sectionService.mapToSectionDto(section2)).willReturn(sectionDto2);
 
         mvc.perform(get(API_SECTIONS)
                 .contentType(MediaType.APPLICATION_JSON))
@@ -90,8 +95,10 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
     @Test
     @WithUserDetails(ADMIN)
     public void getSection_ShouldReturnSectionById() throws Exception {
-        given(sectionService.findSectionById(1L))
-                .willReturn(new TodoSection("Important"));
+        given(sectionService.findSectionById(1L)).willReturn(new TodoSection("Important"));
+
+        TodoSectionDto sectionDto = new TodoSectionDto(1L, "Important", LocalDateTime.now(), LocalDateTime.now());
+        given(sectionService.mapToSectionDto(any(TodoSection.class))).willReturn(sectionDto);
 
         mvc.perform(get(API_SECTIONS + 1))
                 .andExpect(status().isOk())
