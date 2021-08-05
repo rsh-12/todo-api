@@ -6,16 +6,15 @@ package ru.example.todoapp.entity;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.modelmapper.ModelMapper;
-import ru.example.todoapp.dto.TodoSectionDto;
 
 import java.time.LocalDate;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
 
 public class TodoSectionTest {
 
-    private final ModelMapper modelMapper = new ModelMapper();
     private TodoSection section;
     private final TodoTask task = new TodoTask("First task", LocalDate.of(2021, 5, 5));
 
@@ -45,15 +44,6 @@ public class TodoSectionTest {
     @Test
     public void removeTask_ShouldThrowNPE() {
         assertThrows(NullPointerException.class, () -> section.removeTask(null));
-    }
-
-    @Test
-    public void mapTodoSection() {
-        TodoSectionDto sectionDto = new TodoSectionDto("Important");
-        TodoSection todoSection = modelMapper.map(sectionDto, TodoSection.class);
-
-        assertNotNull(todoSection);
-        assertEquals("Important", todoSection.getTitle());
     }
 
 }
