@@ -1,6 +1,7 @@
 package ru.example.todoapp.service;
 
 import ru.example.todoapp.controller.request.TodoSectionRequest;
+import ru.example.todoapp.dto.TodoSectionDto;
 import ru.example.todoapp.repository.projection.TodoSectionProjection;
 import ru.example.todoapp.entity.TodoSection;
 import ru.example.todoapp.entity.TodoTask;
@@ -86,4 +87,9 @@ public interface TodoSectionService {
      * @see TodoSection
      */
     void addTasksToOrRemoveFromSection(Long userId, Long sectionId, List<TodoTask> tasks, FilterByOperation flag);
+
+    TodoSectionDto mapToSectionDto(TodoSectionProjection projection);
+
+    TodoSectionDto mapToSectionDto(TodoSection section);
+
 }

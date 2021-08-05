@@ -8,13 +8,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import ru.example.todoapp.controller.request.TodoSectionRequest;
-import ru.example.todoapp.repository.projection.TodoSectionProjection;
+import ru.example.todoapp.dto.TodoSectionDto;
 import ru.example.todoapp.entity.TodoSection;
 import ru.example.todoapp.entity.TodoTask;
 import ru.example.todoapp.enums.filters.FilterByOperation;
 import ru.example.todoapp.exception.CustomException;
 import ru.example.todoapp.facade.AuthUserFacade;
 import ru.example.todoapp.repository.TodoSectionRepository;
+import ru.example.todoapp.repository.projection.TodoSectionProjection;
 import ru.example.todoapp.service.TodoSectionService;
 
 import java.util.List;
@@ -101,6 +102,22 @@ public class TodoSectionServiceImpl implements TodoSectionService {
             throw CustomException.internalServerError("Flag not found/Bad request");
         }
         todoSectionRepository.save(section);
+    }
+
+    @Override
+    public TodoSectionDto mapToSectionDto(TodoSectionProjection projection) {
+        return new TodoSectionDto(projection.id(),
+                projection.title(),
+                projection.updatedAt(),
+                projection.createdAt());
+    }
+
+    @Override
+    public TodoSectionDto mapToSectionDto(TodoSection section) {
+        return new TodoSectionDto(section.getId(),
+                section.getTitle(),
+                section.getUpdatedAt(),
+                section.getCreatedAt());
     }
 
 }
