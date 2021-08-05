@@ -6,7 +6,6 @@ package ru.example.todoapp.controller;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
@@ -26,6 +25,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.example.todoapp.controller.assembler.TodoSectionModelAssembler;
 import ru.example.todoapp.controller.request.TodoSectionRequest;
 import ru.example.todoapp.controller.wrapper.TaskIdsWrapper;
+import ru.example.todoapp.dto.TodoSectionDto;
 import ru.example.todoapp.entity.TodoSection;
 import ru.example.todoapp.enums.filters.FilterByOperation;
 import ru.example.todoapp.facade.TasksFacade;
@@ -48,25 +48,23 @@ public class TodoSectionController {
     private final TodoSectionService todoSectionService;
     private final TasksFacade tasksFacade;
     private final TodoSectionModelAssembler assembler;
-    private final ModelMapper modelMapper;
 
     @Autowired
     public TodoSectionController(TodoSectionService todoSectionService, TasksFacade tasksFacade,
-                                 TodoSectionModelAssembler assembler, ModelMapper modelMapper) {
+                                 TodoSectionModelAssembler assembler) {
         this.todoSectionService = todoSectionService;
         this.tasksFacade = tasksFacade;
         this.assembler = assembler;
-        this.modelMapper = modelMapper;
     }
 
     // get all sections
     @ApiOperation(value = "List todo sections", notes = "List all todo sections")
     @GetMapping(produces = "application/json")
-    public CollectionModel<EntityModel<TodoSection>> getSections() {
+    public CollectionModel<EntityModel<TodoSectionDto>> getSections() {
 
-        List<EntityModel<TodoSection>> sections = todoSectionService.findSections()
+        List<EntityModel<TodoSectionDto>> sections = todoSectionService.findSections()
                 .stream()
-                .map(projection -> modelMapper.map(projection, TodoSection.class))
+                .map(todoSectionService::mapToSectionDto)
                 .map(assembler::toModel)
                 .collect(Collectors.toList());
 
@@ -77,8 +75,9 @@ public class TodoSectionController {
     // get custom section by id
     @ApiOperation(value = "Find section", notes = "Find the Section by ID")
     @GetMapping(value = "/{id}", produces = "application/json")
-    public EntityModel<TodoSection> getSection(@PathVariable("id") Long sectionId) {
-        return assembler.toModel(todoSectionService.findSectionById(sectionId));
+    public EntityModel<TodoSectionDto> getSection(@PathVariable("id") Long sectionId) {
+        TodoSection todoSection = todoSectionService.findSectionById(sectionId);
+        return assembler.toModel(todoSectionService.mapToSectionDto(todoSection));
     }
 
     // delete section by id
