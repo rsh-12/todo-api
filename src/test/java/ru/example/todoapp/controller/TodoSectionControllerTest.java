@@ -10,7 +10,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithUserDetails;
 import ru.example.todoapp.controller.request.TodoSectionRequest;
-import ru.example.todoapp.dto.TodoSectionDto;
 import ru.example.todoapp.entity.TodoSection;
 import ru.example.todoapp.exception.CustomException;
 import ru.example.todoapp.facade.TasksFacade;
@@ -204,10 +203,16 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
         given(sectionService.updateSection(anyLong(), any(TodoSectionRequest.class)))
                 .willReturn(section);
 
+        String body = """
+                {
+                    "title": "Title"
+                }
+                """;
+
         // update section by id: returns 200 OK
         mvc.perform(put(API_SECTIONS + 1)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(new TodoSectionDto("Title"))))
+                .content(body))
                 .andExpect(status().isOk())
                 .andDo(print());
 
@@ -222,9 +227,15 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
                 .when(sectionService)
                 .updateSection(anyLong(), any(TodoSectionRequest.class));
 
+        String body = """
+                {
+                    "title": "Title"
+                }
+                """;
+
         mvc.perform(put(API_SECTIONS + 1)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(new TodoSectionDto("Title"))))
+                .content(objectMapper.writeValueAsString(body)))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("error", containsStringIgnoringCase("not found")))
                 .andDo(print());
@@ -240,9 +251,15 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
                 .when(sectionService)
                 .updateSection(anyLong(), any(TodoSectionRequest.class));
 
+        String body = """
+                {
+                    "title": "Title"
+                }
+                """;
+
         mvc.perform(put(API_SECTIONS + 1)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(new TodoSectionDto("Title"))))
+                .content(objectMapper.writeValueAsString(body)))
                 .andExpect(status().isForbidden())
                 .andExpect(jsonPath("error", containsStringIgnoringCase("forbidden")))
                 .andDo(print());
