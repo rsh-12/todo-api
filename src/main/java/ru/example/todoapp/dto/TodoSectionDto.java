@@ -4,35 +4,8 @@ package ru.example.todoapp.dto;
  * Time: 5:46 PM
  * */
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 
-public class TodoSectionDto {
-
-    @NotBlank
-    @Size(min = 3, max = 50, message = "Size must be between 3 and 50")
-    private String title;
-
-    public TodoSectionDto() {
-    }
-
-    public TodoSectionDto(String title) {
-        this.title = title;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    @Override
-    public String toString() {
-        return "TodoSectionDto{" +
-                "title='" + title + '\'' +
-                '}';
-    }
-
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
+public record TodoSectionDto(String title) {
 }
