@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.example.todoapp.controller.assembler.TodoTaskModelAssembler;
 import ru.example.todoapp.controller.request.TodoTaskRequest;
+import ru.example.todoapp.dto.TodoTaskDto;
 import ru.example.todoapp.entity.TodoTask;
 import ru.example.todoapp.enums.filters.FilterByDate;
 import ru.example.todoapp.service.TodoTaskService;
@@ -55,16 +56,19 @@ public class TodoTaskController {
     // get all tasks
     @ApiOperation(value = "List tasks", notes = "List all tasks")
     @GetMapping(produces = "application/json")
-    public CollectionModel<EntityModel<TodoTask>> getTasks(
+    public CollectionModel<EntityModel<TodoTaskDto>> getTasks(
             @RequestParam(value = "page", required = false, defaultValue = "0") Integer pageNo,
             @RequestParam(value = "size", required = false, defaultValue = "20") Integer pageSize,
             @RequestParam(value = "date", required = false, defaultValue = "ALL") FilterByDate date,
             @RequestParam(value = "sort", required = false, defaultValue = "createdAt") String sort) {
 
-        List<EntityModel<TodoTask>> todos = todoTaskService
+        List<EntityModel<TodoTaskDto>> todos = todoTaskService
                 .findTasks(pageNo, pageSize, date, sort)
                 .stream()
-                .map(assembler::toModel)
+                .map(task -> {
+                    TodoTaskDto taskDto = todoTaskService.mapToTaskDto(task);
+                    return assembler.toModel(taskDto);
+                })
                 .collect(Collectors.toList());
 
         return CollectionModel.of(todos, linkTo(methodOn(TodoTaskController.class)
@@ -74,8 +78,9 @@ public class TodoTaskController {
     // get task by id
     @ApiOperation(value = "Find task", notes = "Find the task by ID")
     @GetMapping(value = "/{id}", produces = "application/json")
-    public EntityModel<TodoTask> getTask(@PathVariable("id") Long taskId) {
-        return assembler.toModel(todoTaskService.findTaskById(taskId));
+    public EntityModel<TodoTaskDto> getTask(@PathVariable("id") Long taskId) {
+        TodoTask task = todoTaskService.findTaskById(taskId);
+        return assembler.toModel(todoTaskService.mapToTaskDto(task));
     }
 
     // delete task by id
