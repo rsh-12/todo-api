@@ -8,7 +8,6 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-import org.springframework.hateoas.server.core.Relation;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -27,7 +26,6 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "task")
-@Relation(value = "task", collectionRelation = "tasks")
 public class TodoTask {
 
     @Id
