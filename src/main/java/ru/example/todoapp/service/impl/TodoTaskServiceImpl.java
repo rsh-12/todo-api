@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.example.todoapp.controller.request.TodoTaskRequest;
+import ru.example.todoapp.dto.TodoTaskDto;
 import ru.example.todoapp.entity.TodoTask;
 import ru.example.todoapp.enums.filters.FilterByDate;
 import ru.example.todoapp.exception.CustomException;
@@ -106,6 +107,19 @@ public class TodoTaskServiceImpl implements TodoTaskService {
         task.setCompletionDate(request.completionDate());
 
         return todoTaskRepository.save(task);
+    }
+
+    @Override
+    public TodoTaskDto mapToTaskDto(TodoTask task) {
+        return new TodoTaskDto(
+                task.getId(),
+                task.getTitle(),
+                task.getCompletionDate(),
+                task.isCompleted(),
+                task.isStarred(),
+                task.getCreatedAt(),
+                task.getUpdatedAt()
+        );
     }
 
 }

@@ -1,6 +1,7 @@
 package ru.example.todoapp.service;
 
 import ru.example.todoapp.controller.request.TodoTaskRequest;
+import ru.example.todoapp.dto.TodoTaskDto;
 import ru.example.todoapp.entity.TodoTask;
 import ru.example.todoapp.entity.User;
 import ru.example.todoapp.enums.filters.FilterByDate;
@@ -81,4 +82,5 @@ public interface TodoTaskService {
      */
     TodoTask saveTask(Long taskId, TodoTaskRequest taskRequest);
 
+    TodoTaskDto mapToTaskDto(TodoTask task);
 }
