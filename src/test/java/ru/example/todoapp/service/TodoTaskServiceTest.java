@@ -27,6 +27,7 @@ import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
@@ -173,10 +174,21 @@ public class TodoTaskServiceTest {
     }
 
     // saveTask
-    @Ignore
     @Test
-    public void saveTodoTask_ShouldSaveTask() {
-        // todo fix saveTask test method
+    public void saveTask_ShouldSaveTask() {
+        TodoTask task = new TodoTask("Task");
+        given(taskRepository.findByIdAndUserId(anyLong(), anyLong())).willReturn(Optional.of(task));
+        given(taskRepository.save(any(TodoTask.class))).willReturn(task);
+
+        assertNotEquals("New title", task.getTitle());
+        assertFalse(task.isStarred());
+
+        TodoTaskRequest request = new TodoTaskRequest("New title", LocalDate.now(), true);
+        task = taskService.saveTask(1L, request);
+
+        assertNotNull(task);
+        assertEquals("New title", task.getTitle());
+        assertTrue(task.isStarred());
     }
 
 }
