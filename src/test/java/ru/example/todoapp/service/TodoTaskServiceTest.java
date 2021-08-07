@@ -4,7 +4,6 @@ package ru.example.todoapp.service;
  * Time: 10:21 AM
  * */
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -189,6 +188,14 @@ public class TodoTaskServiceTest {
         assertNotNull(task);
         assertEquals("New title", task.getTitle());
         assertTrue(task.isStarred());
+    }
+
+    @Test
+    public void saveTask_ShouldThrowCustomException() {
+        given(taskRepository.findByIdAndUserId(anyLong(), anyLong())).willReturn(Optional.empty());
+
+        TodoTaskRequest request = new TodoTaskRequest("New title", LocalDate.now(), true);
+        assertThrows(CustomException.class, () -> taskService.saveTask(1L, request));
     }
 
 }
