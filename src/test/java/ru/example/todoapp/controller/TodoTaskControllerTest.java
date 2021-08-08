@@ -9,7 +9,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithUserDetails;
 import ru.example.todoapp.controller.request.TodoTaskRequest;
-import ru.example.todoapp.dto.TodoTaskDto;
 import ru.example.todoapp.entity.TodoTask;
 import ru.example.todoapp.enums.filters.FilterByDate;
 import ru.example.todoapp.exception.CustomException;
@@ -152,11 +151,12 @@ public class TodoTaskControllerTest extends AbstractControllerTestClass {
     @Test
     @WithUserDetails(USER)
     public void createTask_InvalidTitle_ShouldReturnBadRequest() throws Exception {
+        TodoTaskRequest request = new TodoTaskRequest("T", LocalDate.now(), false);
         mvc.perform(post(API_TASKS)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(new TodoTaskDto("T")))) // min=3
-                .andExpect(jsonPath("title", containsInAnyOrder("Size must be between 3 and 80")))
+                .content(objectMapper.writeValueAsString(request))) // min=3
                 .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("title", containsInAnyOrder("Size must be between 3 and 80")))
                 .andDo(print());
 
         verify(taskService, times(0)).createTask(any(TodoTaskRequest.class));
