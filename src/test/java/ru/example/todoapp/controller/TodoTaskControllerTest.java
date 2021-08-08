@@ -48,16 +48,17 @@ public class TodoTaskControllerTest extends AbstractControllerTestClass {
     @WithUserDetails(ADMIN)
     public void getTasks_ShouldReturnListOfTasks() throws Exception {
         given(taskService.findTasks(anyInt(), anyInt(),
-                any(FilterByDate.class), anyString())).willReturn(List.of(
-                new TodoTask("task1", LocalDate.now()),
-                new TodoTask("task2", LocalDate.now())));
+                any(FilterByDate.class), anyString())).willReturn(List.of(mock(TodoTask.class)));
+        given(taskService.mapToTaskDto(any()))
+                .willReturn(new TodoTaskDto(1L, "task", LocalDate.now(),
+                        false, false,
+                        LocalDateTime.now(), LocalDateTime.now()));
 
         mvc.perform(get(API_TASKS)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(jsonPath("_embedded.tasks[0].title", is("task1")))
-                .andExpect(jsonPath("_embedded.tasks[1].title", is("task2")))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("_embedded.tasks[0].title", is("task")));
 
         verify(taskService, times(1)).findTasks(anyInt(), anyInt(),
                 any(FilterByDate.class), anyString());
