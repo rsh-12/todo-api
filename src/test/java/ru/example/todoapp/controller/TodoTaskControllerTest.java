@@ -9,12 +9,14 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithUserDetails;
 import ru.example.todoapp.controller.request.TodoTaskRequest;
+import ru.example.todoapp.dto.TodoTaskDto;
 import ru.example.todoapp.entity.TodoTask;
 import ru.example.todoapp.enums.filters.FilterByDate;
 import ru.example.todoapp.exception.CustomException;
 import ru.example.todoapp.service.TodoTaskService;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.hamcrest.Matchers.containsInAnyOrder;
@@ -64,7 +66,11 @@ public class TodoTaskControllerTest extends AbstractControllerTestClass {
     @Test
     @WithUserDetails(ADMIN)
     public void getTask_ShouldReturnTaskById() throws Exception {
-        given(taskService.findTaskById(anyLong())).willReturn(new TodoTask("task"));
+        given(taskService.findTaskById(anyLong())).willReturn(mock(TodoTask.class));
+        given(taskService.mapToTaskDto(any()))
+                .willReturn(new TodoTaskDto(1L, "task", LocalDate.now(),
+                        false, false,
+                        LocalDateTime.now(), LocalDateTime.now()));
 
         mvc.perform(get(API_TASKS + 1))
                 .andExpect(status().isOk())
