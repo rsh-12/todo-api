@@ -11,6 +11,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.data.domain.Pageable;
 import ru.example.todoapp.controller.request.TodoTaskRequest;
+import ru.example.todoapp.dto.TodoTaskDto;
 import ru.example.todoapp.entity.TodoTask;
 import ru.example.todoapp.entity.User;
 import ru.example.todoapp.enums.filters.FilterByDate;
@@ -196,6 +197,13 @@ public class TodoTaskServiceTest {
 
         TodoTaskRequest request = new TodoTaskRequest("New title", LocalDate.now(), true);
         assertThrows(CustomException.class, () -> taskService.saveTask(1L, request));
+    }
+
+    @Test
+    public void mapToTaskDto() {
+        TodoTask task = new TodoTask("task", LocalDate.now());
+        TodoTaskDto taskDto = taskService.mapToTaskDto(task);
+        assertNotNull(taskDto);
     }
 
 }
