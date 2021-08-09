@@ -240,13 +240,13 @@
                 </executions>
                 <configuration>
                     <excludes>
-                        <exclude>ru/example/todo/actuator/**/*</exclude>
-                        <exclude>ru/example/todo/dto/**/*</exclude>
-                        <exclude>ru/example/todo/domain/**/*</exclude>
-                        <exclude>ru/example/todo/entity/**/*</exclude>
-                        <exclude>ru/example/todo/util/**/*</exclude>
-                        <exclude>ru/example/todo/exception/**/*</exclude>
-                        <exclude>ru/example/todo/TodoApplication.class</exclude>
+                        <exclude>ru/example/todoapp/actuator/**/*</exclude>
+                        <exclude>ru/example/todoapp/dto/**/*</exclude>
+                        <exclude>ru/example/todoapp/domain/**/*</exclude>
+                        <exclude>ru/example/todoapp/entity/**/*</exclude>
+                        <exclude>ru/example/todoapp/util/**/*</exclude>
+                        <exclude>ru/example/todoapp/exception/**/*</exclude>
+                        <exclude>ru/example/todoapp/TodoApplication.class</exclude>
                     </excludes>
                 </configuration>
             </plugin>
