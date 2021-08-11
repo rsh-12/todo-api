@@ -142,6 +142,13 @@ public class TodoTaskServiceTest {
     }
 
     @Test
+    public void deleteTaskById_ShouldThrowCustomException() {
+        given(taskRepository.findById(anyLong())).willReturn(Optional.empty());
+        assertThrows(CustomException.class, () -> taskService.deleteTaskById(1L));
+    }
+
+
+    @Test
     public void createTask_ShouldReturnTask() {
         TodoTaskRequest request = new TodoTaskRequest("Task", LocalDate.now(), true);
 
