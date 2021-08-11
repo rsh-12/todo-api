@@ -133,7 +133,7 @@ public class TodoTaskServiceTest {
         given(task.getId()).willReturn(1L);
         given(task.getUser()).willReturn(user);
         given(authUserFacade.getLoggedUser()).willReturn(user);
-        given(taskRepository.findById(task.getId())).willReturn(Optional.of(task));
+        given(taskRepository.findById(anyLong())).willReturn(Optional.of(task));
 
         doNothing().when(taskRepository).deleteById(anyLong());
         taskService.deleteTaskById(task.getId());
