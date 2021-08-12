@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 import ru.example.todoapp.exception.CustomException;
 import ru.example.todoapp.facade.PasswordFacade;
 import ru.example.todoapp.messaging.MessagingClient;
-import ru.example.todoapp.messaging.request.TokenRequest;
+import ru.example.todoapp.controller.request.TokenRequest;
 import ru.example.todoapp.service.UserService;
 
 @Component

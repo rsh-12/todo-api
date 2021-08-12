@@ -6,6 +6,7 @@ package ru.example.todoapp.messaging.request;
 
 import org.junit.Before;
 import org.junit.Test;
+import ru.example.todoapp.controller.request.EmailRequest;
 
 import static org.junit.Assert.assertEquals;
 
