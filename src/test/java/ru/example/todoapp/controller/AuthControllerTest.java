@@ -15,8 +15,8 @@ import ru.example.todoapp.entity.User;
 import ru.example.todoapp.exception.CustomException;
 import ru.example.todoapp.facade.PasswordFacade;
 import ru.example.todoapp.messaging.MessagingClient;
-import ru.example.todoapp.messaging.request.EmailRequest;
-import ru.example.todoapp.messaging.request.TokenRequest;
+import ru.example.todoapp.controller.request.EmailRequest;
+import ru.example.todoapp.controller.request.TokenRequest;
 import ru.example.todoapp.service.UserService;
 
 import java.time.LocalDateTime;
@@ -266,7 +266,8 @@ public class AuthControllerTest extends AbstractControllerTestClass {
     public void updatePassword_PasswordIsNull_ShouldReturnBadRequest() throws Exception {
         mvc.perform(post(API_AUTH + "password/reset")
                 .contentType(MediaType.APPLICATION_JSON)
-                .param("token", "someToken"))
+                .param("token", "someToken")
+                .content(Map.of("something", "wrong").toString()))
                 .andDo(print())
                 .andExpect(status().isBadRequest());
 
