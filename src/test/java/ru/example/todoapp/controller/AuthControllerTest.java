@@ -10,17 +10,17 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.http.MediaType;
 import ru.example.todoapp.controller.request.CredentialsRequest;
+import ru.example.todoapp.controller.request.EmailRequest;
+import ru.example.todoapp.controller.request.PasswordRequest;
+import ru.example.todoapp.controller.request.TokenRequest;
 import ru.example.todoapp.dto.UserDto;
 import ru.example.todoapp.entity.User;
 import ru.example.todoapp.exception.CustomException;
 import ru.example.todoapp.facade.PasswordFacade;
 import ru.example.todoapp.messaging.MessagingClient;
-import ru.example.todoapp.controller.request.EmailRequest;
-import ru.example.todoapp.controller.request.TokenRequest;
 import ru.example.todoapp.service.UserService;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.Map;
 
 import static org.hamcrest.Matchers.containsInAnyOrder;
@@ -245,18 +245,15 @@ public class AuthControllerTest extends AbstractControllerTestClass {
         verify(messagingService, times(1)).send(any(EmailRequest.class));
     }
 
-
     @Test
     public void updatePassword_ShouldReturnStatusOk() throws Exception {
-        Map<String, String> body = new HashMap<>();
-        body.put("password", "somePassword");
-
+        PasswordRequest request = new PasswordRequest("password12345");
         doNothing().when(passwordFacade).updatePassword(any(TokenRequest.class), anyString());
 
         mvc.perform(post(API_AUTH + "password/reset")
                 .contentType(MediaType.APPLICATION_JSON)
                 .param("token", "someToken")
-                .content(objectMapper.writeValueAsString(body)))
+                .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk());
 
         verify(passwordFacade, times(1)).updatePassword(any(TokenRequest.class), anyString());
@@ -276,12 +273,9 @@ public class AuthControllerTest extends AbstractControllerTestClass {
 
     @Test
     public void updatePassword_TokenIsNull_ShouldReturnBadRequest() throws Exception {
-        Map<String, String> body = new HashMap<>();
-        body.put("password", "somePassword");
-
         mvc.perform(post(API_AUTH + "password/reset")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(body.toString()))
+                .content(objectMapper.writeValueAsString(new PasswordRequest("password"))))
                 .andDo(print())
                 .andExpect(status().isBadRequest());
 
