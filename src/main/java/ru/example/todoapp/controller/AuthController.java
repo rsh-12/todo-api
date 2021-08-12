@@ -4,7 +4,6 @@ package ru.example.todoapp.controller;
  * Time: 6:10 PM
  * */
 
-import com.fasterxml.jackson.databind.JsonNode;
 import io.swagger.annotations.Api;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
@@ -16,12 +15,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import ru.example.todoapp.controller.request.CredentialsRequest;
+import ru.example.todoapp.controller.request.EmailRequest;
+import ru.example.todoapp.controller.request.PasswordRequest;
+import ru.example.todoapp.controller.request.TokenRequest;
 import ru.example.todoapp.dto.UserDto;
 import ru.example.todoapp.entity.User;
 import ru.example.todoapp.facade.PasswordFacade;
 import ru.example.todoapp.messaging.MessagingClient;
-import ru.example.todoapp.messaging.request.EmailRequest;
-import ru.example.todoapp.messaging.request.TokenRequest;
 import ru.example.todoapp.service.UserService;
 
 import javax.servlet.http.HttpServletRequest;
@@ -75,15 +75,9 @@ public class AuthController {
 
     @PostMapping(value = "/password/reset")
     public ResponseEntity<String> updatePassword(@RequestParam(value = "token") TokenRequest token,
-                                                 @RequestBody JsonNode payload) {
-        JsonNode password = payload.get("password");
-
-        if (password == null) {
-            return ResponseEntity.badRequest().body("Token is required");
-        } else {
-            passwordFacade.updatePassword(token, password.asText());
-            return ResponseEntity.ok().build();
-        }
+                                                 @RequestBody PasswordRequest request) {
+        passwordFacade.updatePassword(token, request.getPassword());
+        return ResponseEntity.ok().build();
     }
 
     private String getClientIp(HttpServletRequest request) {
