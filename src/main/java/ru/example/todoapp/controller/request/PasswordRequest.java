@@ -11,7 +11,10 @@ public class PasswordRequest {
 
     @NotBlank
     @Size(min = 4, message = "Password is required")
-    private final String password;
+    private String password;
+
+    public PasswordRequest() {
+    }
 
     public PasswordRequest(String password) {
         this.password = password;
@@ -20,4 +23,9 @@ public class PasswordRequest {
     public String getPassword() {
         return password;
     }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
 }
