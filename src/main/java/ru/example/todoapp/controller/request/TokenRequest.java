@@ -1,4 +1,4 @@
-package ru.example.todoapp.messaging.request;
+package ru.example.todoapp.controller.request;
 /*
  * Date: 5/29/21
  * Time: 10:39 PM
