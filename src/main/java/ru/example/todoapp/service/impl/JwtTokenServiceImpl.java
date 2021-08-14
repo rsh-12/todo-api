@@ -25,6 +25,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 @Service
@@ -59,12 +60,13 @@ public class JwtTokenServiceImpl implements JwtTokenService {
     public String resolveAccessToken(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
 
-        if (bearerToken != null) {
-            return (bearerToken.startsWith("Bearer") || bearerToken.startsWith("bearer")) ?
-                    bearerToken.substring(7) :
-                    bearerToken;
-        }
-        return "";
+        return resolveToken(bearerToken, () -> bearerToken.startsWith("Bearer")
+                ? bearerToken.substring(7)
+                : bearerToken);
+    }
+
+    private String resolveToken(String bearerToken, Supplier<String> supplier) {
+        return bearerToken != null ? supplier.get() : "";
     }
 
     @Override
