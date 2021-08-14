@@ -2,13 +2,14 @@ package ru.example.todoapp.service;
 
 import ru.example.todoapp.controller.request.TodoSectionRequest;
 import ru.example.todoapp.dto.TodoSectionDto;
-import ru.example.todoapp.repository.projection.TodoSectionProjection;
 import ru.example.todoapp.entity.TodoSection;
 import ru.example.todoapp.entity.TodoTask;
 import ru.example.todoapp.entity.User;
 import ru.example.todoapp.enums.filters.FilterByOperation;
+import ru.example.todoapp.repository.projection.TodoSectionProjection;
 
 import java.util.List;
+import java.util.function.Function;
 
 /**
  * This interface contains methods for working with TodoSection.
@@ -44,9 +45,9 @@ public interface TodoSectionService {
      *
      * @param sectionId the TodoSection id
      * @throws ru.example.todoapp.exception.CustomException if the TodoSection by id is not found
-     *                                                   or if the Principal is not equal to the User
-     *                                                   of the TodoSeciton and the Principal does not have
-     *                                                   an Admin role
+     *                                                      or if the Principal is not equal to the User
+     *                                                      of the TodoSeciton and the Principal does not have
+     *                                                      an Admin role
      * @see User
      */
     void deleteSectionById(Long sectionId);
@@ -64,13 +65,13 @@ public interface TodoSectionService {
     /**
      * Updates the TodoSection by id.
      *
-     * @param sectionId the TodoSection id
-     * @param sectionRequest   the TodoSection
+     * @param sectionId      the TodoSection id
+     * @param sectionRequest the TodoSection
      * @return the updated TodoSeciton
      * @throws ru.example.todoapp.exception.CustomException if the TodoSection by id is not found
-     *                                                   or if the Principal is not equal to the User
-     *                                                   of the TodoSeciton and the Principal does not have
-     *                                                   an Admin role
+     *                                                      or if the Principal is not equal to the User
+     *                                                      of the TodoSeciton and the Principal does not have
+     *                                                      an Admin role
      * @see TodoSection
      */
     TodoSection updateSection(Long sectionId, TodoSectionRequest sectionRequest);
@@ -91,5 +92,7 @@ public interface TodoSectionService {
     TodoSectionDto mapToSectionDto(TodoSectionProjection projection);
 
     TodoSectionDto mapToSectionDto(TodoSection section);
+
+    <T, R> TodoSectionDto mapToSectionDto(T t, Function<T, TodoSectionDto> f);
 
 }

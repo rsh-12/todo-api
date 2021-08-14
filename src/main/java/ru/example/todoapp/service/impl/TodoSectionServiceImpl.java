@@ -19,6 +19,7 @@ import ru.example.todoapp.repository.projection.TodoSectionProjection;
 import ru.example.todoapp.service.TodoSectionService;
 
 import java.util.List;
+import java.util.function.Function;
 
 import static ru.example.todoapp.enums.filters.FilterByOperation.MOVE;
 import static ru.example.todoapp.enums.filters.FilterByOperation.REMOVE;
@@ -118,6 +119,11 @@ public class TodoSectionServiceImpl implements TodoSectionService {
                 section.getTitle(),
                 section.getUpdatedAt(),
                 section.getCreatedAt());
+    }
+
+
+    public <T, R> TodoSectionDto mapToSectionDto(T t, Function<T, TodoSectionDto> f) {
+        return f.apply(t);
     }
 
 }
