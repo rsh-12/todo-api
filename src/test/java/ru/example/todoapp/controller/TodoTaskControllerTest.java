@@ -6,7 +6,6 @@ package ru.example.todoapp.controller;
 
 import org.junit.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithUserDetails;
 import ru.example.todoapp.controller.request.TodoTaskRequest;
 import ru.example.todoapp.dto.TodoTaskDto;
@@ -32,8 +31,10 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -55,7 +56,7 @@ public class TodoTaskControllerTest extends AbstractControllerTestClass {
                         LocalDateTime.now(), LocalDateTime.now()));
 
         mvc.perform(get(API_TASKS)
-                .contentType(MediaType.APPLICATION_JSON))
+                .contentType(APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("_embedded.tasks[0].title", is("task")));
@@ -138,7 +139,7 @@ public class TodoTaskControllerTest extends AbstractControllerTestClass {
 
         String body = "{\"title\": \"Task\"}";
         mvc.perform(post(API_TASKS)
-                .contentType(MediaType.APPLICATION_JSON)
+                .contentType(APPLICATION_JSON)
                 .content(body))
                 .andExpect(status().isCreated());
 
@@ -149,7 +150,7 @@ public class TodoTaskControllerTest extends AbstractControllerTestClass {
     @WithUserDetails(USER)
     public void createTask_ShouldReturnBadRequest() throws Exception {
         mvc.perform(post(API_TASKS)
-                .contentType(MediaType.APPLICATION_JSON))
+                .contentType(APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
 
         verify(taskService, times(0)).createTask(any(TodoTaskRequest.class));
@@ -160,7 +161,7 @@ public class TodoTaskControllerTest extends AbstractControllerTestClass {
     public void createTask_InvalidTitle_ShouldReturnBadRequest() throws Exception {
         TodoTaskRequest request = new TodoTaskRequest("T", LocalDate.now(), false);
         mvc.perform(post(API_TASKS)
-                .contentType(MediaType.APPLICATION_JSON)
+                .contentType(APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request))) // min=3
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("title", containsInAnyOrder("Size must be between 3 and 80")))
@@ -169,5 +170,12 @@ public class TodoTaskControllerTest extends AbstractControllerTestClass {
         verify(taskService, times(0)).createTask(any(TodoTaskRequest.class));
     }
 
-
+    @Test
+    @WithUserDetails(USER)
+    public void updateTask_ShouldReturnBadRequest() throws Exception {
+        mvc.perform(patch(API_TASKS + 1)
+                .contentType(APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+    
 }
