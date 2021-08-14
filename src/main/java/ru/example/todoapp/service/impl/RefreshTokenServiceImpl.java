@@ -29,20 +29,16 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
 
     @Override
     public String createRefreshToken(Long userId, String ip) {
-        RefreshToken refreshToken;
         String token = new RandomStringGenerator(64).nextString();
-        LocalDateTime expiresAt = LocalDateTime.now().plus(tokenProperties.getRefreshTokenValidity(), ChronoUnit.MILLIS);
+        LocalDateTime expiresAt = LocalDateTime.now()
+                .plus(tokenProperties.getRefreshTokenValidity(), ChronoUnit.MILLIS);
 
-        Optional<RefreshToken> optionalRefreshToken = refreshTokenRepository.findByUserId(userId);
-        if (optionalRefreshToken.isPresent()) {
-            refreshToken = optionalRefreshToken.get();
-            refreshToken.setValue(token);
-            refreshToken.setExpiresAt(expiresAt);
-        } else {
-            refreshToken = new RefreshToken(token, userId, expiresAt);
-        }
+        RefreshToken refreshToken = refreshTokenRepository.findByUserId(userId)
+                .orElse(new RefreshToken(userId));
+        refreshToken.setValue(token);
+        refreshToken.setExpiresAt(expiresAt);
 
-        if (ip != null) refreshToken.setCreatedByIp(ip);
+        Optional.ofNullable(ip).ifPresent(refreshToken::setCreatedByIp);
         saveRefreshToken(refreshToken);
 
         return token;
