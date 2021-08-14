@@ -46,6 +46,10 @@ public class RefreshToken {
     public RefreshToken() {
     }
 
+    public RefreshToken(Long userId) {
+        this.userId = userId;
+    }
+
     public RefreshToken(String value, Long userId, LocalDateTime expiresAt) {
         this.value = value;
         this.userId = userId;
