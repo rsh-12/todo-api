@@ -93,6 +93,6 @@ public interface TodoSectionService {
 
     TodoSectionDto mapToSectionDto(TodoSection section);
 
-    <T, R> TodoSectionDto mapToSectionDto(T t, Function<T, TodoSectionDto> f);
+    <T> TodoSectionDto mapToSectionDto(T t, Function<T, TodoSectionDto> f);
 
 }

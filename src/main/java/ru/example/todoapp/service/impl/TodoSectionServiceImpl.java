@@ -122,7 +122,7 @@ public class TodoSectionServiceImpl implements TodoSectionService {
     }
 
 
-    public <T, R> TodoSectionDto mapToSectionDto(T t, Function<T, TodoSectionDto> f) {
+    public <T> TodoSectionDto mapToSectionDto(T t, Function<T, TodoSectionDto> f) {
         return f.apply(t);
     }
 
