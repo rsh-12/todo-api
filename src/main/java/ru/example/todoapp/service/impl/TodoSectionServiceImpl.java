@@ -28,7 +28,7 @@ import static ru.example.todoapp.service.impl.util.ServiceUtil.validateUser;
 @Service
 public class TodoSectionServiceImpl implements TodoSectionService {
 
-    private static final Logger log = LoggerFactory.getLogger(TodoSectionServiceImpl.class.getName());
+    private static final Logger log = LoggerFactory.getLogger(TodoSectionServiceImpl.class);
 
     private final TodoSectionRepository todoSectionRepository;
     private final AuthUserFacade authUserFacade;

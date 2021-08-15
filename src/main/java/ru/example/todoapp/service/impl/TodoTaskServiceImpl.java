@@ -33,7 +33,7 @@ import static ru.example.todoapp.service.impl.util.ServiceUtil.validateUser;
 @Service
 public class TodoTaskServiceImpl implements TodoTaskService {
 
-    private static final Logger log = LoggerFactory.getLogger(TodoTaskServiceImpl.class.getName());
+    private static final Logger log = LoggerFactory.getLogger(TodoTaskServiceImpl.class);
 
     private final TodoTaskRepository todoTaskRepository;
     private final AuthUserFacade authUserFacade;
