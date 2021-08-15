@@ -50,12 +50,6 @@ public class JwtTokenServiceImpl implements JwtTokenService {
                 .compact();
     }
 
-
-    private static Date getValidity(long millis) {
-        Date now = new Date();
-        return new Date(now.getTime() + millis);
-    }
-
     @Override
     public String resolveAccessToken(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
@@ -128,6 +122,11 @@ public class JwtTokenServiceImpl implements JwtTokenService {
         return roles.stream()
                 .map(Role::valueOf)
                 .collect(Collectors.toSet());
+    }
+
+    private static Date getValidity(long millis) {
+        Date now = new Date();
+        return new Date(now.getTime() + millis);
     }
 
 }
