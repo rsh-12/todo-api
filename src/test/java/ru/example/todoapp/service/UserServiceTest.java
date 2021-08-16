@@ -10,30 +10,19 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import ru.example.todoapp.config.properties.TokenProperties;
-import ru.example.todoapp.controller.request.CredentialsRequest;
 import ru.example.todoapp.entity.User;
 import ru.example.todoapp.exception.CustomException;
 import ru.example.todoapp.repository.UserRepository;
-import ru.example.todoapp.security.UserDetailsImpl;
 import ru.example.todoapp.service.impl.UserServiceImpl;
 
-import java.util.Map;
 import java.util.Optional;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.anySet;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
@@ -46,22 +35,10 @@ public class UserServiceTest {
     private UserServiceImpl userService;
 
     @Mock
-    private AuthenticationManager authManager;
-
-    @Mock
-    private JwtTokenService jwtTokenService;
-
-    @Mock
-    private RefreshTokenService refreshTokenService;
-
-    @Mock
     private UserRepository userRepository;
 
     @Mock
     private TokenProperties tokenProperties;
-
-    @Mock
-    private BCryptPasswordEncoder passwordEncoder;
 
     @Before
     public void setUp() {
@@ -70,6 +47,7 @@ public class UserServiceTest {
     }
 
     // login
+/*
     @Test
     public void login_ShouldAuthUserAndReturnTokens() {
         User user = mock(User.class);
@@ -90,21 +68,27 @@ public class UserServiceTest {
         assertEquals("1800000", response.get("access_token_expires"));
         assertEquals("86400000", response.get("refresh_token_expires"));
     }
+*/
 
+/*
     @Test
     public void login_ShouldThrowCustomException() {
         given(authManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
                 .willThrow(UsernameNotFoundException.class);
         assertThrows(CustomException.class, () -> userService.login(new CredentialsRequest("username", "password"), ""));
     }
+*/
 
     // register
+/*
     @Test
     public void register_ShouldThrowException() {
         given(userRepository.existsByUsername(anyString())).willReturn(true);
         assertThrows(CustomException.class, () -> userService.register(new CredentialsRequest("user", "pwd")));
     }
+*/
 
+/*
     @Test
     public void register_ShouldDoNoting() {
         given(userRepository.existsByUsername(anyString())).willReturn(false);
@@ -112,6 +96,7 @@ public class UserServiceTest {
         given(passwordEncoder.encode(anyString())).willReturn("$ecryptedString");
         userService.register(new CredentialsRequest("user", "pwd"));
     }
+*/
 
     // generateNewTokens
 

@@ -52,27 +52,28 @@ public class AuthControllerTest extends AbstractControllerTestClass {
     private MessagingClient messagingService;
 
     // Login: success
-    @Test
-    public void login_ShouldReturnTokens() throws Exception {
-        CredentialsRequest request = new CredentialsRequest("username@mail.ru", "password");
-
-        given(userService.login(any(CredentialsRequest.class), anyString()))
-                .willReturn(Map.of("access_token", "access_token"));
-
-        String response = mvc.perform(post(API_AUTH + "login")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(usernamePasswordRequestBody(request.username(), request.password())))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andReturn()
-                .getResponse()
-                .getContentAsString();
-
-        assertTrue(response.contains("access_token"));
-        verify(userService, times(1)).login(any(), anyString());
-    }
+//    @Test
+//    public void login_ShouldReturnTokens() throws Exception {
+//        CredentialsRequest request = new CredentialsRequest("username@mail.ru", "password");
+//
+//        given(userService.login(any(CredentialsRequest.class), anyString()))
+//                .willReturn(Map.of("access_token", "access_token"));
+//
+//        String response = mvc.perform(post(API_AUTH + "login")
+//                .contentType(MediaType.APPLICATION_JSON)
+//                .content(usernamePasswordRequestBody(request.username(), request.password())))
+//                .andDo(print())
+//                .andExpect(status().isOk())
+//                .andReturn()
+//                .getResponse()
+//                .getContentAsString();
+//
+//        assertTrue(response.contains("access_token"));
+//        verify(userService, times(1)).login(any(), anyString());
+//    }
 
     // Login: fail
+/*
     @Test
     public void login_NotFound_ShouldThrowCustomException() throws Exception {
         CredentialsRequest request = new CredentialsRequest("username@mail.ru", "password");
@@ -90,7 +91,9 @@ public class AuthControllerTest extends AbstractControllerTestClass {
 
         verify(userService, times(1)).login(any(CredentialsRequest.class), anyString());
     }
+*/
 
+/*
     @Test
     public void login_WrongPassword_ShouldThrowCustomException() throws Exception {
         CredentialsRequest request = new CredentialsRequest("username@mail.ru", "password");
@@ -108,27 +111,28 @@ public class AuthControllerTest extends AbstractControllerTestClass {
 
         verify(userService, times(1)).login(any(CredentialsRequest.class), anyString());
     }
+*/
 
     // Register: success
-    @Test
-    public void register_ShouldReturnOk() throws Exception {
-        User user = mock(User.class);
-        given(user.getUsername()).willReturn("username@mail.com");
-        given(user.getPassword()).willReturn("password");
-        given(user.getCreatedAt()).willReturn(LocalDateTime.now());
-
-        given(userService.register(any())).willReturn(user);
-        given(userService.mapToUserDto(any(User.class)))
-                .willReturn(new UserDto("username", LocalDateTime.now()));
-
-        mvc.perform(post(API_AUTH + "register")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(usernamePasswordRequestBody(user.getUsername(), user.getPassword())))
-                .andDo(print())
-                .andExpect(status().isCreated());
-
-        verify(userService, times(1)).register(any(CredentialsRequest.class));
-    }
+//    @Test
+//    public void register_ShouldReturnOk() throws Exception {
+//        User user = mock(User.class);
+//        given(user.getUsername()).willReturn("username@mail.com");
+//        given(user.getPassword()).willReturn("password");
+//        given(user.getCreatedAt()).willReturn(LocalDateTime.now());
+//
+//        given(userService.register(any())).willReturn(user);
+//        given(userService.mapToUserDto(any(User.class)))
+//                .willReturn(new UserDto("username", LocalDateTime.now()));
+//
+//        mvc.perform(post(API_AUTH + "register")
+//                .contentType(MediaType.APPLICATION_JSON)
+//                .content(usernamePasswordRequestBody(user.getUsername(), user.getPassword())))
+//                .andDo(print())
+//                .andExpect(status().isCreated());
+//
+//        verify(userService, times(1)).register(any(CredentialsRequest.class));
+//    }
 
     // Register: fail
     @Test
@@ -156,39 +160,39 @@ public class AuthControllerTest extends AbstractControllerTestClass {
     }
 
     // Token: fail
-    @Test
-    public void getToken_NotFound_ShouldThrowCustomException() throws Exception {
-        final String TOKEN = "tokenDoesNotExist";
+//    @Test
+//    public void getToken_NotFound_ShouldThrowCustomException() throws Exception {
+//        final String TOKEN = "tokenDoesNotExist";
+//
+//        given(userService.generateNewTokens(anyString(), anyString()))
+//                .willThrow(CustomException.badRequest("Refresh token is not valid or expired, please, try to log in"));
+//
+//        mvc.perform(post(API_AUTH + "token")
+//                .header("token", TOKEN))
+//                .andDo(print())
+//                .andExpect(status().isBadRequest())
+//                .andExpect(jsonPath("message",
+//                        containsStringIgnoringCase("Refresh token is not valid or expired, please, try to log in")));
+//
+//        verify(userService, times(1)).generateNewTokens(anyString(), anyString());
+//    }
 
-        given(userService.generateNewTokens(anyString(), anyString()))
-                .willThrow(CustomException.badRequest("Refresh token is not valid or expired, please, try to log in"));
-
-        mvc.perform(post(API_AUTH + "token")
-                .header("token", TOKEN))
-                .andDo(print())
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("message",
-                        containsStringIgnoringCase("Refresh token is not valid or expired, please, try to log in")));
-
-        verify(userService, times(1)).generateNewTokens(anyString(), anyString());
-    }
-
-    @Test
-    public void getToken_ShouldReturnNewTokens() throws Exception {
-        given(userService.generateNewTokens(anyString(), anyString()))
-                .willReturn(Map.of("access_token", "access_token", "refresh_token", "refresh_token"));
-
-        String response = mvc.perform(post(API_AUTH + "token")
-                .header("token", "refreshToken"))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andReturn()
-                .getResponse()
-                .getContentAsString();
-
-        assertTrue(response.contains("access_token") && response.contains("refresh_token"));
-        verify(userService, times(1)).generateNewTokens(anyString(), anyString());
-    }
+//    @Test
+//    public void getToken_ShouldReturnNewTokens() throws Exception {
+//        given(userService.generateNewTokens(anyString(), anyString()))
+//                .willReturn(Map.of("access_token", "access_token", "refresh_token", "refresh_token"));
+//
+//        String response = mvc.perform(post(API_AUTH + "token")
+//                .header("token", "refreshToken"))
+//                .andDo(print())
+//                .andExpect(status().isOk())
+//                .andReturn()
+//                .getResponse()
+//                .getContentAsString();
+//
+//        assertTrue(response.contains("access_token") && response.contains("refresh_token"));
+//        verify(userService, times(1)).generateNewTokens(anyString(), anyString());
+//    }
 
     @Test
     public void sendPasswordResetToken_ShouldReturnStatusOk() throws Exception {
