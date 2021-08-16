@@ -22,8 +22,6 @@ import ru.example.todoapp.service.AuthService;
 import ru.example.todoapp.service.JwtTokenService;
 import ru.example.todoapp.service.RefreshTokenService;
 
-import java.util.Collections;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 @Service
@@ -85,13 +83,11 @@ public class AuthServiceImpl implements AuthService {
         String accessToken = jwtTokenService.buildAccessToken(user.getId(), user.getRoles());
         String refreshToken = refreshTokenService.createRefreshToken(user.getId(), ip);
 
-        return Collections.unmodifiableMap(new LinkedHashMap<>() {{
-            put("access_token", accessToken);
-            put("refresh_token", refreshToken);
-            put("token_type", "Bearer");
-            put("access_token_expires", String.valueOf(tokenProperties.getAccessTokenValidity()));
-            put("refresh_token_expires", String.valueOf(tokenProperties.getRefreshTokenValidity()));
-        }});
+        return Map.of("access_token", accessToken,
+                "expires_in", String.valueOf(tokenProperties.getAccessTokenValidity()),
+                "refresh_token", refreshToken,
+                "refresh_expires_in", String.valueOf(tokenProperties.getRefreshTokenValidity()),
+                "token_type", "Bearer");
     }
 
 
