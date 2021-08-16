@@ -51,10 +51,10 @@ public class JwtTokenServiceTest {
     // buildAccessToken
     @Test
     public void buildAccessToken_ShouldReturnAccessToken() throws CustomException {
-        String accessToken = jwtTokenService.buildAccessToken(1L, Set.of(Role.USER));
+        String accessToken = jwtTokenService.buildAccessToken(1L, Set.of(Role.USER, Role.ADMIN));
         assertNotNull(accessToken);
         assertEquals(3, accessToken.split("\\.").length);
-        System.out.println("accessToken = " + accessToken);
+        System.out.println(accessToken);
     }
 
 
