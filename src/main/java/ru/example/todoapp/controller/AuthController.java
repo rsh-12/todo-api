@@ -22,7 +22,8 @@ import ru.example.todoapp.dto.UserDto;
 import ru.example.todoapp.entity.User;
 import ru.example.todoapp.facade.PasswordFacade;
 import ru.example.todoapp.messaging.MessagingClient;
-import ru.example.todoapp.service.UserService;
+import ru.example.todoapp.service.AuthService;
+import ru.example.todoapp.service.impl.util.ServiceUtil;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -36,12 +37,12 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @RequestMapping("/api/auth")
 public class AuthController {
 
-    private final UserService userService;
+    private final AuthService authService;
     private final PasswordFacade passwordFacade;
     private final MessagingClient messagingService;
 
-    public AuthController(UserService userService, PasswordFacade passwordFacade, MessagingClient messagingService) {
-        this.userService = userService;
+    public AuthController(AuthService authService, PasswordFacade passwordFacade, MessagingClient messagingService) {
+        this.authService = authService;
         this.passwordFacade = passwordFacade;
         this.messagingService = messagingService;
     }
@@ -49,21 +50,21 @@ public class AuthController {
     @PostMapping(value = "/login", produces = "application/json")
     public ResponseEntity<Map<String, String>> login(@Valid @RequestBody CredentialsRequest credentials,
                                                      HttpServletRequest request) {
-        Map<String, String> tokens = userService.login(credentials, getClientIp(request));
+        Map<String, String> tokens = authService.login(credentials, getClientIp(request));
         return ResponseEntity.ok(tokens);
     }
 
     @PostMapping(value = "/register", produces = "application/json")
     @ResponseStatus(HttpStatus.CREATED)
     public EntityModel<UserDto> register(@Valid @RequestBody CredentialsRequest credentials) {
-        User user = userService.register(credentials);
-        return EntityModel.of(userService.mapToUserDto(user),
+        User user = authService.register(credentials);
+        return EntityModel.of(ServiceUtil.mapToUserDto(user),
                 linkTo(methodOn(UserController.class).getUser(user.getId())).withSelfRel());
     }
 
     @PostMapping(value = "/token", produces = "application/json")
     public ResponseEntity<Map<String, String>> getTokens(HttpServletRequest request) {
-        Map<String, String> tokens = userService.generateNewTokens(request.getHeader("token"), getClientIp(request));
+        Map<String, String> tokens = authService.generateNewTokens(request.getHeader("token"), getClientIp(request));
         return ResponseEntity.ok(tokens);
     }
 
