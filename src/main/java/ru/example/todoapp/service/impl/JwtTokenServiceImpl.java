@@ -45,8 +45,11 @@ public class JwtTokenServiceImpl implements JwtTokenService {
 
         return Jwts.builder()
                 .setClaims(claims)
+                .setIssuedAt(new Date())
                 .setExpiration(getValidity(tokenProperties.getAccessTokenValidity()))
+                .setAudience("account")
                 .signWith(getSecretKey())
+                .setHeaderParam("typ", "JWT")
                 .compact();
     }
 
