@@ -81,7 +81,6 @@ public class JwtTokenServiceImpl implements JwtTokenService {
         return Keys.hmacShaKeyFor(tokenProperties.getSecret().getBytes(StandardCharsets.UTF_8));
     }
 
-
     @Override
     public Long getUserIdFromAccessToken(String accessToken) {
         Claims claims = getClaimsBody(accessToken);
