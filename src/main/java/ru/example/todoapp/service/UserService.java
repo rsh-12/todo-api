@@ -1,47 +1,13 @@
 package ru.example.todoapp.service;
 
-import ru.example.todoapp.controller.request.CredentialsRequest;
-import ru.example.todoapp.dto.UserDto;
 import ru.example.todoapp.entity.User;
 import ru.example.todoapp.exception.CustomException;
-
-import java.util.Map;
 
 /**
  * This interface contains authentication and
  * user management methods.
  */
 public interface UserService {
-
-    /**
-     * Authenticates the user and returns access and refresh tokens.
-     *
-     * @param credentials contains username (email) and password
-     * @param ip   the ip
-     * @return access, refresh tokens, token type and expiration time in milliseconds
-     * @throws CustomException if the user by username not found in the database
-     */
-    Map<String, String> login(CredentialsRequest credentials, String ip);
-
-    /**
-     * Saves the user's name and password to the database, if the name is available,
-     * otherwise throws the CustomException.
-     *
-     * @param credentials containes useraname (email) and password
-     * @throws CustomException if the username already in use
-     * @return
-     */
-    User register(CredentialsRequest credentials);
-
-    /**
-     * Generates new access and refresh tokens if the old refresh token is valid.
-     * Calls <b>buildResponseBody</b> method.
-     *
-     * @param refreshToken the refresh token
-     * @param ip           the ip address
-     * @return LinkedHashMap with tokens and some token properties
-     */
-    Map<String, String> generateNewTokens(String refreshToken, String ip);
 
     /**
      * Deletes the user by id if it exists in the database,
@@ -79,5 +45,4 @@ public interface UserService {
      */
     boolean existsByUsername(String email);
 
-    UserDto mapToUserDto(User user);
 }
