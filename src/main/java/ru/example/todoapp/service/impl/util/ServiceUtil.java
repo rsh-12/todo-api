@@ -5,6 +5,7 @@ package ru.example.todoapp.service.impl.util;
  * */
 
 import org.springframework.data.domain.Sort;
+import ru.example.todoapp.dto.UserDto;
 import ru.example.todoapp.entity.User;
 import ru.example.todoapp.enums.Role;
 import ru.example.todoapp.exception.CustomException;
@@ -26,6 +27,10 @@ public record ServiceUtil() {
         if (!isValid) {
             throw CustomException.forbidden("Not enough permissions");
         }
+    }
+
+    public static UserDto mapToUserDto(User user) {
+        return new UserDto(user.getUsername(), user.getCreatedAt());
     }
 
 }
