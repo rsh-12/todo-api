@@ -54,7 +54,7 @@ public class JwtTokenServiceImpl implements JwtTokenService {
     public String resolveAccessToken(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
 
-        return resolveToken(bearerToken, () -> bearerToken.startsWith("Bearer")
+        return resolveToken(bearerToken, () -> (bearerToken.startsWith("Bearer") || bearerToken.startsWith("bearer"))
                 ? bearerToken.substring(7)
                 : bearerToken);
     }
@@ -117,6 +117,7 @@ public class JwtTokenServiceImpl implements JwtTokenService {
                 .getBody();
     }
 
+    @SuppressWarnings("unchecked")
     private Set<Role> extractRoles(Claims claims) {
         List<String> roles = claims.get("auth", List.class);
         return roles.stream()
