@@ -4,34 +4,27 @@ package ru.example.todoapp.util;
  * Time: 1:09 PM
  * */
 
-import java.security.SecureRandom;
 import java.util.Locale;
 import java.util.Random;
 
 public final class RandomStringGenerator {
 
-    private final Random random;
-    private final char[] symbols;
-    private final char[] buf;
+    private static final int LENGTH = 64;
+    private static final char[] buf = new char[LENGTH];
 
-    public static final String UPPER = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    public static final String LOWER = UPPER.toLowerCase(Locale.ROOT);
-    public static final String DIGITS = "0123456789";
-    public static final String ALPHANUM = UPPER + LOWER + DIGITS;
+    private static final String UPPER = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    private static final String LOWER = UPPER.toLowerCase(Locale.ROOT);
+    private static final String DIGITS = "0123456789";
+    private static final String ALPHANUM = UPPER + LOWER + DIGITS;
 
-    public RandomStringGenerator(int length) {
-        if (length < 32) throw new IllegalArgumentException();
-        this.random = new SecureRandom();
-        this.symbols = ALPHANUM.toCharArray();
-        this.buf = new char[length];
-    }
+    private static final char[] symbols = ALPHANUM.toCharArray();
 
     /**
      * Generate a random string.
      */
-    public String nextString() {
+    public static String nextString() {
         for (int idx = 0; idx < buf.length; ++idx)
-            buf[idx] = symbols[random.nextInt(symbols.length)];
+            buf[idx] = symbols[new Random().nextInt(symbols.length)];
         return new String(buf);
     }
 
