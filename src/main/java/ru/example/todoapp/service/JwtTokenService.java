@@ -23,6 +23,8 @@ public interface JwtTokenService {
      */
     String buildAccessToken(Long userId, Set<Role> roles);
 
+    String buildRefreshToken();
+
     /**
      * Gets the access token from header param "Authorization".
      *
@@ -39,7 +41,7 @@ public interface JwtTokenService {
      * @return the boolean
      * @throws ru.example.todoapp.exception.CustomException if the access token has expired
      */
-    boolean isAccessTokenValid(String accessToken);
+    boolean isTokenValid(String accessToken);
 
     /**
      * Gets the user id from the access token body.

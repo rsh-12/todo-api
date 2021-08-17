@@ -17,6 +17,7 @@ import ru.example.todoapp.enums.Role;
 import ru.example.todoapp.exception.CustomException;
 import ru.example.todoapp.security.UserDetailsImpl;
 import ru.example.todoapp.service.JwtTokenService;
+import ru.example.todoapp.util.RandomStringGenerator;
 
 import javax.annotation.PostConstruct;
 import javax.crypto.SecretKey;
@@ -44,12 +45,27 @@ public class JwtTokenServiceImpl implements JwtTokenService {
         claims.put("auth", roles);
 
         return Jwts.builder()
+                .setHeaderParam("typ", "JWT")
                 .setClaims(claims)
                 .setIssuedAt(new Date())
                 .setExpiration(getValidity(tokenProperties.getAccessTokenValidity()))
                 .setAudience("account")
                 .signWith(getSecretKey())
+                .compact();
+    }
+
+    @Override
+    public String buildRefreshToken() {
+        Claims claims = Jwts.claims();
+        claims.put("typ", "Refresh");
+
+        return Jwts.builder()
                 .setHeaderParam("typ", "JWT")
+                .setClaims(claims)
+                .setIssuedAt(new Date())
+                .setExpiration(getValidity(tokenProperties.getRefreshTokenValidity()))
+                .setSubject(RandomStringGenerator.nextString())
+                .signWith(getSecretKey())
                 .compact();
     }
 
@@ -67,7 +83,7 @@ public class JwtTokenServiceImpl implements JwtTokenService {
     }
 
     @Override
-    public boolean isAccessTokenValid(String accessToken) {
+    public boolean isTokenValid(String accessToken) {
         try {
             Jwts.parserBuilder()
                     .setSigningKey(getSecretKey())
