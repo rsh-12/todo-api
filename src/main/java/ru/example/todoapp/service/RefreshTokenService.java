@@ -18,7 +18,7 @@ public interface RefreshTokenService {
      * @return the refresh token value as a string
      * @see RefreshToken
      */
-    String createRefreshToken(Long userId, String ip);
+    RefreshToken createRefreshToken(Long userId, String ip);
 
     /**
      * Saves the refresh token to the database.
@@ -29,37 +29,6 @@ public interface RefreshTokenService {
      */
     RefreshToken saveRefreshToken(RefreshToken refreshToken);
 
-    /**
-     * Finds a refresh token by value in the database.
-     * This method call the validateToken method,
-     * which check the expiration date and the fact
-     * that the refresh token itself exists.
-     *
-     * @param refreshToken the refresh token
-     * @return the refresh token
-     * @see RefreshToken
-     */
     RefreshToken findRefreshTokenByValue(String refreshToken);
-
-    /**
-     * Finds a refresh token by user id in the database.
-     * This method call the validateToken method,
-     * which check the expiration date and the fact
-     * that the refresh token itself exists.
-     *
-     * @param userId the user id
-     * @return the refresh token
-     * @see RefreshToken
-     */
-    RefreshToken findRefreshTokenByUserId(Long userId);
-
-    /**
-     * This method checks whether the refresh token has expired or not.
-     *
-     * @param oldRefreshToken the old refresh token
-     * @return the <b>true</b> if the refresh token has expired, otherwise <b>false</b>
-     * @see RefreshToken
-     */
-    boolean hasRefreshTokenExpired(RefreshToken oldRefreshToken);
 
 }

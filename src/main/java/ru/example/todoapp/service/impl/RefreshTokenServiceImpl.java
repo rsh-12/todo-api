@@ -4,44 +4,42 @@ package ru.example.todoapp.service.impl;
  * Time: 12:54 AM
  * */
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.example.todoapp.config.properties.TokenProperties;
 import ru.example.todoapp.entity.RefreshToken;
 import ru.example.todoapp.exception.CustomException;
 import ru.example.todoapp.repository.RefreshTokenRepository;
+import ru.example.todoapp.service.JwtTokenService;
 import ru.example.todoapp.service.RefreshTokenService;
-import ru.example.todoapp.util.RandomStringGenerator;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.Optional;
 
 @Service
 public class RefreshTokenServiceImpl implements RefreshTokenService {
 
-    private final TokenProperties tokenProperties;
     private final RefreshTokenRepository refreshTokenRepository;
+    private final JwtTokenService jwtTokenService;
+    private final TokenProperties tokenProperties;
 
-    public RefreshTokenServiceImpl(TokenProperties tokenProperties, RefreshTokenRepository refreshTokenRepository) {
-        this.tokenProperties = tokenProperties;
+    @Autowired
+    public RefreshTokenServiceImpl(RefreshTokenRepository refreshTokenRepository, JwtTokenService jwtTokenService,
+                                   TokenProperties tokenProperties) {
         this.refreshTokenRepository = refreshTokenRepository;
+        this.jwtTokenService = jwtTokenService;
+        this.tokenProperties = tokenProperties;
     }
 
     @Override
-    public String createRefreshToken(Long userId, String ip) {
-        String token = new RandomStringGenerator(64).nextString();
-        LocalDateTime expiresAt = LocalDateTime.now()
-                .plus(tokenProperties.getRefreshTokenValidity(), ChronoUnit.MILLIS);
+    public RefreshToken createRefreshToken(Long userId, String ip) {
+        String token = jwtTokenService.buildRefreshToken();
 
-        RefreshToken refreshToken = refreshTokenRepository.findByUserId(userId)
-                .orElse(new RefreshToken(userId));
-        refreshToken.setValue(token);
-        refreshToken.setExpiresAt(expiresAt);
+        var refreshToken = new RefreshToken(token, userId, ip);
+        long refreshValidity = tokenProperties.getRefreshTokenValidity();
+        refreshToken.setExpiresAt(LocalDateTime.now().plus(refreshValidity, ChronoUnit.MILLIS));
 
-        Optional.ofNullable(ip).ifPresent(refreshToken::setCreatedByIp);
-        saveRefreshToken(refreshToken);
-
-        return token;
+        return saveRefreshToken(refreshToken);
     }
 
     @Override
@@ -50,27 +48,12 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     }
 
     @Override
-    public RefreshToken findRefreshTokenByValue(String refreshToken) {
-        Optional<RefreshToken> token = refreshTokenRepository.findByValue(refreshToken);
-        return validateToken(token);
-    }
+    public RefreshToken findRefreshTokenByValue(String token) {
+        RefreshToken refreshToken = refreshTokenRepository.findByToken(token)
+                .orElseThrow(() -> CustomException.notFound("Refresh token not found"));
+        jwtTokenService.isTokenValid(refreshToken.getToken());
 
-    @Override
-    public RefreshToken findRefreshTokenByUserId(Long userId) {
-        Optional<RefreshToken> token = refreshTokenRepository.findByUserId(userId);
-        return validateToken(token);
-    }
-
-    @Override
-    public boolean hasRefreshTokenExpired(RefreshToken oldRefreshToken) {
-        return LocalDateTime.now().isAfter(oldRefreshToken.getExpiresAt());
-    }
-
-    private RefreshToken validateToken(Optional<RefreshToken> token) {
-        if (token.isPresent() && !hasRefreshTokenExpired(token.get())) {
-            return token.get();
-        }
-        throw CustomException.notFound("Refresh token not found/expired");
+        return refreshToken;
     }
 
 
