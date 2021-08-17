@@ -32,7 +32,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         String accessToken = jwtTokenService.resolveAccessToken(httpServletRequest);
 
         try {
-            if (!accessToken.isEmpty() && jwtTokenService.isAccessTokenValid(accessToken)) {
+            if (!accessToken.isEmpty() && jwtTokenService.isTokenValid(accessToken)) {
                 Authentication auth = jwtTokenService.getAuthentication(accessToken);
                 SecurityContextHolder.getContext().setAuthentication(auth);
             }
