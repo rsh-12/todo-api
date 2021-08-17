@@ -16,7 +16,6 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
-import java.util.Objects;
 
 @Entity
 @Table(name = "tokens")
@@ -28,7 +27,7 @@ public class RefreshToken {
 
     @NotBlank
     @Column(unique = true)
-    private String value;
+    private String token;
 
     @NotNull
     private Long userId;
@@ -46,26 +45,22 @@ public class RefreshToken {
     public RefreshToken() {
     }
 
-    public RefreshToken(Long userId) {
+    public RefreshToken(String token, Long userId, String createdByIp) {
+        this.token = token;
         this.userId = userId;
-    }
-
-    public RefreshToken(String value, Long userId, LocalDateTime expiresAt) {
-        this.value = value;
-        this.userId = userId;
-        this.expiresAt = expiresAt;
+        this.createdByIp = createdByIp;
     }
 
     public Long getId() {
         return id;
     }
 
-    public String getValue() {
-        return value;
+    public String getToken() {
+        return token;
     }
 
-    public void setValue(String value) {
-        this.value = value;
+    public void setToken(String token) {
+        this.token = token;
     }
 
     public Long getUserId() {
@@ -115,29 +110,22 @@ public class RefreshToken {
 
         RefreshToken that = (RefreshToken) o;
 
-        if (!Objects.equals(id, that.id)) return false;
-        if (!Objects.equals(value, that.value)) return false;
-        return Objects.equals(userId, that.userId);
+        if (!token.equals(that.token)) return false;
+        return userId.equals(that.userId);
     }
 
     @Override
     public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (value != null ? value.hashCode() : 0);
-        result = 31 * result + (userId != null ? userId.hashCode() : 0);
+        int result = token.hashCode();
+        result = 31 * result + userId.hashCode();
         return result;
     }
 
     @Override
     public String toString() {
         return "RefreshToken{" +
-                "id=" + id +
-                ", value='" + value + '\'' +
+                "token='" + token + '\'' +
                 ", userId=" + userId +
-                ", createdByIp='" + createdByIp + '\'' +
-                ", expiresAt=" + expiresAt +
-                ", createdAt=" + createdAt +
-                ", updatedAt=" + updatedAt +
                 '}';
     }
 
