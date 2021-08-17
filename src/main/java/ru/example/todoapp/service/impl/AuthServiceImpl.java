@@ -81,14 +81,13 @@ public class AuthServiceImpl implements AuthService {
 
     Map<String, String> buildResponseBody(User user, String ip) {
         String accessToken = jwtTokenService.buildAccessToken(user.getId(), user.getRoles());
-        String refreshToken = refreshTokenService.createRefreshToken(user.getId(), ip);
+        RefreshToken refreshToken = refreshTokenService.createRefreshToken(user.getId(), ip);
 
         return Map.of("access_token", accessToken,
                 "expires_in", String.valueOf(tokenProperties.getAccessTokenValidity()),
-                "refresh_token", refreshToken,
+                "refresh_token", refreshToken.getToken(),
                 "refresh_expires_in", String.valueOf(tokenProperties.getRefreshTokenValidity()),
                 "token_type", "Bearer");
     }
-
 
 }
