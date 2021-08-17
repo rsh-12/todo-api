@@ -57,6 +57,15 @@ public class JwtTokenServiceTest {
         System.out.println(accessToken);
     }
 
+    // eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwiYXV0aCI6WyJVU0VSIiwiQURNSU4iXSwiaWF0IjoxNjI5MTEwMDUzLCJleHAiOjE2MjkxMTE4NTMsImF1ZCI6ImFjY291bnQifQ.4ITprBwr2znozAA9_pjpToRFBjczjm2hI57xHZCvpoY
+    // eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0eXAiOiJSZWZyZXNoIiwiaWF0IjoxNjI5MTEwMTIwLCJzdWIiOiJuNFBaUVNQRHR0TENleU9SdjhSaW5JYklZRlB6ZkRFdCIsImV4cCI6MTYyOTExMDEyMH0.0BpaytUYzP-qJxqrU666DTT7lfv6G7yMVEAqckPn51o
+
+    @Test
+    public void buildRefreshToken_ShouldReturnRefreshToken() throws CustomException {
+        String refreshToken = jwtTokenService.buildRefreshToken();
+        assertNotNull(refreshToken);
+        System.out.println(refreshToken);
+    }
 
     // resolveAccessToken
     @Test
@@ -100,7 +109,7 @@ public class JwtTokenServiceTest {
     @Test
     public void isAccessTokenValid_ShouldReturnTrue() {
         String accessToken = jwtTokenService.buildAccessToken(1L, Collections.singleton(Role.USER));
-        boolean isAccessTokenValid = jwtTokenService.isAccessTokenValid(accessToken);
+        boolean isAccessTokenValid = jwtTokenService.isTokenValid(accessToken);
         assertTrue(isAccessTokenValid);
     }
 
@@ -112,7 +121,7 @@ public class JwtTokenServiceTest {
                 .signWith(Keys.hmacShaKeyFor(tokenProperties.getSecret().getBytes(StandardCharsets.UTF_8)))
                 .compact();
 
-        assertThrows(CustomException.class, () -> jwtTokenService.isAccessTokenValid(accessToken));
+        assertThrows(CustomException.class, () -> jwtTokenService.isTokenValid(accessToken));
     }
 
     // getIdFromAccessToken
