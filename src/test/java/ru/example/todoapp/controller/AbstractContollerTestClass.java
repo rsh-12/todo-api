@@ -21,10 +21,6 @@ import java.util.Map;
 @AutoConfigureMockMvc(addFilters = false)
 abstract class AbstractControllerTestClass {
 
-    protected static final String API_SECTIONS = "/api/sections/";
-    protected static final String API_TASKS = "/api/tasks/";
-    protected static final String API_USERS = "/api/users/";
-
     protected static final String ADMIN = "admin@mail.com";
     protected static final String USER = "client@mail.com";
 
