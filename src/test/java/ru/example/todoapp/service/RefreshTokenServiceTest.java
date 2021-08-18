@@ -4,24 +4,24 @@ package ru.example.todoapp.service;
  * Time: 1:41 PM
  * */
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import ru.example.todoapp.config.properties.TokenProperties;
 import ru.example.todoapp.entity.RefreshToken;
 import ru.example.todoapp.repository.RefreshTokenRepository;
 import ru.example.todoapp.service.impl.RefreshTokenServiceImpl;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(SpringExtension.class)
 public class RefreshTokenServiceTest {
 
     @InjectMocks
@@ -33,7 +33,7 @@ public class RefreshTokenServiceTest {
     @Mock
     private TokenProperties tokenProperties;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         given(tokenProperties.getRefreshTokenValidity()).willReturn(86_400_000L);
     }

@@ -4,24 +4,26 @@ package ru.example.todoapp.facade;
  * Time: 7:44 AM
  * */
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+import ru.example.todoapp.controller.request.TokenRequest;
 import ru.example.todoapp.exception.CustomException;
 import ru.example.todoapp.facade.impl.PasswordFacadeImpl;
 import ru.example.todoapp.messaging.MessagingClient;
-import ru.example.todoapp.controller.request.TokenRequest;
 import ru.example.todoapp.service.UserService;
 
 import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(SpringExtension.class)
 public class PasswordFacadeTest {
 
     @InjectMocks

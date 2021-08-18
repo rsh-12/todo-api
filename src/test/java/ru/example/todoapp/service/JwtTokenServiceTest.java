@@ -6,13 +6,13 @@ package ru.example.todoapp.service;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.security.core.Authentication;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import ru.example.todoapp.config.properties.TokenProperties;
 import ru.example.todoapp.enums.Role;
 import ru.example.todoapp.exception.CustomException;
@@ -25,15 +25,15 @@ import java.util.Date;
 import java.util.Map;
 import java.util.Set;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(SpringExtension.class)
 public class JwtTokenServiceTest {
 
     @InjectMocks
@@ -42,7 +42,7 @@ public class JwtTokenServiceTest {
     @Mock
     private TokenProperties tokenProperties;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         given(tokenProperties.getSecret()).willReturn("secretKey".repeat(5));
         given(tokenProperties.getAccessTokenValidity()).willReturn(1_800_000L);
@@ -56,9 +56,6 @@ public class JwtTokenServiceTest {
         assertEquals(3, accessToken.split("\\.").length);
         System.out.println(accessToken);
     }
-
-    // eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwiYXV0aCI6WyJVU0VSIiwiQURNSU4iXSwiaWF0IjoxNjI5MTEwMDUzLCJleHAiOjE2MjkxMTE4NTMsImF1ZCI6ImFjY291bnQifQ.4ITprBwr2znozAA9_pjpToRFBjczjm2hI57xHZCvpoY
-    // eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0eXAiOiJSZWZyZXNoIiwiaWF0IjoxNjI5MTEwMTIwLCJzdWIiOiJuNFBaUVNQRHR0TENleU9SdjhSaW5JYklZRlB6ZkRFdCIsImV4cCI6MTYyOTExMDEyMH0.0BpaytUYzP-qJxqrU666DTT7lfv6G7yMVEAqckPn51o
 
     @Test
     public void buildRefreshToken_ShouldReturnRefreshToken() throws CustomException {
