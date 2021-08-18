@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.example.todoapp.controller.request.TodoTaskRequest;
+import ru.example.todoapp.dsl.TaskBuilder;
 import ru.example.todoapp.dto.TodoTaskDto;
 import ru.example.todoapp.entity.TodoTask;
 import ru.example.todoapp.enums.filters.FilterByDate;
@@ -85,9 +86,12 @@ public class TodoTaskServiceImpl implements TodoTaskService {
         log.info("Create a new task");
         final Boolean starred = Optional.ofNullable(taskRequest.starred()).orElse(false);
 
-        TodoTask todoTask = new TodoTask(taskRequest.title(), taskRequest.completionDate());
-        todoTask.setStarred(starred);
-        todoTask.setUser(authUserFacade.getLoggedUser());
+        TodoTask todoTask = TaskBuilder.task(t -> {
+            t.title(taskRequest.title());
+            t.completionDate(taskRequest.completionDate());
+            t.starred(starred);
+            t.user(authUserFacade.getLoggedUser());
+        });
 
         return todoTaskRepository.save(todoTask);
     }
