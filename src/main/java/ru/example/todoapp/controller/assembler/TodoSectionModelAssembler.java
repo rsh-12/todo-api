@@ -21,6 +21,6 @@ public class TodoSectionModelAssembler implements
     public EntityModel<TodoSectionDto> toModel(TodoSectionDto section) {
         return EntityModel.of(section,
                 linkTo(methodOn(TodoSectionController.class).getSection(section.id())).withSelfRel(),
-                linkTo(methodOn(TodoSectionController.class).getSections()).withRel("sections"));
+                linkTo(methodOn(TodoSectionController.class).getSections(null, null)).withRel("sections"));
     }
 }
