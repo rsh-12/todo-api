@@ -22,7 +22,7 @@ public class TodoTaskModelAssembler implements RepresentationModelAssembler<Todo
                 linkTo(methodOn(TodoTaskController.class)
                         .getTask(TodoTaskDto.id())).withSelfRel(),
                 linkTo(methodOn(TodoTaskController.class)
-                        .getTasks(null, null, null, null)).withRel("tasks"));
+                        .getTasks(null, null, null)).withRel("tasks"));
     }
 
 }
