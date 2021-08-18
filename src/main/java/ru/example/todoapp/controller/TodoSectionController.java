@@ -7,7 +7,9 @@ package ru.example.todoapp.controller;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.CollectionModel;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,11 +35,6 @@ import ru.example.todoapp.service.TodoSectionService;
 
 import javax.validation.Valid;
 import java.net.URI;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Api(tags = "Task sections")
 @RestController
@@ -60,16 +57,12 @@ public class TodoSectionController {
     // get all sections
     @ApiOperation(value = "List todo sections", notes = "List all todo sections")
     @GetMapping(produces = "application/json")
-    public CollectionModel<EntityModel<TodoSectionDto>> getSections() {
+    public ResponseEntity<?> getSections(@PageableDefault Pageable pageable,
+                                         PagedResourcesAssembler<TodoSectionDto> pra) {
+        var sections = todoSectionService.findSections(pageable);
 
-        List<EntityModel<TodoSectionDto>> sections = todoSectionService.findSections()
-                .stream()
-                .map(todoSectionService::mapToSectionDto)
-                .map(assembler::toModel)
-                .collect(Collectors.toList());
-
-        return CollectionModel.of(sections,
-                linkTo(methodOn(TodoSectionController.class).getSections()).withSelfRel());
+        return ResponseEntity.ok()
+                .body(pra.toModel(sections, assembler));
     }
 
     // get custom section by id
@@ -77,6 +70,7 @@ public class TodoSectionController {
     @GetMapping(value = "/{id}", produces = "application/json")
     public EntityModel<TodoSectionDto> getSection(@PathVariable("id") Long sectionId) {
         TodoSection todoSection = todoSectionService.findSectionById(sectionId);
+
         return assembler.toModel(todoSectionService.mapToSectionDto(todoSection));
     }
 
