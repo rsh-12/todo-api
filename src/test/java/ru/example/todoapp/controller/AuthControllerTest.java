@@ -134,7 +134,7 @@ public class AuthControllerTest extends AbstractControllerTestClass {
     public void register_InvalidUsername_ShouldReturnBadRequest() throws Exception {
         String body = usernamePasswordRequestBody("notValidUsername", "password");
 
-        mvc.perform(post(API_AUTH + "register")
+        mvc.perform(post(API_AUTH + "/register")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(body))
                 .andDo(print())
@@ -146,7 +146,7 @@ public class AuthControllerTest extends AbstractControllerTestClass {
     public void register_InvalidPwd_ShouldReturnBadRequest() throws Exception {
         String body = usernamePasswordRequestBody("username@mail.com", "1");
 
-        mvc.perform(post(API_AUTH + "register")
+        mvc.perform(post(API_AUTH + "/register")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(body))
                 .andDo(print())
@@ -197,7 +197,7 @@ public class AuthControllerTest extends AbstractControllerTestClass {
         JSONObject body = new JSONObject();
         body.put("email", email);
 
-        mvc.perform(post(API_AUTH + "password/forgot")
+        mvc.perform(post(API_AUTH + "/password/forgot")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(body.toString()))
                 .andDo(print())
@@ -214,7 +214,7 @@ public class AuthControllerTest extends AbstractControllerTestClass {
         JSONObject body = new JSONObject();
         body.put("email", email);
 
-        mvc.perform(post(API_AUTH + "password/forgot")
+        mvc.perform(post(API_AUTH + "/password/forgot")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(body.toString()))
                 .andDo(print())
@@ -233,7 +233,7 @@ public class AuthControllerTest extends AbstractControllerTestClass {
         JSONObject body = new JSONObject();
         body.put("email", email);
 
-        mvc.perform(post(API_AUTH + "password/forgot")
+        mvc.perform(post(API_AUTH + "/password/forgot")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(body.toString()))
                 .andDo(print())
@@ -249,7 +249,7 @@ public class AuthControllerTest extends AbstractControllerTestClass {
         PasswordRequest request = new PasswordRequest("password12345");
         doNothing().when(passwordFacade).updatePassword(any(TokenRequest.class), anyString());
 
-        mvc.perform(post(API_AUTH + "password/reset")
+        mvc.perform(post(API_AUTH + "/password/reset")
                 .contentType(MediaType.APPLICATION_JSON)
                 .param("token", "someToken")
                 .content(objectMapper.writeValueAsString(request)))
@@ -260,7 +260,7 @@ public class AuthControllerTest extends AbstractControllerTestClass {
 
     @Test
     public void updatePassword_PasswordIsNull_ShouldReturnBadRequest() throws Exception {
-        mvc.perform(post(API_AUTH + "password/reset")
+        mvc.perform(post(API_AUTH + "/password/reset")
                 .contentType(MediaType.APPLICATION_JSON)
                 .param("token", "someToken")
                 .content(Map.of("something", "wrong").toString()))
@@ -272,7 +272,7 @@ public class AuthControllerTest extends AbstractControllerTestClass {
 
     @Test
     public void updatePassword_TokenIsNull_ShouldReturnBadRequest() throws Exception {
-        mvc.perform(post(API_AUTH + "password/reset")
+        mvc.perform(post(API_AUTH + "/password/reset")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(new PasswordRequest("password"))))
                 .andDo(print())
