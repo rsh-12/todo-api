@@ -71,3 +71,4 @@ venv.sh
 
 pg_data/
 .env
+helper.json
