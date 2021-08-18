@@ -5,33 +5,25 @@ package ru.example.todoapp.controller;
  * */
 
 import org.json.JSONObject;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.http.MediaType;
-import ru.example.todoapp.controller.request.CredentialsRequest;
 import ru.example.todoapp.controller.request.EmailRequest;
 import ru.example.todoapp.controller.request.PasswordRequest;
 import ru.example.todoapp.controller.request.TokenRequest;
-import ru.example.todoapp.dto.UserDto;
-import ru.example.todoapp.entity.User;
 import ru.example.todoapp.exception.CustomException;
 import ru.example.todoapp.facade.PasswordFacade;
 import ru.example.todoapp.messaging.MessagingClient;
-import ru.example.todoapp.service.UserService;
 
-import java.time.LocalDateTime;
 import java.util.Map;
 
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.containsStringIgnoringCase;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
@@ -45,11 +37,10 @@ public class AuthControllerTest extends AbstractControllerTestClass {
     @MockBean
     private PasswordFacade passwordFacade;
 
-    @MockBean
-    private UserService userService;
-
     @SpyBean
     private MessagingClient messagingService;
+
+    private static final String API_AUTH = "/api/auth/";
 
     // Login: success
 //    @Test

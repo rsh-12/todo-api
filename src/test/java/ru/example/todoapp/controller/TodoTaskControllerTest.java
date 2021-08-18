@@ -4,7 +4,7 @@ package ru.example.todoapp.controller;
  * Time: 7:17 AM
  * */
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithUserDetails;
 import ru.example.todoapp.controller.request.TodoTaskRequest;
@@ -177,5 +177,5 @@ public class TodoTaskControllerTest extends AbstractControllerTestClass {
                 .contentType(APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
     }
-    
+
 }

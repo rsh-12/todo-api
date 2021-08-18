@@ -4,8 +4,8 @@ package ru.example.todoapp.controller;
  * Time: 10:30 PM
  * */
 
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithUserDetails;
@@ -75,7 +75,7 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
         verify(sectionService, times(1)).findSections();
     }
 
-    @Ignore
+    @Disabled
     @Test
     @WithUserDetails(ADMIN)
     public void getSections_ShouldReturnEmptyList() throws Exception {

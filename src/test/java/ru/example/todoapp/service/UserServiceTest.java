@@ -36,7 +36,7 @@ public class UserServiceTest {
     private UserRepository userRepository;
 
     // deleteUserById
-    @org.junit.jupiter.api.Test
+    @Test
     public void deleteUserById_ShouldDoNoting() {
         given(userRepository.existsById(anyLong())).willReturn(true);
         doNothing().when(userRepository).deleteById(anyLong());
