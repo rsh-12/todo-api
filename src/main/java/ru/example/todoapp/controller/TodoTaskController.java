@@ -7,7 +7,10 @@ package ru.example.todoapp.controller;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.CollectionModel;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,11 +34,6 @@ import ru.example.todoapp.service.TodoTaskService;
 
 import javax.validation.Valid;
 import java.net.URI;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Api(tags = "Tasks")
 @RestController
@@ -52,27 +50,19 @@ public class TodoTaskController {
         this.assembler = assembler;
     }
 
-    // todo: filter by completed or starred params
     // get all tasks
     @ApiOperation(value = "List tasks", notes = "List all tasks")
     @GetMapping(produces = "application/json")
-    public CollectionModel<EntityModel<TodoTaskDto>> getTasks(
-            @RequestParam(value = "page", required = false, defaultValue = "0") Integer pageNo,
-            @RequestParam(value = "size", required = false, defaultValue = "20") Integer pageSize,
+    public ResponseEntity<?> getTasks(
             @RequestParam(value = "date", required = false, defaultValue = "ALL") FilterByDate date,
-            @RequestParam(value = "sort", required = false, defaultValue = "createdAt") String sort) {
+            @PageableDefault(sort = {"createdAt"}) Pageable pageable, PagedResourcesAssembler<TodoTaskDto> pra) {
 
-        List<EntityModel<TodoTaskDto>> todos = todoTaskService
-                .findTasks(pageNo, pageSize, date, sort)
-                .stream()
-                .map(task -> {
-                    TodoTaskDto taskDto = todoTaskService.mapToTaskDto(task);
-                    return assembler.toModel(taskDto);
-                })
-                .collect(Collectors.toList());
+        Page<TodoTaskDto> tasks = todoTaskService
+                .findTasks(date, pageable)
+                .map(todoTaskService::mapToTaskDto);
 
-        return CollectionModel.of(todos, linkTo(methodOn(TodoTaskController.class)
-                .getTasks(pageNo, pageSize, date, sort)).withSelfRel());
+        return ResponseEntity.ok()
+                .body(pra.toModel(tasks, assembler));
     }
 
     // get task by id
