@@ -9,19 +9,23 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.http.MediaType;
+import ru.example.todoapp.controller.request.CredentialsRequest;
 import ru.example.todoapp.controller.request.EmailRequest;
 import ru.example.todoapp.controller.request.PasswordRequest;
 import ru.example.todoapp.controller.request.TokenRequest;
 import ru.example.todoapp.exception.CustomException;
 import ru.example.todoapp.facade.PasswordFacade;
 import ru.example.todoapp.messaging.MessagingClient;
+import ru.example.todoapp.service.AuthService;
 
 import java.util.Map;
 
 import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.containsStringIgnoringCase;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
@@ -37,31 +41,31 @@ public class AuthControllerTest extends AbstractControllerTestClass {
     @MockBean
     private PasswordFacade passwordFacade;
 
+    @MockBean
+    private AuthService authService;
+
     @SpyBean
     private MessagingClient messagingService;
 
-    private static final String API_AUTH = "/api/auth/";
+    private static final String API_AUTH = "/api/auth";
 
-    // Login: success
-//    @Test
-//    public void login_ShouldReturnTokens() throws Exception {
-//        CredentialsRequest request = new CredentialsRequest("username@mail.ru", "password");
-//
-//        given(userService.login(any(CredentialsRequest.class), anyString()))
-//                .willReturn(Map.of("access_token", "access_token"));
-//
-//        String response = mvc.perform(post(API_AUTH + "login")
-//                .contentType(MediaType.APPLICATION_JSON)
-//                .content(usernamePasswordRequestBody(request.username(), request.password())))
-//                .andDo(print())
-//                .andExpect(status().isOk())
-//                .andReturn()
-//                .getResponse()
-//                .getContentAsString();
-//
-//        assertTrue(response.contains("access_token"));
-//        verify(userService, times(1)).login(any(), anyString());
-//    }
+    @Test
+    public void login_ShouldReturnTokens() throws Exception {
+        CredentialsRequest request = new CredentialsRequest("username@mail.ru", "password");
+
+        String accessToken = "someAccessToken";
+        given(authService.login(any(CredentialsRequest.class), anyString()))
+                .willReturn(Map.of("access_token", accessToken));
+
+        mvc.perform(post(API_AUTH + "/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(usernamePasswordRequestBody(request.username(), request.password())))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("access_token", containsString(accessToken)));
+
+        verify(authService).login(any(), anyString());
+    }
 
     // Login: fail
 /*
