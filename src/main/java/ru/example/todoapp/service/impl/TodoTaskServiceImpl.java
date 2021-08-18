@@ -7,9 +7,8 @@ package ru.example.todoapp.service.impl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.example.todoapp.controller.request.TodoTaskRequest;
 import ru.example.todoapp.dsl.TaskBuilder;
@@ -20,7 +19,6 @@ import ru.example.todoapp.exception.CustomException;
 import ru.example.todoapp.facade.AuthUserFacade;
 import ru.example.todoapp.repository.TodoTaskRepository;
 import ru.example.todoapp.service.TodoTaskService;
-import ru.example.todoapp.service.impl.util.ServiceUtil;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -47,18 +45,16 @@ public class TodoTaskServiceImpl implements TodoTaskService {
 
     // get all tasks
     @Override
-    public List<TodoTask> findTasks(Integer pageNo, Integer pageSize, FilterByDate date, String sort) {
-        pageSize = pageSize > 100 ? 100 : pageSize; // set max page size
-        Pageable page = PageRequest.of(pageNo, pageSize,
-                Sort.by(ServiceUtil.getSortDirection(sort), ServiceUtil.getSortAsString(sort)));
-
+    public Page<TodoTask> findTasks(FilterByDate date, Pageable pageable) {
         Long userId = authUserFacade.getUserId();
+
         if (date == TODAY) {
-            return todoTaskRepository.findAllByCompletionDateEqualsAndUserId(LocalDate.now(), page, userId);
+            return todoTaskRepository.findAllByCompletionDateEqualsAndUserId(LocalDate.now(), userId, pageable);
         } else if (date == OVERDUE) {
-            return todoTaskRepository.findAllByCompletionDateBeforeAndUserId(LocalDate.now(), page, userId);
+            return todoTaskRepository.findAllByCompletionDateBeforeAndUserId(LocalDate.now(), userId, pageable);
         }
-        return todoTaskRepository.findAllByUserId(userId, page);
+
+        return todoTaskRepository.findAllByUserId(userId, pageable);
     }
 
     // get task by id

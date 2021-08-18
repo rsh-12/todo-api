@@ -1,5 +1,7 @@
 package ru.example.todoapp.service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import ru.example.todoapp.controller.request.TodoTaskRequest;
 import ru.example.todoapp.dto.TodoTaskDto;
 import ru.example.todoapp.entity.TodoTask;
@@ -16,20 +18,7 @@ import java.util.Set;
  */
 public interface TodoTaskService {
 
-    /**
-     * Returns a list of TodoTask objects with some applied filters.
-     * By default, it returns 10 objects sorted by date(ALL).
-     *
-     * @param pageNo   the page number
-     * @param pageSize the number of objects to return
-     * @param date     the date filter: overdue, today, all
-     * @param sort     the sorting by field name, by default sorts in desc order
-     * @return the list
-     * @see User
-     * @see TodoTask
-     * @see FilterByDate
-     */
-    List<TodoTask> findTasks(Integer pageNo, Integer pageSize, FilterByDate date, String sort);
+    Page<TodoTask> findTasks(FilterByDate date, Pageable pageable);
 
     /**
      * Finds the TodoTask by id and user id.
