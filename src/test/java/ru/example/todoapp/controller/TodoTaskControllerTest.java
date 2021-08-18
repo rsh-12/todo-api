@@ -47,6 +47,7 @@ public class TodoTaskControllerTest extends AbstractControllerTestClass {
 
     private static final String API_TASKS = "/api/tasks/";
 
+/*
     @Test
     @WithUserDetails(ADMIN)
     public void getTasks_ShouldReturnListOfTasks() throws Exception {
@@ -66,6 +67,7 @@ public class TodoTaskControllerTest extends AbstractControllerTestClass {
         verify(taskService, times(1)).findTasks(anyInt(), anyInt(),
                 any(FilterByDate.class), anyString());
     }
+*/
 
     @Test
     @WithUserDetails(ADMIN)
