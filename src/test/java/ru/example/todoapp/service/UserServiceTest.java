@@ -4,13 +4,11 @@ package ru.example.todoapp.service;
  * Time: 6:12 PM
  * */
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
-import ru.example.todoapp.config.properties.TokenProperties;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import ru.example.todoapp.entity.User;
 import ru.example.todoapp.exception.CustomException;
 import ru.example.todoapp.repository.UserRepository;
@@ -18,17 +16,17 @@ import ru.example.todoapp.service.impl.UserServiceImpl;
 
 import java.util.Optional;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(SpringExtension.class)
 public class UserServiceTest {
 
     @InjectMocks
@@ -37,71 +35,8 @@ public class UserServiceTest {
     @Mock
     private UserRepository userRepository;
 
-    @Mock
-    private TokenProperties tokenProperties;
-
-    @Before
-    public void setUp() {
-        given(tokenProperties.getAccessTokenValidity()).willReturn(1_800_000L);
-        given(tokenProperties.getRefreshTokenValidity()).willReturn(86_400_000L);
-    }
-
-    // login
-/*
-    @Test
-    public void login_ShouldAuthUserAndReturnTokens() {
-        User user = mock(User.class);
-        Authentication auth = mock(Authentication.class);
-
-        given(authManager.authenticate(any(UsernamePasswordAuthenticationToken.class))).willReturn(auth);
-        given(auth.getPrincipal()).willReturn(new UserDetailsImpl(user));
-
-        given(jwtTokenService.buildAccessToken(anyLong(), anySet())).willReturn("accessToken");
-        given(refreshTokenService.createRefreshToken(anyLong(), anyString())).willReturn("refreshToken");
-
-        Map<String, String> response = userService
-                .login(new CredentialsRequest("username", "password"), "");
-
-        assertEquals("accessToken", response.get("access_token"));
-        assertEquals("refreshToken", response.get("refresh_token"));
-        assertEquals("Bearer", response.get("token_type"));
-        assertEquals("1800000", response.get("access_token_expires"));
-        assertEquals("86400000", response.get("refresh_token_expires"));
-    }
-*/
-
-/*
-    @Test
-    public void login_ShouldThrowCustomException() {
-        given(authManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
-                .willThrow(UsernameNotFoundException.class);
-        assertThrows(CustomException.class, () -> userService.login(new CredentialsRequest("username", "password"), ""));
-    }
-*/
-
-    // register
-/*
-    @Test
-    public void register_ShouldThrowException() {
-        given(userRepository.existsByUsername(anyString())).willReturn(true);
-        assertThrows(CustomException.class, () -> userService.register(new CredentialsRequest("user", "pwd")));
-    }
-*/
-
-/*
-    @Test
-    public void register_ShouldDoNoting() {
-        given(userRepository.existsByUsername(anyString())).willReturn(false);
-        given(userRepository.save(any(User.class))).willReturn(new User());
-        given(passwordEncoder.encode(anyString())).willReturn("$ecryptedString");
-        userService.register(new CredentialsRequest("user", "pwd"));
-    }
-*/
-
-    // generateNewTokens
-
     // deleteUserById
-    @Test
+    @org.junit.jupiter.api.Test
     public void deleteUserById_ShouldDoNoting() {
         given(userRepository.existsById(anyLong())).willReturn(true);
         doNothing().when(userRepository).deleteById(anyLong());
