@@ -45,6 +45,8 @@ public class TodoTaskControllerTest extends AbstractControllerTestClass {
     @MockBean
     private TodoTaskService taskService;
 
+    private static final String API_TASKS = "/api/tasks/";
+
     @Test
     @WithUserDetails(ADMIN)
     public void getTasks_ShouldReturnListOfTasks() throws Exception {

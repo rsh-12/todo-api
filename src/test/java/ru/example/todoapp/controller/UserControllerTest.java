@@ -29,11 +29,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-
 public class UserControllerTest extends AbstractControllerTestClass {
 
     @MockBean
     private UserService userService;
+
+    private static final String API_USERS = "/api/users/";
 
     @Test
     @WithUserDetails(ADMIN)

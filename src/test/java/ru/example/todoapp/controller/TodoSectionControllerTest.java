@@ -51,6 +51,8 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
     @MockBean
     private TasksFacade tasksFacade;
 
+    private static final String API_SECTIONS = "/api/sections/";
+
     // get all sections
     @Test
     @WithUserDetails(ADMIN)
