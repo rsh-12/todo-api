@@ -6,6 +6,8 @@ package ru.example.todoapp.service.impl;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.example.todoapp.controller.request.TodoSectionRequest;
 import ru.example.todoapp.dto.TodoSectionDto;
@@ -48,11 +50,9 @@ public class TodoSectionServiceImpl implements TodoSectionService {
 
     // get all sections
     @Override
-    public List<TodoSectionProjection> findSections() {
+    public Page<TodoSectionDto> findSections(Pageable pageable) {
         Long userId = authUserFacade.getUserId();
-        List<TodoSectionProjection> sections = todoSectionRepository.findAllByUserIdProjection(userId);
-        log.info("Get all sections: {}", sections.size());
-        return sections;
+        return todoSectionRepository.findAllByUserIdProjection(userId, pageable);
     }
 
     // delete section by id

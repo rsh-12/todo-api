@@ -1,5 +1,7 @@
 package ru.example.todoapp.service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import ru.example.todoapp.controller.request.TodoSectionRequest;
 import ru.example.todoapp.dto.TodoSectionDto;
 import ru.example.todoapp.entity.TodoSection;
@@ -36,7 +38,7 @@ public interface TodoSectionService {
      * @see TodoSectionProjection
      * @see TodoSection
      */
-    List<TodoSectionProjection> findSections();
+    Page<TodoSectionDto> findSections(Pageable pageable);
 
     /**
      * Deletes the TodoSection by id. Checks if the Principal
