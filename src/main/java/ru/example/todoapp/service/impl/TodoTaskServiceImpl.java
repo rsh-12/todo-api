@@ -81,16 +81,14 @@ public class TodoTaskServiceImpl implements TodoTaskService {
 
     // create new task
     @Override
-    public TodoTask createTask(TodoTaskRequest taskRequest) {
+    public TodoTask createTask(TodoTaskRequest request) {
         log.info("Create a new task");
-        final Boolean starred = Optional.ofNullable(taskRequest.starred()).orElse(false);
 
-        TodoTask todoTask = TaskBuilder.task(t -> {
-            t.title(taskRequest.title());
-            t.completionDate(taskRequest.completionDate());
-            t.starred(starred);
-            t.user(authUserFacade.getLoggedUser());
-        });
+        TodoTask todoTask = TaskBuilder.forTask(request.title())
+                .starred(request.starred())
+                .completionDate(request.completionDate())
+                .user(authUserFacade.getLoggedUser())
+                .build();
 
         return todoTaskRepository.save(todoTask);
     }
