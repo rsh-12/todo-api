@@ -6,6 +6,8 @@ package ru.example.todoapp.controller;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithUserDetails;
 import ru.example.todoapp.controller.request.TodoSectionRequest;
@@ -16,11 +18,14 @@ import ru.example.todoapp.facade.TasksFacade;
 import ru.example.todoapp.service.TodoSectionService;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.Map;
 import java.util.WeakHashMap;
 
 import static org.hamcrest.Matchers.containsStringIgnoringCase;
 import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyLong;
@@ -72,23 +77,23 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
         verify(sectionService, times(1)).findSections();
     }*/
 
-/*
-    @Disabled
     @Test
     @WithUserDetails(ADMIN)
     public void getSections_ShouldReturnEmptyList() throws Exception {
-        given(sectionService.findSections())
-                .willReturn(Collections.emptyList());
+        Page<TodoSectionDto> resultPage = new PageImpl<>(Collections.emptyList());
+        given(sectionService.findSections(any()))
+                .willReturn(resultPage);
 
-        mvc.perform(get(API_SECTIONS)
+        String response = mvc.perform(get(API_SECTIONS)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("_embedded.sections.isEmpty()", is(true)))
-                .andDo(print());
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
 
-        verify(sectionService, times(1)).findSections();
+        assertTrue(response.contains("page"));
+        assumeTrue(response.contains("tasks"), "field tasks not found");
     }
-*/
 
     // get section by ID
     @Test
