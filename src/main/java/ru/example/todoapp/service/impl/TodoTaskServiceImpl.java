@@ -15,7 +15,6 @@ import ru.example.todoapp.dsl.TaskBuilder;
 import ru.example.todoapp.dto.TodoTaskDto;
 import ru.example.todoapp.entity.TodoTask;
 import ru.example.todoapp.entity.User;
-import ru.example.todoapp.enums.Role;
 import ru.example.todoapp.enums.filters.FilterByDate;
 import ru.example.todoapp.exception.CustomException;
 import ru.example.todoapp.facade.AuthUserFacade;
@@ -26,7 +25,9 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Predicate;
 
+import static ru.example.todoapp.enums.Role.ADMIN;
 import static ru.example.todoapp.enums.filters.FilterByDate.ALL;
 import static ru.example.todoapp.enums.filters.FilterByDate.TODAY;
 
@@ -72,18 +73,14 @@ public class TodoTaskServiceImpl implements TodoTaskService {
     // delete task by id
     @Override
     public void deleteTaskById(Long taskId) {
+        Predicate<User> predicate = user -> user.equals(authUserFacade.getLoggedUser());
+        Predicate<User> combinedPredicates = predicate.or(user -> user.getRoles().contains(ADMIN));
+
         todoTaskRepository.findById(taskId).map(TodoTask::getUser)
-                .ifPresentOrElse(user -> tryDelete(taskId, user), () -> {
+                .filter(combinedPredicates)
+                .ifPresentOrElse(user -> todoTaskRepository.deleteById(taskId), () -> {
                     throw CustomException.forbidden("Task not found");
                 });
-    }
-
-    private void tryDelete(Long taskId, User user) {
-        if (user.equals(authUserFacade.getLoggedUser()) || user.getRoles().contains(Role.ADMIN)) {
-            todoTaskRepository.deleteById(taskId);
-        } else {
-            throw CustomException.forbidden("Not enough permissions");
-        }
     }
 
     // create new task
