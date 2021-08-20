@@ -13,6 +13,7 @@ import ru.example.todoapp.controller.request.TodoSectionRequest;
 import ru.example.todoapp.dto.TodoSectionDto;
 import ru.example.todoapp.entity.TodoSection;
 import ru.example.todoapp.entity.TodoTask;
+import ru.example.todoapp.entity.User;
 import ru.example.todoapp.enums.filters.FilterByOperation;
 import ru.example.todoapp.exception.CustomException;
 import ru.example.todoapp.facade.AuthUserFacade;
@@ -22,7 +23,9 @@ import ru.example.todoapp.service.TodoSectionService;
 
 import java.util.List;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
+import static ru.example.todoapp.enums.Role.ADMIN;
 import static ru.example.todoapp.enums.filters.FilterByOperation.MOVE;
 import static ru.example.todoapp.enums.filters.FilterByOperation.REMOVE;
 import static ru.example.todoapp.service.impl.util.ServiceUtil.validateUser;
@@ -58,10 +61,14 @@ public class TodoSectionServiceImpl implements TodoSectionService {
     // delete section by id
     @Override
     public void deleteSectionById(Long sectionId) {
-        TodoSection section = todoSectionRepository.findById(sectionId)
-                .orElseThrow(() -> CustomException.notFound("Section not found"));
-        validateUser(authUserFacade.getLoggedUser(), section.getUser());
-        todoSectionRepository.deleteById(sectionId);
+        Predicate<User> predicate = user -> user.equals(authUserFacade.getLoggedUser());
+        Predicate<User> combinedPredicates = predicate.or(user -> user.getRoles().contains(ADMIN));
+
+        todoSectionRepository.findById(sectionId).map(TodoSection::getUser)
+                .filter(combinedPredicates)
+                .ifPresentOrElse(user -> todoSectionRepository.deleteById(sectionId), () -> {
+                    throw CustomException.notFound("Section not found");
+                });
     }
 
     // create new section
