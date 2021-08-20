@@ -79,7 +79,7 @@ public class TodoTaskServiceImpl implements TodoTaskService {
         todoTaskRepository.findById(taskId).map(TodoTask::getUser)
                 .filter(combinedPredicates)
                 .ifPresentOrElse(user -> todoTaskRepository.deleteById(taskId), () -> {
-                    throw CustomException.forbidden("Task not found");
+                    throw CustomException.notFound("Task not found");
                 });
     }
 
