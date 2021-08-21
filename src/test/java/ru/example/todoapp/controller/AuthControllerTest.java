@@ -68,25 +68,19 @@ public class AuthControllerTest extends AbstractControllerTestClass {
     }
 
     // Login: fail
-/*
     @Test
     public void login_NotFound_ShouldThrowCustomException() throws Exception {
         CredentialsRequest request = new CredentialsRequest("username@mail.ru", "password");
 
-        given(userService.login(any(CredentialsRequest.class), anyString()))
+        given(authService.login(any(CredentialsRequest.class), anyString()))
                 .willThrow(CustomException.notFound("Username Not Found/Incorrect Password"));
 
         mvc.perform(post(API_AUTH + "login")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(usernamePasswordRequestBody(request.username(), request.password())))
                 .andDo(print())
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("message",
-                        containsStringIgnoringCase("Username not found/incorrect password")));
-
-        verify(userService, times(1)).login(any(CredentialsRequest.class), anyString());
+                .andExpect(status().isNotFound());
     }
-*/
 
 /*
     @Test
