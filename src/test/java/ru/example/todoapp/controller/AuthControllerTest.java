@@ -8,6 +8,7 @@ import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import ru.example.todoapp.controller.request.CredentialsRequest;
 import ru.example.todoapp.controller.request.EmailRequest;
@@ -73,13 +74,14 @@ public class AuthControllerTest extends AbstractControllerTestClass {
         CredentialsRequest request = new CredentialsRequest("username@mail.ru", "password");
 
         given(authService.login(any(CredentialsRequest.class), anyString()))
-                .willThrow(CustomException.notFound("Username Not Found/Incorrect Password"));
+                .willThrow(CustomException.notFound("Username not found/Incorrect Password"));
 
-        mvc.perform(post(API_AUTH + "login")
+        mvc.perform(post(API_AUTH + "/login")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(usernamePasswordRequestBody(request.username(), request.password())))
+                .content(objectMapper.writeValueAsString(request)))
                 .andDo(print())
-                .andExpect(status().isNotFound());
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("message", containsString("Username not found")));
     }
 
 /*
