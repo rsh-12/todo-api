@@ -8,7 +8,6 @@ import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import ru.example.todoapp.controller.request.CredentialsRequest;
 import ru.example.todoapp.controller.request.EmailRequest;
@@ -84,25 +83,21 @@ public class AuthControllerTest extends AbstractControllerTestClass {
                 .andExpect(jsonPath("message", containsString("Username not found")));
     }
 
-/*
     @Test
     public void login_WrongPassword_ShouldThrowCustomException() throws Exception {
         CredentialsRequest request = new CredentialsRequest("username@mail.ru", "password");
 
-        given(userService.login(any(CredentialsRequest.class), anyString()))
-                .willThrow(CustomException.notFound("Username Not Found/Incorrect Password"));
+        given(authService.login(any(), anyString()))
+                .willThrow(CustomException.notFound("Username not found"));
 
-        mvc.perform(post(API_AUTH + "login")
+        mvc.perform(post(API_AUTH + "/login")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(usernamePasswordRequestBody(request.username(), request.password())))
+                .content(objectMapper.writeValueAsString(request)))
                 .andDo(print())
                 .andExpect(status().isNotFound())
-                .andExpect(jsonPath("message",
-                        containsStringIgnoringCase("Username not found/incorrect password")));
+                .andExpect(jsonPath("message", containsString("Username not found")));
 
-        verify(userService, times(1)).login(any(CredentialsRequest.class), anyString());
     }
-*/
 
     // Register: success
 //    @Test
