@@ -12,6 +12,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
+import ru.example.todoapp.controller.request.CredentialsRequest;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -35,6 +36,16 @@ abstract class AbstractControllerTestClass {
         body.put("username", username);
         body.put("password", password);
         return objectMapper.writeValueAsString(body);
+    }
+
+    protected String requestOf(String username, String password) {
+        CredentialsRequest request = new CredentialsRequest(username, password);
+        try {
+            return objectMapper.writeValueAsString(request);
+        } catch (JsonProcessingException exception) {
+            exception.printStackTrace();
+            return String.format("{\"%s\": \"%s\"}", username, password);
+        }
     }
 
 }
