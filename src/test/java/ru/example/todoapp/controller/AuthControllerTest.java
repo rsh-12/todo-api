@@ -86,14 +86,12 @@ public class AuthControllerTest extends AbstractControllerTestClass {
 
     @Test
     public void login_WrongPassword_ShouldThrowCustomException() throws Exception {
-        CredentialsRequest request = new CredentialsRequest("username@mail.ru", "password");
-
         given(authService.login(any(), anyString()))
                 .willThrow(CustomException.notFound("Username not found"));
 
         mvc.perform(post(API_AUTH + "/login")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request)))
+                .content(requestOf(USERNAME, PASSWORD)))
                 .andDo(print())
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("message", containsString("Username not found")));
@@ -102,7 +100,6 @@ public class AuthControllerTest extends AbstractControllerTestClass {
     // Register: success
     @Test
     public void register_ShouldReturnOk() throws Exception {
-
         User user = mock(User.class);
         given(user.getUsername()).willReturn("username@mail.com");
         given(user.getPassword()).willReturn("password");
@@ -120,11 +117,9 @@ public class AuthControllerTest extends AbstractControllerTestClass {
     // Register: fail
     @Test
     public void register_InvalidUsername_ShouldReturnBadRequest() throws Exception {
-        String body = usernamePasswordRequestBody("notValidUsername", "password");
-
         mvc.perform(post(API_AUTH + "/register")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(body))
+                .content(requestOf("notValidUsername", PASSWORD)))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("username", containsInAnyOrder("Not a valid email address")));
@@ -132,11 +127,9 @@ public class AuthControllerTest extends AbstractControllerTestClass {
 
     @Test
     public void register_InvalidPwd_ShouldReturnBadRequest() throws Exception {
-        String body = usernamePasswordRequestBody("username@mail.com", "1");
-
         mvc.perform(post(API_AUTH + "/register")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(body))
+                .content(requestOf(USERNAME, "p")))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("password", containsInAnyOrder("Password is required")));
