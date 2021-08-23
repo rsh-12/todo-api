@@ -23,6 +23,7 @@ import javax.annotation.PostConstruct;
 import javax.crypto.SecretKey;
 import javax.servlet.http.HttpServletRequest;
 import java.nio.charset.StandardCharsets;
+import java.time.Instant;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -143,9 +144,8 @@ public class JwtTokenServiceImpl implements JwtTokenService {
                 .collect(Collectors.toSet());
     }
 
-    private static Date getValidity(long millis) {
-        Date now = new Date();
-        return new Date(now.getTime() + millis);
+    private static Date getValidity(long refreshValidity) {
+        return Date.from(Instant.now().plusMillis(refreshValidity));
     }
 
 }
