@@ -13,11 +13,13 @@ import ru.example.todoapp.controller.request.CredentialsRequest;
 import ru.example.todoapp.controller.request.EmailRequest;
 import ru.example.todoapp.controller.request.PasswordRequest;
 import ru.example.todoapp.controller.request.TokenRequest;
+import ru.example.todoapp.entity.User;
 import ru.example.todoapp.exception.CustomException;
 import ru.example.todoapp.facade.PasswordFacade;
 import ru.example.todoapp.messaging.MessagingClient;
 import ru.example.todoapp.service.AuthService;
 
+import java.time.LocalDateTime;
 import java.util.Map;
 
 import static org.hamcrest.Matchers.containsInAnyOrder;
@@ -28,6 +30,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
@@ -96,29 +99,26 @@ public class AuthControllerTest extends AbstractControllerTestClass {
                 .andDo(print())
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("message", containsString("Username not found")));
-
     }
 
     // Register: success
-//    @Test
-//    public void register_ShouldReturnOk() throws Exception {
-//        User user = mock(User.class);
-//        given(user.getUsername()).willReturn("username@mail.com");
-//        given(user.getPassword()).willReturn("password");
-//        given(user.getCreatedAt()).willReturn(LocalDateTime.now());
-//
-//        given(userService.register(any())).willReturn(user);
-//        given(userService.mapToUserDto(any(User.class)))
-//                .willReturn(new UserDto("username", LocalDateTime.now()));
-//
-//        mvc.perform(post(API_AUTH + "register")
-//                .contentType(MediaType.APPLICATION_JSON)
-//                .content(usernamePasswordRequestBody(user.getUsername(), user.getPassword())))
-//                .andDo(print())
-//                .andExpect(status().isCreated());
-//
-//        verify(userService, times(1)).register(any(CredentialsRequest.class));
-//    }
+    @Test
+    public void register_ShouldReturnOk() throws Exception {
+        CredentialsRequest request = new CredentialsRequest("username@mail.ru", "password");
+
+        User user = mock(User.class);
+        given(user.getUsername()).willReturn("username@mail.com");
+        given(user.getPassword()).willReturn("password");
+        given(user.getCreatedAt()).willReturn(LocalDateTime.now());
+
+        given(authService.register(any())).willReturn(user);
+
+        mvc.perform(post(API_AUTH + "/register")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+                .andDo(print())
+                .andExpect(status().isCreated());
+    }
 
     // Register: fail
     @Test
