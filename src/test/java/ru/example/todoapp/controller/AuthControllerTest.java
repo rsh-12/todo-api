@@ -51,18 +51,18 @@ public class AuthControllerTest extends AbstractControllerTestClass {
     private MessagingClient messagingService;
 
     private static final String API_AUTH = "/api/auth";
+    private static final String USERNAME = "username@mail.com";
+    private static final String PASSWORD = "password12";
 
     @Test
     public void login_ShouldReturnTokens() throws Exception {
-        CredentialsRequest request = new CredentialsRequest("username@mail.ru", "password");
-
         String accessToken = "someAccessToken";
         given(authService.login(any(CredentialsRequest.class), anyString()))
                 .willReturn(Map.of("access_token", accessToken));
 
         mvc.perform(post(API_AUTH + "/login")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(usernamePasswordRequestBody(request.username(), request.password())))
+                .content(requestOf(USERNAME, PASSWORD)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("access_token", containsString(accessToken)));
@@ -104,7 +104,6 @@ public class AuthControllerTest extends AbstractControllerTestClass {
     // Register: success
     @Test
     public void register_ShouldReturnOk() throws Exception {
-        CredentialsRequest request = new CredentialsRequest("username@mail.ru", "password");
 
         User user = mock(User.class);
         given(user.getUsername()).willReturn("username@mail.com");
@@ -115,7 +114,7 @@ public class AuthControllerTest extends AbstractControllerTestClass {
 
         mvc.perform(post(API_AUTH + "/register")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request)))
+                .content(requestOf(USERNAME, PASSWORD)))
                 .andDo(print())
                 .andExpect(status().isCreated());
     }
