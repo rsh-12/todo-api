@@ -136,22 +136,19 @@ public class AuthControllerTest extends AbstractControllerTestClass {
     }
 
     // Token: fail
-//    @Test
-//    public void getToken_NotFound_ShouldThrowCustomException() throws Exception {
-//        final String TOKEN = "tokenDoesNotExist";
-//
-//        given(userService.generateNewTokens(anyString(), anyString()))
-//                .willThrow(CustomException.badRequest("Refresh token is not valid or expired, please, try to log in"));
-//
-//        mvc.perform(post(API_AUTH + "token")
-//                .header("token", TOKEN))
-//                .andDo(print())
-//                .andExpect(status().isBadRequest())
-//                .andExpect(jsonPath("message",
-//                        containsStringIgnoringCase("Refresh token is not valid or expired, please, try to log in")));
-//
-//        verify(userService, times(1)).generateNewTokens(anyString(), anyString());
-//    }
+    @Test
+    public void getToken_NotFound_ShouldThrowCustomException() throws Exception {
+        String errorMessage = "Refresh token owner not found";
+        given(authService.generateNewTokens(anyString(), anyString()))
+                .willThrow(CustomException.notFound(errorMessage));
+
+        mvc.perform(post(API_AUTH + "/token")
+                .header("token", "Beare someAccessToken"))
+                .andDo(print())
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("message",
+                        containsString(errorMessage)));
+    }
 
 //    @Test
 //    public void getToken_ShouldReturnNewTokens() throws Exception {
