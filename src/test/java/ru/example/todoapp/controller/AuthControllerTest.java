@@ -4,7 +4,6 @@ package ru.example.todoapp.controller;
  * Time: 6:25 PM
  * */
 
-import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
@@ -24,7 +23,6 @@ import java.util.Map;
 
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.containsStringIgnoringCase;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
@@ -196,18 +194,14 @@ public class AuthControllerTest extends AbstractControllerTestClass {
         doThrow(CustomException.internalServerError("An error occurred while generating the token"))
                 .when(messagingService).send(any(EmailRequest.class));
 
-        JSONObject body = new JSONObject();
-        body.put("email", email);
-
+        String body = objectMapper.writeValueAsString(Map.of("email", email));
         mvc.perform(post(API_AUTH + "/password/forgot")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(body.toString()))
+                .content(body))
                 .andDo(print())
                 .andExpect(status().isInternalServerError())
                 .andExpect(jsonPath("message",
-                        containsStringIgnoringCase("An error occurred while generating the token")));
-
-        verify(messagingService, times(1)).send(any(EmailRequest.class));
+                        containsString("An error occurred while generating the token")));
     }
 
     @Test
