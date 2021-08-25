@@ -4,6 +4,7 @@ package ru.example.todoapp.controller;
  * Time: 6:25 PM
  * */
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
@@ -29,7 +30,6 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -53,6 +53,7 @@ public class AuthControllerTest extends AbstractControllerTestClass {
     private static final String PASSWORD = "password12";
 
     @Test
+    @DisplayName("login: returns tokens, 200 ok")
     public void login_ShouldReturnTokens() throws Exception {
         String accessToken = "someAccessToken";
         given(authService.login(any(CredentialsRequest.class), anyString()))
@@ -68,8 +69,8 @@ public class AuthControllerTest extends AbstractControllerTestClass {
         verify(authService).login(any(), anyString());
     }
 
-    // Login: fail
     @Test
+    @DisplayName("login: throws CustomException, returns notFound")
     public void login_NotFound_ShouldThrowCustomException() throws Exception {
         given(authService.login(any(CredentialsRequest.class), anyString()))
                 .willThrow(CustomException.notFound("Username not found/Incorrect Password"));
@@ -83,6 +84,7 @@ public class AuthControllerTest extends AbstractControllerTestClass {
     }
 
     @Test
+    @DisplayName("login: throws CustomException, returns notFound")
     public void login_WrongPassword_ShouldThrowCustomException() throws Exception {
         given(authService.login(any(), anyString()))
                 .willThrow(CustomException.notFound("Username not found"));
@@ -95,8 +97,8 @@ public class AuthControllerTest extends AbstractControllerTestClass {
                 .andExpect(jsonPath("message", containsString("Username not found")));
     }
 
-    // Register: success
     @Test
+    @DisplayName("register: returns created")
     public void register_ShouldReturnOk() throws Exception {
         User user = mock(User.class);
         given(user.getUsername()).willReturn("username@mail.com");
@@ -112,8 +114,8 @@ public class AuthControllerTest extends AbstractControllerTestClass {
                 .andExpect(status().isCreated());
     }
 
-    // Register: fail
     @Test
+    @DisplayName("register: returns badRequest")
     public void register_InvalidUsername_ShouldReturnBadRequest() throws Exception {
         mvc.perform(post(API_AUTH + "/register")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -124,6 +126,7 @@ public class AuthControllerTest extends AbstractControllerTestClass {
     }
 
     @Test
+    @DisplayName("register: returns badRequest")
     public void register_InvalidPwd_ShouldReturnBadRequest() throws Exception {
         mvc.perform(post(API_AUTH + "/register")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -133,8 +136,8 @@ public class AuthControllerTest extends AbstractControllerTestClass {
                 .andExpect(jsonPath("password", containsInAnyOrder("Password is required")));
     }
 
-    // Token: fail
     @Test
+    @DisplayName("getToken: throws CustomException, returns notFound")
     public void getToken_NotFound_ShouldThrowCustomException() throws Exception {
         String errorMessage = "Refresh token owner not found";
         given(authService.generateNewTokens(anyString(), anyString()))
@@ -149,6 +152,7 @@ public class AuthControllerTest extends AbstractControllerTestClass {
     }
 
     @Test
+    @DisplayName("getToken: returns tokens, 200 ok")
     public void getToken_ShouldReturnNewTokens() throws Exception {
         given(authService.generateNewTokens(anyString(), anyString()))
                 .willReturn(Map.of("access_token", "access_token", "refresh_token", "refresh_token"));
@@ -162,6 +166,7 @@ public class AuthControllerTest extends AbstractControllerTestClass {
     }
 
     @Test
+    @DisplayName("sendPasswordResetToken: returns 200 ok")
     public void sendPasswordResetToken_ShouldReturnStatusOk() throws Exception {
         doNothing().when(messagingService).send(any(EmailRequest.class));
 
@@ -174,6 +179,7 @@ public class AuthControllerTest extends AbstractControllerTestClass {
     }
 
     @Test
+    @DisplayName("sendPasswordResetToken: throws CustomException, returns notFound")
     public void sendPasswordResetToken_ShouldThrowCustomExceptionAndReturnNotFound() throws Exception {
         doThrow(CustomException.notFound("Username not found")).when(messagingService).send(any(EmailRequest.class));
 
@@ -187,6 +193,7 @@ public class AuthControllerTest extends AbstractControllerTestClass {
     }
 
     @Test
+    @DisplayName("sendPasswordResetToken: throws CustomException, returns internalServerError")
     public void sendPasswordResetToken_ShouldThrowCustomExceptionAndReturnInternalServerError() throws Exception {
         doThrow(CustomException.internalServerError("An error occurred while generating the token"))
                 .when(messagingService).send(any(EmailRequest.class));
@@ -202,6 +209,7 @@ public class AuthControllerTest extends AbstractControllerTestClass {
     }
 
     @Test
+    @DisplayName("updatePassword: returns 200 ok")
     public void updatePassword_ShouldReturnStatusOk() throws Exception {
         PasswordRequest request = new PasswordRequest("password12345");
         doNothing().when(passwordFacade).updatePassword(any(TokenRequest.class), anyString());
@@ -211,11 +219,10 @@ public class AuthControllerTest extends AbstractControllerTestClass {
                 .param("token", "someToken")
                 .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk());
-
-        verify(passwordFacade, times(1)).updatePassword(any(TokenRequest.class), anyString());
     }
 
     @Test
+    @DisplayName("updatePassword: returns badRequest")
     public void updatePassword_PasswordIsNull_ShouldReturnBadRequest() throws Exception {
         mvc.perform(post(API_AUTH + "/password/reset")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -228,6 +235,7 @@ public class AuthControllerTest extends AbstractControllerTestClass {
     }
 
     @Test
+    @DisplayName("updatePassword: returns badRequest")
     public void updatePassword_TokenIsNull_ShouldReturnBadRequest() throws Exception {
         mvc.perform(post(API_AUTH + "/password/reset")
                 .contentType(MediaType.APPLICATION_JSON)
