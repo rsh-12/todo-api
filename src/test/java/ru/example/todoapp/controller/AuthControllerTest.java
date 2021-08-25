@@ -179,19 +179,15 @@ public class AuthControllerTest extends AbstractControllerTestClass {
     @Test
     public void sendPasswordResetToken_ShouldThrowCustomExceptionAndReturnNotFound() throws Exception {
         String email = "test@mail.com";
-        doThrow(CustomException.notFound("Username Not Found")).when(messagingService).send(any(EmailRequest.class));
+        doThrow(CustomException.notFound("Username not found")).when(messagingService).send(any(EmailRequest.class));
 
-        JSONObject body = new JSONObject();
-        body.put("email", email);
-
+        String body = objectMapper.writeValueAsString(Map.of("email", email));
         mvc.perform(post(API_AUTH + "/password/forgot")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(body.toString()))
+                .content(body))
                 .andDo(print())
                 .andExpect(status().isNotFound())
-                .andExpect(jsonPath("message", containsStringIgnoringCase("username not found")));
-
-        verify(messagingService, times(1)).send(any(EmailRequest.class));
+                .andExpect(jsonPath("message", containsString("Username not found")));
     }
 
     @Test
