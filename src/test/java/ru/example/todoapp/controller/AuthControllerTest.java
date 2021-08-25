@@ -163,10 +163,9 @@ public class AuthControllerTest extends AbstractControllerTestClass {
 
     @Test
     public void sendPasswordResetToken_ShouldReturnStatusOk() throws Exception {
-        String email = "test@mail.com";
         doNothing().when(messagingService).send(any(EmailRequest.class));
 
-        String body = objectMapper.writeValueAsString(Map.of("email", email));
+        String body = objectMapper.writeValueAsString(new EmailRequest("test@mail.com"));
         mvc.perform(post(API_AUTH + "/password/forgot")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(body))
@@ -176,10 +175,9 @@ public class AuthControllerTest extends AbstractControllerTestClass {
 
     @Test
     public void sendPasswordResetToken_ShouldThrowCustomExceptionAndReturnNotFound() throws Exception {
-        String email = "test@mail.com";
         doThrow(CustomException.notFound("Username not found")).when(messagingService).send(any(EmailRequest.class));
 
-        String body = objectMapper.writeValueAsString(Map.of("email", email));
+        String body = objectMapper.writeValueAsString(new EmailRequest("test@mail.com"));
         mvc.perform(post(API_AUTH + "/password/forgot")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(body))
@@ -190,11 +188,10 @@ public class AuthControllerTest extends AbstractControllerTestClass {
 
     @Test
     public void sendPasswordResetToken_ShouldThrowCustomExceptionAndReturnInternalServerError() throws Exception {
-        String email = "test@mail.com";
         doThrow(CustomException.internalServerError("An error occurred while generating the token"))
                 .when(messagingService).send(any(EmailRequest.class));
 
-        String body = objectMapper.writeValueAsString(Map.of("email", email));
+        String body = objectMapper.writeValueAsString(new EmailRequest("test@mail.com"));
         mvc.perform(post(API_AUTH + "/password/forgot")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(body))
