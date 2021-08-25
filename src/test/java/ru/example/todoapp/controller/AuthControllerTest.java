@@ -150,22 +150,18 @@ public class AuthControllerTest extends AbstractControllerTestClass {
                         containsString(errorMessage)));
     }
 
-//    @Test
-//    public void getToken_ShouldReturnNewTokens() throws Exception {
-//        given(userService.generateNewTokens(anyString(), anyString()))
-//                .willReturn(Map.of("access_token", "access_token", "refresh_token", "refresh_token"));
-//
-//        String response = mvc.perform(post(API_AUTH + "token")
-//                .header("token", "refreshToken"))
-//                .andDo(print())
-//                .andExpect(status().isOk())
-//                .andReturn()
-//                .getResponse()
-//                .getContentAsString();
-//
-//        assertTrue(response.contains("access_token") && response.contains("refresh_token"));
-//        verify(userService, times(1)).generateNewTokens(anyString(), anyString());
-//    }
+    @Test
+    public void getToken_ShouldReturnNewTokens() throws Exception {
+        given(authService.generateNewTokens(anyString(), anyString()))
+                .willReturn(Map.of("access_token", "access_token", "refresh_token", "refresh_token"));
+
+        mvc.perform(post(API_AUTH + "/token")
+                .header("token", "refreshToken"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("access_token", containsString("access_token")))
+                .andExpect(jsonPath("refresh_token", containsString("refresh_token")));
+    }
 
     @Test
     public void sendPasswordResetToken_ShouldReturnStatusOk() throws Exception {
