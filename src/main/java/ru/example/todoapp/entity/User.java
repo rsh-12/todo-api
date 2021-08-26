@@ -90,7 +90,7 @@ public class User {
     }
 
     public String getUsername() {
-        return username == null ? "" : username;
+        return username;
     }
 
     public void setUsername(String username) {
@@ -98,7 +98,7 @@ public class User {
     }
 
     public String getPassword() {
-        return password == null ? "" : password;
+        return password;
     }
 
     public void setPassword(String password) {
@@ -114,15 +114,11 @@ public class User {
     }
 
     public Set<Role> getRoles() {
-        return roles == null ? Collections.emptySet() : roles;
+        return roles;
     }
 
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
-    }
-
-    public void clearRoles() {
-        this.roles = Collections.emptySet();
     }
 
     @Override
