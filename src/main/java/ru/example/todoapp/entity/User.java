@@ -8,6 +8,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.CreationTimestamp;
 import ru.example.todoapp.enums.Role;
+import ru.example.todoapp.validation.ValidEmail;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -23,7 +24,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -40,8 +40,7 @@ public class User {
     private Long id;
 
     @NotBlank
-    @Pattern(regexp = "^[a-z_-]{2,}[0-9a-z_-]*@[a-z]{2,5}\\.(ru|com)",
-            flags = Pattern.Flag.CASE_INSENSITIVE, message = "Not a valid email address")
+    @ValidEmail
     @Size(min = 4, max = 127, message = "Email is required: minimum 4 characters")
     @Column(nullable = false, unique = true)
     private String username;
