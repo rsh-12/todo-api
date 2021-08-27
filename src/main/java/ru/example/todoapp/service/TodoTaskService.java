@@ -2,6 +2,7 @@ package ru.example.todoapp.service;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import ru.example.todoapp.controller.request.TaskIdsWrapper;
 import ru.example.todoapp.controller.request.TodoTaskRequest;
 import ru.example.todoapp.dto.TodoTaskDto;
 import ru.example.todoapp.entity.TodoTask;
@@ -59,7 +60,7 @@ public interface TodoTaskService {
      * @return the list of TodoTask objects
      * @see User
      * @see TodoTask
-     * @see ru.example.todoapp.controller.wrapper.TaskIdsWrapper
+     * @see TaskIdsWrapper
      */
     List<TodoTask> findTasksByIds(Set<Long> taskIds, Long userId);
 

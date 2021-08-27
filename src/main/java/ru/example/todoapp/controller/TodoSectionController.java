@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.example.todoapp.controller.assembler.TodoSectionModelAssembler;
 import ru.example.todoapp.controller.request.TodoSectionRequest;
-import ru.example.todoapp.controller.wrapper.TaskIdsWrapper;
+import ru.example.todoapp.controller.request.TaskIdsWrapper;
 import ru.example.todoapp.dto.TodoSectionDto;
 import ru.example.todoapp.entity.TodoSection;
 import ru.example.todoapp.enums.filters.FilterByOperation;
