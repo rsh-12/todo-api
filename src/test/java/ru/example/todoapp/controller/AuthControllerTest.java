@@ -122,7 +122,7 @@ public class AuthControllerTest extends AbstractControllerTestClass {
                 .content(requestOf("notValidUsername", PASSWORD)))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("username", containsInAnyOrder("Not a valid email address")));
+                .andExpect(jsonPath("username", containsInAnyOrder("Email validation error")));
     }
 
     @Test
