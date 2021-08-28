@@ -11,7 +11,7 @@ import java.util.regex.Pattern;
 public class CustomEmailValidator implements ConstraintValidator<ValidEmail, String> {
 
     private static final Pattern EMAIL = Pattern
-            .compile("^[a-z_-]{2,}[0-9a-z_-]*@[a-z]{2,5}\\\\.(ru|com|list)",
+            .compile("^[a-z_-]{2,}[0-9a-z_-]*@[a-z]{2,5}\\.(ru|com)",
                     Pattern.CASE_INSENSITIVE);
 
     @Override
