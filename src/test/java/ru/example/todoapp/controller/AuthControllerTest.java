@@ -99,10 +99,10 @@ public class AuthControllerTest extends AbstractControllerTestClass {
 
     @Test
     @DisplayName("register: returns created")
-    public void register_ShouldReturnOk() throws Exception {
+    public void register_ShouldReturnCreated() throws Exception {
         User user = mock(User.class);
-        given(user.getUsername()).willReturn("username@mail.com");
-        given(user.getPassword()).willReturn("password");
+        given(user.getUsername()).willReturn(USERNAME);
+        given(user.getPassword()).willReturn(PASSWORD);
         given(user.getCreatedAt()).willReturn(LocalDateTime.now());
 
         given(authService.register(any())).willReturn(user);
