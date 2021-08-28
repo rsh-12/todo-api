@@ -5,6 +5,7 @@ package ru.example.todoapp.service;
  * */
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -13,11 +14,16 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import ru.example.todoapp.config.properties.TokenProperties;
+import ru.example.todoapp.controller.request.CredentialsRequest;
+import ru.example.todoapp.entity.RefreshToken;
 import ru.example.todoapp.entity.User;
 import ru.example.todoapp.repository.UserRepository;
 import ru.example.todoapp.security.UserDetailsImpl;
 import ru.example.todoapp.service.impl.AuthServiceImpl;
 
+import java.util.Map;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anySet;
@@ -46,6 +52,9 @@ public class AuthServiceTest {
     @Mock
     private UserRepository userRepository;
 
+    private static final String USERNAME = "user@mail.com";
+    private static final String PASSWORD = "password12345";
+
     @BeforeEach
     public void setUp() {
         given(tokenProperties.getAccessTokenValidity()).willReturn(1_800_000L);
@@ -54,16 +63,24 @@ public class AuthServiceTest {
 
     // login
     @Test
+    @DisplayName("login: returns tokens")
     public void login_ShouldAuthUserAndReturnTokens() {
         User user = mock(User.class);
         Authentication auth = mock(Authentication.class);
+        RefreshToken refreshToken = mock(RefreshToken.class);
 
-        given(authManager.authenticate(any())).willReturn(auth);
-        given(auth.getPrincipal()).willReturn(new UserDetailsImpl(user));
-
+        // tokens
+        given(refreshTokenService.createRefreshToken(anyLong(), anyString())).willReturn(refreshToken);
+        given(refreshToken.getToken()).willReturn("refreshToken");
         given(jwtTokenService.buildAccessToken(anyLong(), anySet())).willReturn("accessToken");
-        given(refreshTokenService.createRefreshToken(anyLong(), anyString())).willReturn(null);
 
+        given(auth.getPrincipal()).willReturn(new UserDetailsImpl(user));
+        given(authManager.authenticate(any())).willReturn(auth);
+
+        Map<String, String> tokens = authService.login(new CredentialsRequest(USERNAME, PASSWORD), "");
+
+        assertEquals("accessToken", tokens.get("access_token"));
+        assertEquals("refreshToken", tokens.get("refresh_token"));
     }
 
 /*
