@@ -11,12 +11,15 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import ru.example.todoapp.config.properties.TokenProperties;
 import ru.example.todoapp.controller.request.CredentialsRequest;
 import ru.example.todoapp.entity.RefreshToken;
 import ru.example.todoapp.entity.User;
+import ru.example.todoapp.exception.CustomException;
 import ru.example.todoapp.repository.UserRepository;
 import ru.example.todoapp.security.UserDetailsImpl;
 import ru.example.todoapp.service.impl.AuthServiceImpl;
@@ -24,6 +27,7 @@ import ru.example.todoapp.service.impl.AuthServiceImpl;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anySet;
@@ -83,14 +87,14 @@ public class AuthServiceTest {
         assertEquals("refreshToken", tokens.get("refresh_token"));
     }
 
-/*
     @Test
     public void login_ShouldThrowCustomException() {
         given(authManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
                 .willThrow(UsernameNotFoundException.class);
-        assertThrows(CustomException.class, () -> userService.login(new CredentialsRequest("username", "password"), ""));
+
+        assertThrows(CustomException.class, () ->
+                authService.login(new CredentialsRequest(USERNAME, PASSWORD), ""));
     }
-*/
 
     // register
 /*
