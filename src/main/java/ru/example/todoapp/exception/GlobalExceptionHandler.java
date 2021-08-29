@@ -26,7 +26,9 @@ import java.util.stream.Collectors;
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @Override
-    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
+                                                                  HttpHeaders headers, HttpStatus status,
+                                                                  WebRequest request) {
         final List<FieldError> fieldErrors = ex.getBindingResult().getFieldErrors();
 
         Map<String, Set<String>> errorsMap = fieldErrors.stream().collect(
@@ -35,7 +37,6 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
         return new ResponseEntity<>(errorsMap.isEmpty() ? ex : errorsMap, headers, status);
     }
-
 
     @ExceptionHandler
     public ResponseEntity<CustomErrorResponse> handleException(CustomException ex) {
