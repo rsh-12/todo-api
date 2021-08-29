@@ -88,6 +88,7 @@ public class AuthServiceTest {
     }
 
     @Test
+    @DisplayName("login: throws an exception")
     public void login_ShouldThrowCustomException() {
         given(authManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
                 .willThrow(UsernameNotFoundException.class);
