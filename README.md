@@ -3,11 +3,20 @@
 
 # TodoList
 
-### **Swagger:** 
- com.example`/swagger-ui/`
+### **Swagger:**
+
+com.example`/swagger-ui/`
 
 
 ---
+
 #### [Password Reset Service](https://github.com/rsh-12/password-reset-service)
+
 Learn more on the project's [website](https://rsh-12.github.io/todo-api/)
 
+Todo:
+
+- [ ] Add unit tests
+- [ ] Add simple caching with Redis
+- [ ] Break the app into modules
+- [ ] Add a docker image of a service for generating and sending a token
