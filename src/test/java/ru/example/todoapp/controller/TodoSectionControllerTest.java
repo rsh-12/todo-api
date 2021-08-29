@@ -20,6 +20,7 @@ import ru.example.todoapp.service.TodoSectionService;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.Map;
+import java.util.Optional;
 import java.util.WeakHashMap;
 
 import static org.hamcrest.Matchers.containsStringIgnoringCase;
@@ -99,7 +100,8 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
     @Test
     @WithUserDetails(ADMIN)
     public void getSection_ShouldReturnSectionById() throws Exception {
-        given(sectionService.findSectionById(1L)).willReturn(new TodoSection("Important"));
+        TodoSection section = mock(TodoSection.class);
+        given(sectionService.findSectionById(1L)).willReturn(Optional.of(section));
 
         TodoSectionDto sectionDto = new TodoSectionDto(1L, "Important", LocalDateTime.now(), LocalDateTime.now());
         given(sectionService.mapToSectionDto(any(TodoSection.class))).willReturn(sectionDto);
@@ -108,25 +110,18 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("title", is("Important")))
                 .andDo(print());
-
-        verify(sectionService, times(1)).findSectionById(1L);
     }
 
     // get section by non-existent id: returns 404 NOT FOUND
     @Test
     @WithUserDetails(USER)
     public void getSection_ShouldReturnBadRequest() throws Exception {
-        given(sectionService.findSectionById(1L))
-                .willThrow(CustomException.notFound("Section not found: " + 1));
+        given(sectionService.findSectionById(anyLong())).willReturn(Optional.empty());
 
         mvc.perform(get(API_SECTIONS + 1)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(status().is4xxClientError())
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("message", containsStringIgnoringCase("section not found")));
-
-        verify(sectionService, times(1)).findSectionById(1L);
+                .andExpect(status().isNotFound());
     }
 
     // delete section
