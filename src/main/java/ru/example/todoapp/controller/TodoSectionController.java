@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.data.web.PagedResourcesAssembler;
-import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -25,8 +24,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.example.todoapp.controller.assembler.TodoSectionModelAssembler;
-import ru.example.todoapp.controller.request.TodoSectionRequest;
 import ru.example.todoapp.controller.request.TaskIdsWrapper;
+import ru.example.todoapp.controller.request.TodoSectionRequest;
 import ru.example.todoapp.dto.TodoSectionDto;
 import ru.example.todoapp.entity.TodoSection;
 import ru.example.todoapp.enums.filters.FilterByOperation;
@@ -68,10 +67,12 @@ public class TodoSectionController {
     // get custom section by id
     @ApiOperation(value = "Find section", notes = "Find the Section by ID")
     @GetMapping(value = "/{id}", produces = "application/json")
-    public EntityModel<TodoSectionDto> getSection(@PathVariable("id") Long sectionId) {
-        TodoSection todoSection = todoSectionService.findSectionById(sectionId);
+    public ResponseEntity<?> getSection(@PathVariable("id") Long sectionId) {
+        var optionalEntity = todoSectionService.findSectionById(sectionId)
+                .map(todoSectionService::mapToSectionDto)
+                .map(assembler::toModel);
 
-        return assembler.toModel(todoSectionService.mapToSectionDto(todoSection));
+        return ResponseEntity.of(optionalEntity);
     }
 
     // delete section by id
