@@ -11,6 +11,7 @@ import ru.example.todoapp.enums.filters.FilterByOperation;
 import ru.example.todoapp.repository.projection.TodoSectionProjection;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 
 /**
@@ -28,7 +29,7 @@ public interface TodoSectionService {
      * @throws ru.example.todoapp.exception.CustomException if the TodoSection is not found
      * @see TodoSection
      */
-    TodoSection findSectionById(Long sectionId);
+    Optional<TodoSection> findSectionById(Long sectionId);
 
     /**
      * Finds specific fields of the TodoSection by user id:

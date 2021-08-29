@@ -22,6 +22,7 @@ import ru.example.todoapp.repository.projection.TodoSectionProjection;
 import ru.example.todoapp.service.TodoSectionService;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -45,10 +46,9 @@ public class TodoSectionServiceImpl implements TodoSectionService {
 
     // get section by id
     @Override
-    public TodoSection findSectionById(Long sectionId) {
+    public Optional<TodoSection> findSectionById(Long sectionId) {
         log.info("Get the section by id: {}", sectionId);
-        return todoSectionRepository.findByUserIdAndId(authUserFacade.getUserId(), sectionId)
-                .orElseThrow(() -> CustomException.notFound("Section not found: " + sectionId));
+        return todoSectionRepository.findByUserIdAndId(authUserFacade.getUserId(), sectionId);
     }
 
     // get all sections
