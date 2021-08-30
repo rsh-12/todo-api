@@ -72,7 +72,7 @@ public class AuthControllerTest extends AbstractControllerTestClass {
 
     @Test
     @DisplayName("login: returns empty map, notFound")
-    public void login_NotFound_ShouldThrowCustomException() throws Exception {
+    public void login_NotFound_ShouldReturnEmptyMap() throws Exception {
         given(authService.login(any(CredentialsRequest.class), anyString()))
                 .willReturn(Collections.emptyMap());
 
@@ -85,7 +85,7 @@ public class AuthControllerTest extends AbstractControllerTestClass {
 
     @Test
     @DisplayName("login: returns empty map, notFound")
-    public void login_WrongPassword_ShouldThrowCustomException() throws Exception {
+    public void login_WrongPassword_ShouldReturnEmptyMap() throws Exception {
         given(authService.login(any(), anyString()))
                 .willReturn(Collections.emptyMap());
 
