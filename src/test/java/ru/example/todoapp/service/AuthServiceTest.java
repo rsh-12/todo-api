@@ -19,15 +19,14 @@ import ru.example.todoapp.config.properties.TokenProperties;
 import ru.example.todoapp.controller.request.CredentialsRequest;
 import ru.example.todoapp.entity.RefreshToken;
 import ru.example.todoapp.entity.User;
-import ru.example.todoapp.exception.CustomException;
 import ru.example.todoapp.repository.UserRepository;
 import ru.example.todoapp.security.UserDetailsImpl;
 import ru.example.todoapp.service.impl.AuthServiceImpl;
 
+import java.util.Collections;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anySet;
@@ -88,13 +87,13 @@ public class AuthServiceTest {
     }
 
     @Test
-    @DisplayName("login: throws an exception")
-    public void login_ShouldThrowCustomException() {
+    @DisplayName("login: returns empty map")
+    public void login_ShouldReturnEmptyMap() {
         given(authManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
                 .willThrow(UsernameNotFoundException.class);
 
-        assertThrows(CustomException.class, () ->
-                authService.login(new CredentialsRequest(USERNAME, PASSWORD), ""));
+        Map<String, String> tokens = authService.login(new CredentialsRequest(USERNAME, PASSWORD), "ip");
+        assertEquals(Collections.emptyMap(), tokens);
     }
 
     // register
