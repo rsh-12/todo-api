@@ -128,7 +128,6 @@ public class TodoSectionServiceImpl implements TodoSectionService {
                 section.getCreatedAt());
     }
 
-
     public <T> TodoSectionDto mapToSectionDto(T t, Function<T, TodoSectionDto> f) {
         return f.apply(t);
     }
