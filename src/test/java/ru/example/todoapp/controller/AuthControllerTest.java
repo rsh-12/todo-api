@@ -20,6 +20,7 @@ import ru.example.todoapp.messaging.MessagingClient;
 import ru.example.todoapp.service.AuthService;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.Map;
 
 import static org.hamcrest.Matchers.containsInAnyOrder;
@@ -70,31 +71,29 @@ public class AuthControllerTest extends AbstractControllerTestClass {
     }
 
     @Test
-    @DisplayName("login: throws CustomException, returns notFound")
+    @DisplayName("login: returns empty map, notFound")
     public void login_NotFound_ShouldThrowCustomException() throws Exception {
         given(authService.login(any(CredentialsRequest.class), anyString()))
-                .willThrow(CustomException.notFound("Username not found/Incorrect Password"));
+                .willReturn(Collections.emptyMap());
 
         mvc.perform(post(API_AUTH + "/login")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requestOf(USERNAME, PASSWORD)))
                 .andDo(print())
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("message", containsString("Username not found")));
+                .andExpect(status().isNotFound());
     }
 
     @Test
-    @DisplayName("login: throws CustomException, returns notFound")
+    @DisplayName("login: returns empty map, notFound")
     public void login_WrongPassword_ShouldThrowCustomException() throws Exception {
         given(authService.login(any(), anyString()))
-                .willThrow(CustomException.notFound("Username not found"));
+                .willReturn(Collections.emptyMap());
 
         mvc.perform(post(API_AUTH + "/login")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requestOf(USERNAME, PASSWORD)))
                 .andDo(print())
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("message", containsString("Username not found")));
+                .andExpect(status().isNotFound());
     }
 
     @Test
