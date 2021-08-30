@@ -23,6 +23,7 @@ import ru.example.todoapp.service.AuthService;
 import ru.example.todoapp.service.JwtTokenService;
 import ru.example.todoapp.service.RefreshTokenService;
 
+import java.util.Collections;
 import java.util.Map;
 
 @Service
@@ -55,7 +56,7 @@ public class AuthServiceImpl implements AuthService {
             User userFromDb = ((UserDetailsImpl) auth.getPrincipal()).getUser();
             return buildResponseBody(userFromDb, ip);
         } catch (AuthenticationException ex) {
-            throw CustomException.notFound("Username not found/Incorrect password");
+            return Collections.emptyMap();
         }
     }
 
