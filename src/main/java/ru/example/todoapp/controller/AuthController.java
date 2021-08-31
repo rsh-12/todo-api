@@ -68,7 +68,10 @@ public class AuthController {
     @PostMapping(value = "/token", produces = "application/json")
     public ResponseEntity<Map<String, String>> getTokens(HttpServletRequest request) {
         Map<String, String> tokens = authService.generateNewTokens(request.getHeader("token"), getClientIp(request));
-        return ResponseEntity.ok(tokens);
+
+        return tokens.isEmpty()
+                ? ResponseEntity.notFound().build()
+                : ResponseEntity.ok(tokens);
     }
 
     @PostMapping(value = "/password/forgot")
