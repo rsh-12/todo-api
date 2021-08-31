@@ -78,10 +78,10 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public Map<String, String> generateNewTokens(String refreshToken, String ip) {
         RefreshToken oldRefreshToken = refreshTokenService.findRefreshTokenByValue(refreshToken);
-        User user = userRepository.findById(oldRefreshToken.getUserId())
-                .orElseThrow(() -> CustomException.notFound("Refresh token owner not found"));
 
-        return buildResponseBody(user, ip); // generate new access and refresh tokens
+        return userRepository.findById(oldRefreshToken.getUserId())
+                .map(user -> buildResponseBody(user, ip))
+                .orElse(Collections.emptyMap());
     }
 
     Map<String, String> buildResponseBody(User user, String ip) {
