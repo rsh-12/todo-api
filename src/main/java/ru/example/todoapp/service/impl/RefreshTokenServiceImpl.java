@@ -8,13 +8,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.example.todoapp.config.properties.TokenProperties;
 import ru.example.todoapp.entity.RefreshToken;
-import ru.example.todoapp.exception.CustomException;
 import ru.example.todoapp.repository.RefreshTokenRepository;
 import ru.example.todoapp.service.JwtTokenService;
 import ru.example.todoapp.service.RefreshTokenService;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.Optional;
 
 @Service
 public class RefreshTokenServiceImpl implements RefreshTokenService {
@@ -48,12 +48,9 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     }
 
     @Override
-    public RefreshToken findRefreshTokenByValue(String token) {
-        RefreshToken refreshToken = refreshTokenRepository.findByToken(token)
-                .orElseThrow(() -> CustomException.notFound("Refresh token not found"));
-        jwtTokenService.isTokenValid(refreshToken.getToken());
-
-        return refreshToken;
+    public Optional<RefreshToken> findRefreshTokenByValue(String token) {
+        return refreshTokenRepository.findByToken(token)
+                .filter(refreshToken -> jwtTokenService.isTokenValid(refreshToken.getToken()));
     }
 
 

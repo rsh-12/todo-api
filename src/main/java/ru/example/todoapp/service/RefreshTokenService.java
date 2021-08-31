@@ -2,6 +2,8 @@ package ru.example.todoapp.service;
 
 import ru.example.todoapp.entity.RefreshToken;
 
+import java.util.Optional;
+
 /**
  * This interface consists methods for working with the Refresh token.
  *
@@ -29,6 +31,6 @@ public interface RefreshTokenService {
      */
     RefreshToken saveRefreshToken(RefreshToken refreshToken);
 
-    RefreshToken findRefreshTokenByValue(String refreshToken);
+    Optional<RefreshToken> findRefreshTokenByValue(String refreshToken);
 
 }
