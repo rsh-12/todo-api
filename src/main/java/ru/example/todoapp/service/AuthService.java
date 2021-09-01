@@ -4,6 +4,7 @@ import ru.example.todoapp.controller.request.CredentialsRequest;
 import ru.example.todoapp.entity.User;
 
 import java.util.Map;
+import java.util.Optional;
 
 public interface AuthService {
 
@@ -11,6 +12,6 @@ public interface AuthService {
 
     User register(CredentialsRequest credentials);
 
-    Map<String, String> generateNewTokens(String token, String clientIp);
+    Optional<Map<String, String>> generateNewTokens(String token, String clientIp);
 
 }

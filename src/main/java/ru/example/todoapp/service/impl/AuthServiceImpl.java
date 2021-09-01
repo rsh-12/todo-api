@@ -25,6 +25,7 @@ import ru.example.todoapp.service.RefreshTokenService;
 
 import java.util.Collections;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class AuthServiceImpl implements AuthService {
@@ -76,12 +77,11 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public Map<String, String> generateNewTokens(String refreshToken, String ip) {
+    public Optional<Map<String, String>> generateNewTokens(String refreshToken, String ip) {
         return refreshTokenService.findRefreshTokenByValue(refreshToken)
                 .map(RefreshToken::getUserId)
                 .flatMap(userRepository::findById)
-                .map(user -> buildResponseBody(user, ip))
-                .orElse(Collections.emptyMap());
+                .map(user -> buildResponseBody(user, ip));
     }
 
     Map<String, String> buildResponseBody(User user, String ip) {
