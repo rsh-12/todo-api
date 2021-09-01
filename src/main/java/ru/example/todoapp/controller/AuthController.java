@@ -28,6 +28,7 @@ import ru.example.todoapp.service.impl.util.ServiceUtil;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.Map;
+import java.util.Optional;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
@@ -67,11 +68,10 @@ public class AuthController {
 
     @PostMapping(value = "/token", produces = "application/json")
     public ResponseEntity<Map<String, String>> getTokens(HttpServletRequest request) {
-        Map<String, String> tokens = authService.generateNewTokens(request.getHeader("token"), getClientIp(request));
+        Optional<Map<String, String>> tokens = authService
+                .generateNewTokens(request.getHeader("token"), getClientIp(request));
 
-        return tokens.isEmpty()
-                ? ResponseEntity.notFound().build()
-                : ResponseEntity.ok(tokens);
+        return ResponseEntity.of(tokens);
     }
 
     @PostMapping(value = "/password/forgot")
