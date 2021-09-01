@@ -22,6 +22,7 @@ import ru.example.todoapp.service.AuthService;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.Map;
+import java.util.Optional;
 
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.containsString;
@@ -136,25 +137,23 @@ public class AuthControllerTest extends AbstractControllerTestClass {
     }
 
     @Test
-    @DisplayName("getToken: throws CustomException, returns notFound")
-    public void getToken_NotFound_ShouldThrowCustomException() throws Exception {
-        String errorMessage = "Refresh token owner not found";
+    @DisplayName("getTokens: throws CustomException, returns notFound")
+    public void getTokens_NotFound_ShouldThrowCustomException() throws Exception {
         given(authService.generateNewTokens(anyString(), anyString()))
-                .willThrow(CustomException.notFound(errorMessage));
+                .willReturn(Optional.empty());
 
         mvc.perform(post(API_AUTH + "/token")
-                .header("token", "Beare someAccessToken"))
+                .header("token", "Bearer someAccessToken"))
                 .andDo(print())
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("message",
-                        containsString(errorMessage)));
+                .andExpect(status().isNotFound());
     }
 
     @Test
-    @DisplayName("getToken: returns tokens, 200 ok")
-    public void getToken_ShouldReturnNewTokens() throws Exception {
+    @DisplayName("getTokens: returns tokens, 200 ok")
+    public void getTokens_ShouldReturnNewTokens() throws Exception {
+        Map<String, String> tokens = Map.of("access_token", "access_token", "refresh_token", "refresh_token");
         given(authService.generateNewTokens(anyString(), anyString()))
-                .willReturn(Map.of("access_token", "access_token", "refresh_token", "refresh_token"));
+                .willReturn(Optional.of(tokens));
 
         mvc.perform(post(API_AUTH + "/token")
                 .header("token", "refreshToken"))
