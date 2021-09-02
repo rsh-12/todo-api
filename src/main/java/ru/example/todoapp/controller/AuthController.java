@@ -51,11 +51,9 @@ public class AuthController {
     @PostMapping(value = "/login", produces = "application/json")
     public ResponseEntity<Map<String, String>> login(@Valid @RequestBody CredentialsRequest credentials,
                                                      HttpServletRequest request) {
-        Map<String, String> tokens = authService.login(credentials, getClientIp(request));
+        Optional<Map<String, String>> tokens = authService.login(credentials, getClientIp(request));
 
-        return tokens.isEmpty()
-                ? ResponseEntity.notFound().build()
-                : ResponseEntity.ok(tokens);
+        return ResponseEntity.of(tokens);
     }
 
     @PostMapping(value = "/register", produces = "application/json")
