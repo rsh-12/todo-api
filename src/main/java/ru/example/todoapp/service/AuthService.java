@@ -8,7 +8,7 @@ import java.util.Optional;
 
 public interface AuthService {
 
-    Map<String, String> login(CredentialsRequest credentials, String clientIp);
+    Optional<Map<String, String>> login(CredentialsRequest credentials, String clientIp);
 
     User register(CredentialsRequest credentials);
 

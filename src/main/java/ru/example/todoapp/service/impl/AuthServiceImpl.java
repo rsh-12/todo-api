@@ -23,7 +23,6 @@ import ru.example.todoapp.service.AuthService;
 import ru.example.todoapp.service.JwtTokenService;
 import ru.example.todoapp.service.RefreshTokenService;
 
-import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
 
@@ -50,14 +49,14 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public Map<String, String> login(CredentialsRequest credentials, String ip) {
+    public Optional<Map<String, String>> login(CredentialsRequest credentials, String ip) {
         try {
             Authentication auth = authManager.authenticate(
                     new UsernamePasswordAuthenticationToken(credentials.username(), credentials.password()));
             User userFromDb = ((UserDetailsImpl) auth.getPrincipal()).getUser();
-            return buildResponseBody(userFromDb, ip);
+            return Optional.of(buildResponseBody(userFromDb, ip));
         } catch (AuthenticationException ex) {
-            return Collections.emptyMap();
+            return Optional.empty();
         }
     }
 
