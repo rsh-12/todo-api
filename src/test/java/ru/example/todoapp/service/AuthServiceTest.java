@@ -25,6 +25,7 @@ import ru.example.todoapp.service.impl.AuthServiceImpl;
 
 import java.util.Collections;
 import java.util.Map;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -80,20 +81,21 @@ public class AuthServiceTest {
         given(auth.getPrincipal()).willReturn(new UserDetailsImpl(user));
         given(authManager.authenticate(any())).willReturn(auth);
 
-        Map<String, String> tokens = authService.login(new CredentialsRequest(USERNAME, PASSWORD), "");
+        Map<String, String> tokens = authService.login(new CredentialsRequest(USERNAME, PASSWORD), "")
+                .orElse(Collections.emptyMap());
 
         assertEquals("accessToken", tokens.get("access_token"));
         assertEquals("refreshToken", tokens.get("refresh_token"));
     }
 
     @Test
-    @DisplayName("login: returns empty map")
-    public void login_ShouldReturnEmptyMap() {
+    @DisplayName("login: returns empty")
+    public void login_ShouldReturnEmpty() {
         given(authManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
                 .willThrow(UsernameNotFoundException.class);
 
-        Map<String, String> tokens = authService.login(new CredentialsRequest(USERNAME, PASSWORD), "ip");
-        assertEquals(Collections.emptyMap(), tokens);
+        Optional<Map<String, String>> tokens = authService.login(new CredentialsRequest(USERNAME, PASSWORD), "ip");
+        assertEquals(Optional.empty(), tokens);
     }
 
     // register
