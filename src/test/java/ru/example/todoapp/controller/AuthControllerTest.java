@@ -20,7 +20,6 @@ import ru.example.todoapp.messaging.MessagingClient;
 import ru.example.todoapp.service.AuthService;
 
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
 
@@ -58,8 +57,9 @@ public class AuthControllerTest extends AbstractControllerTestClass {
     @DisplayName("login: returns tokens, 200 ok")
     public void login_ShouldReturnTokens() throws Exception {
         String accessToken = "someAccessToken";
+        Map<String, String> tokens = Map.of("access_token", accessToken);
         given(authService.login(any(CredentialsRequest.class), anyString()))
-                .willReturn(Map.of("access_token", accessToken));
+                .willReturn(Optional.of(tokens));
 
         mvc.perform(post(API_AUTH + "/login")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -72,10 +72,10 @@ public class AuthControllerTest extends AbstractControllerTestClass {
     }
 
     @Test
-    @DisplayName("login: returns empty map, notFound")
-    public void login_NotFound_ShouldReturnEmptyMap() throws Exception {
+    @DisplayName("login: returns empty, notFound")
+    public void login_NotFound_ShouldReturnEmpty() throws Exception {
         given(authService.login(any(CredentialsRequest.class), anyString()))
-                .willReturn(Collections.emptyMap());
+                .willReturn(Optional.empty());
 
         mvc.perform(post(API_AUTH + "/login")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -85,10 +85,10 @@ public class AuthControllerTest extends AbstractControllerTestClass {
     }
 
     @Test
-    @DisplayName("login: returns empty map, notFound")
-    public void login_WrongPassword_ShouldReturnEmptyMap() throws Exception {
+    @DisplayName("login: returns empty, notFound")
+    public void login_WrongPassword_ShouldReturnEmpty() throws Exception {
         given(authService.login(any(), anyString()))
-                .willReturn(Collections.emptyMap());
+                .willReturn(Optional.empty());
 
         mvc.perform(post(API_AUTH + "/login")
                 .contentType(MediaType.APPLICATION_JSON)
