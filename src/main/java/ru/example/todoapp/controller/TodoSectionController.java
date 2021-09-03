@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -34,6 +35,7 @@ import ru.example.todoapp.service.TodoSectionService;
 
 import javax.validation.Valid;
 import java.net.URI;
+import java.util.function.Function;
 
 @Api(tags = "Task sections")
 @RestController
@@ -98,13 +100,16 @@ public class TodoSectionController {
     // update section title by id
     @ApiOperation(value = "Update section", notes = "It permits to update a section")
     @PutMapping(value = "/{id}", consumes = "application/json")
-    public ResponseEntity<String> updateSection(@PathVariable("id") Long sectionId,
-                                                @Valid @RequestBody TodoSectionRequest sectionRequest) {
-        TodoSection section = todoSectionService.updateSection(sectionId, sectionRequest);
-        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+    public ResponseEntity<?> updateSection(@PathVariable("id") Long sectionId,
+                                           @Valid @RequestBody TodoSectionRequest sectionRequest) {
+        Function<TodoSection, URI> f = section -> ServletUriComponentsBuilder
+                .fromCurrentRequest()
                 .buildAndExpand(section.getId()).toUri();
 
-        return ResponseEntity.ok().header("Location", location.toString()).build();
+        return todoSectionService.updateSection(sectionId, sectionRequest)
+                .map(f)
+                .map(uri -> ResponseEntity.ok().header(HttpHeaders.LOCATION, uri.toString()).build())
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     // add tasks to the list
