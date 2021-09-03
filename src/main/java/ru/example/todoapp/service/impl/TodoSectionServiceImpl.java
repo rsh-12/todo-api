@@ -94,22 +94,14 @@ public class TodoSectionServiceImpl implements TodoSectionService {
 
     // add to or remove from the task section
     @Override
-    public void addTasksToOrRemoveFromSection(Long userId, Long sectionId, List<TodoTask> tasks, FilterByOperation flag) {
-        log.info("Get the section by id: {}", sectionId);
-        TodoSection section = todoSectionRepository.findByUserIdAndId(userId, sectionId)
-                .orElseThrow(() -> CustomException.notFound("Section not found"));
-
-        // add or remove
-        if (flag.equals(MOVE)) {
-            log.info("Add tasks to the section");
-            section.setTodoTasks(tasks);
-        } else if (flag.equals(REMOVE)) {
-            log.info("Remove tasks from the section");
-            section.removeTodoTasks(tasks);
-        } else {
-            throw CustomException.internalServerError("Flag not found/Bad request");
-        }
-        todoSectionRepository.save(section);
+    public void addTasksToOrRemoveFromSection(Long userId, Long sectionId,
+                                              List<TodoTask> tasks, FilterByOperation flag) {
+        todoSectionRepository.findByUserIdAndId(userId, sectionId)
+                .ifPresent(section -> {
+                    if (flag == MOVE) section.setTodoTasks(tasks);
+                    else if (flag == REMOVE) section.removeTodoTasks(tasks);
+                    todoSectionRepository.save(section);
+                });
     }
 
     @Override
