@@ -29,7 +29,6 @@ import java.util.function.Predicate;
 import static ru.example.todoapp.enums.Role.ADMIN;
 import static ru.example.todoapp.enums.filters.FilterByOperation.MOVE;
 import static ru.example.todoapp.enums.filters.FilterByOperation.REMOVE;
-import static ru.example.todoapp.service.impl.util.ServiceUtil.validateUser;
 
 @Service
 public class TodoSectionServiceImpl implements TodoSectionService {
@@ -82,12 +81,17 @@ public class TodoSectionServiceImpl implements TodoSectionService {
 
     // update section title
     @Override
-    public TodoSection updateSection(Long sectionId, TodoSectionRequest sectionRequest) {
-        TodoSection section = todoSectionRepository.findById(sectionId)
-                .orElseThrow(() -> CustomException.notFound("Section not found: id=" + sectionId));
-        validateUser(authUserFacade.getLoggedUser(), section.getUser());
+    public Optional<TodoSection> updateSection(Long sectionId, TodoSectionRequest sectionRequest) {
+        Predicate<User> predicate = user -> user.equals(authUserFacade.getLoggedUser());
+        Predicate<User> combinedPredicates = predicate.or(user -> user.getRoles().contains(ADMIN));
 
-        section.setTitle(section.getTitle());
+        return todoSectionRepository.findById(sectionId)
+                .filter(section -> combinedPredicates.test(section.getUser()))
+                .map(section -> updateTitleAndUser(sectionRequest, section));
+    }
+
+    private TodoSection updateTitleAndUser(TodoSectionRequest sectionRequest, TodoSection section) {
+        section.setTitle(sectionRequest.getTitle());
         section.setUser(authUserFacade.getLoggedUser());
         return todoSectionRepository.save(section);
     }

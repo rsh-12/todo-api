@@ -77,7 +77,7 @@ public interface TodoSectionService {
      *                                                      an Admin role
      * @see TodoSection
      */
-    TodoSection updateSection(Long sectionId, TodoSectionRequest sectionRequest);
+    Optional<TodoSection> updateSection(Long sectionId, TodoSectionRequest sectionRequest);
 
     /**
      * Add tasks or removes them from the TodoSection object.
