@@ -207,7 +207,7 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
         given(section.getTitle()).willReturn("Title");
 
         given(sectionService.updateSection(anyLong(), any(TodoSectionRequest.class)))
-                .willReturn(section);
+                .willReturn(Optional.of(section));
 
         String body = """
                 {
