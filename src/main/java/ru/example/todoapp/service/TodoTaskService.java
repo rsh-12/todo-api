@@ -10,6 +10,7 @@ import ru.example.todoapp.entity.User;
 import ru.example.todoapp.enums.filters.FilterByDate;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -30,7 +31,7 @@ public interface TodoTaskService {
      * @see User
      * @see TodoTask
      */
-    TodoTask findTaskById(Long taskId);
+    Optional<TodoTask> findTaskById(Long taskId);
 
     /**
      * Deletes the user's task by id
@@ -70,7 +71,7 @@ public interface TodoTaskService {
      * @param taskRequest the TodoTaskRequest instance
      * @see TodoTask
      */
-    TodoTask saveTask(Long taskId, TodoTaskRequest taskRequest);
+    Optional<TodoTask> saveTask(Long taskId, TodoTaskRequest taskRequest);
 
     TodoTaskDto mapToTaskDto(TodoTask task);
 }

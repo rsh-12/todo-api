@@ -64,10 +64,9 @@ public class TodoTaskServiceImpl implements TodoTaskService {
 
     // get task by id
     @Override
-    public TodoTask findTaskById(Long taskId) {
+    public Optional<TodoTask> findTaskById(Long taskId) {
         log.info("Get the task by id: {}", taskId);
-        return todoTaskRepository.findByIdAndUserId(taskId, authUserFacade.getUserId())
-                .orElseThrow(() -> CustomException.notFound("Task Not Found"));
+        return todoTaskRepository.findByIdAndUserId(taskId, authUserFacade.getUserId());
     }
 
     // delete task by id
@@ -105,13 +104,15 @@ public class TodoTaskServiceImpl implements TodoTaskService {
     }
 
     @Override
-    public TodoTask saveTask(Long taskId, TodoTaskRequest request) {
-        TodoTask task = findTaskById(taskId);
-        Optional.ofNullable(request.title()).ifPresent(task::setTitle);
-        Optional.ofNullable(request.starred()).ifPresentOrElse(task::setStarred, () -> task.setStarred(false));
-        task.setCompletionDate(request.completionDate());
+    public Optional<TodoTask> saveTask(Long taskId, TodoTaskRequest request) {
 
-        return todoTaskRepository.save(task);
+        return findTaskById(taskId)
+                .map(task -> {
+                    task.setTitle(request.title());
+                    task.setStarred(request.starred());
+                    task.setCompletionDate(request.completionDate());
+                    return todoTaskRepository.save(task);
+                });
     }
 
     @Override
