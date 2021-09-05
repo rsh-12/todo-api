@@ -8,13 +8,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import ru.example.todoapp.controller.request.TodoTaskRequest;
 import ru.example.todoapp.dto.TodoTaskDto;
 import ru.example.todoapp.entity.TodoTask;
 import ru.example.todoapp.entity.User;
-import ru.example.todoapp.enums.filters.FilterByDate;
 import ru.example.todoapp.exception.CustomException;
 import ru.example.todoapp.facade.AuthUserFacade;
 import ru.example.todoapp.repository.TodoTaskRepository;
@@ -37,9 +35,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 @ExtendWith(SpringExtension.class)
 public class TodoTaskServiceTest {
@@ -104,17 +100,14 @@ public class TodoTaskServiceTest {
     @Test
     public void findTaskById_ShouldReturnTask() {
         TodoTask task = mock(TodoTask.class);
-        given(task.getTitle()).willReturn("Title");
 
+        given(task.getTitle()).willReturn("Title");
         given(taskRepository.findByIdAndUserId(anyLong(), anyLong())).willReturn(Optional.of(task));
 
-        TodoTask taskFromDb = taskService.findTaskById(1L);
+        TodoTask taskFromDb = taskService.findTaskById(1L).orElse(null);
 
-        assertNotNull(task);
+        assertNotNull(taskFromDb);
         assertEquals("Title", taskFromDb.getTitle());
-
-        verify(taskRepository).findByIdAndUserId(anyLong(), anyLong());
-        verifyNoMoreInteractions(taskRepository);
     }
 
     @Test
@@ -191,7 +184,7 @@ public class TodoTaskServiceTest {
         assertFalse(task.isStarred());
 
         TodoTaskRequest request = new TodoTaskRequest("New title", LocalDate.now(), true);
-        task = taskService.saveTask(1L, request);
+        task = taskService.saveTask(1L, request).orElse(null);
 
         assertNotNull(task);
         assertEquals("New title", task.getTitle());
