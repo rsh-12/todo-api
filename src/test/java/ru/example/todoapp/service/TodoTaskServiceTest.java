@@ -141,7 +141,6 @@ public class TodoTaskServiceTest {
         assertThrows(CustomException.class, () -> taskService.deleteTaskById(1L));
     }
 
-
     @Test
     public void createTask_ShouldReturnTask() {
         TodoTaskRequest request = new TodoTaskRequest("Task", LocalDate.now(), true);
@@ -193,11 +192,11 @@ public class TodoTaskServiceTest {
     }
 
     @Test
-    public void saveTask_ShouldThrowCustomException() {
+    public void saveTask_ShouldReturnEmpty() {
         given(taskRepository.findByIdAndUserId(anyLong(), anyLong())).willReturn(Optional.empty());
-
         TodoTaskRequest request = new TodoTaskRequest("New title", LocalDate.now(), true);
-        assertThrows(CustomException.class, () -> taskService.saveTask(1L, request));
+
+        assertEquals(Optional.empty(), taskService.saveTask(1L, request));
     }
 
     @Test
