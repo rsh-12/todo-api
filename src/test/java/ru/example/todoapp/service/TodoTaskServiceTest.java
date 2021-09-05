@@ -111,10 +111,11 @@ public class TodoTaskServiceTest {
     }
 
     @Test
-    public void findTaskById_ShouldThrowException() {
+    public void findTaskById_ShouldReturnEmpty() {
         given(taskRepository.findByIdAndUserId(anyLong(), anyLong())).willReturn(Optional.empty());
         given(authUserFacade.getUserId()).willReturn(1L);
-        assertThrows(CustomException.class, () -> taskService.findTaskById(1L));
+
+        assertEquals(Optional.empty(), taskService.findTaskById(1L));
     }
 
     // deleteTaskById
