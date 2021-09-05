@@ -10,22 +10,18 @@ import org.springframework.security.test.context.support.WithUserDetails;
 import ru.example.todoapp.controller.request.TodoTaskRequest;
 import ru.example.todoapp.dto.TodoTaskDto;
 import ru.example.todoapp.entity.TodoTask;
-import ru.example.todoapp.enums.filters.FilterByDate;
 import ru.example.todoapp.exception.CustomException;
 import ru.example.todoapp.service.TodoTaskService;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Optional;
 
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.containsStringIgnoringCase;
-import static org.hamcrest.Matchers.is;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.anyInt;
 import static org.mockito.Mockito.anyLong;
-import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
@@ -72,7 +68,8 @@ public class TodoTaskControllerTest extends AbstractControllerTestClass {
     @Test
     @WithUserDetails(ADMIN)
     public void getTask_ShouldReturnTaskById() throws Exception {
-        given(taskService.findTaskById(anyLong())).willReturn(mock(TodoTask.class));
+        TodoTask todoTask = mock(TodoTask.class);
+        given(taskService.findTaskById(anyLong())).willReturn(Optional.of(todoTask));
         given(taskService.mapToTaskDto(any()))
                 .willReturn(new TodoTaskDto(1L, "task", LocalDate.now(),
                         false, false,
@@ -81,8 +78,6 @@ public class TodoTaskControllerTest extends AbstractControllerTestClass {
         mvc.perform(get(API_TASKS + 1))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("title", containsStringIgnoringCase("task")));
-
-        verify(taskService, times(1)).findTaskById(anyLong());
     }
 
     @Test
