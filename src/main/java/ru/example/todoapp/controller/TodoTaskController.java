@@ -68,9 +68,11 @@ public class TodoTaskController {
     // get task by id
     @ApiOperation(value = "Find task", notes = "Find the task by ID")
     @GetMapping(value = "/{id}", produces = "application/json")
-    public EntityModel<TodoTaskDto> getTask(@PathVariable("id") Long taskId) {
-        TodoTask task = todoTaskService.findTaskById(taskId);
-        return assembler.toModel(todoTaskService.mapToTaskDto(task));
+    public ResponseEntity<EntityModel<TodoTaskDto>> getTask(@PathVariable("id") Long taskId) {
+        var model = todoTaskService.findTaskById(taskId)
+                .map(task -> assembler.toModel(todoTaskService.mapToTaskDto(task)));
+
+        return ResponseEntity.of(model);
     }
 
     // delete task by id
@@ -97,12 +99,14 @@ public class TodoTaskController {
     @PatchMapping(value = "/{id}", consumes = "application/json")
     public ResponseEntity<String> updateTask(@PathVariable("id") Long taskId,
                                              @Valid @RequestBody TodoTaskRequest taskRequest) {
+        URI uri = todoTaskService.saveTask(taskId, taskRequest)
+                .map(task -> ServletUriComponentsBuilder
+                        .fromCurrentRequest()
+                        .buildAndExpand(task.getId())
+                        .toUri())
+                .orElse(URI.create(""));
 
-        final TodoTask task = todoTaskService.saveTask(taskId, taskRequest);
-        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
-                .buildAndExpand(task.getId()).toUri();
-
-        return ResponseEntity.ok().header("Location", location.toString()).build();
+        return ResponseEntity.ok().header("Location", uri.toString()).build();
     }
 
 }
