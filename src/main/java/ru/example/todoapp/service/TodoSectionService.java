@@ -39,7 +39,7 @@ public interface TodoSectionService {
      * @see TodoSectionProjection
      * @see TodoSection
      */
-    Page<TodoSectionDto> findSections(Pageable pageable);
+    Page<TodoSectionProjection> findSections(Pageable pageable);
 
     /**
      * Deletes the TodoSection by id. Checks if the Principal
