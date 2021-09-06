@@ -7,6 +7,7 @@ package ru.example.todoapp.controller;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.data.web.PagedResourcesAssembler;
@@ -60,7 +61,8 @@ public class TodoSectionController {
     @GetMapping(produces = "application/json")
     public ResponseEntity<?> getSections(@PageableDefault Pageable pageable,
                                          PagedResourcesAssembler<TodoSectionDto> pra) {
-        var sections = todoSectionService.findSections(pageable);
+        Page<TodoSectionDto> sections = todoSectionService.findSections(pageable)
+                .map(todoSectionService::mapToSectionDto);
 
         return ResponseEntity.ok()
                 .body(pra.toModel(sections, assembler));
