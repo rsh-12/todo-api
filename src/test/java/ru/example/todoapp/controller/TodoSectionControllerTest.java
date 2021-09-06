@@ -15,6 +15,7 @@ import ru.example.todoapp.dto.TodoSectionDto;
 import ru.example.todoapp.entity.TodoSection;
 import ru.example.todoapp.exception.CustomException;
 import ru.example.todoapp.facade.TasksFacade;
+import ru.example.todoapp.repository.projection.TodoSectionProjection;
 import ru.example.todoapp.service.TodoSectionService;
 
 import java.time.LocalDateTime;
@@ -81,7 +82,7 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
     @Test
     @WithUserDetails(ADMIN)
     public void getSections_ShouldReturnEmptyList() throws Exception {
-        Page<TodoSectionDto> resultPage = new PageImpl<>(Collections.emptyList());
+        Page<TodoSectionProjection> resultPage = new PageImpl<>(Collections.emptyList());
         given(sectionService.findSections(any()))
                 .willReturn(resultPage);
 
