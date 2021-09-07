@@ -50,8 +50,9 @@ public class UserController {
     @PostMapping(value = "/password/update", consumes = "application/json")
     public ResponseEntity<String> changePassword(@AuthenticationPrincipal UserDetailsImpl userDetails,
                                                  @RequestBody String password) {
-        userService.updatePassword(userDetails.getUsername(), password);
-        return ResponseEntity.ok().body("Password updated successfully");
+        return userService.updatePassword(userDetails.getUsername(), password).isPresent()
+                ? ResponseEntity.ok("Password updated successfully")
+                : ResponseEntity.notFound().build();
     }
 
 }
