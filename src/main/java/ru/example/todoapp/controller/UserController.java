@@ -10,7 +10,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import ru.example.todoapp.entity.User;
 import ru.example.todoapp.security.UserDetailsImpl;
 import ru.example.todoapp.service.UserService;
@@ -29,8 +35,8 @@ public class UserController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{id}")
-    public User getUser(@PathVariable("id") Long userId) {
-        return userService.findUserById(userId);
+    public ResponseEntity<User> getUser(@PathVariable("id") Long userId) {
+        return ResponseEntity.of(userService.findUserById(userId));
     }
 
     @PreAuthorize("hasRole('ADMIN')")
