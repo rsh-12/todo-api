@@ -55,7 +55,7 @@ public class UserServiceTest {
         User mockUser = mock(User.class);
         given(userRepository.findById(anyLong())).willReturn(Optional.of(mockUser));
 
-        User user = userService.findUserById(1L);
+        User user = userService.findUserById(1L).orElse(null);
         assertNotNull(user);
     }
 
