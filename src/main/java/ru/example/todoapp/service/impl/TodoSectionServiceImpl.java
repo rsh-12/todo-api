@@ -23,7 +23,6 @@ import ru.example.todoapp.service.TodoSectionService;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Function;
 import java.util.function.Predicate;
 
 import static ru.example.todoapp.enums.Role.ADMIN;
@@ -122,10 +121,6 @@ public class TodoSectionServiceImpl implements TodoSectionService {
                 section.getTitle(),
                 section.getUpdatedAt(),
                 section.getCreatedAt());
-    }
-
-    public <T> TodoSectionDto mapToSectionDto(T t, Function<T, TodoSectionDto> f) {
-        return f.apply(t);
     }
 
 }

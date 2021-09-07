@@ -12,7 +12,6 @@ import ru.example.todoapp.repository.projection.TodoSectionProjection;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Function;
 
 /**
  * This interface contains methods for working with TodoSection.
@@ -95,7 +94,5 @@ public interface TodoSectionService {
     TodoSectionDto mapToSectionDto(TodoSectionProjection projection);
 
     TodoSectionDto mapToSectionDto(TodoSection section);
-
-    <T> TodoSectionDto mapToSectionDto(T t, Function<T, TodoSectionDto> f);
 
 }
