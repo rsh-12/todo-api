@@ -12,6 +12,8 @@ import ru.example.todoapp.exception.CustomException;
 import ru.example.todoapp.repository.UserRepository;
 import ru.example.todoapp.service.UserService;
 
+import java.util.Optional;
+
 @Service
 public class UserServiceImpl implements UserService {
 
@@ -33,9 +35,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User findUserById(Long userId) {
-        return userRepository.findById(userId)
-                .orElseThrow(() -> CustomException.notFound("User not found: id=" + userId));
+    public Optional<User> findUserById(Long userId) {
+        return userRepository.findById(userId);
     }
 
     @Override

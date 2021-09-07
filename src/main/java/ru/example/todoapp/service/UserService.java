@@ -3,6 +3,8 @@ package ru.example.todoapp.service;
 import ru.example.todoapp.entity.User;
 import ru.example.todoapp.exception.CustomException;
 
+import java.util.Optional;
+
 /**
  * This interface contains authentication and
  * user management methods.
@@ -26,7 +28,7 @@ public interface UserService {
      * @return the user
      * @throws CustomException if the user does not exist
      */
-    User findUserById(Long userId);
+    Optional<User> findUserById(Long userId);
 
     /**
      * Updates the user's password. Throws an exception, if user does not exists.
