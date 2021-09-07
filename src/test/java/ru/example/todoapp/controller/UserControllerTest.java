@@ -13,6 +13,8 @@ import ru.example.todoapp.entity.User;
 import ru.example.todoapp.exception.CustomException;
 import ru.example.todoapp.service.UserService;
 
+import java.util.Optional;
+
 import static org.hamcrest.Matchers.containsStringIgnoringCase;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.BDDMockito.given;
@@ -39,28 +41,24 @@ public class UserControllerTest extends AbstractControllerTestClass {
     @Test
     @WithUserDetails(ADMIN)
     public void getUser_ShouldReturnUser() throws Exception {
+        User user = new User("user", "password");
         given(userService.findUserById(anyLong()))
-                .willReturn(new User("user", "password"));
+                .willReturn(Optional.of(user));
 
         mvc.perform(get(API_USERS + 1))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("username", is("user")))
                 .andDo(print());
-
-        verify(userService, times(1)).findUserById(anyLong());
     }
 
     @Test
     @WithUserDetails(ADMIN)
-    public void getUser_ShouldReturnNotFound() throws Exception {
-        given(userService.findUserById(anyLong())).willThrow(CustomException.notFound("User Not Found"));
+    public void getUser_ShouldReturnEmpty() throws Exception {
+        given(userService.findUserById(anyLong())).willReturn(Optional.empty());
 
         mvc.perform(get(API_USERS + 1))
                 .andExpect(status().isNotFound())
-                .andExpect(jsonPath("error", containsStringIgnoringCase("not found")))
                 .andDo(print());
-
-        verify(userService, times(1)).findUserById(anyLong());
     }
 
     @Test
