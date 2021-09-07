@@ -40,12 +40,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void updatePassword(String email, String password) {
-        User user = userRepository.findByUsername(email)
-                .orElseThrow(() -> CustomException.notFound("Username not found: email=" + email));
-
-        user.setPassword(bCryptPasswordEncoder.encode(password));
-        userRepository.save(user);
+    public Optional<User> updatePassword(String email, String password) {
+        return userRepository.findByUsername(email)
+                .map(user -> {
+                    user.setPassword(bCryptPasswordEncoder.encode(password));
+                    return userRepository.save(user);
+                });
     }
 
     @Override
