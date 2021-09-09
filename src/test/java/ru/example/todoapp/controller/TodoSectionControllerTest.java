@@ -16,10 +16,11 @@ import ru.example.todoapp.entity.TodoSection;
 import ru.example.todoapp.exception.CustomException;
 import ru.example.todoapp.facade.TasksFacade;
 import ru.example.todoapp.repository.projection.TodoSectionProjection;
-import ru.example.todoapp.service.TodoSectionService;
+import ru.example.todoapp.service.impl.TodoSectionServiceImpl;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.WeakHashMap;
@@ -49,7 +50,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class TodoSectionControllerTest extends AbstractControllerTestClass {
 
     @MockBean
-    private TodoSectionService sectionService;
+    private TodoSectionServiceImpl sectionService;
 
     @MockBean
     private TasksFacade tasksFacade;
@@ -57,17 +58,19 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
     private static final String API_SECTIONS = "/api/sections/";
 
     // get all sections
-    /*@Test
+    @Test
     @WithUserDetails(ADMIN)
     public void getSections_ShouldReturnListOfSections() throws Exception {
-        var section1 = new TodoSectionDto(1L, "section1", LocalDateTime.now(), LocalDateTime.now());
-        var section2 = new TodoSectionDto(2L, "section2", LocalDateTime.now(), LocalDateTime.now());
+        var section1 = new TodoSectionProjection(1L, "section1", LocalDateTime.now(), LocalDateTime.now());
+        var section2 = new TodoSectionProjection(2L, "section2", LocalDateTime.now(), LocalDateTime.now());
+        Page<TodoSectionProjection> page = new PageImpl<>(List.of(section1, section2));
 
         var sectionDto1 = new TodoSectionDto(1L, "section1", LocalDateTime.now(), LocalDateTime.now());
         var sectionDto2 = new TodoSectionDto(2L, "section2", LocalDateTime.now(), LocalDateTime.now());
 
-        Page<TodoSectionDto> page = new PageImpl<>(List.of(section1, section2));
-        given(sectionService.findSections()).willReturn(page);
+        given(sectionService.findSections(any())).willReturn(page);
+        given(sectionService.mapToSectionDto(any(TodoSectionProjection.class)))
+                .willReturn(sectionDto1, sectionDto2);
 
         mvc.perform(get(API_SECTIONS)
                 .contentType(MediaType.APPLICATION_JSON))
@@ -75,9 +78,7 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
                 .andExpect(jsonPath("_embedded.sections[0].title", is("section1")))
                 .andExpect(jsonPath("_embedded.sections[1].title", is("section2")))
                 .andDo(print());
-
-        verify(sectionService, times(1)).findSections();
-    }*/
+    }
 
     @Test
     @WithUserDetails(ADMIN)
