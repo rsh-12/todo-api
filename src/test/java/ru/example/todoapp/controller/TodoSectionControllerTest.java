@@ -224,16 +224,14 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
     @Test
     @WithUserDetails(ADMIN)
     public void updateSection_ShouldReturnNotFound() throws Exception {
-        doThrow(CustomException.notFound("Section Not Found"))
-                .when(sectionService)
-                .updateSection(anyLong(), any(TodoSectionRequest.class));
+        given(sectionService.updateSection(anyLong(), any(TodoSectionRequest.class)))
+                .willReturn(Optional.empty());
 
         String body = "{\"title\": \"Title\"}";
         mvc.perform(put(API_SECTIONS + 1)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(body)))
                 .andExpect(status().isNotFound())
-                .andExpect(jsonPath("error", containsStringIgnoringCase("not found")))
                 .andDo(print());
 
         verify(sectionService).updateSection(anyLong(), any(TodoSectionRequest.class));
