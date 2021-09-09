@@ -108,10 +108,13 @@ public class TodoSectionController {
                 .fromCurrentRequest()
                 .buildAndExpand(section.getId()).toUri();
 
-        return todoSectionService.updateSection(sectionId, sectionRequest)
+        var optional = todoSectionService.updateSection(sectionId, sectionRequest)
                 .map(f)
-                .map(uri -> ResponseEntity.ok().header(HttpHeaders.LOCATION, uri.toString()).build())
-                .orElseGet(() -> ResponseEntity.notFound().build());
+                .map(uri -> ResponseEntity.ok()
+                        .header(HttpHeaders.LOCATION, uri.toString())
+                        .build());
+
+        return ResponseEntity.of(optional);
     }
 
     // add tasks to the list
