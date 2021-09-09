@@ -36,8 +36,8 @@ import static org.mockito.Mockito.anySet;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -138,7 +138,7 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
                 .andExpect(status().isNoContent())
                 .andDo(print());
 
-        verify(sectionService, times(1)).deleteSectionById(anyLong());
+        verify(sectionService).deleteSectionById(anyLong());
     }
 
     // delete section by non-existent id: returns 204 NO CONTENT
@@ -154,7 +154,7 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
                 .andExpect(jsonPath("error", containsStringIgnoringCase("not found")))
                 .andDo(print());
 
-        verify(sectionService, times(1)).deleteSectionById(anyLong());
+        verify(sectionService).deleteSectionById(anyLong());
     }
 
     @Test
@@ -169,7 +169,7 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
                 .andExpect(jsonPath("error", containsStringIgnoringCase("Forbidden")))
                 .andDo(print());
 
-        verify(sectionService, times(1)).deleteSectionById(anyLong());
+        verify(sectionService).deleteSectionById(anyLong());
     }
 
     // create new section
@@ -186,7 +186,7 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
                 .andExpect(status().isCreated())
                 .andDo(print());
 
-        verify(sectionService, times(1)).createSection(any(TodoSectionRequest.class));
+        verify(sectionService).createSection(any(TodoSectionRequest.class));
     }
 
     @Test
@@ -197,7 +197,7 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
                 .andExpect(status().isBadRequest())
                 .andDo(print());
 
-        verify(sectionService, times(0)).createSection(any(TodoSectionRequest.class));
+        verifyNoInteractions(sectionService);
     }
 
     // update section
@@ -211,21 +211,14 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
         given(sectionService.updateSection(anyLong(), any(TodoSectionRequest.class)))
                 .willReturn(Optional.of(section));
 
-        String body = """
-                {
-                    "title": "Title"
-                }
-                """;
-
-        // update section by id: returns 200 OK
+        String body = "{\"title\": \"Title\"}";
         mvc.perform(put(API_SECTIONS + 1)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(body))
                 .andExpect(status().isOk())
                 .andDo(print());
 
-        verify(sectionService, times(1))
-                .updateSection(anyLong(), any(TodoSectionRequest.class));
+        verify(sectionService).updateSection(anyLong(), any(TodoSectionRequest.class));
     }
 
     @Test
@@ -235,12 +228,7 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
                 .when(sectionService)
                 .updateSection(anyLong(), any(TodoSectionRequest.class));
 
-        String body = """
-                {
-                    "title": "Title"
-                }
-                """;
-
+        String body = "{\"title\": \"Title\"}";
         mvc.perform(put(API_SECTIONS + 1)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(body)))
@@ -248,23 +236,16 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
                 .andExpect(jsonPath("error", containsStringIgnoringCase("not found")))
                 .andDo(print());
 
-        verify(sectionService, times(1))
-                .updateSection(anyLong(), any(TodoSectionRequest.class));
+        verify(sectionService).updateSection(anyLong(), any(TodoSectionRequest.class));
     }
 
     @Test
     @WithUserDetails(USER)
     public void updateSection_ShouldReturnForbidden() throws Exception {
-        doThrow(CustomException.forbidden("Not enough permissions"))
-                .when(sectionService)
+        doThrow(CustomException.forbidden("Not enough permissions")).when(sectionService)
                 .updateSection(anyLong(), any(TodoSectionRequest.class));
 
-        String body = """
-                {
-                    "title": "Title"
-                }
-                """;
-
+        String body = "{\"title\": \"Title\"}";
         mvc.perform(put(API_SECTIONS + 1)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(body)))
@@ -272,8 +253,7 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
                 .andExpect(jsonPath("error", containsStringIgnoringCase("forbidden")))
                 .andDo(print());
 
-        verify(sectionService, times(1))
-                .updateSection(anyLong(), any(TodoSectionRequest.class));
+        verify(sectionService).updateSection(anyLong(), any(TodoSectionRequest.class));
     }
 
     @Test
@@ -284,8 +264,7 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
                 .andExpect(status().isBadRequest())
                 .andDo(print());
 
-        verify(sectionService, times(0))
-                .updateSection(anyLong(), any(TodoSectionRequest.class));
+        verifyNoInteractions(sectionService);
     }
 
     @Test
@@ -304,8 +283,7 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
                 .andExpect(status().isOk())
                 .andDo(print());
 
-        verify(tasksFacade, times(1))
-                .addTasksToOrRemoveFromSection(anyLong(), anySet(), any());
+        verify(tasksFacade).addTasksToOrRemoveFromSection(anyLong(), anySet(), any());
     }
 
     @Test
@@ -320,8 +298,7 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
                 .andExpect(status().isBadRequest())
                 .andDo(print());
 
-        verify(tasksFacade, times(0))
-                .addTasksToOrRemoveFromSection(anyLong(), anySet(), any());
+        verifyNoInteractions(tasksFacade);
     }
 
     @Test
@@ -339,8 +316,7 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
                 .andExpect(status().isBadRequest())
                 .andDo(print());
 
-        verify(tasksFacade, times(0))
-                .addTasksToOrRemoveFromSection(anyLong(), anySet(), any());
+        verifyNoInteractions(tasksFacade);
     }
 
 }
