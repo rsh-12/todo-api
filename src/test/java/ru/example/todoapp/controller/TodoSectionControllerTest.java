@@ -239,23 +239,6 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
 
     @Test
     @WithUserDetails(USER)
-    public void updateSection_ShouldReturnForbidden() throws Exception {
-        doThrow(CustomException.forbidden("Not enough permissions")).when(sectionService)
-                .updateSection(anyLong(), any(TodoSectionRequest.class));
-
-        String body = "{\"title\": \"Title\"}";
-        mvc.perform(put(API_SECTIONS + 1)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(body)))
-                .andExpect(status().isForbidden())
-                .andExpect(jsonPath("error", containsStringIgnoringCase("forbidden")))
-                .andDo(print());
-
-        verify(sectionService).updateSection(anyLong(), any(TodoSectionRequest.class));
-    }
-
-    @Test
-    @WithUserDetails(USER)
     public void updateSection_ShouldReturnBadRequest() throws Exception {
         mvc.perform(put(API_SECTIONS + 1)
                 .contentType(MediaType.APPLICATION_JSON))
