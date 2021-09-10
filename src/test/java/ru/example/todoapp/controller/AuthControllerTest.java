@@ -137,8 +137,8 @@ public class AuthControllerTest extends AbstractControllerTestClass {
     }
 
     @Test
-    @DisplayName("getTokens: throws CustomException, returns notFound")
-    public void getTokens_NotFound_ShouldThrowCustomException() throws Exception {
+    @DisplayName("getTokens: returns empty and notFound")
+    public void getTokens_NotFound_ShouldReturnEmpty() throws Exception {
         given(authService.generateNewTokens(anyString(), anyString()))
                 .willReturn(Optional.empty());
 
