@@ -4,7 +4,6 @@ package ru.example.todoapp.controller;
  * Time: 2:10 PM
  * */
 
-import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
@@ -13,6 +12,7 @@ import ru.example.todoapp.entity.User;
 import ru.example.todoapp.exception.CustomException;
 import ru.example.todoapp.service.UserService;
 
+import java.util.Map;
 import java.util.Optional;
 
 import static org.hamcrest.Matchers.containsStringIgnoringCase;
@@ -24,6 +24,7 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -36,7 +37,7 @@ public class UserControllerTest extends AbstractControllerTestClass {
     @MockBean
     private UserService userService;
 
-    private static final String API_USERS = "/api/users/";
+    private static final String API_USERS = "/api/users";
 
     @Test
     @WithUserDetails(ADMIN)
@@ -109,48 +110,38 @@ public class UserControllerTest extends AbstractControllerTestClass {
     @Test
     @WithUserDetails(ADMIN)
     public void updatePassword_ShouldReturnOk() throws Exception {
-        doNothing().when(userService).updatePassword(anyString(), anyString());
+        given(userService.updatePassword(anyString(), anyString()))
+                .willReturn(Optional.of(new User(USER, "password12")));
 
-        JSONObject body = new JSONObject();
-        body.put("password", "somePassword");
-
-        mvc.perform(post(API_USERS + "password/update")
+        mvc.perform(post(API_USERS + "/password/update")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(body.toString())))
+                .content(Map.of("password", "somePassword").toString()))
                 .andDo(print())
                 .andExpect(status().isOk());
-
-        verify(userService, times(1)).updatePassword(anyString(), anyString());
     }
 
     @Test
     @WithUserDetails(ADMIN)
-    public void updatePassword_ServiceException_ShouldReturnBadRequest() throws Exception {
-        doThrow(CustomException.badRequest("Invalid data"))
-                .when(userService).updatePassword(anyString(), anyString());
+    public void updatePassword_ShouldReturnNotFound() throws Exception {
+        given(userService.updatePassword(anyString(), anyString()))
+                .willReturn(Optional.empty());
 
-        JSONObject body = new JSONObject();
-        body.put("password", "somePassword");
-
-        mvc.perform(post(API_USERS + "password/update")
+        mvc.perform(post(API_USERS + "/password/update")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(body.toString())))
+                .content(Map.of("password", "somePassword").toString()))
                 .andDo(print())
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("error", containsStringIgnoringCase("bad request")));
-
-        verify(userService, times(1)).updatePassword(anyString(), anyString());
+                .andExpect(status().isNotFound());
     }
 
     @Test
     @WithUserDetails(ADMIN)
     public void updatePassword_NoBody_ShouldReturnBadRequest() throws Exception {
-        mvc.perform(post(API_USERS + "password/update")
+        mvc.perform(post(API_USERS + "/password/update")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isBadRequest());
 
-        verify(userService, times(0)).updatePassword(anyString(), anyString());
+        verifyNoInteractions(userService);
     }
 
 }
