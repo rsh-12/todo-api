@@ -16,6 +16,7 @@ import ru.example.todoapp.service.impl.UserServiceImpl;
 
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -60,9 +61,9 @@ public class UserServiceTest {
     }
 
     @Test
-    public void findUserById_ShouldThrowCustomException() {
+    public void findUserById_ShouldReturnEmpty() {
         given(userRepository.findById(anyLong())).willReturn(Optional.empty());
-        assertThrows(CustomException.class, () -> userService.findUserById(1L));
+        assertEquals(Optional.empty(), userService.findUserById(1L));
     }
 
     // updatePassword
