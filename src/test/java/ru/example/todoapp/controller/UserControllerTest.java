@@ -100,7 +100,7 @@ public class UserControllerTest extends AbstractControllerTestClass {
                 .andExpect(status().isForbidden())
                 .andDo(print());
 
-        verify(userService).deleteUserById(anyLong());
+        verifyNoInteractions(userService);
     }
 
     @Test
