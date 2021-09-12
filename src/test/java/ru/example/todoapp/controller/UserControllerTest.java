@@ -46,7 +46,7 @@ public class UserControllerTest extends AbstractControllerTestClass {
         given(userService.findUserById(anyLong()))
                 .willReturn(Optional.of(user));
 
-        mvc.perform(get(API_USERS + 1))
+        mvc.perform(get(API_USERS + "/1"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("username", is("user")))
                 .andDo(print());
@@ -57,7 +57,7 @@ public class UserControllerTest extends AbstractControllerTestClass {
     public void getUser_ShouldReturnEmpty() throws Exception {
         given(userService.findUserById(anyLong())).willReturn(Optional.empty());
 
-        mvc.perform(get(API_USERS + 1))
+        mvc.perform(get(API_USERS + "/1"))
                 .andExpect(status().isNotFound())
                 .andDo(print());
     }
@@ -65,7 +65,7 @@ public class UserControllerTest extends AbstractControllerTestClass {
     @Test
     @WithUserDetails(USER)
     public void getUser_ShouldReturnForbidden() throws Exception {
-        mvc.perform(get(API_USERS + 1))
+        mvc.perform(get(API_USERS + "/1"))
                 .andExpect(status().isForbidden())
                 .andDo(print());
 
@@ -77,11 +77,9 @@ public class UserControllerTest extends AbstractControllerTestClass {
     public void deleteUser_ShouldReturnNoContent() throws Exception {
         doNothing().when(userService).deleteUserById(anyLong());
 
-        mvc.perform(delete(API_USERS + 1))
+        mvc.perform(delete(API_USERS + "/1"))
                 .andExpect(status().isNoContent())
                 .andDo(print());
-
-        verify(userService, times(1)).deleteUserById(anyLong());
     }
 
     @Test
@@ -89,22 +87,20 @@ public class UserControllerTest extends AbstractControllerTestClass {
     public void deleteUser_ShouldReturnNotFound() throws Exception {
         doThrow(CustomException.notFound("User Not Found")).when(userService).deleteUserById(anyLong());
 
-        mvc.perform(delete(API_USERS + 1))
+        mvc.perform(delete(API_USERS + "/1"))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("error", containsStringIgnoringCase("not found")))
                 .andDo(print());
-
-        verify(userService, times(1)).deleteUserById(anyLong());
     }
 
     @Test
     @WithUserDetails(USER)
     public void deleteUser_ShouldReturnForbidden() throws Exception {
-        mvc.perform(delete(API_USERS + 1))
+        mvc.perform(delete(API_USERS + "/1"))
                 .andExpect(status().isForbidden())
                 .andDo(print());
 
-        verify(userService, times(0)).deleteUserById(anyLong());
+        verify(userService).deleteUserById(anyLong());
     }
 
     @Test
