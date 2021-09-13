@@ -6,6 +6,8 @@ package ru.example.todoapp.controller;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.security.test.context.support.WithUserDetails;
 import ru.example.todoapp.controller.request.TodoTaskRequest;
 import ru.example.todoapp.dto.TodoTaskDto;
@@ -15,10 +17,12 @@ import ru.example.todoapp.service.TodoTaskService;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.containsStringIgnoringCase;
+import static org.hamcrest.Matchers.is;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyLong;
@@ -43,27 +47,25 @@ public class TodoTaskControllerTest extends AbstractControllerTestClass {
 
     private static final String API_TASKS = "/api/tasks/";
 
-/*
     @Test
     @WithUserDetails(ADMIN)
     public void getTasks_ShouldReturnListOfTasks() throws Exception {
-        given(taskService.findTasks(anyInt(), anyInt(),
-                any(FilterByDate.class), anyString())).willReturn(List.of(mock(TodoTask.class)));
-        given(taskService.mapToTaskDto(any()))
-                .willReturn(new TodoTaskDto(1L, "task", LocalDate.now(),
-                        false, false,
-                        LocalDateTime.now(), LocalDateTime.now()));
+        List<TodoTask> tasks = List.of(new TodoTask("task1"));
+        Page<TodoTask> page = new PageImpl<>(tasks);
+
+        TodoTaskDto taskDto = new TodoTaskDto(1L, "task1", LocalDate.now(),
+                false, false,
+                LocalDateTime.now(), LocalDateTime.now());
+
+        given(taskService.findTasks(any(), any())).willReturn(page);
+        given(taskService.mapToTaskDto(any())).willReturn(taskDto);
 
         mvc.perform(get(API_TASKS)
                 .contentType(APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("_embedded.tasks[0].title", is("task")));
-
-        verify(taskService, times(1)).findTasks(anyInt(), anyInt(),
-                any(FilterByDate.class), anyString());
+                .andExpect(jsonPath("_embedded.tasks[0].title", is("task1")));
     }
-*/
 
     @Test
     @WithUserDetails(ADMIN)
