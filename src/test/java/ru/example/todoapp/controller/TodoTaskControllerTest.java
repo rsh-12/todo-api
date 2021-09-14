@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.test.context.support.WithUserDetails;
 import ru.example.todoapp.controller.request.TodoTaskRequest;
 import ru.example.todoapp.dto.TodoTaskDto;
@@ -31,12 +32,14 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -45,7 +48,7 @@ public class TodoTaskControllerTest extends AbstractControllerTestClass {
     @MockBean
     private TodoTaskService taskService;
 
-    private static final String API_TASKS = "/api/tasks/";
+    private static final String API_TASKS = "/api/tasks";
 
     @Test
     @WithUserDetails(ADMIN)
@@ -77,7 +80,7 @@ public class TodoTaskControllerTest extends AbstractControllerTestClass {
                         false, false,
                         LocalDateTime.now(), LocalDateTime.now()));
 
-        mvc.perform(get(API_TASKS + 1))
+        mvc.perform(get(API_TASKS + "/1"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("title", containsStringIgnoringCase("task")));
     }
@@ -88,7 +91,7 @@ public class TodoTaskControllerTest extends AbstractControllerTestClass {
         given(taskService.findTaskById(anyLong()))
                 .willThrow(CustomException.notFound("Task not found"));
 
-        mvc.perform(get(API_TASKS + 1))
+        mvc.perform(get(API_TASKS + "/1"))
                 .andExpect(status().isNotFound())
                 .andDo(print())
                 .andExpect(jsonPath("message", containsStringIgnoringCase("Task not found")));
@@ -100,7 +103,7 @@ public class TodoTaskControllerTest extends AbstractControllerTestClass {
     @WithUserDetails(ADMIN)
     public void deleteTask_ShouldReturnNoContent() throws Exception {
         doNothing().when(taskService).deleteTaskById(anyLong());
-        mvc.perform(delete(API_TASKS + 1)).andExpect(status().isNoContent());
+        mvc.perform(delete(API_TASKS + "/1")).andExpect(status().isNoContent());
         verify(taskService, times(1)).deleteTaskById(anyLong());
     }
 
@@ -110,7 +113,7 @@ public class TodoTaskControllerTest extends AbstractControllerTestClass {
         doThrow(CustomException.notFound("Task not found"))
                 .when(taskService).deleteTaskById(anyLong());
 
-        mvc.perform(delete(API_TASKS + 1))
+        mvc.perform(delete(API_TASKS + "/1"))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("message", containsStringIgnoringCase("Task not found")));
 
@@ -123,7 +126,7 @@ public class TodoTaskControllerTest extends AbstractControllerTestClass {
         doThrow(CustomException.forbidden("Not enough permissions"))
                 .when(taskService).deleteTaskById(anyLong());
 
-        mvc.perform(delete(API_TASKS + 1))
+        mvc.perform(delete(API_TASKS + "/1"))
                 .andExpect(status().isForbidden())
                 .andExpect(jsonPath("error", containsStringIgnoringCase("forbidden")));
 
@@ -142,9 +145,11 @@ public class TodoTaskControllerTest extends AbstractControllerTestClass {
         mvc.perform(post(API_TASKS)
                 .contentType(APPLICATION_JSON)
                 .content(body))
+                .andDo(print())
+                .andExpect(header().exists(HttpHeaders.LOCATION))
                 .andExpect(status().isCreated());
 
-        verify(taskService, times(1)).createTask(any(TodoTaskRequest.class));
+        verify(taskService).createTask(any(TodoTaskRequest.class));
     }
 
     @Test
@@ -154,13 +159,14 @@ public class TodoTaskControllerTest extends AbstractControllerTestClass {
                 .contentType(APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
 
-        verify(taskService, times(0)).createTask(any(TodoTaskRequest.class));
+        verifyNoInteractions(taskService);
     }
 
     @Test
     @WithUserDetails(USER)
     public void createTask_InvalidTitle_ShouldReturnBadRequest() throws Exception {
         TodoTaskRequest request = new TodoTaskRequest("T", LocalDate.now(), false);
+
         mvc.perform(post(API_TASKS)
                 .contentType(APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request))) // min=3
@@ -168,15 +174,35 @@ public class TodoTaskControllerTest extends AbstractControllerTestClass {
                 .andExpect(jsonPath("title", containsInAnyOrder("Size must be between 3 and 80")))
                 .andDo(print());
 
-        verify(taskService, times(0)).createTask(any(TodoTaskRequest.class));
+        verifyNoInteractions(taskService);
     }
 
     @Test
     @WithUserDetails(USER)
     public void updateTask_ShouldReturnBadRequest() throws Exception {
-        mvc.perform(patch(API_TASKS + 1)
+        mvc.perform(patch(API_TASKS + "/1")
                 .contentType(APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
+
+        verifyNoInteractions(taskService);
+    }
+
+    @Test
+    @WithUserDetails(USER)
+    public void updateTask_ShouldReturnOk() throws Exception {
+        TodoTask task = mock(TodoTask.class);
+        given(task.getId()).willReturn(1L);
+
+        given(taskService.saveTask(anyLong(), any(TodoTaskRequest.class)))
+                .willReturn(Optional.of(task));
+
+        TodoTaskRequest request = new TodoTaskRequest("Make a call", LocalDate.now(), true);
+        mvc.perform(patch(API_TASKS + "/1")
+                .contentType(APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+                .andDo(print())
+                .andExpect(header().exists(HttpHeaders.LOCATION))
+                .andExpect(status().isOk());
     }
 
 }
