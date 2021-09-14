@@ -14,9 +14,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.example.todoapp.controller.request.CredentialsRequest;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
@@ -30,13 +27,6 @@ abstract class AbstractControllerTestClass {
 
     @Autowired
     protected ObjectMapper objectMapper;
-
-    String usernamePasswordRequestBody(String username, String password) throws JsonProcessingException {
-        Map<String, String> body = new LinkedHashMap<>();
-        body.put("username", username);
-        body.put("password", password);
-        return objectMapper.writeValueAsString(body);
-    }
 
     protected String requestOf(String username, String password) {
         CredentialsRequest request = new CredentialsRequest(username, password);
