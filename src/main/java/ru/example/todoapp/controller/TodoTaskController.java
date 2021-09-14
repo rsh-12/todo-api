@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.EntityModel;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -99,14 +100,14 @@ public class TodoTaskController {
     @PatchMapping(value = "/{id}", consumes = "application/json")
     public ResponseEntity<String> updateTask(@PathVariable("id") Long taskId,
                                              @Valid @RequestBody TodoTaskRequest taskRequest) {
-        URI uri = todoTaskService.saveTask(taskId, taskRequest)
+        URI location = todoTaskService.saveTask(taskId, taskRequest)
                 .map(task -> ServletUriComponentsBuilder
                         .fromCurrentRequest()
                         .buildAndExpand(task.getId())
                         .toUri())
                 .orElse(URI.create(""));
 
-        return ResponseEntity.ok().header("Location", uri.toString()).build();
+        return ResponseEntity.ok().header(HttpHeaders.LOCATION, location.toString()).build();
     }
 
 }
