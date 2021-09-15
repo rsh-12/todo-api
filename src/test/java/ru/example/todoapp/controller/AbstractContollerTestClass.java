@@ -34,7 +34,7 @@ abstract class AbstractControllerTestClass {
             return objectMapper.writeValueAsString(request);
         } catch (JsonProcessingException exception) {
             exception.printStackTrace();
-            return String.format("{\"%s\": \"%s\"}", username, password);
+            return "{\"%s\": \"%s\"}".formatted(username, password);
         }
     }
 
