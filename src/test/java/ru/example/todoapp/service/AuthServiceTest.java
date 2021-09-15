@@ -10,10 +10,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import ru.example.todoapp.config.properties.TokenProperties;
 import ru.example.todoapp.controller.request.CredentialsRequest;
@@ -29,7 +31,9 @@ import java.util.Map;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anySet;
@@ -57,6 +61,9 @@ public class AuthServiceTest {
 
     @Mock
     private UserRepository userRepository;
+
+    @Spy
+    private BCryptPasswordEncoder passwordEncoder;
 
     private static final String USERNAME = "user@mail.com";
     private static final String PASSWORD = "password12345";
@@ -108,15 +115,20 @@ public class AuthServiceTest {
                 authService.register(new CredentialsRequest("user", "pwd")));
     }
 
-/*
     @Test
     public void register_ShouldDoNoting() {
         given(userRepository.existsByUsername(anyString())).willReturn(false);
-        given(userRepository.save(any(User.class))).willReturn(new User());
-        given(passwordEncoder.encode(anyString())).willReturn("$ecryptedString");
-        userService.register(new CredentialsRequest("user", "pwd"));
+
+        String password = passwordEncoder.encode("password");
+        given(userRepository.save(any())).willReturn(new User("username", password));
+
+        var request = new CredentialsRequest("username", "password");
+        User user = authService.register(request);
+
+        assertNotNull(user);
+        assertEquals("username", user.getUsername());
+        assertTrue(passwordEncoder.matches("password", password));
     }
-*/
 
     // generateNewTokens
 
