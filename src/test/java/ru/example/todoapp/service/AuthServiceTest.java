@@ -19,6 +19,7 @@ import ru.example.todoapp.config.properties.TokenProperties;
 import ru.example.todoapp.controller.request.CredentialsRequest;
 import ru.example.todoapp.entity.RefreshToken;
 import ru.example.todoapp.entity.User;
+import ru.example.todoapp.exception.CustomException;
 import ru.example.todoapp.repository.UserRepository;
 import ru.example.todoapp.security.UserDetailsImpl;
 import ru.example.todoapp.service.impl.AuthServiceImpl;
@@ -28,6 +29,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anySet;
@@ -99,13 +101,12 @@ public class AuthServiceTest {
     }
 
     // register
-/*
     @Test
     public void register_ShouldThrowException() {
         given(userRepository.existsByUsername(anyString())).willReturn(true);
-        assertThrows(CustomException.class, () -> userService.register(new CredentialsRequest("user", "pwd")));
+        assertThrows(CustomException.class, () ->
+                authService.register(new CredentialsRequest("user", "pwd")));
     }
-*/
 
 /*
     @Test
