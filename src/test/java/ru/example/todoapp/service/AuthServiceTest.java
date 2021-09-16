@@ -138,4 +138,11 @@ public class AuthServiceTest {
                 .willReturn(Optional.empty());
         assertFalse(authService.generateNewTokens("someToken", "someIP").isPresent());
     }
+
+    @Test
+    public void generateNewTokens_UserIdNotFound_ShouldReturnEmpty() {
+        given(refreshTokenService.findRefreshTokenByValue(anyString()))
+                .willReturn(Optional.of(new RefreshToken()));
+        assertFalse(authService.generateNewTokens("someToken", "someIP").isPresent());
+    }
 }
