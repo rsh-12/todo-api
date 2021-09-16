@@ -21,6 +21,7 @@ import ru.example.todoapp.config.properties.TokenProperties;
 import ru.example.todoapp.controller.request.CredentialsRequest;
 import ru.example.todoapp.entity.RefreshToken;
 import ru.example.todoapp.entity.User;
+import ru.example.todoapp.enums.Role;
 import ru.example.todoapp.exception.CustomException;
 import ru.example.todoapp.repository.UserRepository;
 import ru.example.todoapp.security.UserDetailsImpl;
@@ -151,6 +152,32 @@ public class AuthServiceTest {
         given(refreshTokenService.findRefreshTokenByValue(anyString()))
                 .willReturn(Optional.of(new RefreshToken("token", 1L, "IP")));
         assertFalse(authService.generateNewTokens("someToken", "someIP").isPresent());
+    }
+
+    @Test
+    public void generateNewTokens_ShouldReturnMap() {
+        User user = mock(User.class);
+        given(user.getId()).willReturn(1L);
+        given(user.getRoles()).willReturn(Collections.singleton(Role.USER));
+
+        RefreshToken refreshToken = mock(RefreshToken.class);
+        given(refreshToken.getUserId()).willReturn(1L);
+        given(refreshToken.getToken()).willReturn("someRefreshToken");
+
+        given(refreshTokenService.findRefreshTokenByValue(anyString()))
+                .willReturn(Optional.of(refreshToken));
+        given(refreshTokenService.createRefreshToken(anyLong(), anyString()))
+                .willReturn(refreshToken);
+        given(jwtTokenService.buildAccessToken(anyLong(), anySet()))
+                .willReturn("someAccessToken");
+        given(userRepository.findById(anyLong())).willReturn(Optional.of(user));
+
+        Optional<Map<String, String>> optionalTokens = authService.generateNewTokens("someToken", "someIP");
+        assertTrue(optionalTokens.isPresent());
+
+        Map<String, String> tokens = optionalTokens.get();
+        assertEquals("someRefreshToken", tokens.get("refresh_token"));
+        assertEquals("someAccessToken", tokens.get("access_token"));
     }
 
 }
