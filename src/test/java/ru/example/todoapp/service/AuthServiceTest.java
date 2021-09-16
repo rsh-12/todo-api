@@ -31,6 +31,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -131,5 +132,10 @@ public class AuthServiceTest {
     }
 
     // generateNewTokens
-
+    @Test
+    public void generateNewTokens_RefreshTokenNotFound_ShouldReturnEmpty() {
+        given(refreshTokenService.findRefreshTokenByValue(anyString()))
+                .willReturn(Optional.empty());
+        assertFalse(authService.generateNewTokens("someToken", "someIP").isPresent());
+    }
 }
