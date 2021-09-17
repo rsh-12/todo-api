@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import ru.example.todoapp.entity.User;
 import ru.example.todoapp.exception.CustomException;
@@ -21,9 +22,11 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willCallRealMethod;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 
@@ -35,6 +38,9 @@ public class UserServiceTest {
 
     @Mock
     private UserRepository userRepository;
+
+    @Mock
+    private BCryptPasswordEncoder passwordEncoder;
 
     // deleteUserById
     @Test
@@ -73,6 +79,17 @@ public class UserServiceTest {
                 .willReturn(Optional.empty());
 
         assertTrue(userService.updatePassword("username", "password").isEmpty());
+    }
+
+    @Test
+    public void updatePassword_ShouldReturnUser() {
+        User user = mock(User.class);
+        given(userRepository.findByUsername(anyString()))
+                .willReturn(Optional.of(user));
+        given(userRepository.save(any())).willReturn(user);
+
+        Optional<User> optionalUser = userService.updatePassword("username", "password");
+        assertFalse(optionalUser.isEmpty());
     }
 
     // existsByUsername
