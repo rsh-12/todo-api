@@ -67,6 +67,13 @@ public class UserServiceTest {
     }
 
     // updatePassword
+    @Test
+    public void updatePassword_ShouldReturnEmpty() {
+        given(userRepository.findByUsername(anyString()))
+                .willReturn(Optional.empty());
+
+        assertTrue(userService.updatePassword("username", "password").isEmpty());
+    }
 
     // existsByUsername
     @Test
