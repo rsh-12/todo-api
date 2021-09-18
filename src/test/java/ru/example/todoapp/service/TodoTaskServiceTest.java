@@ -87,18 +87,20 @@ public class TodoTaskServiceTest {
         assertEquals("task", tasks.get(0).getTitle());
     }
 
-    /*@Test
+    @Test
     public void findTasks_ShouldReturnOverdueTasks() {
         TodoTask task = mock(TodoTask.class);
         given(task.getTitle()).willReturn("task");
 
-        given(taskRepository.findAllByCompletionDateBeforeAndUserId(any(), any(), anyLong()))
-                .willReturn(List.of(task));
+        given(taskRepository.findAllByCompletionDateBeforeAndUserId(any(), anyLong(), any()))
+                .willReturn(new PageImpl<>(List.of(task)));
 
-        List<TodoTask> tasks = taskService.findTasks(0, 1000, FilterByDate.OVERDUE, "secId");
+        List<TodoTask> tasks = taskService.findTasks(FilterByDate.OVERDUE, Pageable.unpaged())
+                .getContent();
+
         assertFalse(tasks.isEmpty());
         assertEquals("task", tasks.get(0).getTitle());
-    }*/
+    }
 
     // findTaskById
     @Test
