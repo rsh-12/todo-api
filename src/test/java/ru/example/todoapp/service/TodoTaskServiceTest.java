@@ -8,11 +8,14 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import ru.example.todoapp.controller.request.TodoTaskRequest;
 import ru.example.todoapp.dto.TodoTaskDto;
 import ru.example.todoapp.entity.TodoTask;
 import ru.example.todoapp.entity.User;
+import ru.example.todoapp.enums.filters.FilterByDate;
 import ru.example.todoapp.exception.CustomException;
 import ru.example.todoapp.facade.AuthUserFacade;
 import ru.example.todoapp.repository.TodoTaskRepository;
@@ -50,25 +53,24 @@ public class TodoTaskServiceTest {
     private AuthUserFacade authUserFacade;
 
     // findTasks
-    /*@Test
-    public void findTasks_ShouldReturnAllUserTasks() {
+    @Test
+    public void findTasks_ShouldReturnAllTasks() {
         TodoTask task1 = mock(TodoTask.class);
         given(task1.getTitle()).willReturn("task1");
 
         TodoTask task2 = mock(TodoTask.class);
         given(task2.getTitle()).willReturn("task2");
 
-        given(taskRepository.findAllByUserId(anyLong(), any(Pageable.class))).willReturn(List.of(task1, task2));
+        given(authUserFacade.getUserId()).willReturn(1L);
+        given(taskRepository.findAllByUserId(anyLong(), any(Pageable.class)))
+                .willReturn(new PageImpl<>(List.of(task1, task2)));
 
-        List<TodoTask> tasks = taskService.findTasks(0, 10, FilterByDate.ALL, "secId");
+        List<TodoTask> tasks = taskService.findTasks(FilterByDate.ALL, Pageable.unpaged())
+                .getContent();
+
         assertFalse(tasks.isEmpty());
         assertEquals(2, tasks.size());
-
-        assertTrue(tasks.get(0).getTitle().startsWith("task"));
-        assertTrue(tasks.get(1).getTitle().startsWith("task"));
-
-        verify(taskRepository, times(1)).findAllByUserId(anyLong(), any(Pageable.class));
-    }*/
+    }
 
     /*@Test
     public void findTasks_ShouldReturnTodaysTasks() {
