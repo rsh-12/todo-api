@@ -15,6 +15,7 @@ import ru.example.todoapp.controller.request.TodoTaskRequest;
 import ru.example.todoapp.dto.TodoTaskDto;
 import ru.example.todoapp.entity.TodoTask;
 import ru.example.todoapp.entity.User;
+import ru.example.todoapp.enums.Role;
 import ru.example.todoapp.enums.filters.FilterByDate;
 import ru.example.todoapp.exception.CustomException;
 import ru.example.todoapp.facade.AuthUserFacade;
@@ -22,6 +23,7 @@ import ru.example.todoapp.repository.TodoTaskRepository;
 import ru.example.todoapp.service.impl.TodoTaskServiceImpl;
 
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -133,6 +135,23 @@ public class TodoTaskServiceTest {
         given(task.getId()).willReturn(1L);
         given(task.getUser()).willReturn(user);
         given(authUserFacade.getLoggedUser()).willReturn(user);
+        given(taskRepository.findById(anyLong())).willReturn(Optional.of(task));
+
+        doNothing().when(taskRepository).deleteById(anyLong());
+        taskService.deleteTaskById(task.getId());
+
+        verify(taskRepository).deleteById(anyLong());
+    }
+
+    @Test
+    public void deleteTaskById_Admin_ShouldDeleteTaskById() {
+        User user = mock(User.class);
+        given(user.getRoles()).willReturn(Collections.singleton(Role.ADMIN));
+        TodoTask task = mock(TodoTask.class);
+
+        given(task.getId()).willReturn(1L);
+        given(task.getUser()).willReturn(user);
+        given(authUserFacade.getLoggedUser()).willReturn(new User("user", "pwd"));
         given(taskRepository.findById(anyLong())).willReturn(Optional.of(task));
 
         doNothing().when(taskRepository).deleteById(anyLong());
