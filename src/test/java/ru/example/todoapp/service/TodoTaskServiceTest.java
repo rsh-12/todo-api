@@ -161,6 +161,20 @@ public class TodoTaskServiceTest {
     }
 
     @Test
+    public void deleteTaskById_AccessDenied_ShouldThrowCustomException() {
+        User user = mock(User.class);
+        given(user.getRoles()).willReturn(Collections.singleton(Role.USER));
+        TodoTask task = mock(TodoTask.class);
+
+        given(task.getId()).willReturn(1L);
+        given(task.getUser()).willReturn(user);
+        given(authUserFacade.getLoggedUser()).willReturn(new User("user", "pwd"));
+        given(taskRepository.findById(anyLong())).willReturn(Optional.of(task));
+
+        assertThrows(CustomException.class, () -> taskService.deleteTaskById(task.getId()));
+    }
+
+    @Test
     public void deleteTaskById_ShouldThrowCustomException() {
         given(taskRepository.findById(anyLong())).willReturn(Optional.empty());
         assertThrows(CustomException.class, () -> taskService.deleteTaskById(1L));
