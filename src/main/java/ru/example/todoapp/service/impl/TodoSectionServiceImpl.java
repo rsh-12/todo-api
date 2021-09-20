@@ -13,19 +13,17 @@ import ru.example.todoapp.controller.request.TodoSectionRequest;
 import ru.example.todoapp.dto.TodoSectionDto;
 import ru.example.todoapp.entity.TodoSection;
 import ru.example.todoapp.entity.TodoTask;
-import ru.example.todoapp.entity.User;
 import ru.example.todoapp.enums.filters.FilterByOperation;
 import ru.example.todoapp.exception.CustomException;
 import ru.example.todoapp.facade.AuthUserFacade;
 import ru.example.todoapp.repository.TodoSectionRepository;
 import ru.example.todoapp.repository.projection.TodoSectionProjection;
 import ru.example.todoapp.service.TodoSectionService;
+import ru.example.todoapp.util.Combinators;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Predicate;
 
-import static ru.example.todoapp.enums.Role.ADMIN;
 import static ru.example.todoapp.enums.filters.FilterByOperation.MOVE;
 import static ru.example.todoapp.enums.filters.FilterByOperation.REMOVE;
 
@@ -59,11 +57,8 @@ public class TodoSectionServiceImpl implements TodoSectionService {
     // delete section by id
     @Override
     public void deleteSectionById(Long sectionId) {
-        Predicate<User> predicate = user -> user.equals(authUserFacade.getLoggedUser());
-        Predicate<User> combinedPredicates = predicate.or(user -> user.getRoles().contains(ADMIN));
-
         todoSectionRepository.findById(sectionId).map(TodoSection::getUser)
-                .filter(combinedPredicates)
+                .filter(Combinators.checkUserAccess(authUserFacade.getLoggedUser()))
                 .ifPresentOrElse(user -> todoSectionRepository.deleteById(sectionId), () -> {
                     throw CustomException.notFound("Section not found");
                 });
@@ -81,12 +76,10 @@ public class TodoSectionServiceImpl implements TodoSectionService {
     // update section title
     @Override
     public Optional<TodoSection> updateSection(Long sectionId, TodoSectionRequest sectionRequest) {
-        Predicate<User> predicate = user -> user.equals(authUserFacade.getLoggedUser());
-        Predicate<User> combinedPredicates = predicate.or(user -> user.getRoles().contains(ADMIN));
-
-        return todoSectionRepository.findById(sectionId)
-                .filter(section -> combinedPredicates.test(section.getUser()))
-                .map(section -> updateTitleAndUser(sectionRequest, section));
+        Optional<TodoSection> section = todoSectionRepository.findById(sectionId);
+        return section.map(TodoSection::getUser)
+                .filter(Combinators.checkUserAccess(authUserFacade.getLoggedUser()))
+                .map(user -> updateTitleAndUser(sectionRequest, section.get()));
     }
 
     private TodoSection updateTitleAndUser(TodoSectionRequest sectionRequest, TodoSection section) {
