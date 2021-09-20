@@ -14,20 +14,18 @@ import ru.example.todoapp.controller.request.TodoTaskRequest;
 import ru.example.todoapp.dsl.TaskBuilder;
 import ru.example.todoapp.dto.TodoTaskDto;
 import ru.example.todoapp.entity.TodoTask;
-import ru.example.todoapp.entity.User;
 import ru.example.todoapp.enums.filters.FilterByDate;
 import ru.example.todoapp.exception.CustomException;
 import ru.example.todoapp.facade.AuthUserFacade;
 import ru.example.todoapp.repository.TodoTaskRepository;
 import ru.example.todoapp.service.TodoTaskService;
+import ru.example.todoapp.util.Combinators;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.Predicate;
 
-import static ru.example.todoapp.enums.Role.ADMIN;
 import static ru.example.todoapp.enums.filters.FilterByDate.ALL;
 import static ru.example.todoapp.enums.filters.FilterByDate.TODAY;
 
@@ -49,17 +47,15 @@ public class TodoTaskServiceImpl implements TodoTaskService {
     @Override
     public Page<TodoTask> findTasks(FilterByDate date, Pageable pageable) {
         Long userId = authUserFacade.getUserId();
-
         return date == ALL
                 ? todoTaskRepository.findAllByUserId(userId, pageable)
                 : findTasksByDate(date, pageable, userId);
     }
 
     private Page<TodoTask> findTasksByDate(FilterByDate date, Pageable pageable, Long userId) {
-        if (date == TODAY) {
-            return todoTaskRepository.findAllByCompletionDateEqualsAndUserId(LocalDate.now(), userId, pageable);
-        }
-        return todoTaskRepository.findAllByCompletionDateBeforeAndUserId(LocalDate.now(), userId, pageable);
+        return date == TODAY
+                ? todoTaskRepository.findAllByCompletionDateEqualsAndUserId(LocalDate.now(), userId, pageable)
+                : todoTaskRepository.findAllByCompletionDateBeforeAndUserId(LocalDate.now(), userId, pageable);
     }
 
     // get task by id
@@ -72,11 +68,8 @@ public class TodoTaskServiceImpl implements TodoTaskService {
     // delete task by id
     @Override
     public void deleteTaskById(Long taskId) {
-        Predicate<User> predicate = user -> user.equals(authUserFacade.getLoggedUser());
-        Predicate<User> combinedPredicates = predicate.or(user -> user.getRoles().contains(ADMIN));
-
         todoTaskRepository.findById(taskId).map(TodoTask::getUser)
-                .filter(combinedPredicates)
+                .filter(Combinators.checkUserAccess(authUserFacade.getLoggedUser()))
                 .ifPresentOrElse(user -> todoTaskRepository.deleteById(taskId), () -> {
                     throw CustomException.notFound("Task not found");
                 });
@@ -86,7 +79,6 @@ public class TodoTaskServiceImpl implements TodoTaskService {
     @Override
     public TodoTask createTask(TodoTaskRequest request) {
         log.info("Create a new task");
-
         TodoTask todoTask = TaskBuilder.forTask(request.title())
                 .starred(request.starred())
                 .completionDate(request.completionDate())
@@ -105,7 +97,6 @@ public class TodoTaskServiceImpl implements TodoTaskService {
 
     @Override
     public Optional<TodoTask> saveTask(Long taskId, TodoTaskRequest request) {
-
         return findTaskById(taskId)
                 .map(task -> {
                     task.setTitle(request.title());
