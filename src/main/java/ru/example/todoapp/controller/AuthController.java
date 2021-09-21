@@ -23,7 +23,6 @@ import ru.example.todoapp.entity.User;
 import ru.example.todoapp.facade.PasswordFacade;
 import ru.example.todoapp.messaging.MessagingClient;
 import ru.example.todoapp.service.AuthService;
-import ru.example.todoapp.service.impl.util.ServiceUtil;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -60,7 +59,9 @@ public class AuthController {
     @ResponseStatus(HttpStatus.CREATED)
     public EntityModel<UserDto> register(@Valid @RequestBody CredentialsRequest credentials) {
         User user = authService.register(credentials);
-        return EntityModel.of(ServiceUtil.mapToUserDto(user),
+        UserDto userDto = new UserDto(user.getUsername(), user.getCreatedAt());
+
+        return EntityModel.of(userDto,
                 linkTo(methodOn(UserController.class).getUser(user.getId())).withSelfRel());
     }
 
