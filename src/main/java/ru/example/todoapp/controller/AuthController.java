@@ -88,9 +88,9 @@ public class AuthController {
 
     private String getClientIp(HttpServletRequest request) {
         String ip = request.getHeader("X-FORWARDED-FOR");
-        if (ip == null || "".equals(ip)) {
-            ip = request.getRemoteAddr();
-        }
-        return ip;
+
+        return (ip == null || ip.isEmpty())
+                ? request.getRemoteAddr()
+                : ip;
     }
 }
