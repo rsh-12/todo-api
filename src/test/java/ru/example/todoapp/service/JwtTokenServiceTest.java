@@ -70,7 +70,7 @@ public class JwtTokenServiceTest {
         HttpServletRequest request = mock(HttpServletRequest.class);
         given(request.getHeader("Authorization")).willReturn("Bearer someAccessToken");
 
-        String accessToken = jwtTokenService.resolveAccessToken(request);
+        String accessToken = jwtTokenService.resolveAccessToken(request).orElse("");
         assertFalse(accessToken.isEmpty());
         assertEquals("someAccessToken", accessToken);
     }
@@ -80,7 +80,7 @@ public class JwtTokenServiceTest {
         HttpServletRequest request = mock(HttpServletRequest.class);
         given(request.getHeader("Authorization")).willReturn("bearer someAccessToken");
 
-        String accessToken = jwtTokenService.resolveAccessToken(request);
+        String accessToken = jwtTokenService.resolveAccessToken(request).orElse("");
         assertFalse(accessToken.isEmpty());
         assertEquals("someAccessToken", accessToken);
     }
@@ -90,7 +90,7 @@ public class JwtTokenServiceTest {
         HttpServletRequest request = mock(HttpServletRequest.class);
         given(request.getHeader("Authorization")).willReturn("someAccessToken");
 
-        String accessToken = jwtTokenService.resolveAccessToken(request);
+        String accessToken = jwtTokenService.resolveAccessToken(request).orElse("");
         assertFalse(accessToken.isEmpty());
         assertEquals("someAccessToken", accessToken);
     }
@@ -98,7 +98,7 @@ public class JwtTokenServiceTest {
     @Test
     public void resolveAccessToken_ShouldReturnEmptyString() {
         HttpServletRequest request = mock(HttpServletRequest.class);
-        String accessToken = jwtTokenService.resolveAccessToken(request);
+        String accessToken = jwtTokenService.resolveAccessToken(request).orElse("");
         assertEquals("", accessToken);
     }
 
