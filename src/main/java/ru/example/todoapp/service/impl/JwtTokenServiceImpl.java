@@ -12,8 +12,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import ru.example.todoapp.config.properties.TokenProperties;
-import ru.example.todoapp.entity.User;
 import ru.example.todoapp.domain.Role;
+import ru.example.todoapp.entity.User;
 import ru.example.todoapp.exception.CustomException;
 import ru.example.todoapp.security.UserDetailsImpl;
 import ru.example.todoapp.service.JwtTokenService;
@@ -26,8 +26,8 @@ import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 @Service
@@ -71,17 +71,15 @@ public class JwtTokenServiceImpl implements JwtTokenService {
     }
 
     @Override
-    public String resolveAccessToken(HttpServletRequest request) {
-        String bearerToken = request.getHeader("Authorization");
+    public Optional<String> resolveAccessToken(HttpServletRequest request) {
+        String token = request.getHeader("Authorization");
 
-        return resolveToken(bearerToken, () -> (bearerToken.startsWith("Bearer") || bearerToken.startsWith("bearer"))
-                ? bearerToken.substring(7)
-                : bearerToken);
+        return Optional.ofNullable(token)
+                .map(bearer -> (bearer.startsWith("Bearer") || bearer.startsWith("bearer"))
+                        ? bearer.substring(7)
+                        : bearer); // for compatibility with swagger authentication
     }
 
-    private String resolveToken(String bearerToken, Supplier<String> supplier) {
-        return bearerToken != null ? supplier.get() : "";
-    }
 
     @Override
     public boolean isTokenValid(String accessToken) {
