@@ -6,7 +6,7 @@ package ru.example.todoapp.facade.impl;
 
 import org.springframework.stereotype.Component;
 import ru.example.todoapp.entity.TodoTask;
-import ru.example.todoapp.enums.filters.FilterByOperation;
+import ru.example.todoapp.util.filters.FilterByOperation;
 import ru.example.todoapp.exception.CustomException;
 import ru.example.todoapp.facade.AuthUserFacade;
 import ru.example.todoapp.facade.TasksFacade;

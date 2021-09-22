@@ -1,6 +1,6 @@
 package ru.example.todoapp.facade;
 
-import ru.example.todoapp.enums.filters.FilterByOperation;
+import ru.example.todoapp.util.filters.FilterByOperation;
 
 import java.util.Set;
 

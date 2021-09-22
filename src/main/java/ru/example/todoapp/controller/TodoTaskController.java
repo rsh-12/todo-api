@@ -30,7 +30,7 @@ import ru.example.todoapp.controller.assembler.TodoTaskModelAssembler;
 import ru.example.todoapp.domain.request.TodoTaskRequest;
 import ru.example.todoapp.dto.TodoTaskDto;
 import ru.example.todoapp.entity.TodoTask;
-import ru.example.todoapp.enums.filters.FilterByDate;
+import ru.example.todoapp.util.filters.FilterByDate;
 import ru.example.todoapp.service.TodoTaskService;
 
 import javax.validation.Valid;

@@ -1,4 +1,4 @@
-package ru.example.todoapp.enums.filters;
+package ru.example.todoapp.util.filters;
 
 public enum FilterByDate {
     TODAY, OVERDUE, ALL

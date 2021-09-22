@@ -14,7 +14,7 @@ import ru.example.todoapp.domain.request.TodoTaskRequest;
 import ru.example.todoapp.dsl.TaskBuilder;
 import ru.example.todoapp.dto.TodoTaskDto;
 import ru.example.todoapp.entity.TodoTask;
-import ru.example.todoapp.enums.filters.FilterByDate;
+import ru.example.todoapp.util.filters.FilterByDate;
 import ru.example.todoapp.exception.CustomException;
 import ru.example.todoapp.facade.AuthUserFacade;
 import ru.example.todoapp.repository.TodoTaskRepository;
@@ -26,8 +26,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import static ru.example.todoapp.enums.filters.FilterByDate.ALL;
-import static ru.example.todoapp.enums.filters.FilterByDate.TODAY;
+import static ru.example.todoapp.util.filters.FilterByDate.ALL;
+import static ru.example.todoapp.util.filters.FilterByDate.TODAY;
 
 @Service
 public class TodoTaskServiceImpl implements TodoTaskService {

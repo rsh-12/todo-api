@@ -13,7 +13,7 @@ import ru.example.todoapp.domain.request.TodoSectionRequest;
 import ru.example.todoapp.dto.TodoSectionDto;
 import ru.example.todoapp.entity.TodoSection;
 import ru.example.todoapp.entity.TodoTask;
-import ru.example.todoapp.enums.filters.FilterByOperation;
+import ru.example.todoapp.util.filters.FilterByOperation;
 import ru.example.todoapp.exception.CustomException;
 import ru.example.todoapp.facade.AuthUserFacade;
 import ru.example.todoapp.repository.TodoSectionRepository;
@@ -24,8 +24,8 @@ import ru.example.todoapp.util.Combinators;
 import java.util.List;
 import java.util.Optional;
 
-import static ru.example.todoapp.enums.filters.FilterByOperation.MOVE;
-import static ru.example.todoapp.enums.filters.FilterByOperation.REMOVE;
+import static ru.example.todoapp.util.filters.FilterByOperation.MOVE;
+import static ru.example.todoapp.util.filters.FilterByOperation.REMOVE;
 
 @Service
 public class TodoSectionServiceImpl implements TodoSectionService {

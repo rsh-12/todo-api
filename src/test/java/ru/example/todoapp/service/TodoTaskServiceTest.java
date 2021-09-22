@@ -16,7 +16,7 @@ import ru.example.todoapp.dto.TodoTaskDto;
 import ru.example.todoapp.entity.TodoTask;
 import ru.example.todoapp.entity.User;
 import ru.example.todoapp.domain.Role;
-import ru.example.todoapp.enums.filters.FilterByDate;
+import ru.example.todoapp.util.filters.FilterByDate;
 import ru.example.todoapp.exception.CustomException;
 import ru.example.todoapp.facade.AuthUserFacade;
 import ru.example.todoapp.repository.TodoTaskRepository;

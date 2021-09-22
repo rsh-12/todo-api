@@ -5,7 +5,7 @@ package ru.example.todoapp.util.converters;
  * */
 
 import org.springframework.core.convert.converter.Converter;
-import ru.example.todoapp.enums.filters.FilterByOperation;
+import ru.example.todoapp.util.filters.FilterByOperation;
 
 public class StringToSetTasksEnumConverter implements Converter<String, FilterByOperation> {
 

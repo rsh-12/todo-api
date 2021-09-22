@@ -10,7 +10,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import ru.example.todoapp.entity.TodoTask;
-import ru.example.todoapp.enums.filters.FilterByOperation;
+import ru.example.todoapp.util.filters.FilterByOperation;
 import ru.example.todoapp.exception.CustomException;
 import ru.example.todoapp.facade.impl.TasksFacadeImpl;
 import ru.example.todoapp.service.TodoSectionService;

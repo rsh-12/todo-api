@@ -5,7 +5,7 @@ package ru.example.todoapp.util.converters;
  * */
 
 import org.springframework.core.convert.converter.Converter;
-import ru.example.todoapp.enums.filters.FilterByDate;
+import ru.example.todoapp.util.filters.FilterByDate;
 
 public class StringToDateEnumConverter implements Converter<String, FilterByDate> {
 
