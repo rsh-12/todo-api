@@ -1,4 +1,4 @@
-package ru.example.todoapp.controller.request;
+package ru.example.todoapp.domain.request;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;

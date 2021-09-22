@@ -12,7 +12,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.example.todoapp.config.properties.TokenProperties;
-import ru.example.todoapp.controller.request.CredentialsRequest;
+import ru.example.todoapp.domain.request.CredentialsRequest;
 import ru.example.todoapp.dsl.UserBuilder;
 import ru.example.todoapp.entity.RefreshToken;
 import ru.example.todoapp.entity.User;

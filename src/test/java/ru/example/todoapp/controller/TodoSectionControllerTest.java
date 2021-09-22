@@ -10,7 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithUserDetails;
-import ru.example.todoapp.controller.request.TodoSectionRequest;
+import ru.example.todoapp.domain.request.TodoSectionRequest;
 import ru.example.todoapp.dto.TodoSectionDto;
 import ru.example.todoapp.entity.TodoSection;
 import ru.example.todoapp.exception.CustomException;

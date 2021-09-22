@@ -9,7 +9,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import ru.example.todoapp.controller.request.TokenRequest;
+import ru.example.todoapp.domain.request.TokenRequest;
 import ru.example.todoapp.entity.User;
 import ru.example.todoapp.exception.CustomException;
 import ru.example.todoapp.facade.impl.PasswordFacadeImpl;

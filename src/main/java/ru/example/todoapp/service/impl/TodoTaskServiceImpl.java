@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import ru.example.todoapp.controller.request.TodoTaskRequest;
+import ru.example.todoapp.domain.request.TodoTaskRequest;
 import ru.example.todoapp.dsl.TaskBuilder;
 import ru.example.todoapp.dto.TodoTaskDto;
 import ru.example.todoapp.entity.TodoTask;

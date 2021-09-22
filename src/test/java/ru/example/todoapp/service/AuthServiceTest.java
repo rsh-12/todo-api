@@ -18,7 +18,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import ru.example.todoapp.config.properties.TokenProperties;
-import ru.example.todoapp.controller.request.CredentialsRequest;
+import ru.example.todoapp.domain.request.CredentialsRequest;
 import ru.example.todoapp.entity.RefreshToken;
 import ru.example.todoapp.entity.User;
 import ru.example.todoapp.enums.Role;

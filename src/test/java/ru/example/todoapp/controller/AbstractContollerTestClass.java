@@ -12,7 +12,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import ru.example.todoapp.controller.request.CredentialsRequest;
+import ru.example.todoapp.domain.request.CredentialsRequest;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest

@@ -1,4 +1,4 @@
-package ru.example.todoapp.controller.request;
+package ru.example.todoapp.domain.request;
 /*
  * Date: 31.07.2021
  * Time: 10:09 AM

@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import ru.example.todoapp.controller.request.TodoSectionRequest;
+import ru.example.todoapp.domain.request.TodoSectionRequest;
 import ru.example.todoapp.dto.TodoSectionDto;
 import ru.example.todoapp.entity.TodoSection;
 import ru.example.todoapp.entity.TodoTask;
