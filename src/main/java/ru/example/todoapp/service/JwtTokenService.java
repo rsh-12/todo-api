@@ -1,7 +1,7 @@
 package ru.example.todoapp.service;
 
 import org.springframework.security.core.Authentication;
-import ru.example.todoapp.enums.Role;
+import ru.example.todoapp.domain.Role;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Set;

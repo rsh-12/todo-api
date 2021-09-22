@@ -5,7 +5,7 @@ package ru.example.todoapp.dsl;
  * */
 
 import ru.example.todoapp.entity.User;
-import ru.example.todoapp.enums.Role;
+import ru.example.todoapp.domain.Role;
 
 import java.util.HashSet;
 import java.util.Set;

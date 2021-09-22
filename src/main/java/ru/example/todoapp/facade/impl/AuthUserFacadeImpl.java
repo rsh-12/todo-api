@@ -9,7 +9,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import ru.example.todoapp.domain.CustomPrincipal;
 import ru.example.todoapp.entity.User;
-import ru.example.todoapp.enums.Role;
+import ru.example.todoapp.domain.Role;
 import ru.example.todoapp.facade.AuthUserFacade;
 import ru.example.todoapp.security.UserDetailsImpl;
 

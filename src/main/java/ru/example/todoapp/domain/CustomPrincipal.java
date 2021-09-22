@@ -4,8 +4,6 @@ package ru.example.todoapp.domain;
  * Time: 9:38 PM
  * */
 
-import ru.example.todoapp.enums.Role;
-
 import java.util.Objects;
 import java.util.Set;
 

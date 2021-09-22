@@ -4,7 +4,7 @@ import ru.example.todoapp.entity.User;
 
 import java.util.function.Predicate;
 
-import static ru.example.todoapp.enums.Role.ADMIN;
+import static ru.example.todoapp.domain.Role.ADMIN;
 
 public record Combinators() {
 

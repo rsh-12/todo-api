@@ -14,7 +14,7 @@ import org.mockito.Mock;
 import org.springframework.security.core.Authentication;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import ru.example.todoapp.config.properties.TokenProperties;
-import ru.example.todoapp.enums.Role;
+import ru.example.todoapp.domain.Role;
 import ru.example.todoapp.exception.CustomException;
 import ru.example.todoapp.service.impl.JwtTokenServiceImpl;
 

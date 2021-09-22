@@ -1,4 +1,4 @@
-package ru.example.todoapp.enums;
+package ru.example.todoapp.domain;
 
 public enum Role {
 

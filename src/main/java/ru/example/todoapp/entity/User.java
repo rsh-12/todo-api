@@ -7,7 +7,7 @@ package ru.example.todoapp.entity;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.CreationTimestamp;
-import ru.example.todoapp.enums.Role;
+import ru.example.todoapp.domain.Role;
 import ru.example.todoapp.validation.ValidEmail;
 
 import javax.persistence.CascadeType;

@@ -6,7 +6,7 @@ package ru.example.todoapp.facade;
 
 import ru.example.todoapp.domain.CustomPrincipal;
 import ru.example.todoapp.entity.User;
-import ru.example.todoapp.enums.Role;
+import ru.example.todoapp.domain.Role;
 
 import java.util.Set;
 
