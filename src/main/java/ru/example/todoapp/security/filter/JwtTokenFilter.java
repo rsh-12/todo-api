@@ -29,7 +29,8 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest httpServletRequest,
                                     HttpServletResponse httpServletResponse,
                                     FilterChain filterChain) throws ServletException, IOException {
-        String accessToken = jwtTokenService.resolveAccessToken(httpServletRequest);
+        String accessToken = jwtTokenService.resolveAccessToken(httpServletRequest)
+                .orElse("");
 
         try {
             if (!accessToken.isEmpty() && jwtTokenService.isTokenValid(accessToken)) {
