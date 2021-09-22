@@ -4,6 +4,7 @@ import org.springframework.security.core.Authentication;
 import ru.example.todoapp.domain.Role;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -32,7 +33,7 @@ public interface JwtTokenService {
      * @return the access token as a string from request, if the Authorization header
      * is missing, returns an empty string
      */
-    String resolveAccessToken(HttpServletRequest request);
+    Optional<String> resolveAccessToken(HttpServletRequest request);
 
     /**
      * Checks whether an access token has expired or not.
