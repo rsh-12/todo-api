@@ -11,6 +11,12 @@ public class StringToDateEnumConverter implements Converter<String, FilterByDate
 
     @Override
     public FilterByDate convert(String string) {
-        return FilterByDate.valueOf(string.toUpperCase());
+        try {
+            return FilterByDate.valueOf(string.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+            return FilterByDate.ALL;
+        }
     }
+
 }
