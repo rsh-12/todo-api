@@ -20,6 +20,8 @@ import ru.example.todoapp.service.impl.JwtTokenServiceImpl;
 
 import javax.servlet.http.HttpServletRequest;
 import java.nio.charset.StandardCharsets;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Map;
@@ -114,7 +116,7 @@ public class JwtTokenServiceTest {
     public void isTokenValid_ShouldThrowCustomException() {
         String accessToken = Jwts.builder()
                 .setClaims(Map.of("id", 1L))
-                .setExpiration(new Date(new Date().getTime() - 1000))
+                .setExpiration(Date.from(Instant.now().minus(1, ChronoUnit.MINUTES)))
                 .signWith(Keys.hmacShaKeyFor(tokenProperties.getSecret().getBytes(StandardCharsets.UTF_8)))
                 .compact();
 
