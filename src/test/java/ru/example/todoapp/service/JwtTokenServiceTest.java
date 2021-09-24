@@ -102,16 +102,16 @@ public class JwtTokenServiceTest {
         assertEquals("", accessToken);
     }
 
-    // isAccessTokenValid
+    // isTokenValid
     @Test
-    public void isAccessTokenValid_ShouldReturnTrue() {
+    public void isTokenValid_ShouldReturnTrue() {
         String accessToken = jwtTokenService.buildAccessToken(1L, Collections.singleton(Role.USER));
         boolean isAccessTokenValid = jwtTokenService.isTokenValid(accessToken);
         assertTrue(isAccessTokenValid);
     }
 
     @Test
-    public void isAccessTokenValid_ShouldThrowCustomException() {
+    public void isTokenValid_ShouldThrowCustomException() {
         String accessToken = Jwts.builder()
                 .setClaims(Map.of("id", 1L))
                 .setExpiration(new Date(new Date().getTime() - 1000))
