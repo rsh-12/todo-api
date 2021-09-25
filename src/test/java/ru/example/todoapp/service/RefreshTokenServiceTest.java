@@ -26,6 +26,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -78,6 +79,13 @@ public class RefreshTokenServiceTest {
         RefreshToken token = refreshTokenService.saveRefreshToken(refreshToken);
         assertNotNull(token);
         verify(refreshTokenRepository).save(any(RefreshToken.class));
+    }
+
+    // findRefreshTokenByValue
+    @Test
+    public void findRefreshTokenByValue_ShouldReturnEmpty() {
+        given(refreshTokenRepository.findByToken(anyString())).willReturn(Optional.empty());
+        assertEquals(Optional.empty(), refreshTokenService.findRefreshTokenByValue("token"));
     }
 
 }
