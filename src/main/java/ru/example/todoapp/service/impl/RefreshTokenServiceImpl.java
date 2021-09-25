@@ -6,41 +6,43 @@ package ru.example.todoapp.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.example.todoapp.config.properties.TokenProperties;
 import ru.example.todoapp.entity.RefreshToken;
 import ru.example.todoapp.repository.RefreshTokenRepository;
 import ru.example.todoapp.service.JwtTokenService;
 import ru.example.todoapp.service.RefreshTokenService;
 
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
+import java.sql.Timestamp;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 public class RefreshTokenServiceImpl implements RefreshTokenService {
 
     private final RefreshTokenRepository refreshTokenRepository;
     private final JwtTokenService jwtTokenService;
-    private final TokenProperties tokenProperties;
 
     @Autowired
-    public RefreshTokenServiceImpl(RefreshTokenRepository refreshTokenRepository, JwtTokenService jwtTokenService,
-                                   TokenProperties tokenProperties) {
+    public RefreshTokenServiceImpl(RefreshTokenRepository refreshTokenRepository, JwtTokenService jwtTokenService) {
         this.refreshTokenRepository = refreshTokenRepository;
         this.jwtTokenService = jwtTokenService;
-        this.tokenProperties = tokenProperties;
     }
 
     @Override
     public RefreshToken createRefreshToken(Long userId, String ip) {
         String token = jwtTokenService.buildRefreshToken();
+        RefreshToken refreshToken = findRefreshTokenByUserId(userId)
+                .orElseGet(RefreshToken::new);
 
-        var refreshToken = new RefreshToken(token, userId, ip);
-        long refreshValidity = tokenProperties.getRefreshTokenValidity();
-        refreshToken.setExpiresAt(LocalDateTime.now().plus(refreshValidity, ChronoUnit.MILLIS));
+        refreshToken.setToken(token);
+        refreshToken.setUserId(userId);
+        refreshToken.setCreatedByIp(ip);
+        long expTime = jwtTokenService.getExpiration(token).getTime();
+        refreshToken.setExpiresAt(new Timestamp(expTime).toLocalDateTime());
 
-        return saveRefreshToken(refreshToken);
+        CompletableFuture.runAsync(() -> refreshTokenRepository.save(refreshToken));
+        return refreshToken;
     }
+
 
     @Override
     public RefreshToken saveRefreshToken(RefreshToken refreshToken) {
@@ -51,6 +53,10 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     public Optional<RefreshToken> findRefreshTokenByValue(String token) {
         return refreshTokenRepository.findByToken(token)
                 .filter(refreshToken -> jwtTokenService.isTokenValid(refreshToken.getToken()));
+    }
+
+    private Optional<RefreshToken> findRefreshTokenByUserId(Long userId) {
+        return refreshTokenRepository.findByUserId(userId);
     }
 
 
