@@ -99,4 +99,16 @@ public class RefreshTokenServiceTest {
         assertEquals(Optional.empty(), refreshTokenService.findRefreshTokenByValue("token"));
     }
 
+    @Test
+    public void findRefreshTokenByValue_ShouldReturnToken() {
+        RefreshToken refreshToken = mock(RefreshToken.class);
+        given(refreshToken.getToken()).willReturn("token");
+
+        given(refreshTokenRepository.findByToken(anyString())).willReturn(Optional.of(refreshToken));
+        given(jwtTokenService.isTokenValid(refreshToken.getToken())).willReturn(true);
+
+        RefreshToken token = refreshTokenService.findRefreshTokenByValue("token").orElse(null);
+        assertNotNull(token);
+    }
+
 }
