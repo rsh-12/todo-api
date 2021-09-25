@@ -88,4 +88,15 @@ public class RefreshTokenServiceTest {
         assertEquals(Optional.empty(), refreshTokenService.findRefreshTokenByValue("token"));
     }
 
+    @Test
+    public void findRefreshTokenByValue_InvalidToken_ShouldReturnEmpty() {
+        RefreshToken refreshToken = mock(RefreshToken.class);
+        given(refreshToken.getToken()).willReturn("token");
+
+        given(refreshTokenRepository.findByToken(anyString())).willReturn(Optional.of(refreshToken));
+        given(jwtTokenService.isTokenValid(refreshToken.getToken())).willReturn(false);
+
+        assertEquals(Optional.empty(), refreshTokenService.findRefreshTokenByValue("token"));
+    }
+
 }
