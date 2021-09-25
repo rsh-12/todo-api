@@ -126,6 +126,16 @@ public class JwtTokenServiceImpl implements JwtTokenService {
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
 
+    @Override
+    public Date getExpiration(String accessToken) {
+        return Jwts.parserBuilder()
+                .setSigningKey(getSecretKey())
+                .build()
+                .parseClaimsJws(accessToken)
+                .getBody()
+                .getExpiration();
+    }
+
     private Claims getClaimsBody(String accessToken) {
         return Jwts.parserBuilder()
                 .setSigningKey(getSecretKey())

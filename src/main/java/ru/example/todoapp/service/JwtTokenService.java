@@ -4,6 +4,7 @@ import org.springframework.security.core.Authentication;
 import ru.example.todoapp.domain.Role;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
 import java.util.Optional;
 import java.util.Set;
 
@@ -76,4 +77,6 @@ public interface JwtTokenService {
      * @see org.springframework.security.authentication.UsernamePasswordAuthenticationToken
      */
     Authentication getAuthentication(String accessToken);
+
+    Date getExpiration(String accessToken);
 }
