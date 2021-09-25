@@ -15,8 +15,17 @@ import ru.example.todoapp.entity.RefreshToken;
 import ru.example.todoapp.repository.RefreshTokenRepository;
 import ru.example.todoapp.service.impl.RefreshTokenServiceImpl;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.Date;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -33,9 +42,31 @@ public class RefreshTokenServiceTest {
     @Mock
     private TokenProperties tokenProperties;
 
+    @Mock
+    private JwtTokenService jwtTokenService;
+
     @BeforeEach
     public void setUp() {
         given(tokenProperties.getRefreshTokenValidity()).willReturn(86_400_000L);
+    }
+
+    // createRefreshToken
+    @Test
+    public void createRefreshToken_ShouldReturnToken() {
+        given(refreshTokenRepository.findByUserId(anyLong())).willReturn(Optional.empty());
+
+        String generatedToken = "someRefreshToken";
+        given(jwtTokenService.buildRefreshToken()).willReturn(generatedToken);
+        given(jwtTokenService.getExpiration(generatedToken))
+                .willReturn(Date.from(Instant.now().plus(1, ChronoUnit.DAYS)));
+
+        RefreshToken refreshToken = refreshTokenService.createRefreshToken(1L, "ip");
+        assertNotNull(refreshToken);
+
+        assertEquals(generatedToken, refreshToken.getToken());
+        assertEquals("ip", refreshToken.getCreatedByIp());
+        assertEquals(1L, refreshToken.getUserId());
+        assertTrue(refreshToken.getExpiresAt().isAfter(LocalDateTime.now()));
     }
 
     // saveRefreshToken
