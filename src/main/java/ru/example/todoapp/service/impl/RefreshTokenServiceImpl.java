@@ -43,7 +43,6 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
         return refreshToken;
     }
 
-
     @Override
     public RefreshToken saveRefreshToken(RefreshToken refreshToken) {
         return refreshTokenRepository.save(refreshToken);
@@ -58,6 +57,5 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     private Optional<RefreshToken> findRefreshTokenByUserId(Long userId) {
         return refreshTokenRepository.findByUserId(userId);
     }
-
 
 }
