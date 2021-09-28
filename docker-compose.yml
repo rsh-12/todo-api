@@ -10,7 +10,7 @@ services:
     image: postgres:11.4-alpine
     container_name: postgres
     ports:
-      - 5430:5432
+      - "5430:5432"
     volumes:
       - /datastore/pg_data:/var/lib/postgresql/data/pgdata
     environment:
@@ -27,8 +27,8 @@ services:
   todoapp:
     image: rsh12/todo:0.0.1-SNAPSHOT
     ports:
-      - 8080
-#     - 8080:8080
+      - "8080"
+    #     - 8080:8080
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/tododb
       SPRING_DATASOURCE_USERNAME: ${DB_USER}
@@ -47,8 +47,8 @@ services:
     image: rabbitmq:3-management-alpine
     container_name: rabbitmq
     ports:
-      - 5672:5672
-      - 15672:15672
+      - "5672:5672"
+      - "15672:15672"
     networks:
       backend:
         aliases:
@@ -56,38 +56,37 @@ services:
 
     # todo: add password-reset service
 
-    prometheus:
-      image: prom/prometheus
-      extra_hosts:
-        - "host.docker.internal:host-gateway"
-      container_name: todo-prometheus
-      volumes:
-        - ./prometheus:/etc/prometheus/
-      ports:
-        - 9090:9090
-      networks:
-        backend:
-          aliases:
-            - "prometheus"
-      depends_on:
-        - todoapp
-      restart: on-failure
+  prometheus:
+    image: prom/prometheus
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    container_name: todo-prometheus
+    volumes:
+      - ./prometheus:/etc/prometheus/
+    ports:
+      - "9090:9090"
+    networks:
+      backend:
+        aliases:
+          - "prometheus"
+    depends_on:
+      - todoapp
+    restart: on-failure
 
-    grafana:
-      image: grafana/grafana
-      container_name: todo-grafana
-      depends_on:
-        prometheus:
-          condition: service_started
-      volumes:
-        - ./grafana/:/etc/grafana/
-      ports:
-        - 3000:3000
-      networks:
-        backend:
-          aliases:
-            - "grafana"
-      restart: on-failure
+  grafana:
+    image: grafana/grafana
+    container_name: todo-grafana
+    depends_on:
+      - prometheus
+    volumes:
+      - ./grafana/:/etc/grafana/
+    ports:
+      - "3000:3000"
+    networks:
+      backend:
+        aliases:
+          - "grafana"
+    restart: on-failure
 
   web:
     image: nginx
@@ -97,8 +96,8 @@ services:
         aliases:
           - "nginx"
     ports:
-      - 8000:80 # because the 80th port on the local machine is already in use
-#     - 443:443 # ssl off by default
+      - "8000:80" # because the 80th port on the local machine is already in use
+    #     - 443:443 # ssl off by default
     depends_on:
       - todoapp
     volumes:
