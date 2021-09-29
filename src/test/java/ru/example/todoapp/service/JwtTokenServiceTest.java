@@ -160,4 +160,15 @@ public class JwtTokenServiceTest {
         assertNotNull(auth);
     }
 
+    // getExpiration
+    @Test
+    public void getExpiration_ShouldReturnDate() {
+        String accessToken = jwtTokenService
+                .buildAccessToken(1L, Set.of(Role.ADMIN, Role.USER));
+
+        Date expiration = jwtTokenService.getExpiration(accessToken);
+        assertNotNull(expiration);
+        assertTrue(expiration.after(new Date()));
+    }
+
 }
