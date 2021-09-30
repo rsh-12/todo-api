@@ -8,10 +8,13 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import ru.example.todoapp.entity.TodoSection;
 import ru.example.todoapp.facade.AuthUserFacade;
 import ru.example.todoapp.repository.TodoSectionRepository;
+import ru.example.todoapp.repository.projection.TodoSectionProjection;
 import ru.example.todoapp.service.impl.TodoSectionServiceImpl;
 
 import java.util.Optional;
@@ -55,6 +58,17 @@ public class TodoSectionServiceTest {
         TodoSection todoSection = sectionService.findSectionById(1L).orElse(null);
         assertNotNull(todoSection);
         assertEquals("Title", todoSection.getTitle());
+    }
+
+    // findSections
+    @Test
+    public void findSections_ShouldReturnEmptyPage() {
+        given(authUserFacade.getUserId()).willReturn(1L);
+        given(sectionRepository.findAllByUserIdProjection(1L, Pageable.unpaged()))
+                .willReturn(Page.empty());
+
+        Page<TodoSectionProjection> sections = sectionService.findSections(Pageable.unpaged());
+        assertTrue(sections.isEmpty());
     }
 
 }
