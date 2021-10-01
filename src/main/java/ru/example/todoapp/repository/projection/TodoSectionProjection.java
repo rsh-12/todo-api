@@ -11,6 +11,10 @@ import java.time.LocalDateTime;
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public record TodoSectionProjection(Long id, String title, LocalDateTime updatedAt, LocalDateTime createdAt) {
 
+    public static TodoSectionProjection withCurrentDateTime(Long id, String title) {
+        return new TodoSectionProjection(id, title, LocalDateTime.now(), LocalDateTime.now());
+    }
+
     public Long getId() {
         return id;
     }
