@@ -9,6 +9,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import ru.example.todoapp.entity.TodoSection;
@@ -17,9 +18,11 @@ import ru.example.todoapp.repository.TodoSectionRepository;
 import ru.example.todoapp.repository.projection.TodoSectionProjection;
 import ru.example.todoapp.service.impl.TodoSectionServiceImpl;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -69,6 +72,21 @@ public class TodoSectionServiceTest {
 
         Page<TodoSectionProjection> sections = sectionService.findSections(Pageable.unpaged());
         assertTrue(sections.isEmpty());
+    }
+
+    @Test
+    public void findSections_ShouldReturnPage() {
+        var mockSection1 = TodoSectionProjection.withCurrentDateTime(1L, "section1");
+        var mockSection2 = TodoSectionProjection.withCurrentDateTime(2L, "section2");
+        Page<TodoSectionProjection> page = new PageImpl<>(List.of(mockSection1, mockSection2));
+
+        given(authUserFacade.getUserId()).willReturn(1L);
+        given(sectionRepository.findAllByUserIdProjection(1L, Pageable.unpaged()))
+                .willReturn(page);
+
+        Page<TodoSectionProjection> sections = sectionService.findSections(Pageable.unpaged());
+        assertFalse(sections.isEmpty());
+        assertEquals(2, sections.getContent().size());
     }
 
 }
