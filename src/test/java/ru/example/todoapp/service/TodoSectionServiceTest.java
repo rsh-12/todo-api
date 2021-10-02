@@ -13,6 +13,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import ru.example.todoapp.entity.TodoSection;
+import ru.example.todoapp.exception.CustomException;
 import ru.example.todoapp.facade.AuthUserFacade;
 import ru.example.todoapp.repository.TodoSectionRepository;
 import ru.example.todoapp.repository.projection.TodoSectionProjection;
@@ -24,6 +25,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
@@ -87,6 +89,13 @@ public class TodoSectionServiceTest {
         Page<TodoSectionProjection> sections = sectionService.findSections(Pageable.unpaged());
         assertFalse(sections.isEmpty());
         assertEquals(2, sections.getContent().size());
+    }
+
+    // deleteSectionById
+    @Test
+    public void deleteSectionById_SectionNotFound_ShouldThrowException() {
+        given(sectionRepository.findById(anyLong())).willReturn(Optional.empty());
+        assertThrows(CustomException.class, () -> sectionService.deleteSectionById(1L));
     }
 
 }
