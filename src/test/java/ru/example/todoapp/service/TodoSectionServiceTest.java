@@ -12,13 +12,16 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import ru.example.todoapp.domain.Role;
 import ru.example.todoapp.entity.TodoSection;
+import ru.example.todoapp.entity.User;
 import ru.example.todoapp.exception.CustomException;
 import ru.example.todoapp.facade.AuthUserFacade;
 import ru.example.todoapp.repository.TodoSectionRepository;
 import ru.example.todoapp.repository.projection.TodoSectionProjection;
 import ru.example.todoapp.service.impl.TodoSectionServiceImpl;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -103,6 +106,23 @@ public class TodoSectionServiceTest {
         TodoSection section = mock(TodoSection.class);
         given(sectionRepository.findById(anyLong())).willReturn(Optional.of(section));
         given(section.getUser()).willReturn(null);
+        assertThrows(CustomException.class, () -> sectionService.deleteSectionById(1L));
+    }
+
+    @Test
+    public void deleteSectionById_AccessDenied_ShouldThrowException() {
+        TodoSection section = mock(TodoSection.class);
+        User user = mock(User.class);
+        User candidate = mock(User.class);
+
+        given(user.getId()).willReturn(1L);
+        given(user.getRoles()).willReturn(Collections.singleton(Role.USER));
+        given(section.getUser()).willReturn(user);
+
+        given(candidate.getId()).willReturn(2L);
+        given(authUserFacade.getLoggedUser()).willReturn(candidate);
+        given(sectionRepository.findById(anyLong())).willReturn(Optional.of(section));
+
         assertThrows(CustomException.class, () -> sectionService.deleteSectionById(1L));
     }
 
