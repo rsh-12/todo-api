@@ -98,4 +98,12 @@ public class TodoSectionServiceTest {
         assertThrows(CustomException.class, () -> sectionService.deleteSectionById(1L));
     }
 
+    @Test
+    public void deleteSectionById_UserNotFound_ShouldThrowException() {
+        TodoSection section = mock(TodoSection.class);
+        given(sectionRepository.findById(anyLong())).willReturn(Optional.of(section));
+        given(section.getUser()).willReturn(null);
+        assertThrows(CustomException.class, () -> sectionService.deleteSectionById(1L));
+    }
+
 }
