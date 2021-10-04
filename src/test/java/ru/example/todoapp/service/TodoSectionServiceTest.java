@@ -13,6 +13,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import ru.example.todoapp.domain.Role;
+import ru.example.todoapp.domain.request.TodoSectionRequest;
 import ru.example.todoapp.entity.TodoSection;
 import ru.example.todoapp.entity.User;
 import ru.example.todoapp.exception.CustomException;
@@ -31,6 +32,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
@@ -146,6 +148,13 @@ public class TodoSectionServiceTest {
         doNothing().when(sectionRepository).deleteById(anyLong());
 
         assertDoesNotThrow(() -> sectionService.deleteSectionById(1L));
+    }
+
+    @Test
+    public void createSection_ShouldReturnSavedSection() {
+        given(authUserFacade.getLoggedUser()).willReturn(mock(User.class));
+        given(sectionRepository.save(any(TodoSection.class))).willReturn(mock(TodoSection.class));
+        assertDoesNotThrow(() -> sectionService.createSection(new TodoSectionRequest("important")));
     }
 
 }
