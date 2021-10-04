@@ -25,6 +25,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -32,6 +33,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 
 @ExtendWith(SpringExtension.class)
@@ -124,6 +126,26 @@ public class TodoSectionServiceTest {
         given(sectionRepository.findById(anyLong())).willReturn(Optional.of(section));
 
         assertThrows(CustomException.class, () -> sectionService.deleteSectionById(1L));
+    }
+
+    @Test
+    public void deleteSectionById() {
+        TodoSection section = mock(TodoSection.class);
+
+        User user = new User();
+        user.setId(1L);
+        user.setRoles(Collections.singleton(Role.USER));
+
+        User loggedUser = new User();
+        loggedUser.setId(1L);
+        loggedUser.setRoles(Collections.singleton(Role.USER));
+
+        given(sectionRepository.findById(anyLong())).willReturn(Optional.of(section));
+        given(section.getUser()).willReturn(user);
+        given(authUserFacade.getLoggedUser()).willReturn(loggedUser);
+        doNothing().when(sectionRepository).deleteById(anyLong());
+
+        assertDoesNotThrow(() -> sectionService.deleteSectionById(1L));
     }
 
 }
