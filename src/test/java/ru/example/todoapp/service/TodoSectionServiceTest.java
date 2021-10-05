@@ -165,4 +165,10 @@ public class TodoSectionServiceTest {
         assertEquals(Optional.empty(), sectionService.updateSection(1L, new TodoSectionRequest("Title")));
     }
 
+    @Test
+    public void updateSection_UserNotFound_ShouldReturnEmpty() {
+        given(sectionRepository.findById(anyLong())).willReturn(Optional.of(mock(TodoSection.class)));
+        assertEquals(Optional.empty(), sectionService.updateSection(1L, new TodoSectionRequest("Title")));
+    }
+
 }
