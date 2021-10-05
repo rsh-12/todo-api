@@ -150,11 +150,19 @@ public class TodoSectionServiceTest {
         assertDoesNotThrow(() -> sectionService.deleteSectionById(1L));
     }
 
+    // createSection
     @Test
     public void createSection_ShouldReturnSavedSection() {
         given(authUserFacade.getLoggedUser()).willReturn(mock(User.class));
         given(sectionRepository.save(any(TodoSection.class))).willReturn(mock(TodoSection.class));
         assertDoesNotThrow(() -> sectionService.createSection(new TodoSectionRequest("important")));
+    }
+
+    // updateSection
+    @Test
+    public void updateSection_SectionNotFound_ShouldReturnEmpty() {
+        given(sectionRepository.findById(anyLong())).willReturn(Optional.empty());
+        assertEquals(Optional.empty(), sectionService.updateSection(1L, new TodoSectionRequest("Title")));
     }
 
 }
