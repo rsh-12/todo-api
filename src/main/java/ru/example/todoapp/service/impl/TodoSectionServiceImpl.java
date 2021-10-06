@@ -13,13 +13,13 @@ import ru.example.todoapp.domain.request.TodoSectionRequest;
 import ru.example.todoapp.dto.TodoSectionDto;
 import ru.example.todoapp.entity.TodoSection;
 import ru.example.todoapp.entity.TodoTask;
-import ru.example.todoapp.util.filters.FilterByOperation;
 import ru.example.todoapp.exception.CustomException;
 import ru.example.todoapp.facade.AuthUserFacade;
 import ru.example.todoapp.repository.TodoSectionRepository;
 import ru.example.todoapp.repository.projection.TodoSectionProjection;
 import ru.example.todoapp.service.TodoSectionService;
 import ru.example.todoapp.util.Combinators;
+import ru.example.todoapp.util.filters.FilterByOperation;
 
 import java.util.List;
 import java.util.Optional;
@@ -76,16 +76,16 @@ public class TodoSectionServiceImpl implements TodoSectionService {
     // update section title
     @Override
     public Optional<TodoSection> updateSection(Long sectionId, TodoSectionRequest sectionRequest) {
-        Optional<TodoSection> section = todoSectionRepository.findById(sectionId);
-        return section.map(TodoSection::getUser)
-                .filter(Combinators.checkUserAccess(authUserFacade.getLoggedUser()))
-                .map(user -> updateTitleAndUser(sectionRequest, section.get()));
-    }
+        Optional<TodoSection> sectionOptional = todoSectionRepository.findById(sectionId);
 
-    private TodoSection updateTitleAndUser(TodoSectionRequest sectionRequest, TodoSection section) {
-        section.setTitle(sectionRequest.getTitle());
-        section.setUser(authUserFacade.getLoggedUser());
-        return todoSectionRepository.save(section);
+        return sectionOptional.map(TodoSection::getUser)
+                .filter(Combinators.checkUserAccess(authUserFacade.getLoggedUser()))
+                .map(user -> {
+                    TodoSection section = sectionOptional.get();
+                    section.setUser(user);
+                    section.setTitle(sectionRequest.getTitle());
+                    return todoSectionRepository.save(section);
+                });
     }
 
     // add to or remove from the task section
