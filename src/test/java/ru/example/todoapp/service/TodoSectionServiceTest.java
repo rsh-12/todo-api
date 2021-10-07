@@ -178,7 +178,7 @@ public class TodoSectionServiceTest {
         user.setRoles(Collections.singleton(Role.USER));
 
         User loggedUser = new User();
-        loggedUser.setId(1L);
+        loggedUser.setId(2L);
         loggedUser.setRoles(Collections.singleton(Role.USER));
 
         TodoSection section = new TodoSection();
@@ -188,10 +188,8 @@ public class TodoSectionServiceTest {
         given(sectionRepository.findById(anyLong())).willReturn(Optional.of(section));
         given(sectionRepository.save(any(TodoSection.class))).willReturn(section);
 
-        TodoSection todoSection = sectionService.updateSection(1L, new TodoSectionRequest("Title"))
-                    .orElse(null);
-        assertNotNull(todoSection);
-        assertEquals(section, todoSection);
+        Optional<TodoSection> sectionOptional = sectionService.updateSection(1L, new TodoSectionRequest("Title"));
+        assertEquals(Optional.empty(), sectionOptional);
     }
 
 }
