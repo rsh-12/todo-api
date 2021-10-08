@@ -15,12 +15,14 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import ru.example.todoapp.domain.Role;
 import ru.example.todoapp.domain.request.TodoSectionRequest;
 import ru.example.todoapp.entity.TodoSection;
+import ru.example.todoapp.entity.TodoTask;
 import ru.example.todoapp.entity.User;
 import ru.example.todoapp.exception.CustomException;
 import ru.example.todoapp.facade.AuthUserFacade;
 import ru.example.todoapp.repository.TodoSectionRepository;
 import ru.example.todoapp.repository.projection.TodoSectionProjection;
 import ru.example.todoapp.service.impl.TodoSectionServiceImpl;
+import ru.example.todoapp.util.filters.FilterByOperation;
 
 import java.util.Collections;
 import java.util.List;
@@ -30,6 +32,7 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -214,6 +217,19 @@ public class TodoSectionServiceTest {
 
         assertNotNull(todoSection);
         assertEquals(section, todoSection);
+    }
+
+    // addTasksToOrRemoveFromSection
+    @Test
+    public void addTasksToOrRemoveFromSection_ShouldDoNothing() {
+        var task = new TodoTask("Title");
+        assertNull(task.getTodoSection());
+
+        given(sectionRepository.findByUserIdAndId(anyLong(), anyLong())).willReturn(Optional.empty());
+        sectionService.addTasksToOrRemoveFromSection(1L, 1L,
+                List.of(task), FilterByOperation.MOVE);
+
+        assertNull(task.getTodoSection());
     }
 
 }
