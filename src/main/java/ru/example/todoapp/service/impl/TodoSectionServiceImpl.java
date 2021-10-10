@@ -16,7 +16,6 @@ import ru.example.todoapp.entity.TodoTask;
 import ru.example.todoapp.exception.CustomException;
 import ru.example.todoapp.facade.AuthUserFacade;
 import ru.example.todoapp.repository.TodoSectionRepository;
-import ru.example.todoapp.repository.projection.TodoSectionProjection;
 import ru.example.todoapp.service.TodoSectionService;
 import ru.example.todoapp.util.Combinators;
 import ru.example.todoapp.util.filters.FilterByOperation;
@@ -49,9 +48,9 @@ public class TodoSectionServiceImpl implements TodoSectionService {
 
     // get all sections
     @Override
-    public Page<TodoSectionProjection> findSections(Pageable pageable) {
+    public Page<TodoSection> findSections(Pageable pageable) {
         Long userId = authUserFacade.getUserId();
-        return todoSectionRepository.findAllByUserIdProjection(userId, pageable);
+        return todoSectionRepository.findAllByUserId(userId, pageable);
     }
 
     // delete section by id
@@ -98,14 +97,6 @@ public class TodoSectionServiceImpl implements TodoSectionService {
                     else if (flag == REMOVE) section.removeTodoTasks(tasks);
                     todoSectionRepository.save(section);
                 });
-    }
-
-    @Override
-    public TodoSectionDto mapToSectionDto(TodoSectionProjection projection) {
-        return new TodoSectionDto(projection.id(),
-                projection.title(),
-                projection.updatedAt(),
-                projection.createdAt());
     }
 
     @Override

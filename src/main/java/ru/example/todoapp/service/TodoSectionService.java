@@ -8,7 +8,6 @@ import ru.example.todoapp.entity.TodoSection;
 import ru.example.todoapp.entity.TodoTask;
 import ru.example.todoapp.entity.User;
 import ru.example.todoapp.util.filters.FilterByOperation;
-import ru.example.todoapp.repository.projection.TodoSectionProjection;
 
 import java.util.List;
 import java.util.Optional;
@@ -30,15 +29,7 @@ public interface TodoSectionService {
      */
     Optional<TodoSection> findSectionById(Long sectionId);
 
-    /**
-     * Finds specific fields of the TodoSection by user id:
-     * id, title, createdAt, updatedAt.
-     *
-     * @return the TodoSectionProjection list
-     * @see TodoSectionProjection
-     * @see TodoSection
-     */
-    Page<TodoSectionProjection> findSections(Pageable pageable);
+    Page<TodoSection> findSections(Pageable pageable);
 
     /**
      * Deletes the TodoSection by id. Checks if the Principal
@@ -90,8 +81,6 @@ public interface TodoSectionService {
      * @see TodoSection
      */
     void addTasksToOrRemoveFromSection(Long userId, Long sectionId, List<TodoTask> tasks, FilterByOperation flag);
-
-    TodoSectionDto mapToSectionDto(TodoSectionProjection projection);
 
     TodoSectionDto mapToSectionDto(TodoSection section);
 
