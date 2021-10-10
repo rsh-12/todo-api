@@ -112,23 +112,27 @@ public class TodoSection {
     }
 
     public void setTodoTasks(List<TodoTask> todoTasks) {
-        todoTasks.forEach(task -> task.setTodoSection(this));
+        if (todoTasks != null) {
+            todoTasks.forEach(task -> task.setTodoSection(this));
+        }
     }
 
     public void removeTodoTasks(List<TodoTask> todoTasks) {
-        todoTasks.forEach(task -> task.setTodoSection(null));
+        if (todoTasks != null) {
+            todoTasks.forEach(task -> task.setTodoSection(null));
+        }
     }
 
-    public void addTask(TodoTask task) {
-        if (task == null) throw new NullPointerException("Can't add null Task");
-        getTodoTasks().add(task);
+    public TodoSection addTodoTask(TodoTask task) {
+        this.todoTasks.add(task);
         task.setTodoSection(this);
+        return this;
     }
 
-    public void removeTask(TodoTask task) {
-        if (task == null) throw new NullPointerException("Can't remove null task");
-        getTodoTasks().remove(task);
+    public TodoSection removeTodoTask(TodoTask task) {
+        this.todoTasks.remove(task);
         task.setTodoSection(null);
+        return this;
     }
 
     public User getUser() {
