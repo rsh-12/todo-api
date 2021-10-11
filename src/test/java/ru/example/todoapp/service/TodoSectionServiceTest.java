@@ -245,4 +245,19 @@ public class TodoSectionServiceTest {
         assertEquals(section.getTitle(), task.getTodoSection().getTitle());
     }
 
+    @Test
+    public void addTasksToOrRemoveFromSection_ShouldRemoveTasks() {
+        var task = new TodoTask("Title");
+        TodoSection section = new TodoSection().addTodoTask(task);
+
+        assertEquals("Title", section.getTodoTasks().get(0).getTitle());
+        assertNotNull(task.getTodoSection());
+
+        given(sectionRepository.findByUserIdAndId(anyLong(), anyLong())).willReturn(Optional.of(section));
+        sectionService.addTasksToOrRemoveFromSection(1L, 1L,
+                List.of(task), FilterByOperation.REMOVE);
+
+        assertNull(task.getTodoSection());
+    }
+
 }
