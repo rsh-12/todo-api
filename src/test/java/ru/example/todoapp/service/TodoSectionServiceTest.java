@@ -20,7 +20,6 @@ import ru.example.todoapp.entity.User;
 import ru.example.todoapp.exception.CustomException;
 import ru.example.todoapp.facade.AuthUserFacade;
 import ru.example.todoapp.repository.TodoSectionRepository;
-import ru.example.todoapp.repository.projection.TodoSectionProjection;
 import ru.example.todoapp.service.impl.TodoSectionServiceImpl;
 import ru.example.todoapp.util.filters.FilterByOperation;
 
@@ -79,24 +78,24 @@ public class TodoSectionServiceTest {
     @Test
     public void findSections_ShouldReturnEmptyPage() {
         given(authUserFacade.getUserId()).willReturn(1L);
-        given(sectionRepository.findAllByUserIdProjection(1L, Pageable.unpaged()))
+        given(sectionRepository.findAllByUserId(1L, Pageable.unpaged()))
                 .willReturn(Page.empty());
 
-        Page<TodoSectionProjection> sections = sectionService.findSections(Pageable.unpaged());
+        Page<TodoSection> sections = sectionService.findSections(Pageable.unpaged());
         assertTrue(sections.isEmpty());
     }
 
     @Test
     public void findSections_ShouldReturnPage() {
-        var mockSection1 = TodoSectionProjection.withCurrentDateTime(1L, "section1");
-        var mockSection2 = TodoSectionProjection.withCurrentDateTime(2L, "section2");
-        Page<TodoSectionProjection> page = new PageImpl<>(List.of(mockSection1, mockSection2));
+        var mockSection1 = new TodoSection(1L, "section1");
+        var mockSection2 = new TodoSection(2L, "section2");
+        Page<TodoSection> page = new PageImpl<>(List.of(mockSection1, mockSection2));
 
         given(authUserFacade.getUserId()).willReturn(1L);
-        given(sectionRepository.findAllByUserIdProjection(1L, Pageable.unpaged()))
+        given(sectionRepository.findAllByUserId(1L, Pageable.unpaged()))
                 .willReturn(page);
 
-        Page<TodoSectionProjection> sections = sectionService.findSections(Pageable.unpaged());
+        Page<TodoSection> sections = sectionService.findSections(Pageable.unpaged());
         assertFalse(sections.isEmpty());
         assertEquals(2, sections.getContent().size());
     }
