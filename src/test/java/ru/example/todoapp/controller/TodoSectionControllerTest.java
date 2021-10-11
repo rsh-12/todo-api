@@ -15,7 +15,6 @@ import ru.example.todoapp.dto.TodoSectionDto;
 import ru.example.todoapp.entity.TodoSection;
 import ru.example.todoapp.exception.CustomException;
 import ru.example.todoapp.facade.TasksFacade;
-import ru.example.todoapp.repository.projection.TodoSectionProjection;
 import ru.example.todoapp.service.impl.TodoSectionServiceImpl;
 
 import java.time.LocalDateTime;
@@ -61,19 +60,19 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
     @Test
     @WithUserDetails(ADMIN)
     public void getSections_ShouldReturnListOfSections() throws Exception {
-        var section1 = new TodoSectionProjection(1L, "section1", LocalDateTime.now(), LocalDateTime.now());
-        var section2 = new TodoSectionProjection(2L, "section2", LocalDateTime.now(), LocalDateTime.now());
-        Page<TodoSectionProjection> page = new PageImpl<>(List.of(section1, section2));
+        var section1 = new TodoSection(1L, "section1");
+        var section2 = new TodoSection(2L, "section2");
+        Page<TodoSection> page = new PageImpl<>(List.of(section1, section2));
 
         var sectionDto1 = new TodoSectionDto(1L, "section1", LocalDateTime.now(), LocalDateTime.now());
         var sectionDto2 = new TodoSectionDto(2L, "section2", LocalDateTime.now(), LocalDateTime.now());
 
         given(sectionService.findSections(any())).willReturn(page);
-        given(sectionService.mapToSectionDto(any(TodoSectionProjection.class)))
+        given(sectionService.mapToSectionDto(any(TodoSection.class)))
                 .willReturn(sectionDto1, sectionDto2);
 
         mvc.perform(get(API_SECTIONS)
-                .contentType(MediaType.APPLICATION_JSON))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("_embedded.sections[0].title", is("section1")))
                 .andExpect(jsonPath("_embedded.sections[1].title", is("section2")))
@@ -83,12 +82,12 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
     @Test
     @WithUserDetails(ADMIN)
     public void getSections_ShouldReturnEmptyList() throws Exception {
-        Page<TodoSectionProjection> resultPage = new PageImpl<>(Collections.emptyList());
+        Page<TodoSection> resultPage = new PageImpl<>(Collections.emptyList());
         given(sectionService.findSections(any()))
                 .willReturn(resultPage);
 
         String response = mvc.perform(get(API_SECTIONS)
-                .contentType(MediaType.APPLICATION_JSON))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse()
@@ -121,7 +120,7 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
         given(sectionService.findSectionById(anyLong())).willReturn(Optional.empty());
 
         mvc.perform(get(API_SECTIONS + 1)
-                .contentType(MediaType.APPLICATION_JSON))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isNotFound());
     }
@@ -134,7 +133,7 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
 
         // delete by id: returns 204 NO CONTENT
         mvc.perform(delete(API_SECTIONS + 1)
-                .contentType(MediaType.APPLICATION_JSON))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent())
                 .andDo(print());
 
@@ -149,7 +148,7 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
                 .when(sectionService).deleteSectionById(anyLong());
 
         mvc.perform(delete(API_SECTIONS + 1)
-                .contentType(MediaType.APPLICATION_JSON))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("error", containsStringIgnoringCase("not found")))
                 .andDo(print());
@@ -164,7 +163,7 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
                 .when(sectionService).deleteSectionById(anyLong());
 
         mvc.perform(delete(API_SECTIONS + 1)
-                .contentType(MediaType.APPLICATION_JSON))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isForbidden())
                 .andExpect(jsonPath("error", containsStringIgnoringCase("Forbidden")))
                 .andDo(print());
@@ -181,8 +180,8 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
 
         String json = objectMapper.writeValueAsString(new TodoSectionRequest("section"));
         mvc.perform(post(API_SECTIONS)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(json))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
                 .andExpect(status().isCreated())
                 .andDo(print());
 
@@ -193,7 +192,7 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
     @WithUserDetails(ADMIN)
     public void createSection_ShouldReturnBadRequest() throws Exception {
         mvc.perform(post(API_SECTIONS)
-                .contentType(MediaType.APPLICATION_JSON))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andDo(print());
 
@@ -213,8 +212,8 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
 
         String body = "{\"title\": \"Title\"}";
         mvc.perform(put(API_SECTIONS + 1)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(body))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(body))
                 .andExpect(status().isOk())
                 .andDo(print());
 
@@ -229,8 +228,8 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
 
         String body = "{\"title\": \"Title\"}";
         mvc.perform(put(API_SECTIONS + 1)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(body)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(body)))
                 .andExpect(status().isNotFound())
                 .andDo(print());
 
@@ -241,7 +240,7 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
     @WithUserDetails(USER)
     public void updateSection_ShouldReturnBadRequest() throws Exception {
         mvc.perform(put(API_SECTIONS + 1)
-                .contentType(MediaType.APPLICATION_JSON))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andDo(print());
 
@@ -258,9 +257,9 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
         body.put("tasks", new Integer[]{1, 2});
 
         mvc.perform(post(API_SECTIONS + "1/tasks")
-                .contentType(MediaType.APPLICATION_JSON)
-                .param("do", "move")
-                .content(objectMapper.writeValueAsString(body)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .param("do", "move")
+                        .content(objectMapper.writeValueAsString(body)))
                 .andExpect(status().isOk())
                 .andDo(print());
 
@@ -274,8 +273,8 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
                 .addTasksToOrRemoveFromSection(anyLong(), anySet(), any());
 
         mvc.perform(post(API_SECTIONS + "1/tasks")
-                .contentType(MediaType.APPLICATION_JSON)
-                .param("do", "move"))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .param("do", "move"))
                 .andExpect(status().isBadRequest())
                 .andDo(print());
 
@@ -292,8 +291,8 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
         body.put("tasks", new Integer[]{1, 2});
 
         mvc.perform(post(API_SECTIONS + "1/tasks")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(body)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(body)))
                 .andExpect(status().isBadRequest())
                 .andDo(print());
 
