@@ -128,12 +128,7 @@ public class JwtTokenServiceImpl implements JwtTokenService {
 
     @Override
     public Date getExpiration(String accessToken) {
-        return Jwts.parserBuilder()
-                .setSigningKey(getSecretKey())
-                .build()
-                .parseClaimsJws(accessToken)
-                .getBody()
-                .getExpiration();
+        return getClaimsBody(accessToken).getExpiration();
     }
 
     private Claims getClaimsBody(String accessToken) {
