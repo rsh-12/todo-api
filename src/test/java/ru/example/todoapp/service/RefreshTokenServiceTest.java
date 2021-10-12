@@ -61,7 +61,7 @@ public class RefreshTokenServiceTest {
         given(jwtTokenService.getExpiration(generatedToken))
                 .willReturn(Date.from(Instant.now().plus(1, ChronoUnit.DAYS)));
 
-        RefreshToken refreshToken = refreshTokenService.createRefreshToken(1L, "ip");
+        RefreshToken refreshToken = refreshTokenService.create(1L, "ip");
         assertNotNull(refreshToken);
 
         assertEquals(generatedToken, refreshToken.getToken());

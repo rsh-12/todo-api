@@ -85,7 +85,7 @@ public class AuthServiceTest {
         RefreshToken refreshToken = mock(RefreshToken.class);
 
         // tokens
-        given(refreshTokenService.createRefreshToken(anyLong(), anyString())).willReturn(refreshToken);
+        given(refreshTokenService.create(anyLong(), anyString())).willReturn(refreshToken);
         given(refreshToken.getToken()).willReturn("refreshToken");
         given(jwtTokenService.buildAccessToken(anyLong(), anySet())).willReturn("accessToken");
 
@@ -166,7 +166,7 @@ public class AuthServiceTest {
 
         given(refreshTokenService.findRefreshTokenByValue(anyString()))
                 .willReturn(Optional.of(refreshToken));
-        given(refreshTokenService.createRefreshToken(anyLong(), anyString()))
+        given(refreshTokenService.create(anyLong(), anyString()))
                 .willReturn(refreshToken);
         given(jwtTokenService.buildAccessToken(anyLong(), anySet()))
                 .willReturn("someAccessToken");

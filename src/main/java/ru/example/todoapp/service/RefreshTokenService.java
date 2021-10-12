@@ -20,7 +20,7 @@ public interface RefreshTokenService {
      * @return the refresh token value as a string
      * @see RefreshToken
      */
-    RefreshToken createRefreshToken(Long userId, String ip);
+    RefreshToken create(Long userId, String ip);
 
     /**
      * Saves the refresh token to the database.

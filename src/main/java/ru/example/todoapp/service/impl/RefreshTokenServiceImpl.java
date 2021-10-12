@@ -28,7 +28,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     }
 
     @Override
-    public RefreshToken createRefreshToken(Long userId, String ip) {
+    public RefreshToken create(Long userId, String ip) {
         String token = jwtTokenService.buildRefreshToken();
         RefreshToken refreshToken = findRefreshTokenByUserId(userId)
                 .orElseGet(RefreshToken::new);
