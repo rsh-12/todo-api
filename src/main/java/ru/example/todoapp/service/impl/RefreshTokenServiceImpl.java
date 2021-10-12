@@ -48,7 +48,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     }
 
     @Override
-    public Optional<RefreshToken> findRefreshTokenByValue(String token) {
+    public Optional<RefreshToken> findOne(String token) {
         return refreshTokenRepository.findByToken(token)
                 .filter(refreshToken -> jwtTokenService.isTokenValid(refreshToken.getToken()));
     }

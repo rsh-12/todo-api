@@ -85,7 +85,7 @@ public class RefreshTokenServiceTest {
     @Test
     public void findRefreshTokenByValue_ShouldReturnEmpty() {
         given(refreshTokenRepository.findByToken(anyString())).willReturn(Optional.empty());
-        assertEquals(Optional.empty(), refreshTokenService.findRefreshTokenByValue("token"));
+        assertEquals(Optional.empty(), refreshTokenService.findOne("token"));
     }
 
     @Test
@@ -96,7 +96,7 @@ public class RefreshTokenServiceTest {
         given(refreshTokenRepository.findByToken(anyString())).willReturn(Optional.of(refreshToken));
         given(jwtTokenService.isTokenValid(refreshToken.getToken())).willReturn(false);
 
-        assertEquals(Optional.empty(), refreshTokenService.findRefreshTokenByValue("token"));
+        assertEquals(Optional.empty(), refreshTokenService.findOne("token"));
     }
 
     @Test
@@ -107,7 +107,7 @@ public class RefreshTokenServiceTest {
         given(refreshTokenRepository.findByToken(anyString())).willReturn(Optional.of(refreshToken));
         given(jwtTokenService.isTokenValid(refreshToken.getToken())).willReturn(true);
 
-        RefreshToken token = refreshTokenService.findRefreshTokenByValue("token").orElse(null);
+        RefreshToken token = refreshTokenService.findOne("token").orElse(null);
         assertNotNull(token);
     }
 

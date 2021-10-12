@@ -77,7 +77,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public Optional<Map<String, String>> generateNewTokens(String refreshToken, String ip) {
-        return refreshTokenService.findRefreshTokenByValue(refreshToken)
+        return refreshTokenService.findOne(refreshToken)
                 .map(RefreshToken::getUserId)
                 .flatMap(userRepository::findById)
                 .map(user -> buildResponseBody(user, ip));

@@ -135,21 +135,21 @@ public class AuthServiceTest {
     // generateNewTokens
     @Test
     public void generateNewTokens_RefreshTokenNotFound_ShouldReturnEmpty() {
-        given(refreshTokenService.findRefreshTokenByValue(anyString()))
+        given(refreshTokenService.findOne(anyString()))
                 .willReturn(Optional.empty());
         assertFalse(authService.generateNewTokens("someToken", "someIP").isPresent());
     }
 
     @Test
     public void generateNewTokens_UserIdNotFound_ShouldReturnEmpty() {
-        given(refreshTokenService.findRefreshTokenByValue(anyString()))
+        given(refreshTokenService.findOne(anyString()))
                 .willReturn(Optional.of(new RefreshToken()));
         assertFalse(authService.generateNewTokens("someToken", "someIP").isPresent());
     }
 
     @Test
     public void generateNewTokens_UserNotFound_ShouldReturnEmpty() {
-        given(refreshTokenService.findRefreshTokenByValue(anyString()))
+        given(refreshTokenService.findOne(anyString()))
                 .willReturn(Optional.of(new RefreshToken("token", 1L, "IP")));
         assertFalse(authService.generateNewTokens("someToken", "someIP").isPresent());
     }
@@ -164,7 +164,7 @@ public class AuthServiceTest {
         given(refreshToken.getUserId()).willReturn(1L);
         given(refreshToken.getToken()).willReturn("someRefreshToken");
 
-        given(refreshTokenService.findRefreshTokenByValue(anyString()))
+        given(refreshTokenService.findOne(anyString()))
                 .willReturn(Optional.of(refreshToken));
         given(refreshTokenService.create(anyLong(), anyString()))
                 .willReturn(refreshToken);

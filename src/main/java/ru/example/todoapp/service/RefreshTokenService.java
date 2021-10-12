@@ -31,6 +31,6 @@ public interface RefreshTokenService {
      */
     RefreshToken save(RefreshToken refreshToken);
 
-    Optional<RefreshToken> findRefreshTokenByValue(String refreshToken);
+    Optional<RefreshToken> findOne(String refreshToken);
 
 }
