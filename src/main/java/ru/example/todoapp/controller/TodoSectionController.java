@@ -72,11 +72,9 @@ public class TodoSectionController {
     @ApiOperation(value = "Find section", notes = "Find the Section by ID")
     @GetMapping(value = "/{id}", produces = "application/json")
     public ResponseEntity<?> getSection(@PathVariable("id") Long sectionId) {
-        var optionalEntity = todoSectionService.findSectionById(sectionId)
+        return ResponseEntity.of(todoSectionService.findOne(sectionId)
                 .map(todoSectionService::mapToSectionDto)
-                .map(assembler::toModel);
-
-        return ResponseEntity.of(optionalEntity);
+                .map(assembler::toModel));
     }
 
     // delete section by id
