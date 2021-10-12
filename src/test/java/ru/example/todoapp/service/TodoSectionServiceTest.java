@@ -57,7 +57,7 @@ public class TodoSectionServiceTest {
     public void findSectionById_ShouldReturnEmpty() {
         given(authUserFacade.getUserId()).willReturn(1L);
         given(sectionRepository.findByUserIdAndId(anyLong(), anyLong())).willReturn(Optional.empty());
-        assertTrue(sectionService.findSectionById(1L).isEmpty());
+        assertTrue(sectionService.findOne(1L).isEmpty());
     }
 
     @Test
@@ -69,7 +69,7 @@ public class TodoSectionServiceTest {
         given(sectionRepository.findByUserIdAndId(anyLong(), anyLong()))
                 .willReturn(Optional.of(section));
 
-        TodoSection todoSection = sectionService.findSectionById(1L).orElse(null);
+        TodoSection todoSection = sectionService.findOne(1L).orElse(null);
         assertNotNull(todoSection);
         assertEquals("Title", todoSection.getTitle());
     }

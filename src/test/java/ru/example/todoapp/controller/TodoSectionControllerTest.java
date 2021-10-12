@@ -102,7 +102,7 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
     @WithUserDetails(ADMIN)
     public void getSection_ShouldReturnSectionById() throws Exception {
         TodoSection section = mock(TodoSection.class);
-        given(sectionService.findSectionById(1L)).willReturn(Optional.of(section));
+        given(sectionService.findOne(1L)).willReturn(Optional.of(section));
 
         TodoSectionDto sectionDto = new TodoSectionDto(1L, "Important", LocalDateTime.now(), LocalDateTime.now());
         given(sectionService.mapToSectionDto(any(TodoSection.class))).willReturn(sectionDto);
@@ -117,7 +117,7 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
     @Test
     @WithUserDetails(USER)
     public void getSection_ShouldReturnBadRequest() throws Exception {
-        given(sectionService.findSectionById(anyLong())).willReturn(Optional.empty());
+        given(sectionService.findOne(anyLong())).willReturn(Optional.empty());
 
         mvc.perform(get(API_SECTIONS + 1)
                         .contentType(MediaType.APPLICATION_JSON))

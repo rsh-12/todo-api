@@ -22,12 +22,12 @@ public interface TodoSectionService {
     /**
      * Finds a section by id.
      *
-     * @param sectionId the TodoSection id
+     * @param id the TodoSection id
      * @return the TodoSection
      * @throws ru.example.todoapp.exception.CustomException if the TodoSection is not found
      * @see TodoSection
      */
-    Optional<TodoSection> findSectionById(Long sectionId);
+    Optional<TodoSection> findOne(Long id);
 
     Page<TodoSection> findSections(Pageable pageable);
 

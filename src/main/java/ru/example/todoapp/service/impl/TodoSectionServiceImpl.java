@@ -41,7 +41,7 @@ public class TodoSectionServiceImpl implements TodoSectionService {
 
     // get section by id
     @Override
-    public Optional<TodoSection> findSectionById(Long sectionId) {
+    public Optional<TodoSection> findOne(Long sectionId) {
         log.info("Get the section by id: {}", sectionId);
         return todoSectionRepository.findByUserIdAndId(authUserFacade.getUserId(), sectionId);
     }
