@@ -100,7 +100,7 @@ public class JwtTokenServiceImpl implements JwtTokenService {
     }
 
     @Override
-    public Long getUserIdFromAccessToken(String accessToken) {
+    public Long extractUserId(String accessToken) {
         Claims claims = getClaimsBody(accessToken);
         return Long.parseLong(String.valueOf(claims.get("id")));
     }

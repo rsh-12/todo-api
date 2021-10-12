@@ -130,7 +130,7 @@ public class JwtTokenServiceTest {
                 .buildAccessToken(1L, Collections.singleton(Role.USER));
         assertNotNull(accessToken);
 
-        Long id = jwtTokenService.getUserIdFromAccessToken(accessToken);
+        Long id = jwtTokenService.extractUserId(accessToken);
         assertNotNull(id);
 
         assertEquals(1L, (long) id);
