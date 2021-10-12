@@ -181,18 +181,20 @@
             <artifactId>micrometer-registry-prometheus</artifactId>
         </dependency>
 
-<!--
         <dependency>
-            <groupId>org.springframework.data</groupId>
-            <artifactId>spring-data-redis</artifactId>
+            <groupId>javax.cache</groupId>
+            <artifactId>cache-api</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>redis.clients</groupId>
-            <artifactId>jedis</artifactId>
-            <type>jar</type>
+            <groupId>org.ehcache</groupId>
+            <artifactId>ehcache</artifactId>
         </dependency>
--->
+
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-jcache</artifactId>
+        </dependency>
 
     </dependencies>
 
@@ -235,6 +237,7 @@
                 </dependencies>
 
                 <configuration>
+                    <!--suppress UnresolvedMavenProperty -->
                     <repoToken>${TOKEN}</repoToken>
                 </configuration>
             </plugin>
