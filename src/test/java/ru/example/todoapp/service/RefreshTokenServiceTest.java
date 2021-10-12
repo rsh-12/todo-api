@@ -76,7 +76,7 @@ public class RefreshTokenServiceTest {
         RefreshToken refreshToken = mock(RefreshToken.class);
         given(refreshTokenRepository.save(any(RefreshToken.class))).willReturn(refreshToken);
 
-        RefreshToken token = refreshTokenService.saveRefreshToken(refreshToken);
+        RefreshToken token = refreshTokenService.save(refreshToken);
         assertNotNull(token);
         verify(refreshTokenRepository).save(any(RefreshToken.class));
     }

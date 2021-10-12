@@ -6,8 +6,8 @@ import java.util.Optional;
 
 /**
  * This interface consists methods for working with the Refresh token.
- *
- * @see RefreshToken
+ * <p>
+ * {@link RefreshToken}
  */
 public interface RefreshTokenService {
 
@@ -29,7 +29,7 @@ public interface RefreshTokenService {
      * @return the refresh token
      * @see RefreshToken
      */
-    RefreshToken saveRefreshToken(RefreshToken refreshToken);
+    RefreshToken save(RefreshToken refreshToken);
 
     Optional<RefreshToken> findRefreshTokenByValue(String refreshToken);
 
