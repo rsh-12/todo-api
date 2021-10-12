@@ -30,17 +30,16 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     @Override
     public RefreshToken create(Long userId, String ip) {
         String token = jwtTokenService.buildRefreshToken();
-        RefreshToken refreshToken = findRefreshTokenByUserId(userId)
-                .orElseGet(RefreshToken::new);
+        RefreshToken refresh = findByUserId(userId).orElseGet(RefreshToken::new);
 
-        refreshToken.setToken(token);
-        refreshToken.setUserId(userId);
-        refreshToken.setCreatedByIp(ip);
+        refresh.setToken(token);
+        refresh.setUserId(userId);
+        refresh.setCreatedByIp(ip);
         long expTime = jwtTokenService.getExpiration(token).getTime();
-        refreshToken.setExpiresAt(new Timestamp(expTime).toLocalDateTime());
+        refresh.setExpiresAt(new Timestamp(expTime).toLocalDateTime());
 
-        CompletableFuture.runAsync(() -> refreshTokenRepository.save(refreshToken));
-        return refreshToken;
+        CompletableFuture.runAsync(() -> refreshTokenRepository.save(refresh));
+        return refresh;
     }
 
     @Override
@@ -54,7 +53,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
                 .filter(refreshToken -> jwtTokenService.isTokenValid(refreshToken.getToken()));
     }
 
-    private Optional<RefreshToken> findRefreshTokenByUserId(Long userId) {
+    private Optional<RefreshToken> findByUserId(Long userId) {
         return refreshTokenRepository.findByUserId(userId);
     }
 
