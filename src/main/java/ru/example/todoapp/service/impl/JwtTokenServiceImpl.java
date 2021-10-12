@@ -106,7 +106,7 @@ public class JwtTokenServiceImpl implements JwtTokenService {
     }
 
     @Override
-    public Set<Role> getUserRolesFromAccessToken(String accessToken) {
+    public Set<Role> extractUserRoles(String accessToken) {
         Claims claims = getClaimsBody(accessToken);
         return extractRoles(claims);
     }

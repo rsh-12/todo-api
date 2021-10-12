@@ -136,14 +136,14 @@ public class JwtTokenServiceTest {
         assertEquals(1L, (long) id);
     }
 
-    // getUserRolesFromAccessToken
+    // extractUserRoles
     @Test
     public void getUserRoles_ShouldReturnRoles() {
         String accessToken = jwtTokenService
                 .buildAccessToken(1L, Set.of(Role.ADMIN, Role.USER));
         assertNotNull(accessToken);
 
-        Set<Role> userRoles = jwtTokenService.getUserRolesFromAccessToken(accessToken);
+        Set<Role> userRoles = jwtTokenService.extractUserRoles(accessToken);
         assertNotNull(userRoles);
 
         assertTrue(userRoles.contains(Role.USER));

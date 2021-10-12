@@ -59,7 +59,7 @@ public interface JwtTokenService {
      * @param accessToken the access token as a string
      * @return the user roles
      */
-    Set<Role> getUserRolesFromAccessToken(String accessToken);
+    Set<Role> extractUserRoles(String accessToken);
 
     /**
      * Retrieves the user data from the access token body:
