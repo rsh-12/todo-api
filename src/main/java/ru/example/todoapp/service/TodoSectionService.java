@@ -48,12 +48,12 @@ public interface TodoSectionService {
     /**
      * Creates a new TodoSection.
      *
-     * @param sectionRequest the TodoSection
+     * @param request the TodoSection
      * @return the created TodoSection
      * @see TodoSection
      * @see User
      */
-    TodoSection createSection(TodoSectionRequest sectionRequest);
+    TodoSection create(TodoSectionRequest request);
 
     /**
      * Updates the TodoSection by id.

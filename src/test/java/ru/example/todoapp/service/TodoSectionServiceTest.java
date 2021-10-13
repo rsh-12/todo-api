@@ -152,12 +152,12 @@ public class TodoSectionServiceTest {
         assertDoesNotThrow(() -> sectionService.delete(1L));
     }
 
-    // createSection
+    // create
     @Test
     public void createSection_ShouldReturnSavedSection() {
         given(authUserFacade.getLoggedUser()).willReturn(mock(User.class));
         given(sectionRepository.save(any(TodoSection.class))).willReturn(mock(TodoSection.class));
-        assertDoesNotThrow(() -> sectionService.createSection(new TodoSectionRequest("important")));
+        assertDoesNotThrow(() -> sectionService.create(new TodoSectionRequest("important")));
     }
 
     // updateSection

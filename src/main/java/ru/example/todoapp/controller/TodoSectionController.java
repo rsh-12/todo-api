@@ -89,7 +89,7 @@ public class TodoSectionController {
     @ApiOperation(value = "Create section", notes = "It permits to create a new section")
     @PostMapping(consumes = "application/json")
     public ResponseEntity<String> createSection(@Valid @RequestBody TodoSectionRequest sectionRequest) {
-        TodoSection section = todoSectionService.createSection(sectionRequest);
+        TodoSection section = todoSectionService.create(sectionRequest);
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}").buildAndExpand(section.getId()).toUri();

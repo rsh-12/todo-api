@@ -175,7 +175,7 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
     @Test
     @WithUserDetails(ADMIN)
     public void createSection_ShouldReturnStatusCreated() throws Exception {
-        given(sectionService.createSection(any(TodoSectionRequest.class)))
+        given(sectionService.create(any(TodoSectionRequest.class)))
                 .willReturn(new TodoSection(1L, "title"));
 
         String json = objectMapper.writeValueAsString(new TodoSectionRequest("section"));
@@ -185,7 +185,7 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
                 .andExpect(status().isCreated())
                 .andDo(print());
 
-        verify(sectionService).createSection(any(TodoSectionRequest.class));
+        verify(sectionService).create(any(TodoSectionRequest.class));
     }
 
     @Test
