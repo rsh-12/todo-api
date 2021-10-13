@@ -61,7 +61,7 @@ public class TodoSectionController {
     @GetMapping(produces = "application/json")
     public ResponseEntity<?> getSections(@PageableDefault Pageable pageable,
                                          PagedResourcesAssembler<TodoSectionDto> pra) {
-        Page<TodoSectionDto> sections = todoSectionService.findSections(pageable)
+        Page<TodoSectionDto> sections = todoSectionService.findAll(pageable)
                 .map(todoSectionService::mapToSectionDto);
 
         return ResponseEntity.ok()

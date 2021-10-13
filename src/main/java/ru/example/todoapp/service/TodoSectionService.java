@@ -29,7 +29,7 @@ public interface TodoSectionService {
      */
     Optional<TodoSection> findOne(Long id);
 
-    Page<TodoSection> findSections(Pageable pageable);
+    Page<TodoSection> findAll(Pageable pageable);
 
     /**
      * Deletes the TodoSection by id. Checks if the Principal

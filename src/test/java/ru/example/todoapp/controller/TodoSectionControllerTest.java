@@ -67,7 +67,7 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
         var sectionDto1 = new TodoSectionDto(1L, "section1", LocalDateTime.now(), LocalDateTime.now());
         var sectionDto2 = new TodoSectionDto(2L, "section2", LocalDateTime.now(), LocalDateTime.now());
 
-        given(sectionService.findSections(any())).willReturn(page);
+        given(sectionService.findAll(any())).willReturn(page);
         given(sectionService.mapToSectionDto(any(TodoSection.class)))
                 .willReturn(sectionDto1, sectionDto2);
 
@@ -83,7 +83,7 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
     @WithUserDetails(ADMIN)
     public void getSections_ShouldReturnEmptyList() throws Exception {
         Page<TodoSection> resultPage = new PageImpl<>(Collections.emptyList());
-        given(sectionService.findSections(any()))
+        given(sectionService.findAll(any()))
                 .willReturn(resultPage);
 
         String response = mvc.perform(get(API_SECTIONS)

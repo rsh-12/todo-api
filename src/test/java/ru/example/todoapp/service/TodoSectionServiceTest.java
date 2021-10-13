@@ -81,7 +81,7 @@ public class TodoSectionServiceTest {
         given(sectionRepository.findAllByUserId(1L, Pageable.unpaged()))
                 .willReturn(Page.empty());
 
-        Page<TodoSection> sections = sectionService.findSections(Pageable.unpaged());
+        Page<TodoSection> sections = sectionService.findAll(Pageable.unpaged());
         assertTrue(sections.isEmpty());
     }
 
@@ -95,7 +95,7 @@ public class TodoSectionServiceTest {
         given(sectionRepository.findAllByUserId(1L, Pageable.unpaged()))
                 .willReturn(page);
 
-        Page<TodoSection> sections = sectionService.findSections(Pageable.unpaged());
+        Page<TodoSection> sections = sectionService.findAll(Pageable.unpaged());
         assertFalse(sections.isEmpty());
         assertEquals(2, sections.getContent().size());
     }

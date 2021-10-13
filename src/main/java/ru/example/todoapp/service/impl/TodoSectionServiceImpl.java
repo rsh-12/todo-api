@@ -48,7 +48,7 @@ public class TodoSectionServiceImpl implements TodoSectionService {
 
     // get all sections
     @Override
-    public Page<TodoSection> findSections(Pageable pageable) {
+    public Page<TodoSection> findAll(Pageable pageable) {
         Long userId = authUserFacade.getUserId();
         return todoSectionRepository.findAllByUserId(userId, pageable);
     }
