@@ -207,7 +207,7 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
         given(section.getId()).willReturn(1L);
         given(section.getTitle()).willReturn("Title");
 
-        given(sectionService.updateSection(anyLong(), any(TodoSectionRequest.class)))
+        given(sectionService.update(anyLong(), any(TodoSectionRequest.class)))
                 .willReturn(Optional.of(section));
 
         String body = "{\"title\": \"Title\"}";
@@ -217,13 +217,13 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
                 .andExpect(status().isOk())
                 .andDo(print());
 
-        verify(sectionService).updateSection(anyLong(), any(TodoSectionRequest.class));
+        verify(sectionService).update(anyLong(), any(TodoSectionRequest.class));
     }
 
     @Test
     @WithUserDetails(ADMIN)
     public void updateSection_ShouldReturnNotFound() throws Exception {
-        given(sectionService.updateSection(anyLong(), any(TodoSectionRequest.class)))
+        given(sectionService.update(anyLong(), any(TodoSectionRequest.class)))
                 .willReturn(Optional.empty());
 
         String body = "{\"title\": \"Title\"}";
@@ -233,7 +233,7 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
                 .andExpect(status().isNotFound())
                 .andDo(print());
 
-        verify(sectionService).updateSection(anyLong(), any(TodoSectionRequest.class));
+        verify(sectionService).update(anyLong(), any(TodoSectionRequest.class));
     }
 
     @Test

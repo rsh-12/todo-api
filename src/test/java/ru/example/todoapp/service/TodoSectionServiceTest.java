@@ -164,13 +164,13 @@ public class TodoSectionServiceTest {
     @Test
     public void updateSection_SectionNotFound_ShouldReturnEmpty() {
         given(sectionRepository.findById(anyLong())).willReturn(Optional.empty());
-        assertEquals(Optional.empty(), sectionService.updateSection(1L, new TodoSectionRequest("Title")));
+        assertEquals(Optional.empty(), sectionService.update(1L, new TodoSectionRequest("Title")));
     }
 
     @Test
     public void updateSection_UserNotFound_ShouldReturnEmpty() {
         given(sectionRepository.findById(anyLong())).willReturn(Optional.of(mock(TodoSection.class)));
-        assertEquals(Optional.empty(), sectionService.updateSection(1L, new TodoSectionRequest("Title")));
+        assertEquals(Optional.empty(), sectionService.update(1L, new TodoSectionRequest("Title")));
     }
 
     @Test
@@ -190,7 +190,7 @@ public class TodoSectionServiceTest {
         given(sectionRepository.findById(anyLong())).willReturn(Optional.of(section));
         given(sectionRepository.save(any(TodoSection.class))).willReturn(section);
 
-        Optional<TodoSection> sectionOptional = sectionService.updateSection(1L, new TodoSectionRequest("Title"));
+        Optional<TodoSection> sectionOptional = sectionService.update(1L, new TodoSectionRequest("Title"));
         assertEquals(Optional.empty(), sectionOptional);
     }
 
@@ -211,7 +211,7 @@ public class TodoSectionServiceTest {
         given(sectionRepository.findById(anyLong())).willReturn(Optional.of(section));
         given(sectionRepository.save(any(TodoSection.class))).willReturn(section);
 
-        TodoSection todoSection = sectionService.updateSection(1L, new TodoSectionRequest("Title"))
+        TodoSection todoSection = sectionService.update(1L, new TodoSectionRequest("Title"))
                 .orElse(null);
 
         assertNotNull(todoSection);

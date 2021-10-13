@@ -74,7 +74,7 @@ public class TodoSectionServiceImpl implements TodoSectionService {
 
     // update section title
     @Override
-    public Optional<TodoSection> updateSection(Long sectionId, TodoSectionRequest sectionRequest) {
+    public Optional<TodoSection> update(Long sectionId, TodoSectionRequest sectionRequest) {
         Optional<TodoSection> sectionOptional = todoSectionRepository.findById(sectionId);
 
         return sectionOptional.map(TodoSection::getUser)
