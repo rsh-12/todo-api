@@ -112,9 +112,13 @@ public class TodoSection {
     }
 
     public void setTodoTasks(List<TodoTask> todoTasks) {
+        if (this.todoTasks != null) {
+            this.todoTasks.forEach(task -> task.setTodoSection(null));
+        }
         if (todoTasks != null) {
             todoTasks.forEach(task -> task.setTodoSection(this));
         }
+        this.todoTasks = todoTasks;
     }
 
     public void removeTodoTasks(List<TodoTask> todoTasks) {
