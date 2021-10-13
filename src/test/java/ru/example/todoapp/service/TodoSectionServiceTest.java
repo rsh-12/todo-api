@@ -104,7 +104,7 @@ public class TodoSectionServiceTest {
     @Test
     public void deleteSectionById_SectionNotFound_ShouldThrowException() {
         given(sectionRepository.findById(anyLong())).willReturn(Optional.empty());
-        assertThrows(CustomException.class, () -> sectionService.deleteSectionById(1L));
+        assertThrows(CustomException.class, () -> sectionService.delete(1L));
     }
 
     @Test
@@ -112,7 +112,7 @@ public class TodoSectionServiceTest {
         TodoSection section = mock(TodoSection.class);
         given(sectionRepository.findById(anyLong())).willReturn(Optional.of(section));
         given(section.getUser()).willReturn(null);
-        assertThrows(CustomException.class, () -> sectionService.deleteSectionById(1L));
+        assertThrows(CustomException.class, () -> sectionService.delete(1L));
     }
 
     @Test
@@ -129,7 +129,7 @@ public class TodoSectionServiceTest {
         given(authUserFacade.getLoggedUser()).willReturn(candidate);
         given(sectionRepository.findById(anyLong())).willReturn(Optional.of(section));
 
-        assertThrows(CustomException.class, () -> sectionService.deleteSectionById(1L));
+        assertThrows(CustomException.class, () -> sectionService.delete(1L));
     }
 
     @Test
@@ -149,7 +149,7 @@ public class TodoSectionServiceTest {
         given(authUserFacade.getLoggedUser()).willReturn(loggedUser);
         doNothing().when(sectionRepository).deleteById(anyLong());
 
-        assertDoesNotThrow(() -> sectionService.deleteSectionById(1L));
+        assertDoesNotThrow(() -> sectionService.delete(1L));
     }
 
     // createSection

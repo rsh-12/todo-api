@@ -55,10 +55,10 @@ public class TodoSectionServiceImpl implements TodoSectionService {
 
     // delete section by id
     @Override
-    public void deleteSectionById(Long sectionId) {
-        todoSectionRepository.findById(sectionId).map(TodoSection::getUser)
+    public void delete(Long id) {
+        todoSectionRepository.findById(id).map(TodoSection::getUser)
                 .filter(Combinators.checkUserAccess(authUserFacade.getLoggedUser()))
-                .ifPresentOrElse(user -> todoSectionRepository.deleteById(sectionId), () -> {
+                .ifPresentOrElse(user -> todoSectionRepository.deleteById(id), () -> {
                     throw CustomException.notFound("Section not found");
                 });
     }

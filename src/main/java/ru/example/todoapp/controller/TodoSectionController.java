@@ -81,7 +81,7 @@ public class TodoSectionController {
     @ApiOperation(value = "Remove section", notes = "It permits to remove a section")
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteSection(@PathVariable("id") Long sectionId) {
-        todoSectionService.deleteSectionById(sectionId);
+        todoSectionService.delete(sectionId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 

@@ -36,14 +36,14 @@ public interface TodoSectionService {
      * equals to User of the TodoSection or Principal has an Admin role,
      * then deletes the TodoSection or throws an exception.
      *
-     * @param sectionId the TodoSection id
+     * @param id the TodoSection id
      * @throws ru.example.todoapp.exception.CustomException if the TodoSection by id is not found
      *                                                      or if the Principal is not equal to the User
      *                                                      of the TodoSeciton and the Principal does not have
      *                                                      an Admin role
      * @see User
      */
-    void deleteSectionById(Long sectionId);
+    void delete(Long id);
 
     /**
      * Creates a new TodoSection.

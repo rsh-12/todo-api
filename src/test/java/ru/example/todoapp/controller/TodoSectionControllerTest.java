@@ -129,7 +129,7 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
     @Test
     @WithUserDetails(ADMIN)
     public void deleteSection_ShouldDeleteSectionById() throws Exception {
-        doNothing().when(sectionService).deleteSectionById(anyLong());
+        doNothing().when(sectionService).delete(anyLong());
 
         // delete by id: returns 204 NO CONTENT
         mvc.perform(delete(API_SECTIONS + 1)
@@ -137,7 +137,7 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
                 .andExpect(status().isNoContent())
                 .andDo(print());
 
-        verify(sectionService).deleteSectionById(anyLong());
+        verify(sectionService).delete(anyLong());
     }
 
     // delete section by non-existent id: returns 204 NO CONTENT
@@ -145,7 +145,7 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
     @WithUserDetails(USER)
     public void deleteSection_ShouldReturnNotFound() throws Exception {
         doThrow(CustomException.notFound("Section not found"))
-                .when(sectionService).deleteSectionById(anyLong());
+                .when(sectionService).delete(anyLong());
 
         mvc.perform(delete(API_SECTIONS + 1)
                         .contentType(MediaType.APPLICATION_JSON))
@@ -153,14 +153,14 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
                 .andExpect(jsonPath("error", containsStringIgnoringCase("not found")))
                 .andDo(print());
 
-        verify(sectionService).deleteSectionById(anyLong());
+        verify(sectionService).delete(anyLong());
     }
 
     @Test
     @WithUserDetails(USER)
     public void deleteSection_ShouldReturnForbidden() throws Exception {
         doThrow(CustomException.forbidden("Not enough permissions"))
-                .when(sectionService).deleteSectionById(anyLong());
+                .when(sectionService).delete(anyLong());
 
         mvc.perform(delete(API_SECTIONS + 1)
                         .contentType(MediaType.APPLICATION_JSON))
@@ -168,7 +168,7 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
                 .andExpect(jsonPath("error", containsStringIgnoringCase("Forbidden")))
                 .andDo(print());
 
-        verify(sectionService).deleteSectionById(anyLong());
+        verify(sectionService).delete(anyLong());
     }
 
     // create new section
