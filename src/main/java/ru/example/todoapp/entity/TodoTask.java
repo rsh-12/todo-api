@@ -146,6 +146,22 @@ public class TodoTask {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        TodoTask todoTask = (TodoTask) o;
+
+        if (!id.equals(todoTask.id)) return false;
+        return Objects.equals(user, todoTask.user);
+    }
+
+    @Override
+    public int hashCode() {
+        return id.hashCode();
+    }
+
+    @Override
     public String toString() {
         return "TodoTask{" +
                 "title='" + title + '\'' +
