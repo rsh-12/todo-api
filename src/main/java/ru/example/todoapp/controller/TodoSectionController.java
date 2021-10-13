@@ -113,6 +113,7 @@ public class TodoSectionController {
                         .build()));
     }
 
+    // todo: rewrite
     // add tasks to the list
     @ApiOperation(value = "Add tasks to section", notes = "It permits to add tasks to section")
     @PostMapping(value = "/{id}/tasks", consumes = "application/json")
