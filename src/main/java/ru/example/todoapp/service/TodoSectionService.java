@@ -7,7 +7,6 @@ import ru.example.todoapp.dto.TodoSectionDto;
 import ru.example.todoapp.entity.TodoSection;
 import ru.example.todoapp.entity.TodoTask;
 import ru.example.todoapp.entity.User;
-import ru.example.todoapp.util.filters.FilterByOperation;
 
 import java.util.List;
 import java.util.Optional;
@@ -74,13 +73,14 @@ public interface TodoSectionService {
      * @param userId    the User id
      * @param sectionId the TodoSection id
      * @param tasks     the list of tasks
-     * @param flag      the flag that contains <b>move</b> or <b>remove</b>
      * @throws ru.example.todoapp.exception.CustomException if the TodoSection by id and userId is not found
      * @see TodoTask
      * @see TodoSection
      */
-    void addTasksToOrRemoveFromSection(Long userId, Long sectionId, List<TodoTask> tasks, FilterByOperation flag);
+
+    void addTasks(Long userId, Long sectionId, List<TodoTask> tasks);
+
+    void removeTasks(Long userId, Long sectionId, List<TodoTask> tasks);
 
     TodoSectionDto mapToSectionDto(TodoSection section);
-
 }

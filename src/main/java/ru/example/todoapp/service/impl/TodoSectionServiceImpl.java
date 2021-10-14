@@ -27,6 +27,7 @@ import static ru.example.todoapp.util.filters.FilterByOperation.MOVE;
 import static ru.example.todoapp.util.filters.FilterByOperation.REMOVE;
 
 @Service
+
 public class TodoSectionServiceImpl implements TodoSectionService {
 
     private static final Logger log = LoggerFactory.getLogger(TodoSectionServiceImpl.class);
@@ -89,12 +90,19 @@ public class TodoSectionServiceImpl implements TodoSectionService {
 
     // add to or remove from the task section
     @Override
-    public void addTasksToOrRemoveFromSection(Long userId, Long sectionId,
-                                              List<TodoTask> tasks, FilterByOperation flag) {
+    public void addTasks(Long userId, Long sectionId, List<TodoTask> tasks) {
         todoSectionRepository.findByUserIdAndId(userId, sectionId)
                 .ifPresent(section -> {
-                    if (flag == MOVE) section.setTodoTasks(tasks);
-                    else if (flag == REMOVE) section.removeTodoTasks(tasks);
+                    tasks.forEach(section::addTodoTask);
+                    todoSectionRepository.save(section);
+                });
+    }
+
+    @Override
+    public void removeTasks(Long userId, Long sectionId, List<TodoTask> tasks) {
+        todoSectionRepository.findByUserIdAndId(userId, sectionId)
+                .ifPresent(section -> {
+                    section.removeTodoTasks(tasks);
                     todoSectionRepository.save(section);
                 });
     }

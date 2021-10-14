@@ -6,7 +6,6 @@ package ru.example.todoapp.facade.impl;
 
 import org.springframework.stereotype.Component;
 import ru.example.todoapp.entity.TodoTask;
-import ru.example.todoapp.util.filters.FilterByOperation;
 import ru.example.todoapp.exception.CustomException;
 import ru.example.todoapp.facade.AuthUserFacade;
 import ru.example.todoapp.facade.TasksFacade;
@@ -29,14 +28,26 @@ public class TasksFacadeImpl implements TasksFacade {
         this.authUserFacade = authUserFacade;
     }
 
+    @Override
+    public void addTasks(Long sectionId, Set<Long> taskIds) {
+        checkTaskIds(taskIds);
+        Long userId = authUserFacade.getUserId();
+        List<TodoTask> tasks = taskService.findTasksByIds(taskIds, userId);
+        sectionService.addTasks(userId, sectionId, tasks);
+    }
 
     @Override
-    public void addTasksToOrRemoveFromSection(Long sectionId, Set<Long> taskIds, FilterByOperation flag) {
+    public void removeTasks(Long sectionId, Set<Long> taskIds) {
+        checkTaskIds(taskIds);
+        Long userId = authUserFacade.getUserId();
+        List<TodoTask> tasks = taskService.findTasksByIds(taskIds, userId);
+        sectionService.removeTasks(userId, sectionId, tasks);
+    }
+
+    private void checkTaskIds(Set<Long> taskIds) {
         if (taskIds == null || taskIds.isEmpty()) {
             throw CustomException.badRequest("Tasks IDs are required");
         }
-        Long userId = authUserFacade.getUserId();
-        List<TodoTask> tasks = taskService.findTasksByIds(taskIds, userId);
-        sectionService.addTasksToOrRemoveFromSection(userId, sectionId, tasks, flag);
     }
+
 }
