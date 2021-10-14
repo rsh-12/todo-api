@@ -38,6 +38,8 @@ import javax.validation.Valid;
 import java.net.URI;
 import java.util.function.Function;
 
+import static ru.example.todoapp.util.filters.FilterByOperation.MOVE;
+
 @Api(tags = "Task sections")
 @RestController
 @RequestMapping("/api/sections")
@@ -120,8 +122,12 @@ public class TodoSectionController {
     public ResponseEntity<String> addOrRemoveTasks(@PathVariable("id") Long sectionId,
                                                    @RequestBody TaskIdsWrapper wrapper,
                                                    @RequestParam(value = "do") FilterByOperation flag) {
+        if (flag == MOVE) {
+            tasksFacade.addTasks(sectionId, wrapper.tasks);
+        } else {
+            tasksFacade.removeTasks(sectionId, wrapper.tasks);
+        }
 
-        tasksFacade.addTasksToOrRemoveFromSection(sectionId, wrapper.tasks, flag);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
