@@ -45,7 +45,7 @@ public class TodoTaskServiceImpl implements TodoTaskService {
 
     // get all tasks
     @Override
-    public Page<TodoTask> findTasks(FilterByDate date, Pageable pageable) {
+    public Page<TodoTask> findAll(FilterByDate date, Pageable pageable) {
         Long userId = authUserFacade.getUserId();
         return date == ALL
                 ? todoTaskRepository.findAllByUserId(userId, pageable)

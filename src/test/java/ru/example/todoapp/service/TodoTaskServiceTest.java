@@ -67,7 +67,7 @@ public class TodoTaskServiceTest {
         given(taskRepository.findAllByUserId(anyLong(), any(Pageable.class)))
                 .willReturn(new PageImpl<>(List.of(task1, task2)));
 
-        List<TodoTask> tasks = taskService.findTasks(FilterByDate.ALL, Pageable.unpaged())
+        List<TodoTask> tasks = taskService.findAll(FilterByDate.ALL, Pageable.unpaged())
                 .getContent();
 
         assertFalse(tasks.isEmpty());
@@ -82,7 +82,7 @@ public class TodoTaskServiceTest {
         given(taskRepository.findAllByCompletionDateEqualsAndUserId(any(), anyLong(), any()))
                 .willReturn(new PageImpl<>(List.of(task)));
 
-        List<TodoTask> tasks = taskService.findTasks(FilterByDate.TODAY, Pageable.unpaged())
+        List<TodoTask> tasks = taskService.findAll(FilterByDate.TODAY, Pageable.unpaged())
                 .getContent();
 
         assertFalse(tasks.isEmpty());
@@ -97,7 +97,7 @@ public class TodoTaskServiceTest {
         given(taskRepository.findAllByCompletionDateBeforeAndUserId(any(), anyLong(), any()))
                 .willReturn(new PageImpl<>(List.of(task)));
 
-        List<TodoTask> tasks = taskService.findTasks(FilterByDate.OVERDUE, Pageable.unpaged())
+        List<TodoTask> tasks = taskService.findAll(FilterByDate.OVERDUE, Pageable.unpaged())
                 .getContent();
 
         assertFalse(tasks.isEmpty());

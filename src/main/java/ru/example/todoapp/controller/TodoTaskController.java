@@ -59,7 +59,7 @@ public class TodoTaskController {
             @PageableDefault(sort = {"createdAt"}) Pageable pageable, PagedResourcesAssembler<TodoTaskDto> pra) {
 
         Page<TodoTaskDto> tasks = todoTaskService
-                .findTasks(date, pageable)
+                .findAll(date, pageable)
                 .map(todoTaskService::mapToTaskDto);
 
         return ResponseEntity.ok()

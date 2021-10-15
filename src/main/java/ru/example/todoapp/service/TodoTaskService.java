@@ -20,7 +20,7 @@ import java.util.Set;
  */
 public interface TodoTaskService {
 
-    Page<TodoTask> findTasks(FilterByDate date, Pageable pageable);
+    Page<TodoTask> findAll(FilterByDate date, Pageable pageable);
 
     /**
      * Finds the TodoTask by id and user id.

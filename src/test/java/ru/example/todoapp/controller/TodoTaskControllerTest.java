@@ -60,7 +60,7 @@ public class TodoTaskControllerTest extends AbstractControllerTestClass {
                 false, false,
                 LocalDateTime.now(), LocalDateTime.now());
 
-        given(taskService.findTasks(any(), any())).willReturn(page);
+        given(taskService.findAll(any(), any())).willReturn(page);
         given(taskService.mapToTaskDto(any())).willReturn(taskDto);
 
         mvc.perform(get(API_TASKS)
