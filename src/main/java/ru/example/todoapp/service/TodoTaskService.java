@@ -51,7 +51,7 @@ public interface TodoTaskService {
      * @see User
      * @see TodoTask
      */
-    TodoTask createTask(TodoTaskRequest taskRequest);
+    TodoTask create(TodoTaskRequest taskRequest);
 
     /**
      * Finds TodoTask objects by set of provided ids and user id.

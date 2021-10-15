@@ -88,7 +88,7 @@ public class TodoTaskController {
     @ApiOperation(value = "Create task", notes = "It permits to create a new task")
     @PostMapping(consumes = "application/json")
     public ResponseEntity<String> createTask(@Valid @RequestBody TodoTaskRequest taskRequest) {
-        TodoTask task = todoTaskService.createTask(taskRequest);
+        TodoTask task = todoTaskService.create(taskRequest);
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}").buildAndExpand(task.getId()).toUri();

@@ -190,7 +190,7 @@ public class TodoTaskServiceTest {
         given(authUserFacade.getLoggedUser()).willReturn(user);
         given(taskRepository.save(any(TodoTask.class))).willReturn(task);
 
-        assertNotNull(taskService.createTask(request));
+        assertNotNull(taskService.create(request));
     }
 
     // findTasksByIds

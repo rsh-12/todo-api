@@ -77,7 +77,7 @@ public class TodoTaskServiceImpl implements TodoTaskService {
 
     // create new task
     @Override
-    public TodoTask createTask(TodoTaskRequest request) {
+    public TodoTask create(TodoTaskRequest request) {
         log.info("Create a new task");
         TodoTask todoTask = TaskBuilder.forTask(request.title())
                 .starred(request.starred())

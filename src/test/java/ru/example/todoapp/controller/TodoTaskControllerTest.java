@@ -139,7 +139,7 @@ public class TodoTaskControllerTest extends AbstractControllerTestClass {
         TodoTask task = mock(TodoTask.class);
         given(task.getTitle()).willReturn("title");
 
-        given(taskService.createTask(any(TodoTaskRequest.class))).willReturn(task);
+        given(taskService.create(any(TodoTaskRequest.class))).willReturn(task);
 
         String body = "{\"title\": \"Task\"}";
         mvc.perform(post(API_TASKS)
@@ -149,7 +149,7 @@ public class TodoTaskControllerTest extends AbstractControllerTestClass {
                 .andExpect(header().exists(HttpHeaders.LOCATION))
                 .andExpect(status().isCreated());
 
-        verify(taskService).createTask(any(TodoTaskRequest.class));
+        verify(taskService).create(any(TodoTaskRequest.class));
     }
 
     @Test
