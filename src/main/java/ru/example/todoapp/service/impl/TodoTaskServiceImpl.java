@@ -67,7 +67,7 @@ public class TodoTaskServiceImpl implements TodoTaskService {
 
     // delete task by id
     @Override
-    public void deleteTaskById(Long taskId) {
+    public void delete(Long taskId) {
         todoTaskRepository.findById(taskId).map(TodoTask::getUser)
                 .filter(Combinators.checkUserAccess(authUserFacade.getLoggedUser()))
                 .ifPresentOrElse(user -> todoTaskRepository.deleteById(taskId), () -> {

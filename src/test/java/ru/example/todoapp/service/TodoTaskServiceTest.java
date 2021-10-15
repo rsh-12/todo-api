@@ -138,7 +138,7 @@ public class TodoTaskServiceTest {
         given(taskRepository.findById(anyLong())).willReturn(Optional.of(task));
 
         doNothing().when(taskRepository).deleteById(anyLong());
-        taskService.deleteTaskById(task.getId());
+        taskService.delete(task.getId());
 
         verify(taskRepository).deleteById(anyLong());
     }
@@ -155,7 +155,7 @@ public class TodoTaskServiceTest {
         given(taskRepository.findById(anyLong())).willReturn(Optional.of(task));
 
         doNothing().when(taskRepository).deleteById(anyLong());
-        taskService.deleteTaskById(task.getId());
+        taskService.delete(task.getId());
 
         verify(taskRepository).deleteById(anyLong());
     }
@@ -171,13 +171,13 @@ public class TodoTaskServiceTest {
         given(authUserFacade.getLoggedUser()).willReturn(new User("user", "pwd"));
         given(taskRepository.findById(anyLong())).willReturn(Optional.of(task));
 
-        assertThrows(CustomException.class, () -> taskService.deleteTaskById(task.getId()));
+        assertThrows(CustomException.class, () -> taskService.delete(task.getId()));
     }
 
     @Test
     public void deleteTaskById_ShouldThrowCustomException() {
         given(taskRepository.findById(anyLong())).willReturn(Optional.empty());
-        assertThrows(CustomException.class, () -> taskService.deleteTaskById(1L));
+        assertThrows(CustomException.class, () -> taskService.delete(1L));
     }
 
     @Test

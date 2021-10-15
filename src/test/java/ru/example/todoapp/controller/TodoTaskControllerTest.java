@@ -102,35 +102,35 @@ public class TodoTaskControllerTest extends AbstractControllerTestClass {
     @Test
     @WithUserDetails(ADMIN)
     public void deleteTask_ShouldReturnNoContent() throws Exception {
-        doNothing().when(taskService).deleteTaskById(anyLong());
+        doNothing().when(taskService).delete(anyLong());
         mvc.perform(delete(API_TASKS + "/1")).andExpect(status().isNoContent());
-        verify(taskService, times(1)).deleteTaskById(anyLong());
+        verify(taskService, times(1)).delete(anyLong());
     }
 
     @Test
     @WithUserDetails(USER)
     public void deleteTask_ShouldReturnNotFound() throws Exception {
         doThrow(CustomException.notFound("Task not found"))
-                .when(taskService).deleteTaskById(anyLong());
+                .when(taskService).delete(anyLong());
 
         mvc.perform(delete(API_TASKS + "/1"))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("message", containsStringIgnoringCase("Task not found")));
 
-        verify(taskService, times(1)).deleteTaskById(anyLong());
+        verify(taskService, times(1)).delete(anyLong());
     }
 
     @Test
     @WithUserDetails(USER)
     public void deleteTask_ShouldReturnForbidden() throws Exception {
         doThrow(CustomException.forbidden("Not enough permissions"))
-                .when(taskService).deleteTaskById(anyLong());
+                .when(taskService).delete(anyLong());
 
         mvc.perform(delete(API_TASKS + "/1"))
                 .andExpect(status().isForbidden())
                 .andExpect(jsonPath("error", containsStringIgnoringCase("forbidden")));
 
-        verify(taskService, times(1)).deleteTaskById(anyLong());
+        verify(taskService, times(1)).delete(anyLong());
     }
 
     @Test

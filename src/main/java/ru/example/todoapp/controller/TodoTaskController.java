@@ -80,7 +80,7 @@ public class TodoTaskController {
     @ApiOperation(value = "Remove task", notes = "It permits to remove a task")
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteTask(@PathVariable("id") Long taskId) {
-        todoTaskService.deleteTaskById(taskId);
+        todoTaskService.delete(taskId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 

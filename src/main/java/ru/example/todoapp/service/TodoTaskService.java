@@ -41,7 +41,7 @@ public interface TodoTaskService {
      * @see User
      * @see TodoTask
      */
-    void deleteTaskById(Long taskId);
+    void delete(Long taskId);
 
     /**
      * Creates a new TodoTask object with the user, saves to database.
