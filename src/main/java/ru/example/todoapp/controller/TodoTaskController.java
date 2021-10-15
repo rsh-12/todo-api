@@ -100,7 +100,7 @@ public class TodoTaskController {
     @PatchMapping(value = "/{id}", consumes = "application/json")
     public ResponseEntity<String> updateTask(@PathVariable("id") Long taskId,
                                              @Valid @RequestBody TodoTaskRequest taskRequest) {
-        URI location = todoTaskService.saveTask(taskId, taskRequest)
+        URI location = todoTaskService.save(taskId, taskRequest)
                 .map(task -> ServletUriComponentsBuilder
                         .fromCurrentRequest()
                         .buildAndExpand(task.getId())

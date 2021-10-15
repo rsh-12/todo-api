@@ -223,7 +223,7 @@ public class TodoTaskServiceTest {
         assertFalse(task.isStarred());
 
         TodoTaskRequest request = new TodoTaskRequest("New title", LocalDate.now(), true);
-        task = taskService.saveTask(1L, request).orElse(null);
+        task = taskService.save(1L, request).orElse(null);
 
         assertNotNull(task);
         assertEquals("New title", task.getTitle());
@@ -235,7 +235,7 @@ public class TodoTaskServiceTest {
         given(taskRepository.findByIdAndUserId(anyLong(), anyLong())).willReturn(Optional.empty());
         TodoTaskRequest request = new TodoTaskRequest("New title", LocalDate.now(), true);
 
-        assertEquals(Optional.empty(), taskService.saveTask(1L, request));
+        assertEquals(Optional.empty(), taskService.save(1L, request));
     }
 
     @Test

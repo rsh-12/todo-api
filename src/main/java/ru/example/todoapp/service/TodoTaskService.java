@@ -71,7 +71,7 @@ public interface TodoTaskService {
      * @param taskRequest the TodoTaskRequest instance
      * @see TodoTask
      */
-    Optional<TodoTask> saveTask(Long taskId, TodoTaskRequest taskRequest);
+    Optional<TodoTask> save(Long taskId, TodoTaskRequest taskRequest);
 
     TodoTaskDto mapToTaskDto(TodoTask task);
 }

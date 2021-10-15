@@ -96,7 +96,7 @@ public class TodoTaskServiceImpl implements TodoTaskService {
     }
 
     @Override
-    public Optional<TodoTask> saveTask(Long taskId, TodoTaskRequest request) {
+    public Optional<TodoTask> save(Long taskId, TodoTaskRequest request) {
         return findOne(taskId)
                 .map(task -> {
                     task.setTitle(request.title());

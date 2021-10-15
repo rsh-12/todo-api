@@ -193,7 +193,7 @@ public class TodoTaskControllerTest extends AbstractControllerTestClass {
         TodoTask task = mock(TodoTask.class);
         given(task.getId()).willReturn(1L);
 
-        given(taskService.saveTask(anyLong(), any(TodoTaskRequest.class)))
+        given(taskService.save(anyLong(), any(TodoTaskRequest.class)))
                 .willReturn(Optional.of(task));
 
         TodoTaskRequest request = new TodoTaskRequest("Make a call", LocalDate.now(), true);
