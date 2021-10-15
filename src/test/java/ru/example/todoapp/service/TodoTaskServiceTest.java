@@ -112,7 +112,7 @@ public class TodoTaskServiceTest {
         given(task.getTitle()).willReturn("Title");
         given(taskRepository.findByIdAndUserId(anyLong(), anyLong())).willReturn(Optional.of(task));
 
-        TodoTask taskFromDb = taskService.findTaskById(1L).orElse(null);
+        TodoTask taskFromDb = taskService.findOne(1L).orElse(null);
 
         assertNotNull(taskFromDb);
         assertEquals("Title", taskFromDb.getTitle());
@@ -123,7 +123,7 @@ public class TodoTaskServiceTest {
         given(taskRepository.findByIdAndUserId(anyLong(), anyLong())).willReturn(Optional.empty());
         given(authUserFacade.getUserId()).willReturn(1L);
 
-        assertEquals(Optional.empty(), taskService.findTaskById(1L));
+        assertEquals(Optional.empty(), taskService.findOne(1L));
     }
 
     // deleteTaskById

@@ -74,7 +74,7 @@ public class TodoTaskControllerTest extends AbstractControllerTestClass {
     @WithUserDetails(ADMIN)
     public void getTask_ShouldReturnTaskById() throws Exception {
         TodoTask todoTask = mock(TodoTask.class);
-        given(taskService.findTaskById(anyLong())).willReturn(Optional.of(todoTask));
+        given(taskService.findOne(anyLong())).willReturn(Optional.of(todoTask));
         given(taskService.mapToTaskDto(any()))
                 .willReturn(new TodoTaskDto(1L, "task", LocalDate.now(),
                         false, false,
@@ -88,7 +88,7 @@ public class TodoTaskControllerTest extends AbstractControllerTestClass {
     @Test
     @WithUserDetails(USER)
     public void getTask_ShouldReturnNotFound() throws Exception {
-        given(taskService.findTaskById(anyLong()))
+        given(taskService.findOne(anyLong()))
                 .willThrow(CustomException.notFound("Task not found"));
 
         mvc.perform(get(API_TASKS + "/1"))
@@ -96,7 +96,7 @@ public class TodoTaskControllerTest extends AbstractControllerTestClass {
                 .andDo(print())
                 .andExpect(jsonPath("message", containsStringIgnoringCase("Task not found")));
 
-        verify(taskService, times(1)).findTaskById(anyLong());
+        verify(taskService, times(1)).findOne(anyLong());
     }
 
     @Test

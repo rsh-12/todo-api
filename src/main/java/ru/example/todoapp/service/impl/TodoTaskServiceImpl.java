@@ -60,7 +60,7 @@ public class TodoTaskServiceImpl implements TodoTaskService {
 
     // get task by id
     @Override
-    public Optional<TodoTask> findTaskById(Long taskId) {
+    public Optional<TodoTask> findOne(Long taskId) {
         log.info("Get the task by id: {}", taskId);
         return todoTaskRepository.findByIdAndUserId(taskId, authUserFacade.getUserId());
     }
@@ -97,7 +97,7 @@ public class TodoTaskServiceImpl implements TodoTaskService {
 
     @Override
     public Optional<TodoTask> saveTask(Long taskId, TodoTaskRequest request) {
-        return findTaskById(taskId)
+        return findOne(taskId)
                 .map(task -> {
                     task.setTitle(request.title());
                     task.setStarred(request.starred());

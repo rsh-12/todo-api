@@ -70,7 +70,7 @@ public class TodoTaskController {
     @ApiOperation(value = "Find task", notes = "Find the task by ID")
     @GetMapping(value = "/{id}", produces = "application/json")
     public ResponseEntity<EntityModel<TodoTaskDto>> getTask(@PathVariable("id") Long taskId) {
-        var model = todoTaskService.findTaskById(taskId)
+        var model = todoTaskService.findOne(taskId)
                 .map(task -> assembler.toModel(todoTaskService.mapToTaskDto(task)));
 
         return ResponseEntity.of(model);

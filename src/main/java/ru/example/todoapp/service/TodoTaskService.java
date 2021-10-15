@@ -31,7 +31,7 @@ public interface TodoTaskService {
      * @see User
      * @see TodoTask
      */
-    Optional<TodoTask> findTaskById(Long taskId);
+    Optional<TodoTask> findOne(Long taskId);
 
     /**
      * Deletes the user's task by id
