@@ -32,7 +32,7 @@ public class TasksFacadeImpl implements TasksFacade {
     public void addTasks(Long sectionId, Set<Long> taskIds) {
         checkTaskIds(taskIds);
         Long userId = authUserFacade.getUserId();
-        List<TodoTask> tasks = taskService.findTasksByIds(taskIds, userId);
+        List<TodoTask> tasks = taskService.findByIds(taskIds, userId);
         sectionService.addTasks(userId, sectionId, tasks);
     }
 
@@ -40,7 +40,7 @@ public class TasksFacadeImpl implements TasksFacade {
     public void removeTasks(Long sectionId, Set<Long> taskIds) {
         checkTaskIds(taskIds);
         Long userId = authUserFacade.getUserId();
-        List<TodoTask> tasks = taskService.findTasksByIds(taskIds, userId);
+        List<TodoTask> tasks = taskService.findByIds(taskIds, userId);
         sectionService.removeTasks(userId, sectionId, tasks);
     }
 

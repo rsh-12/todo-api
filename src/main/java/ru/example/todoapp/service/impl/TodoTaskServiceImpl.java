@@ -89,7 +89,7 @@ public class TodoTaskServiceImpl implements TodoTaskService {
     }
 
     @Override
-    public List<TodoTask> findTasksByIds(Set<Long> taskIds, Long userId) {
+    public List<TodoTask> findByIds(Set<Long> taskIds, Long userId) {
         List<TodoTask> tasksByIds = todoTaskRepository.findAllByIdInAndUserId(taskIds, userId);
         log.info("Get tasks by set of ids: {}", tasksByIds.size());
         return tasksByIds;

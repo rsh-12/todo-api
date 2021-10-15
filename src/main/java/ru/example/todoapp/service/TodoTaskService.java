@@ -63,7 +63,7 @@ public interface TodoTaskService {
      * @see TodoTask
      * @see TaskIdsWrapper
      */
-    List<TodoTask> findTasksByIds(Set<Long> taskIds, Long userId);
+    List<TodoTask> findByIds(Set<Long> taskIds, Long userId);
 
     /**
      * Saves the TodoTask object to database.

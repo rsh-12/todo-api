@@ -203,7 +203,7 @@ public class TodoTaskServiceTest {
         given(task2.getTitle()).willReturn("Task2");
 
         given(taskRepository.findAllByIdInAndUserId(anySet(), anyLong())).willReturn(List.of(task1, task2));
-        List<TodoTask> tasks = taskService.findTasksByIds(Set.of(1L, 2L), 1L);
+        List<TodoTask> tasks = taskService.findByIds(Set.of(1L, 2L), 1L);
 
         assertNotNull(tasks);
         assertEquals(2, tasks.size());
