@@ -46,13 +46,13 @@ public class UserServiceTest {
     public void deleteUserById_ShouldDoNoting() {
         given(userRepository.existsById(anyLong())).willReturn(true);
         doNothing().when(userRepository).deleteById(anyLong());
-        userService.deleteUserById(1L);
+        userService.delete(1L);
     }
 
     @Test
     public void deleteUserById_ShouldThrowException() {
         given(userRepository.existsById(anyLong())).willReturn(false);
-        assertThrows(CustomException.class, () -> userService.deleteUserById(1L));
+        assertThrows(CustomException.class, () -> userService.delete(1L));
     }
 
     // findUserById

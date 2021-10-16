@@ -18,7 +18,7 @@ public interface UserService {
      * @param userId the user id
      * @throws CustomException if the user does not exist
      */
-    void deleteUserById(Long userId);
+    void delete(Long userId);
 
     /**
      * Finds the user by id if it exists in the database,

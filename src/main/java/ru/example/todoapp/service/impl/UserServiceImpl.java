@@ -27,7 +27,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteUserById(Long userId) {
+    public void delete(Long userId) {
         if (!userRepository.existsById(userId)) {
             throw CustomException.notFound("User not found: id=" + userId);
         }

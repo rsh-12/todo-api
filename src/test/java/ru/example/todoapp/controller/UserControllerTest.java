@@ -75,7 +75,7 @@ public class UserControllerTest extends AbstractControllerTestClass {
     @Test
     @WithUserDetails(ADMIN)
     public void deleteUser_ShouldReturnNoContent() throws Exception {
-        doNothing().when(userService).deleteUserById(anyLong());
+        doNothing().when(userService).delete(anyLong());
 
         mvc.perform(delete(API_USERS + "/1"))
                 .andExpect(status().isNoContent())
@@ -85,7 +85,7 @@ public class UserControllerTest extends AbstractControllerTestClass {
     @Test
     @WithUserDetails(ADMIN)
     public void deleteUser_ShouldReturnNotFound() throws Exception {
-        doThrow(CustomException.notFound("User Not Found")).when(userService).deleteUserById(anyLong());
+        doThrow(CustomException.notFound("User Not Found")).when(userService).delete(anyLong());
 
         mvc.perform(delete(API_USERS + "/1"))
                 .andExpect(status().isNotFound())
