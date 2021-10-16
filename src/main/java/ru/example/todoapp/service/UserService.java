@@ -28,7 +28,7 @@ public interface UserService {
      * @return the user
      * @throws CustomException if the user does not exist
      */
-    Optional<User> findUserById(Long userId);
+    Optional<User> findOne(Long userId);
 
     /**
      * Updates the user's password. Throws an exception, if user does not exists.

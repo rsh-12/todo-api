@@ -61,14 +61,14 @@ public class UserServiceTest {
         User mockUser = mock(User.class);
         given(userRepository.findById(anyLong())).willReturn(Optional.of(mockUser));
 
-        User user = userService.findUserById(1L).orElse(null);
+        User user = userService.findOne(1L).orElse(null);
         assertNotNull(user);
     }
 
     @Test
     public void findUserById_ShouldReturnEmpty() {
         given(userRepository.findById(anyLong())).willReturn(Optional.empty());
-        assertEquals(Optional.empty(), userService.findUserById(1L));
+        assertEquals(Optional.empty(), userService.findOne(1L));
     }
 
     // updatePassword

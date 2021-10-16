@@ -43,7 +43,7 @@ public class UserControllerTest extends AbstractControllerTestClass {
     @WithUserDetails(ADMIN)
     public void getUser_ShouldReturnUser() throws Exception {
         User user = new User("user", "password");
-        given(userService.findUserById(anyLong()))
+        given(userService.findOne(anyLong()))
                 .willReturn(Optional.of(user));
 
         mvc.perform(get(API_USERS + "/1"))
@@ -55,7 +55,7 @@ public class UserControllerTest extends AbstractControllerTestClass {
     @Test
     @WithUserDetails(ADMIN)
     public void getUser_ShouldReturnEmpty() throws Exception {
-        given(userService.findUserById(anyLong())).willReturn(Optional.empty());
+        given(userService.findOne(anyLong())).willReturn(Optional.empty());
 
         mvc.perform(get(API_USERS + "/1"))
                 .andExpect(status().isNotFound())
@@ -69,7 +69,7 @@ public class UserControllerTest extends AbstractControllerTestClass {
                 .andExpect(status().isForbidden())
                 .andDo(print());
 
-        verify(userService, times(0)).findUserById(anyLong());
+        verify(userService, times(0)).findOne(anyLong());
     }
 
     @Test
