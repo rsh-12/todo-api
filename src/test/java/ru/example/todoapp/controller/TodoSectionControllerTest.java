@@ -11,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithUserDetails;
+import ru.example.todoapp.domain.request.TaskIdsWrapper;
 import ru.example.todoapp.domain.request.TodoSectionRequest;
 import ru.example.todoapp.dto.TodoSectionDto;
 import ru.example.todoapp.entity.TodoSection;
@@ -23,6 +24,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.WeakHashMap;
 
 import static org.hamcrest.Matchers.containsStringIgnoringCase;
@@ -248,25 +250,19 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
         verifyNoInteractions(sectionService);
     }
 
-    // todo: fix the test
-    @Disabled
     @Test
     @WithUserDetails(USER)
-    public void addOrRemoveTasks_ShouldReturnOk() throws Exception {
-//        doNothing().when(tasksFacade)
-//                .addTasksToOrRemoveFromSection(anyLong(), anySet(), any());
+    public void removeTasks_ShouldReturnOk() throws Exception {
+        doNothing().when(tasksFacade).removeTasks(anyLong(), anySet());
 
         Map<String, Integer[]> body = new WeakHashMap<>();
         body.put("tasks", new Integer[]{1, 2});
-
         mvc.perform(post(API_SECTIONS + "1/tasks")
                         .contentType(MediaType.APPLICATION_JSON)
                         .param("do", "move")
                         .content(objectMapper.writeValueAsString(body)))
                 .andExpect(status().isOk())
                 .andDo(print());
-
-//        verify(tasksFacade).addTasksToOrRemoveFromSection(anyLong(), anySet(), any());
     }
 
     // todo: fix the test
