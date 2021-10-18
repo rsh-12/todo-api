@@ -265,13 +265,10 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
                 .andDo(print());
     }
 
-    // todo: fix the test
-    @Disabled
     @Test
     @WithUserDetails(USER)
     public void addOrRemoveTasks_EmptyBody_ShouldReturnBadRequest() throws Exception {
-//        doNothing().when(tasksFacade)
-//                .addTasksToOrRemoveFromSection(anyLong(), anySet(), any());
+        doNothing().when(tasksFacade).addTasks(anyLong(), anySet());
 
         mvc.perform(post(API_SECTIONS + "1/tasks")
                         .contentType(MediaType.APPLICATION_JSON)
