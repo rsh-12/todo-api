@@ -252,7 +252,7 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
 
     @Test
     @WithUserDetails(USER)
-    public void removeTasks_ShouldReturnOk() throws Exception {
+    public void addOrRemoveTasks_ShouldReturnOk() throws Exception {
         doNothing().when(tasksFacade).removeTasks(anyLong(), anySet());
 
         Map<String, Integer[]> body = new WeakHashMap<>();
