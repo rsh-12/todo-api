@@ -4,14 +4,12 @@ package ru.example.todoapp.controller;
  * Time: 10:30 PM
  * */
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithUserDetails;
-import ru.example.todoapp.domain.request.TaskIdsWrapper;
 import ru.example.todoapp.domain.request.TodoSectionRequest;
 import ru.example.todoapp.dto.TodoSectionDto;
 import ru.example.todoapp.entity.TodoSection;
@@ -24,7 +22,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.WeakHashMap;
 
 import static org.hamcrest.Matchers.containsStringIgnoringCase;
@@ -279,17 +276,13 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
         verifyNoInteractions(tasksFacade);
     }
 
-    // todo: fix the test
-    @Disabled
     @Test
     @WithUserDetails(USER)
-    public void addOrRemoveTasks_NoParam_ShouldReturnBadRequest() throws Exception {
-//        doNothing().when(tasksFacade)
-//                .addTasksToOrRemoveFromSection(anyLong(), anySet(), any());
+    public void addOrRemoveTasks_NoParams_ShouldReturnBadRequest() throws Exception {
+        doNothing().when(tasksFacade).addTasks(anyLong(), anySet());
 
         Map<String, Integer[]> body = new WeakHashMap<>();
         body.put("tasks", new Integer[]{1, 2});
-
         mvc.perform(post(API_SECTIONS + "1/tasks")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(body)))
