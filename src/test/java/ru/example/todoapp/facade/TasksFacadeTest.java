@@ -4,20 +4,22 @@ package ru.example.todoapp.facade;
  * Time: 3:20 AM
  * */
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import ru.example.todoapp.entity.TodoTask;
+import ru.example.todoapp.exception.CustomException;
 import ru.example.todoapp.facade.impl.TasksFacadeImpl;
 import ru.example.todoapp.service.TodoSectionService;
 import ru.example.todoapp.service.TodoTaskService;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anySet;
@@ -57,12 +59,9 @@ public class TasksFacadeTest {
         verify(sectionService).addTasks(anyLong(), anyLong(), anyList());
     }
 
-    // todo: fix the test
-    @Disabled
     @Test
-    public void addTasksToOrRemoveFromSection_ShouldThrowCustomException() {
-//        assertThrows(CustomException.class, () -> tasksFacade
-//                .addTasksToOrRemoveFromSection(1L, Collections.emptySet(), FilterByOperation.MOVE));
+    public void addTasks_ShouldThrowCustomException() {
+        assertThrows(CustomException.class, () -> tasksFacade.addTasks(1L, Collections.emptySet()));
 
         verifyNoInteractions(taskService);
         verifyNoInteractions(sectionService);
