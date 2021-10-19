@@ -16,12 +16,13 @@ import ru.example.todoapp.service.TodoSectionService;
 import ru.example.todoapp.service.TodoTaskService;
 
 import java.util.List;
+import java.util.Set;
 
-import static org.junit.Assert.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anySet;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
@@ -41,21 +42,19 @@ public class TasksFacadeTest {
     @Mock
     private TodoSectionService sectionService;
 
-    // todo: fix the test
-    @Disabled
     @Test
-    public void addTasksToOrRemoveFromSection_ShouldCallServiceMethods() {
+    public void addTasks_ShouldCallServiceMethods() {
         TodoTask task1 = mock(TodoTask.class);
         TodoTask task2 = mock(TodoTask.class);
 
         given(authUserFacade.getUserId()).willReturn(1L);
         given(taskService.findByIds(anySet(), anyLong())).willReturn(List.of(task1, task2));
-//        doNothing().when(sectionService).addTasksToOrRemoveFromSection(anyLong(), anyLong(), anyList(), any());
+        doNothing().when(sectionService).addTasks(anyLong(), anyLong(), anyList());
 
-//        tasksFacade.addTasksToOrRemoveFromSection(1L, Set.of(1L, 2L), FilterByOperation.MOVE);
+        tasksFacade.addTasks(1L, Set.of(1L, 2L));
 
-//        verify(taskService).findTasksByIds(anySet(), anyLong());
-//        verify(sectionService).addTasksToOrRemoveFromSection(anyLong(), anyLong(), anyList(), any());
+        verify(taskService).findByIds(anySet(), anyLong());
+        verify(sectionService).addTasks(anyLong(), anyLong(), anyList());
     }
 
     // todo: fix the test
