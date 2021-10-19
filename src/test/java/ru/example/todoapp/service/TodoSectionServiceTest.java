@@ -218,17 +218,13 @@ public class TodoSectionServiceTest {
         assertEquals(section, todoSection);
     }
 
-    // todo: fix the test
-    @Disabled
-    // addTasksToOrRemoveFromSection
     @Test
-    public void addTasksToOrRemoveFromSection_ShouldDoNothing() {
+    public void addTasks_ShouldDoNothing() {
         var task = new TodoTask("Title");
         assertNull(task.getTodoSection());
 
-//        given(sectionRepository.findByUserIdAndId(anyLong(), anyLong())).willReturn(Optional.empty());
-//        sectionService.addTasksToOrRemoveFromSection(1L, 1L,
-//                List.of(task), FilterByOperation.MOVE);
+        given(sectionRepository.findByUserIdAndId(anyLong(), anyLong())).willReturn(Optional.empty());
+        sectionService.addTasks(1L, 1L, List.of(task));
 
         assertNull(task.getTodoSection());
     }
