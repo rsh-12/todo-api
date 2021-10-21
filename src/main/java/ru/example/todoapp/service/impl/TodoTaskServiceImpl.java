@@ -10,26 +10,28 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.example.todoapp.domain.request.TodoTaskRequest;
 import ru.example.todoapp.dsl.TaskBuilder;
 import ru.example.todoapp.dto.TodoTaskDto;
 import ru.example.todoapp.entity.TodoTask;
-import ru.example.todoapp.util.filters.FilterByDate;
 import ru.example.todoapp.exception.CustomException;
 import ru.example.todoapp.facade.AuthUserFacade;
 import ru.example.todoapp.repository.TodoTaskRepository;
 import ru.example.todoapp.service.TodoTaskService;
 import ru.example.todoapp.util.Combinators;
+import ru.example.todoapp.util.filters.FilterByDate;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import static ru.example.todoapp.util.filters.FilterByDate.ALL;
+import static ru.example.todoapp.util.filters.FilterByDate.OVERDUE;
 import static ru.example.todoapp.util.filters.FilterByDate.TODAY;
 
 @Service
+@Transactional
 public class TodoTaskServiceImpl implements TodoTaskService {
 
     private static final Logger log = LoggerFactory.getLogger(TodoTaskServiceImpl.class);
@@ -45,21 +47,22 @@ public class TodoTaskServiceImpl implements TodoTaskService {
 
     // get all tasks
     @Override
+    @Transactional(readOnly = true)
     public Page<TodoTask> findAll(FilterByDate date, Pageable pageable) {
         Long userId = authUserFacade.getUserId();
-        return date == ALL
-                ? todoTaskRepository.findAllByUserId(userId, pageable)
-                : findTasksByDate(date, pageable, userId);
-    }
 
-    private Page<TodoTask> findTasksByDate(FilterByDate date, Pageable pageable, Long userId) {
-        return date == TODAY
-                ? todoTaskRepository.findAllByCompletionDateEqualsAndUserId(LocalDate.now(), userId, pageable)
-                : todoTaskRepository.findAllByCompletionDateBeforeAndUserId(LocalDate.now(), userId, pageable);
+        if (date == OVERDUE) {
+            return todoTaskRepository.findAllByCompletionDateBeforeAndUserId(LocalDate.now(), userId, pageable);
+        } else if (date == TODAY) {
+            return todoTaskRepository.findAllByCompletionDateEqualsAndUserId(LocalDate.now(), userId, pageable);
+        } else {
+            return todoTaskRepository.findAllByUserId(userId, pageable);
+        }
     }
 
     // get task by id
     @Override
+    @Transactional(readOnly = true)
     public Optional<TodoTask> findOne(Long taskId) {
         log.info("Get the task by id: {}", taskId);
         return todoTaskRepository.findByIdAndUserId(taskId, authUserFacade.getUserId());
@@ -89,6 +92,7 @@ public class TodoTaskServiceImpl implements TodoTaskService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<TodoTask> findByIds(Set<Long> taskIds, Long userId) {
         List<TodoTask> tasksByIds = todoTaskRepository.findAllByIdInAndUserId(taskIds, userId);
         log.info("Get tasks by set of ids: {}", tasksByIds.size());
