@@ -4,7 +4,6 @@ package ru.example.todoapp.service;
  * Time: 7:16 PM
  * */
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -242,19 +241,16 @@ public class TodoSectionServiceTest {
         assertEquals(section.getTitle(), task.getTodoSection().getTitle());
     }
 
-    // todo: fix the test
-    @Disabled
     @Test
-    public void addTasksToOrRemoveFromSection_ShouldRemoveTasks() {
+    public void removeTasks_ShouldRemoveTasks() {
         var task = new TodoTask("Title");
         TodoSection section = new TodoSection().addTodoTask(task);
 
         assertEquals("Title", section.getTodoTasks().get(0).getTitle());
         assertNotNull(task.getTodoSection());
 
-//        given(sectionRepository.findByUserIdAndId(anyLong(), anyLong())).willReturn(Optional.of(section));
-//        sectionService.addTasksToOrRemoveFromSection(1L, 1L,
-//                List.of(task), FilterByOperation.REMOVE);
+        given(sectionRepository.findByUserIdAndId(anyLong(), anyLong())).willReturn(Optional.of(section));
+        sectionService.removeTasks(1L, 1L, List.of(task));
 
         assertNull(task.getTodoSection());
     }
