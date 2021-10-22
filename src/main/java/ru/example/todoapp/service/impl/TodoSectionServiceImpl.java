@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.example.todoapp.domain.request.TodoSectionRequest;
 import ru.example.todoapp.dto.TodoSectionDto;
 import ru.example.todoapp.entity.TodoSection;
@@ -23,6 +24,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@Transactional
 public class TodoSectionServiceImpl implements TodoSectionService {
 
     private static final Logger log = LoggerFactory.getLogger(TodoSectionServiceImpl.class);
@@ -37,6 +39,7 @@ public class TodoSectionServiceImpl implements TodoSectionService {
 
     // get section by id
     @Override
+    @Transactional(readOnly = true)
     public Optional<TodoSection> findOne(Long sectionId) {
         log.info("Get the section by id: {}", sectionId);
         return todoSectionRepository.findByUserIdAndId(authUserFacade.getUserId(), sectionId);
@@ -44,6 +47,7 @@ public class TodoSectionServiceImpl implements TodoSectionService {
 
     // get all sections
     @Override
+    @Transactional(readOnly = true)
     public Page<TodoSection> findAll(Pageable pageable) {
         Long userId = authUserFacade.getUserId();
         return todoSectionRepository.findAllByUserId(userId, pageable);
