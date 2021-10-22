@@ -18,16 +18,11 @@ import ru.example.todoapp.facade.AuthUserFacade;
 import ru.example.todoapp.repository.TodoSectionRepository;
 import ru.example.todoapp.service.TodoSectionService;
 import ru.example.todoapp.util.Combinators;
-import ru.example.todoapp.util.filters.FilterByOperation;
 
 import java.util.List;
 import java.util.Optional;
 
-import static ru.example.todoapp.util.filters.FilterByOperation.MOVE;
-import static ru.example.todoapp.util.filters.FilterByOperation.REMOVE;
-
 @Service
-
 public class TodoSectionServiceImpl implements TodoSectionService {
 
     private static final Logger log = LoggerFactory.getLogger(TodoSectionServiceImpl.class);
