@@ -3,10 +3,10 @@ package ru.example.todoapp.service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import ru.example.todoapp.domain.request.TodoSectionRequest;
-import ru.example.todoapp.dto.TodoSectionDto;
 import ru.example.todoapp.entity.TodoSection;
 import ru.example.todoapp.entity.TodoTask;
 import ru.example.todoapp.entity.User;
+import ru.example.todoapp.service.dto.TodoSectionDto;
 
 import java.util.List;
 import java.util.Optional;

@@ -11,7 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.example.todoapp.domain.request.TodoSectionRequest;
-import ru.example.todoapp.dto.TodoSectionDto;
+import ru.example.todoapp.service.dto.TodoSectionDto;
 import ru.example.todoapp.entity.TodoSection;
 import ru.example.todoapp.entity.TodoTask;
 import ru.example.todoapp.exception.CustomException;

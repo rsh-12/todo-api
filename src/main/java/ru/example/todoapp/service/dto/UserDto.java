@@ -1,4 +1,4 @@
-package ru.example.todoapp.dto;
+package ru.example.todoapp.service.dto;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 

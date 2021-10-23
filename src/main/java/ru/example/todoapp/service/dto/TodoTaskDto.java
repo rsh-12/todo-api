@@ -1,4 +1,4 @@
-package ru.example.todoapp.dto;
+package ru.example.todoapp.service.dto;
 /*
  * Date: 3/12/21
  * Time: 6:52 PM

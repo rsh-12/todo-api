@@ -18,7 +18,7 @@ import ru.example.todoapp.domain.request.CredentialsRequest;
 import ru.example.todoapp.domain.request.EmailRequest;
 import ru.example.todoapp.domain.request.PasswordRequest;
 import ru.example.todoapp.domain.request.TokenRequest;
-import ru.example.todoapp.dto.UserDto;
+import ru.example.todoapp.service.dto.UserDto;
 import ru.example.todoapp.entity.User;
 import ru.example.todoapp.facade.PasswordFacade;
 import ru.example.todoapp.messaging.MessagingClient;

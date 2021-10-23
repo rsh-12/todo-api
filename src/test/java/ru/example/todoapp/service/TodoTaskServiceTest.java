@@ -12,7 +12,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import ru.example.todoapp.domain.request.TodoTaskRequest;
-import ru.example.todoapp.dto.TodoTaskDto;
+import ru.example.todoapp.service.dto.TodoTaskDto;
 import ru.example.todoapp.entity.TodoTask;
 import ru.example.todoapp.entity.User;
 import ru.example.todoapp.domain.Role;

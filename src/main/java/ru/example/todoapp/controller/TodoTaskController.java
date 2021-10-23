@@ -28,7 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.example.todoapp.controller.assembler.TodoTaskModelAssembler;
 import ru.example.todoapp.domain.request.TodoTaskRequest;
-import ru.example.todoapp.dto.TodoTaskDto;
+import ru.example.todoapp.service.dto.TodoTaskDto;
 import ru.example.todoapp.entity.TodoTask;
 import ru.example.todoapp.util.filters.FilterByDate;
 import ru.example.todoapp.service.TodoTaskService;

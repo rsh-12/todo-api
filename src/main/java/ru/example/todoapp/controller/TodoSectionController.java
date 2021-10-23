@@ -28,7 +28,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.example.todoapp.controller.assembler.TodoSectionModelAssembler;
 import ru.example.todoapp.domain.request.TaskIdsWrapper;
 import ru.example.todoapp.domain.request.TodoSectionRequest;
-import ru.example.todoapp.dto.TodoSectionDto;
+import ru.example.todoapp.service.dto.TodoSectionDto;
 import ru.example.todoapp.entity.TodoSection;
 import ru.example.todoapp.facade.TasksFacade;
 import ru.example.todoapp.service.TodoSectionService;

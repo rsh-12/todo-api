@@ -8,7 +8,7 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.RepresentationModelAssembler;
 import org.springframework.stereotype.Component;
 import ru.example.todoapp.controller.TodoTaskController;
-import ru.example.todoapp.dto.TodoTaskDto;
+import ru.example.todoapp.service.dto.TodoTaskDto;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
