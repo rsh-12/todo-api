@@ -11,10 +11,11 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.test.context.support.WithUserDetails;
 import ru.example.todoapp.domain.request.TodoTaskRequest;
-import ru.example.todoapp.service.dto.TodoTaskDto;
 import ru.example.todoapp.entity.TodoTask;
 import ru.example.todoapp.exception.CustomException;
 import ru.example.todoapp.service.TodoTaskService;
+import ru.example.todoapp.service.dto.TodoTaskDto;
+import ru.example.todoapp.service.mapper.TaskMapper;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -48,6 +49,9 @@ public class TodoTaskControllerTest extends AbstractControllerTestClass {
     @MockBean
     private TodoTaskService taskService;
 
+    @MockBean
+    private TaskMapper taskMapper;
+
     private static final String API_TASKS = "/api/tasks";
 
     @Test
@@ -61,10 +65,10 @@ public class TodoTaskControllerTest extends AbstractControllerTestClass {
                 LocalDateTime.now(), LocalDateTime.now());
 
         given(taskService.findAll(any(), any())).willReturn(page);
-        given(taskService.mapToTaskDto(any())).willReturn(taskDto);
+        given(taskMapper.mapToTaskDto(any())).willReturn(taskDto);
 
         mvc.perform(get(API_TASKS)
-                .contentType(APPLICATION_JSON))
+                        .contentType(APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("_embedded.tasks[0].title", is("task1")));
@@ -75,7 +79,7 @@ public class TodoTaskControllerTest extends AbstractControllerTestClass {
     public void getTask_ShouldReturnTaskById() throws Exception {
         TodoTask todoTask = mock(TodoTask.class);
         given(taskService.findOne(anyLong())).willReturn(Optional.of(todoTask));
-        given(taskService.mapToTaskDto(any()))
+        given(taskMapper.mapToTaskDto(any()))
                 .willReturn(new TodoTaskDto(1L, "task", LocalDate.now(),
                         false, false,
                         LocalDateTime.now(), LocalDateTime.now()));
@@ -143,8 +147,8 @@ public class TodoTaskControllerTest extends AbstractControllerTestClass {
 
         String body = "{\"title\": \"Task\"}";
         mvc.perform(post(API_TASKS)
-                .contentType(APPLICATION_JSON)
-                .content(body))
+                        .contentType(APPLICATION_JSON)
+                        .content(body))
                 .andDo(print())
                 .andExpect(header().exists(HttpHeaders.LOCATION))
                 .andExpect(status().isCreated());
@@ -156,7 +160,7 @@ public class TodoTaskControllerTest extends AbstractControllerTestClass {
     @WithUserDetails(USER)
     public void createTask_ShouldReturnBadRequest() throws Exception {
         mvc.perform(post(API_TASKS)
-                .contentType(APPLICATION_JSON))
+                        .contentType(APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
 
         verifyNoInteractions(taskService);
@@ -168,8 +172,8 @@ public class TodoTaskControllerTest extends AbstractControllerTestClass {
         TodoTaskRequest request = new TodoTaskRequest("T", LocalDate.now(), false);
 
         mvc.perform(post(API_TASKS)
-                .contentType(APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request))) // min=3
+                        .contentType(APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request))) // min=3
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("title", containsInAnyOrder("Size must be between 3 and 80")))
                 .andDo(print());
@@ -181,7 +185,7 @@ public class TodoTaskControllerTest extends AbstractControllerTestClass {
     @WithUserDetails(USER)
     public void updateTask_ShouldReturnBadRequest() throws Exception {
         mvc.perform(patch(API_TASKS + "/1")
-                .contentType(APPLICATION_JSON))
+                        .contentType(APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
 
         verifyNoInteractions(taskService);
@@ -198,8 +202,8 @@ public class TodoTaskControllerTest extends AbstractControllerTestClass {
 
         TodoTaskRequest request = new TodoTaskRequest("Make a call", LocalDate.now(), true);
         mvc.perform(patch(API_TASKS + "/1")
-                .contentType(APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request)))
+                        .contentType(APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
                 .andDo(print())
                 .andExpect(header().exists(HttpHeaders.LOCATION))
                 .andExpect(status().isOk());

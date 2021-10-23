@@ -11,16 +11,15 @@ import org.mockito.Mock;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import ru.example.todoapp.domain.Role;
 import ru.example.todoapp.domain.request.TodoTaskRequest;
-import ru.example.todoapp.service.dto.TodoTaskDto;
 import ru.example.todoapp.entity.TodoTask;
 import ru.example.todoapp.entity.User;
-import ru.example.todoapp.domain.Role;
-import ru.example.todoapp.util.filters.FilterByDate;
 import ru.example.todoapp.exception.CustomException;
 import ru.example.todoapp.facade.AuthUserFacade;
 import ru.example.todoapp.repository.TodoTaskRepository;
 import ru.example.todoapp.service.impl.TodoTaskServiceImpl;
+import ru.example.todoapp.util.filters.FilterByDate;
 
 import java.time.LocalDate;
 import java.util.Collections;
@@ -236,13 +235,6 @@ public class TodoTaskServiceTest {
         TodoTaskRequest request = new TodoTaskRequest("New title", LocalDate.now(), true);
 
         assertEquals(Optional.empty(), taskService.save(1L, request));
-    }
-
-    @Test
-    public void mapToTaskDto() {
-        TodoTask task = new TodoTask("task", LocalDate.now());
-        TodoTaskDto taskDto = taskService.mapToTaskDto(task);
-        assertNotNull(taskDto);
     }
 
 }

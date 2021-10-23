@@ -5,17 +5,19 @@ package ru.example.todoapp.controller;
  * */
 
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithUserDetails;
 import ru.example.todoapp.domain.request.TodoSectionRequest;
-import ru.example.todoapp.service.dto.TodoSectionDto;
 import ru.example.todoapp.entity.TodoSection;
 import ru.example.todoapp.exception.CustomException;
 import ru.example.todoapp.facade.TasksFacade;
+import ru.example.todoapp.service.dto.TodoSectionDto;
 import ru.example.todoapp.service.impl.TodoSectionServiceImpl;
+import ru.example.todoapp.service.mapper.SectionMapper;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -54,6 +56,9 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
     @MockBean
     private TasksFacade tasksFacade;
 
+    @MockBean
+    private SectionMapper sectionMapper;
+
     private static final String API_SECTIONS = "/api/sections/";
 
     // get all sections
@@ -68,7 +73,7 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
         var sectionDto2 = new TodoSectionDto(2L, "section2", LocalDateTime.now(), LocalDateTime.now());
 
         given(sectionService.findAll(any())).willReturn(page);
-        given(sectionService.mapToSectionDto(any(TodoSection.class)))
+        given(sectionMapper.mapToSectionDto(any(TodoSection.class)))
                 .willReturn(sectionDto1, sectionDto2);
 
         mvc.perform(get(API_SECTIONS)
@@ -105,7 +110,7 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
         given(sectionService.findOne(1L)).willReturn(Optional.of(section));
 
         TodoSectionDto sectionDto = new TodoSectionDto(1L, "Important", LocalDateTime.now(), LocalDateTime.now());
-        given(sectionService.mapToSectionDto(any(TodoSection.class))).willReturn(sectionDto);
+        given(sectionMapper.mapToSectionDto(any(TodoSection.class))).willReturn(sectionDto);
 
         mvc.perform(get(API_SECTIONS + 1))
                 .andExpect(status().isOk())
