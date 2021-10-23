@@ -11,7 +11,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.example.todoapp.domain.request.TodoSectionRequest;
-import ru.example.todoapp.service.dto.TodoSectionDto;
 import ru.example.todoapp.entity.TodoSection;
 import ru.example.todoapp.entity.TodoTask;
 import ru.example.todoapp.exception.CustomException;
@@ -104,14 +103,6 @@ public class TodoSectionServiceImpl implements TodoSectionService {
                     section.removeTodoTasks(tasks);
                     todoSectionRepository.save(section);
                 });
-    }
-
-    @Override
-    public TodoSectionDto mapToSectionDto(TodoSection section) {
-        return new TodoSectionDto(section.getId(),
-                section.getTitle(),
-                section.getUpdatedAt(),
-                section.getCreatedAt());
     }
 
 }

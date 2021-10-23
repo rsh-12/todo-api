@@ -6,7 +6,6 @@ import ru.example.todoapp.domain.request.TodoSectionRequest;
 import ru.example.todoapp.entity.TodoSection;
 import ru.example.todoapp.entity.TodoTask;
 import ru.example.todoapp.entity.User;
-import ru.example.todoapp.service.dto.TodoSectionDto;
 
 import java.util.List;
 import java.util.Optional;
@@ -82,5 +81,4 @@ public interface TodoSectionService {
 
     void removeTasks(Long userId, Long sectionId, List<TodoTask> tasks);
 
-    TodoSectionDto mapToSectionDto(TodoSection section);
 }
