@@ -28,10 +28,11 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.example.todoapp.controller.assembler.TodoTaskModelAssembler;
 import ru.example.todoapp.domain.request.TodoTaskRequest;
-import ru.example.todoapp.service.dto.TodoTaskDto;
 import ru.example.todoapp.entity.TodoTask;
-import ru.example.todoapp.util.filters.FilterByDate;
 import ru.example.todoapp.service.TodoTaskService;
+import ru.example.todoapp.service.dto.TodoTaskDto;
+import ru.example.todoapp.service.mapper.TaskMapper;
+import ru.example.todoapp.util.filters.FilterByDate;
 
 import javax.validation.Valid;
 import java.net.URI;
@@ -44,11 +45,14 @@ public class TodoTaskController {
 
     private final TodoTaskService todoTaskService;
     private final TodoTaskModelAssembler assembler;
+    private final TaskMapper taskMapper;
 
     @Autowired
-    public TodoTaskController(TodoTaskService todoTaskService, TodoTaskModelAssembler assembler) {
+    public TodoTaskController(TodoTaskService todoTaskService, TodoTaskModelAssembler assembler,
+                              TaskMapper taskMapper) {
         this.todoTaskService = todoTaskService;
         this.assembler = assembler;
+        this.taskMapper = taskMapper;
     }
 
     // get all tasks
@@ -60,7 +64,7 @@ public class TodoTaskController {
 
         Page<TodoTaskDto> tasks = todoTaskService
                 .findAll(date, pageable)
-                .map(todoTaskService::mapToTaskDto);
+                .map(taskMapper::mapToTaskDto);
 
         return ResponseEntity.ok()
                 .body(pra.toModel(tasks, assembler));
@@ -71,7 +75,7 @@ public class TodoTaskController {
     @GetMapping(value = "/{id}", produces = "application/json")
     public ResponseEntity<EntityModel<TodoTaskDto>> getTask(@PathVariable("id") Long taskId) {
         var model = todoTaskService.findOne(taskId)
-                .map(task -> assembler.toModel(todoTaskService.mapToTaskDto(task)));
+                .map(task -> assembler.toModel(taskMapper.mapToTaskDto(task)));
 
         return ResponseEntity.of(model);
     }
