@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.example.todoapp.domain.request.TodoTaskRequest;
 import ru.example.todoapp.dsl.TaskBuilder;
-import ru.example.todoapp.service.dto.TodoTaskDto;
 import ru.example.todoapp.entity.TodoTask;
 import ru.example.todoapp.exception.CustomException;
 import ru.example.todoapp.facade.AuthUserFacade;
@@ -108,19 +107,6 @@ public class TodoTaskServiceImpl implements TodoTaskService {
                     task.setCompletionDate(request.completionDate());
                     return todoTaskRepository.save(task);
                 });
-    }
-
-    @Override
-    public TodoTaskDto mapToTaskDto(TodoTask task) {
-        return new TodoTaskDto(
-                task.getId(),
-                task.getTitle(),
-                task.getCompletionDate(),
-                task.isCompleted(),
-                task.isStarred(),
-                task.getCreatedAt(),
-                task.getUpdatedAt()
-        );
     }
 
 }

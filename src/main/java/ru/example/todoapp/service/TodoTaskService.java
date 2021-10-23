@@ -4,7 +4,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import ru.example.todoapp.domain.request.TaskIdsWrapper;
 import ru.example.todoapp.domain.request.TodoTaskRequest;
-import ru.example.todoapp.service.dto.TodoTaskDto;
 import ru.example.todoapp.entity.TodoTask;
 import ru.example.todoapp.entity.User;
 import ru.example.todoapp.util.filters.FilterByDate;
@@ -73,5 +72,4 @@ public interface TodoTaskService {
      */
     Optional<TodoTask> save(Long taskId, TodoTaskRequest taskRequest);
 
-    TodoTaskDto mapToTaskDto(TodoTask task);
 }
