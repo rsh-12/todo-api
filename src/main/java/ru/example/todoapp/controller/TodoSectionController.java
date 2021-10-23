@@ -28,10 +28,11 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.example.todoapp.controller.assembler.TodoSectionModelAssembler;
 import ru.example.todoapp.domain.request.TaskIdsWrapper;
 import ru.example.todoapp.domain.request.TodoSectionRequest;
-import ru.example.todoapp.service.dto.TodoSectionDto;
 import ru.example.todoapp.entity.TodoSection;
 import ru.example.todoapp.facade.TasksFacade;
 import ru.example.todoapp.service.TodoSectionService;
+import ru.example.todoapp.service.dto.TodoSectionDto;
+import ru.example.todoapp.service.mapper.SectionMapper;
 import ru.example.todoapp.util.filters.FilterByOperation;
 
 import javax.validation.Valid;
@@ -49,13 +50,15 @@ public class TodoSectionController {
     private final TodoSectionService todoSectionService;
     private final TasksFacade tasksFacade;
     private final TodoSectionModelAssembler assembler;
+    private final SectionMapper sectionMapper;
 
     @Autowired
     public TodoSectionController(TodoSectionService todoSectionService, TasksFacade tasksFacade,
-                                 TodoSectionModelAssembler assembler) {
+                                 TodoSectionModelAssembler assembler, SectionMapper sectionMapper) {
         this.todoSectionService = todoSectionService;
         this.tasksFacade = tasksFacade;
         this.assembler = assembler;
+        this.sectionMapper = sectionMapper;
     }
 
     // get all sections
@@ -64,7 +67,7 @@ public class TodoSectionController {
     public ResponseEntity<?> getSections(@PageableDefault Pageable pageable,
                                          PagedResourcesAssembler<TodoSectionDto> pra) {
         Page<TodoSectionDto> sections = todoSectionService.findAll(pageable)
-                .map(todoSectionService::mapToSectionDto);
+                .map(sectionMapper::mapToSectionDto);
 
         return ResponseEntity.ok()
                 .body(pra.toModel(sections, assembler));
@@ -75,7 +78,7 @@ public class TodoSectionController {
     @GetMapping(value = "/{id}", produces = "application/json")
     public ResponseEntity<?> getSection(@PathVariable("id") Long sectionId) {
         return ResponseEntity.of(todoSectionService.findOne(sectionId)
-                .map(todoSectionService::mapToSectionDto)
+                .map(sectionMapper::mapToSectionDto)
                 .map(assembler::toModel));
     }
 
