@@ -4,6 +4,8 @@ package ru.example.todoapp.entity;
  * Time: 10:47 AM
  * */
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -19,6 +21,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "tokens")
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class RefreshToken {
 
     @Id

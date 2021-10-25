@@ -6,6 +6,8 @@ package ru.example.todoapp.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.CreationTimestamp;
 import ru.example.todoapp.domain.Role;
 import ru.example.todoapp.validation.ValidEmail;
@@ -33,6 +35,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "app_user")
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class User {
 
     @Id
@@ -63,11 +66,13 @@ public class User {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user",
             cascade = {CascadeType.REFRESH, CascadeType.DETACH,
                     CascadeType.REMOVE, CascadeType.MERGE})
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     private Set<TodoSection> todoSections;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user",
             cascade = {CascadeType.REFRESH, CascadeType.DETACH,
                     CascadeType.REMOVE, CascadeType.MERGE})
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     private List<TodoTask> todoTasks;
 
     public User() {
