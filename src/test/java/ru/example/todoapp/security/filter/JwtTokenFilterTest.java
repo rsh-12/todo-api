@@ -45,7 +45,6 @@ class JwtTokenFilterTest {
         given(jwtTokenService.getAuthentication(anyString())).willReturn(auth);
 
         var request = new MockHttpServletRequest();
-        request.addHeader("Authorization", "Bearer " + "someAccessToken");
         request.setRequestURI("/api/test");
         jwtTokenFilter.doFilterInternal(request, new MockHttpServletResponse(), new MockFilterChain());
 
