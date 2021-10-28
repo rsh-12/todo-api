@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -51,4 +52,17 @@ class JwtTokenFilterTest {
         assertEquals(SecurityContextHolder.getContext().getAuthentication().getName(), "user@mail.com");
         assertTrue(SecurityContextHolder.getContext().getAuthentication().isAuthenticated());
     }
+
+    @Test
+    public void jwtTokenFilterTest_TokenNotProvided() throws ServletException, IOException {
+        given(jwtTokenService.resolveAccessToken(any())).willReturn(Optional.empty());
+        given(jwtTokenService.isTokenValid(anyString())).willReturn(true);
+
+        var request = new MockHttpServletRequest();
+        request.setRequestURI("/api/test");
+        jwtTokenFilter.doFilterInternal(request, new MockHttpServletResponse(), new MockFilterChain());
+
+        assertNull(SecurityContextHolder.getContext().getAuthentication());
+    }
+
 }
