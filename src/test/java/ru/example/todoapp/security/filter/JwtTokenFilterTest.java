@@ -65,4 +65,16 @@ class JwtTokenFilterTest {
         assertNull(SecurityContextHolder.getContext().getAuthentication());
     }
 
+    @Test
+    public void jwtTokenFilterTest_TokenNotValid() throws ServletException, IOException {
+        given(jwtTokenService.resolveAccessToken(any())).willReturn(Optional.of("SomeAccessToken"));
+        given(jwtTokenService.isTokenValid(anyString())).willReturn(false);
+
+        var request = new MockHttpServletRequest();
+        request.setRequestURI("/api/test");
+        jwtTokenFilter.doFilterInternal(request, new MockHttpServletResponse(), new MockFilterChain());
+
+        assertNull(SecurityContextHolder.getContext().getAuthentication());
+    }
+
 }
