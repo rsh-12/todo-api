@@ -4,7 +4,6 @@ package ru.example.todoapp.security.filter;
  * Time: 1:04 PM
  * */
 
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -29,8 +28,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest httpServletRequest,
                                     HttpServletResponse httpServletResponse,
                                     FilterChain filterChain) throws ServletException, IOException {
-        String accessToken = jwtTokenService.resolveAccessToken(httpServletRequest)
-                .orElse("");
+        String accessToken = jwtTokenService.resolveAccessToken(httpServletRequest).orElse("");
 
         try {
             if (!accessToken.isEmpty() && jwtTokenService.isTokenValid(accessToken)) {
@@ -39,7 +37,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
             }
         } catch (CustomException ex) {
             SecurityContextHolder.clearContext();
-            httpServletResponse.sendError(HttpStatus.BAD_REQUEST.value(), "Invalid token");
+//            httpServletResponse.sendError(HttpStatus.BAD_REQUEST.value(), "Invalid token");
             return;
         }
 
