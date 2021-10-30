@@ -21,7 +21,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "tokens")
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+//@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class RefreshToken {
 
     @Id

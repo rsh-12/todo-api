@@ -28,7 +28,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "task")
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+//@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class TodoTask {
 
     @Id
