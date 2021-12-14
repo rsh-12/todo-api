@@ -31,7 +31,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void delete(Long userId) {
         if (!userRepository.existsById(userId)) {
-            throw CustomException.notFound("User not found: id=" + userId);
+            throw CustomException.createNotFoundExc("User not found: id=" + userId);
         }
         userRepository.deleteById(userId);
     }
@@ -44,11 +44,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Optional<User> updatePassword(String email, String password) {
-        return userRepository.findByUsername(email)
-                .map(user -> {
-                    user.setPassword(bCryptPasswordEncoder.encode(password));
-                    return userRepository.save(user);
-                });
+        return userRepository.findByUsername(email).map(user -> {
+            user.setPassword(bCryptPasswordEncoder.encode(password));
+            return userRepository.save(user);
+        });
     }
 
     @Override

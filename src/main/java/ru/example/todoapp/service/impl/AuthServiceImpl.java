@@ -63,7 +63,7 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public User register(CredentialsRequest credentials) {
         if (userRepository.existsByUsername(credentials.username())) {
-            throw CustomException.badRequest("Username already in use");
+            throw CustomException.createBadRequestExc("Username already in use");
         }
 
         User user = UserBuilder.user(u -> {

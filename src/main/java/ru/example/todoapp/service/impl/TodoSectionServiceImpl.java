@@ -58,7 +58,7 @@ public class TodoSectionServiceImpl implements TodoSectionService {
         todoSectionRepository.findById(id).map(TodoSection::getUser)
                 .filter(Combinators.checkUserAccess(authUserFacade.getLoggedUser()))
                 .ifPresentOrElse(user -> todoSectionRepository.deleteById(id), () -> {
-                    throw CustomException.notFound("Section not found");
+                    throw CustomException.createNotFoundExc("Section not found");
                 });
     }
 

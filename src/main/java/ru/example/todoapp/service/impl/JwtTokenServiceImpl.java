@@ -90,7 +90,7 @@ public class JwtTokenServiceImpl implements JwtTokenService {
                     .parseClaimsJws(accessToken);
             return true;
         } catch (JwtException | IllegalArgumentException ex) {
-            throw CustomException.forbidden("Expired/Invalid JWT token");
+            throw CustomException.createForbiddenExc("Expired/Invalid JWT token");
         }
     }
 

@@ -46,7 +46,7 @@ public class TasksFacadeImpl implements TasksFacade {
 
     private void checkTaskIds(Set<Long> taskIds) {
         if (taskIds == null || taskIds.isEmpty()) {
-            throw CustomException.badRequest("Tasks IDs are required");
+            throw CustomException.createBadRequestExc("Tasks IDs are required");
         }
     }
 

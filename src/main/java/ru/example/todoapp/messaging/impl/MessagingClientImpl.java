@@ -35,12 +35,12 @@ public class MessagingClientImpl implements MessagingClient {
     @Override
     public void send(EmailRequest email) {
         if (!userService.existsByUsername(email.getEmail())) {
-            throw CustomException.notFound("Username not found: email=" + email);
+            throw CustomException.createNotFoundExc("Username not found: email=" + email);
         }
 
         Object response = getResponse(emailExchange, email, "todo.email.replies");
         if (response == null || ((boolean) response == false)) {
-            throw CustomException.internalServerError("An error occurred while generating the token");
+            throw CustomException.createInternalServerErrorExc("An error occurred while generating the token");
         }
     }
 
