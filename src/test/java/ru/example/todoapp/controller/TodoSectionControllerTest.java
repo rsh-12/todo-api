@@ -149,7 +149,7 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
     @Test
     @WithUserDetails(USER)
     public void deleteSection_ShouldReturnNotFound() throws Exception {
-        doThrow(CustomException.notFound("Section not found"))
+        doThrow(CustomException.createNotFoundExc("Section not found"))
                 .when(sectionService).delete(anyLong());
 
         mvc.perform(delete(API_SECTIONS + 1)
@@ -164,7 +164,7 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
     @Test
     @WithUserDetails(USER)
     public void deleteSection_ShouldReturnForbidden() throws Exception {
-        doThrow(CustomException.forbidden("Not enough permissions"))
+        doThrow(CustomException.createForbiddenExc("Not enough permissions"))
                 .when(sectionService).delete(anyLong());
 
         mvc.perform(delete(API_SECTIONS + 1)

@@ -179,7 +179,7 @@ public class AuthControllerTest extends AbstractControllerTestClass {
     @Test
     @DisplayName("sendPasswordResetToken: throws CustomException, returns notFound")
     public void sendPasswordResetToken_ShouldThrowCustomExceptionAndReturnNotFound() throws Exception {
-        doThrow(CustomException.notFound("Username not found")).when(messagingService).send(any(EmailRequest.class));
+        doThrow(CustomException.createNotFoundExc("Username not found")).when(messagingService).send(any(EmailRequest.class));
 
         String body = objectMapper.writeValueAsString(new EmailRequest("test@mail.com"));
         mvc.perform(post(API_AUTH + "/password/forgot")
@@ -193,7 +193,7 @@ public class AuthControllerTest extends AbstractControllerTestClass {
     @Test
     @DisplayName("sendPasswordResetToken: throws CustomException, returns internalServerError")
     public void sendPasswordResetToken_ShouldThrowCustomExceptionAndReturnInternalServerError() throws Exception {
-        doThrow(CustomException.internalServerError("An error occurred while generating the token"))
+        doThrow(CustomException.createInternalServerErrorExc("An error occurred while generating the token"))
                 .when(messagingService).send(any(EmailRequest.class));
 
         String body = objectMapper.writeValueAsString(new EmailRequest("test@mail.com"));
