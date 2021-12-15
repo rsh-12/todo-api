@@ -6,8 +6,6 @@ package ru.example.todoapp.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -32,7 +30,6 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "section")
-//@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class TodoSection {
 
     @Id
@@ -54,7 +51,6 @@ public class TodoSection {
     private LocalDateTime updatedAt;
 
     @OneToMany(mappedBy = "todoSection", cascade = {CascadeType.PERSIST}, fetch = FetchType.LAZY)
-//    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     List<TodoTask> todoTasks = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
