@@ -93,7 +93,7 @@ public class TodoTaskControllerTest extends AbstractControllerTestClass {
     @WithUserDetails(USER)
     public void getTask_ShouldReturnNotFound() throws Exception {
         given(taskService.findOne(anyLong()))
-                .willThrow(CustomException.notFound("Task not found"));
+                .willThrow(CustomException.createNotFoundExc("Task not found"));
 
         mvc.perform(get(API_TASKS + "/1"))
                 .andExpect(status().isNotFound())
@@ -114,7 +114,7 @@ public class TodoTaskControllerTest extends AbstractControllerTestClass {
     @Test
     @WithUserDetails(USER)
     public void deleteTask_ShouldReturnNotFound() throws Exception {
-        doThrow(CustomException.notFound("Task not found"))
+        doThrow(CustomException.createNotFoundExc("Task not found"))
                 .when(taskService).delete(anyLong());
 
         mvc.perform(delete(API_TASKS + "/1"))
@@ -127,7 +127,7 @@ public class TodoTaskControllerTest extends AbstractControllerTestClass {
     @Test
     @WithUserDetails(USER)
     public void deleteTask_ShouldReturnForbidden() throws Exception {
-        doThrow(CustomException.forbidden("Not enough permissions"))
+        doThrow(CustomException.createForbiddenExc("Not enough permissions"))
                 .when(taskService).delete(anyLong());
 
         mvc.perform(delete(API_TASKS + "/1"))
