@@ -6,6 +6,9 @@ package ru.example.todoapp.service.impl;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -38,9 +41,11 @@ public class TodoSectionServiceImpl implements TodoSectionService {
 
     // get section by id
     @Override
+    @Cacheable(cacheNames = "sections", key = "#sectionId")
     @Transactional(readOnly = true)
     public Optional<TodoSection> findOne(Long sectionId) {
         log.info("Get the section by id: {}", sectionId);
+
         return todoSectionRepository.findByUserIdAndId(authUserFacade.getUserId(), sectionId);
     }
 
@@ -54,6 +59,7 @@ public class TodoSectionServiceImpl implements TodoSectionService {
 
     // delete section by id
     @Override
+    @CacheEvict(cacheNames = "sections", key = "#id")
     public void delete(Long id) {
         todoSectionRepository.findById(id).map(TodoSection::getUser)
                 .filter(Combinators.checkUserAccess(authUserFacade.getLoggedUser()))
@@ -73,6 +79,7 @@ public class TodoSectionServiceImpl implements TodoSectionService {
 
     // update section title
     @Override
+    @CachePut(cacheNames = "sections", key = "#sectionId")
     public Optional<TodoSection> update(Long sectionId, TodoSectionRequest sectionRequest) {
         Optional<TodoSection> sectionOptional = todoSectionRepository.findById(sectionId);
 
