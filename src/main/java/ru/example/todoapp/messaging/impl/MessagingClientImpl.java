@@ -9,10 +9,10 @@ import org.springframework.amqp.core.MessageProperties;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.example.todoapp.exception.CustomException;
-import ru.example.todoapp.messaging.MessagingClient;
 import ru.example.todoapp.domain.request.EmailRequest;
 import ru.example.todoapp.domain.request.TokenRequest;
+import ru.example.todoapp.exception.CustomException;
+import ru.example.todoapp.messaging.MessagingClient;
 import ru.example.todoapp.service.UserService;
 
 @Service
@@ -33,12 +33,12 @@ public class MessagingClientImpl implements MessagingClient {
     }
 
     @Override
-    public void send(EmailRequest email) {
-        if (!userService.existsByUsername(email.getEmail())) {
-            throw CustomException.createNotFoundExc("Username not found: email=" + email);
+    public void send(EmailRequest emailRequest) {
+        if (!userService.existsByUsername(emailRequest.email())) {
+            throw CustomException.createNotFoundExc("Username not found: email=" + emailRequest);
         }
 
-        Object response = getResponse(emailExchange, email, "todo.email.replies");
+        Object response = getResponse(emailExchange, emailRequest, "todo.email.replies");
         if (response == null || ((boolean) response == false)) {
             throw CustomException.createInternalServerErrorExc("An error occurred while generating the token");
         }
