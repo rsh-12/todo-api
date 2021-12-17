@@ -4,29 +4,6 @@ package ru.example.todoapp.domain.request;
  * Time: 1:22 PM
  * */
 
-public class EmailRequest {
+public record EmailRequest(String email) {
 
-    private String email;
-
-    public EmailRequest() {
-    }
-
-    public EmailRequest(String email) {
-        this.email = email;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    @Override
-    public String toString() {
-        return "Email{" +
-                "email='" + email + '\'' +
-                '}';
-    }
 }
