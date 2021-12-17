@@ -4,6 +4,9 @@ package ru.example.todoapp.entity;
  * Time: 10:47 AM
  * */
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -19,6 +22,9 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "tokens")
+@Getter
+@Setter
+@NoArgsConstructor
 public class RefreshToken {
 
     @Id
@@ -42,65 +48,10 @@ public class RefreshToken {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
-    public RefreshToken() {
-    }
-
     public RefreshToken(String token, Long userId, String createdByIp) {
         this.token = token;
         this.userId = userId;
         this.createdByIp = createdByIp;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
-    }
-
-    public Long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
-
-    public String getCreatedByIp() {
-        return createdByIp;
-    }
-
-    public void setCreatedByIp(String createdByIp) {
-        this.createdByIp = createdByIp;
-    }
-
-    public LocalDateTime getExpiresAt() {
-        return expiresAt;
-    }
-
-    public void setExpiresAt(LocalDateTime expiresAt) {
-        this.expiresAt = expiresAt;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
     }
 
     @Override
