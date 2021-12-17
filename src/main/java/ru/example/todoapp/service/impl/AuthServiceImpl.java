@@ -13,7 +13,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.example.todoapp.config.properties.TokenProperties;
 import ru.example.todoapp.domain.request.CredentialsRequest;
-import ru.example.todoapp.dsl.UserBuilder;
 import ru.example.todoapp.entity.RefreshToken;
 import ru.example.todoapp.entity.User;
 import ru.example.todoapp.exception.CustomException;
@@ -66,11 +65,7 @@ public class AuthServiceImpl implements AuthService {
             throw CustomException.createBadRequestExc("Username already in use");
         }
 
-        User user = UserBuilder.user(u -> {
-            u.username(credentials.username());
-            u.password(bCryptPasswordEncoder.encode(credentials.password()));
-            // u.roles(r -> r.role(USER)); USER is the default role
-        });
+        User user = new User(credentials.username(), bCryptPasswordEncoder.encode(credentials.password()));
 
         return userRepository.save(user);
     }
