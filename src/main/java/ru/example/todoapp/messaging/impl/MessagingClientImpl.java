@@ -34,7 +34,7 @@ public class MessagingClientImpl implements MessagingClient {
 
     @Override
     public void send(EmailRequest emailRequest) {
-        if (!userService.existsByUsername(emailRequest.email())) {
+        if (!userService.existsByUsername(emailRequest.getEmail())) {
             throw CustomException.createNotFoundExc("Username not found: email=" + emailRequest);
         }
 
