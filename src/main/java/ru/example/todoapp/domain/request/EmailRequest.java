@@ -4,6 +4,15 @@ package ru.example.todoapp.domain.request;
  * Time: 1:22 PM
  * */
 
-public record EmailRequest(String email) {
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class EmailRequest {
+
+    private String email;
 
 }
