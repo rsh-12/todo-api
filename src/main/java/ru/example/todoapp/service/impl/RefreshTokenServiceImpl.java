@@ -30,15 +30,17 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     @Override
     public RefreshToken create(Long userId, String ip) {
         String token = jwtTokenService.buildRefreshToken();
-        RefreshToken refresh = findByUserId(userId).orElseGet(RefreshToken::new);
 
+        RefreshToken refresh = findByUserId(userId).orElseGet(RefreshToken::new);
         refresh.setToken(token);
         refresh.setUserId(userId);
         refresh.setCreatedByIp(ip);
+
         long expTime = jwtTokenService.getExpiration(token).getTime();
         refresh.setExpiresAt(new Timestamp(expTime).toLocalDateTime());
 
         CompletableFuture.runAsync(() -> refreshTokenRepository.save(refresh));
+
         return refresh;
     }
 
