@@ -50,10 +50,12 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public Optional<Map<String, String>> login(CredentialsRequest credentials, String ip) {
         try {
-            Authentication auth = authManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(credentials.username(), credentials.password()));
+            var authentication = new UsernamePasswordAuthenticationToken(credentials.username(), credentials.password());
+            Authentication auth = authManager.authenticate(authentication);
             User userFromDb = ((UserDetailsImpl) auth.getPrincipal()).getUser();
+
             return Optional.of(buildResponseBody(userFromDb, ip));
+
         } catch (AuthenticationException ex) {
             return Optional.empty();
         }
