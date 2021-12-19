@@ -52,13 +52,16 @@ public class TodoSectionServiceTest {
     private AuthUserFacade authUserFacade;
 
     // findSectionById
+/*
     @Test
     public void findSectionById_ShouldReturnEmpty() {
         given(authUserFacade.getUserId()).willReturn(1L);
         given(sectionRepository.findByUserIdAndId(anyLong(), anyLong())).willReturn(Optional.empty());
         assertTrue(sectionService.findOne(1L).isEmpty());
     }
+*/
 
+/*
     @Test
     public void findSectionById_ShouldReturnSection() {
         TodoSection section = mock(TodoSection.class);
@@ -72,8 +75,10 @@ public class TodoSectionServiceTest {
         assertNotNull(todoSection);
         assertEquals("Title", todoSection.getTitle());
     }
+*/
 
     // findSections
+/*
     @Test
     public void findSections_ShouldReturnEmptyPage() {
         given(authUserFacade.getUserId()).willReturn(1L);
@@ -83,7 +88,9 @@ public class TodoSectionServiceTest {
         Page<TodoSection> sections = sectionService.findAll(Pageable.unpaged());
         assertTrue(sections.isEmpty());
     }
+*/
 
+/*
     @Test
     public void findSections_ShouldReturnPage() {
         var mockSection1 = new TodoSection(1L, "section1");
@@ -98,6 +105,7 @@ public class TodoSectionServiceTest {
         assertFalse(sections.isEmpty());
         assertEquals(2, sections.getContent().size());
     }
+*/
 
     // deleteSectionById
     @Test

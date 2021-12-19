@@ -54,6 +54,7 @@ public class TodoTaskServiceTest {
     private AuthUserFacade authUserFacade;
 
     // findTasks
+/*
     @Test
     public void findTasks_ShouldReturnAllTasks() {
         TodoTask task1 = mock(TodoTask.class);
@@ -72,6 +73,7 @@ public class TodoTaskServiceTest {
         assertFalse(tasks.isEmpty());
         assertEquals(2, tasks.size());
     }
+*/
 
     @Test
     public void findTasks_ShouldReturnTodaysTasks() {
@@ -117,6 +119,7 @@ public class TodoTaskServiceTest {
         assertEquals("Title", taskFromDb.getTitle());
     }
 
+/*
     @Test
     public void findTaskById_ShouldReturnEmpty() {
         given(taskRepository.findByIdAndUserId(anyLong(), anyLong())).willReturn(Optional.empty());
@@ -124,6 +127,7 @@ public class TodoTaskServiceTest {
 
         assertEquals(Optional.empty(), taskService.findOne(1L));
     }
+*/
 
     // deleteTaskById
     @Test

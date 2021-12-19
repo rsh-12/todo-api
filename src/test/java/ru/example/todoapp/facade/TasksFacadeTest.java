@@ -44,6 +44,7 @@ public class TasksFacadeTest {
     @Mock
     private TodoSectionService sectionService;
 
+/*
     @Test
     public void addTasks_ShouldCallServiceMethods() {
         TodoTask task1 = mock(TodoTask.class);
@@ -58,6 +59,7 @@ public class TasksFacadeTest {
         verify(taskService).findByIds(anySet(), anyLong());
         verify(sectionService).addTasks(anyLong(), anyLong(), anyList());
     }
+*/
 
     @Test
     public void addTasks_ShouldThrowCustomException() {
