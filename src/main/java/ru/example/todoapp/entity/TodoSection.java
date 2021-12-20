@@ -6,9 +6,10 @@ package ru.example.todoapp.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
-
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -23,11 +24,15 @@ import javax.persistence.PreRemove;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
+@Getter
+@Setter
+@NoArgsConstructor
 @Entity
 @Table(name = "section")
 public class TodoSection {
@@ -57,53 +62,16 @@ public class TodoSection {
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
 
+    @Column(name = "user_id", updatable = false, insertable = false)
+    private Long userId;
+
     @PreRemove
     private void preRemove() {
         todoTasks.forEach(task -> task.setTodoSection(null));
     }
 
-    public TodoSection() {
-    }
-
-    public TodoSection(Long id, String title) {
-        this.id = id;
-        this.title = title;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
     public TodoSection(String title) {
         this.title = title;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title.trim();
     }
 
     @JsonProperty("tasks")
@@ -139,31 +107,31 @@ public class TodoSection {
         return this;
     }
 
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         TodoSection that = (TodoSection) o;
 
-        if (!Objects.equals(id, that.id)) return false;
-        if (!Objects.equals(title, that.title)) return false;
-        return Objects.equals(user, that.user);
+        if (!id.equals(that.id)) {
+            return false;
+        }
+        if (!title.equals(that.title)) {
+            return false;
+        }
+        return Objects.equals(userId, that.userId);
     }
 
     @Override
     public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (title != null ? title.hashCode() : 0);
-        result = 31 * result + (user != null ? user.hashCode() : 0);
+        int result = id.hashCode();
+        result = 31 * result + title.hashCode();
+        result = 31 * result + (userId != null ? userId.hashCode() : 0);
         return result;
     }
 
@@ -173,4 +141,5 @@ public class TodoSection {
                 "title='" + title + '\'' +
                 '}';
     }
+
 }
