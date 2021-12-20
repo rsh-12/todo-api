@@ -122,6 +122,7 @@ public class TodoSectionServiceTest {
         assertThrows(CustomException.class, () -> sectionService.delete(1L));
     }
 
+/*
     @Test
     public void deleteSectionById_AccessDenied_ShouldThrowException() {
         TodoSection section = mock(TodoSection.class);
@@ -138,8 +139,9 @@ public class TodoSectionServiceTest {
 
         assertThrows(CustomException.class, () -> sectionService.delete(1L));
     }
+*/
 
-    @Test
+    /*@Test
     public void deleteSectionById() {
         TodoSection section = mock(TodoSection.class);
 
@@ -157,15 +159,17 @@ public class TodoSectionServiceTest {
         doNothing().when(sectionRepository).deleteById(anyLong());
 
         assertDoesNotThrow(() -> sectionService.delete(1L));
-    }
+    }*/
 
     // create
+/*
     @Test
     public void createSection_ShouldReturnSavedSection() {
         given(authUserFacade.getLoggedUser()).willReturn(mock(User.class));
         given(sectionRepository.save(any(TodoSection.class))).willReturn(mock(TodoSection.class));
         assertDoesNotThrow(() -> sectionService.create(new TodoSectionRequest("important")));
     }
+*/
 
     // updateSection
     @Test
@@ -180,6 +184,7 @@ public class TodoSectionServiceTest {
         assertEquals(Optional.empty(), sectionService.update(1L, new TodoSectionRequest("Title")));
     }
 
+/*
     @Test
     public void updateSection_AccessDenied_ShouldReturnEmpty() {
         User user = new User();
@@ -200,7 +205,9 @@ public class TodoSectionServiceTest {
         Optional<TodoSection> sectionOptional = sectionService.update(1L, new TodoSectionRequest("Title"));
         assertEquals(Optional.empty(), sectionOptional);
     }
+*/
 
+/*
     @Test
     public void updateSection() {
         User user = new User();
@@ -224,6 +231,7 @@ public class TodoSectionServiceTest {
         assertNotNull(todoSection);
         assertEquals(section, todoSection);
     }
+*/
 
     @Test
     public void addTasks_ShouldDoNothing() {
