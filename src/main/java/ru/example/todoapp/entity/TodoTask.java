@@ -6,9 +6,9 @@ package ru.example.todoapp.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
-
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Objects;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -20,10 +20,13 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Objects;
+import lombok.Getter;
+import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
+@Getter
+@Setter
 @Entity
 @Table(name = "task")
 public class TodoTask {
@@ -65,6 +68,9 @@ public class TodoTask {
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
 
+    @Column(name = "user_id", updatable = false, insertable = false)
+    private Long userId;
+
     public TodoTask() {
     }
 
@@ -77,82 +83,24 @@ public class TodoTask {
         this.completionDate = completionDate;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title.trim();
-    }
-
-    public boolean isCompleted() {
-        return completed;
-    }
-
-    public void setCompleted(boolean completed) {
-        this.completed = completed;
-    }
-
-    public boolean isStarred() {
-        return starred;
-    }
-
-    public void setStarred(boolean starred) {
-        this.starred = starred;
-    }
-
-    public LocalDate getCompletionDate() {
-        return completionDate;
-    }
-
     public void setCompletionDate(LocalDate completionDate) {
         this.completionDate = Objects.requireNonNullElseGet(completionDate, LocalDate::now);
     }
 
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
-    public TodoSection getTodoSection() {
-        return todoSection;
-    }
-
-    public void setTodoSection(TodoSection todoSection) {
-        this.todoSection = todoSection;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         TodoTask todoTask = (TodoTask) o;
 
-        if (!id.equals(todoTask.id)) return false;
+        if (!id.equals(todoTask.id)) {
+            return false;
+        }
         return Objects.equals(user, todoTask.user);
     }
 
