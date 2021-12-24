@@ -4,28 +4,10 @@ package ru.example.todoapp.facade;
  * Time: 5:11 PM
  * */
 
-import ru.example.todoapp.domain.CustomPrincipal;
-import ru.example.todoapp.entity.User;
-import ru.example.todoapp.domain.Role;
-
-import java.util.Set;
-
 public interface AuthUserFacade {
 
+    boolean containsRoleAdmin();
 
-    /**
-     * <b>This method returns the User that contains onle id and roles parsed from access token!</b>
-     */
-    User getLoggedUser();
-
-    CustomPrincipal getPrincipal();
-
-    User mapToUser(CustomPrincipal principal);
-
-    CustomPrincipal mapToPrincipal(User user);
-
-    Long getUserId();
-
-    Set<Role> getUserRoles();
+    Long getId();
 
 }
