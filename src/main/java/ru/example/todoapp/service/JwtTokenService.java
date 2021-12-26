@@ -54,14 +54,6 @@ public interface JwtTokenService {
     Long extractUserId(String accessToken);
 
     /**
-     * Gets user roles from the access token body.
-     *
-     * @param accessToken the access token as a string
-     * @return the user roles
-     */
-    Set<Role> extractUserRoles(String accessToken);
-
-    /**
      * Retrieves the user data from the access token body:
      * id and roles. Creates an instance with of the User class
      * with the received data, then the UserDetailsImpl instance,
