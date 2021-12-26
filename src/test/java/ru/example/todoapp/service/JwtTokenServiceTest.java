@@ -4,8 +4,24 @@ package ru.example.todoapp.service;
  * Time: 9:01 AM
  * */
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
+
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import java.nio.charset.StandardCharsets;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.Collections;
+import java.util.Date;
+import java.util.Map;
+import java.util.Set;
+import javax.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,23 +33,6 @@ import ru.example.todoapp.config.properties.TokenProperties;
 import ru.example.todoapp.domain.Role;
 import ru.example.todoapp.exception.CustomException;
 import ru.example.todoapp.service.impl.JwtTokenServiceImpl;
-
-import javax.servlet.http.HttpServletRequest;
-import java.nio.charset.StandardCharsets;
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
-import java.util.Collections;
-import java.util.Date;
-import java.util.Map;
-import java.util.Set;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
 
 @ExtendWith(SpringExtension.class)
 public class JwtTokenServiceTest {
@@ -134,20 +133,6 @@ public class JwtTokenServiceTest {
         assertNotNull(id);
 
         assertEquals(1L, (long) id);
-    }
-
-    // extractUserRoles
-    @Test
-    public void getUserRoles_ShouldReturnRoles() {
-        String accessToken = jwtTokenService
-                .buildAccessToken(1L, Set.of(Role.ADMIN, Role.USER));
-        assertNotNull(accessToken);
-
-        Set<Role> userRoles = jwtTokenService.extractUserRoles(accessToken);
-        assertNotNull(userRoles);
-
-        assertTrue(userRoles.contains(Role.USER));
-        assertTrue(userRoles.contains(Role.ADMIN));
     }
 
     // getAuthentication
