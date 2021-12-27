@@ -8,35 +8,40 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.stereotype.Service;
-import ru.example.todoapp.config.properties.TokenProperties;
-import ru.example.todoapp.domain.Role;
-import ru.example.todoapp.entity.User;
-import ru.example.todoapp.exception.CustomException;
-import ru.example.todoapp.security.UserDetailsImpl;
-import ru.example.todoapp.service.JwtTokenService;
-import ru.example.todoapp.util.RandomStringGenerator;
-
-import javax.annotation.PostConstruct;
-import javax.crypto.SecretKey;
-import javax.servlet.http.HttpServletRequest;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
+import javax.annotation.PostConstruct;
+import javax.crypto.SecretKey;
+import javax.servlet.http.HttpServletRequest;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.stereotype.Service;
+import ru.example.todoapp.config.properties.TokenProperties;
+import ru.example.todoapp.domain.Role;
+import ru.example.todoapp.exception.CustomException;
+import ru.example.todoapp.service.JwtTokenService;
 
 @Service
 public class JwtTokenServiceImpl implements JwtTokenService {
 
     private final TokenProperties tokenProperties;
 
+    @Autowired
     public JwtTokenServiceImpl(TokenProperties tokenProperties) {
         this.tokenProperties = tokenProperties;
+    }
+
+    @PostConstruct
+    private SecretKey getSecretKey() {
+        return Keys.hmacShaKeyFor(tokenProperties.getSecret().getBytes(StandardCharsets.UTF_8));
     }
 
     @Override
@@ -65,7 +70,7 @@ public class JwtTokenServiceImpl implements JwtTokenService {
                 .setClaims(claims)
                 .setIssuedAt(new Date())
                 .setExpiration(getValidity(tokenProperties.getRefreshTokenValidity()))
-                .setSubject(RandomStringGenerator.nextString())
+                .setSubject(UUID.randomUUID().toString())
                 .signWith(getSecretKey())
                 .compact();
     }
@@ -80,7 +85,6 @@ public class JwtTokenServiceImpl implements JwtTokenService {
                         : bearer); // for compatibility with swagger authentication
     }
 
-
     @Override
     public boolean isTokenValid(String accessToken) {
         try {
@@ -94,11 +98,6 @@ public class JwtTokenServiceImpl implements JwtTokenService {
         }
     }
 
-    @PostConstruct
-    private SecretKey getSecretKey() {
-        return Keys.hmacShaKeyFor(tokenProperties.getSecret().getBytes(StandardCharsets.UTF_8));
-    }
-
     @Override
     public Long extractUserId(String accessToken) {
         Claims claims = getClaimsBody(accessToken);
@@ -106,24 +105,12 @@ public class JwtTokenServiceImpl implements JwtTokenService {
     }
 
     @Override
-    public Set<Role> extractUserRoles(String accessToken) {
-        Claims claims = getClaimsBody(accessToken);
-        return extractRoles(claims);
-    }
-
-    @Override
     public Authentication getAuthentication(String accessToken) {
         Claims claims = getClaimsBody(accessToken);
-
         Long id = Long.parseLong(String.valueOf(claims.get("id")));
-        Set<Role> roles = extractRoles(claims);
+        Set<SimpleGrantedAuthority> authorities = extractAuthorities(claims);
 
-        User principal = new User();
-        principal.setId(id);
-        principal.setRoles(roles);
-        UserDetailsImpl userDetails = new UserDetailsImpl(principal);
-
-        return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
+        return new UsernamePasswordAuthenticationToken(id, "", authorities);
     }
 
     @Override
@@ -140,10 +127,10 @@ public class JwtTokenServiceImpl implements JwtTokenService {
     }
 
     @SuppressWarnings("unchecked")
-    private Set<Role> extractRoles(Claims claims) {
+    private Set<SimpleGrantedAuthority> extractAuthorities(Claims claims) {
         List<String> roles = claims.get("auth", List.class);
         return roles.stream()
-                .map(Role::valueOf)
+                .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toSet());
     }
 
