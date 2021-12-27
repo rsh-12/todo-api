@@ -4,6 +4,8 @@ package ru.example.todoapp.facade.impl;
  * Time: 8:37 PM
  * */
 
+import java.util.List;
+import java.util.Set;
 import org.springframework.stereotype.Component;
 import ru.example.todoapp.entity.TodoTask;
 import ru.example.todoapp.exception.CustomException;
@@ -12,26 +14,26 @@ import ru.example.todoapp.facade.TasksFacade;
 import ru.example.todoapp.service.TodoSectionService;
 import ru.example.todoapp.service.TodoTaskService;
 
-import java.util.List;
-import java.util.Set;
-
 @Component
 public class TasksFacadeImpl implements TasksFacade {
 
     private final TodoTaskService taskService;
     private final TodoSectionService sectionService;
-    private final AuthUserFacade authUserFacade;
+    private final AuthUserFacade currentUser;
 
-    public TasksFacadeImpl(TodoTaskService taskService, TodoSectionService sectionService, AuthUserFacade authUserFacade) {
+    public TasksFacadeImpl(
+            TodoTaskService taskService,
+            TodoSectionService sectionService,
+            AuthUserFacade currentUser) {
         this.taskService = taskService;
         this.sectionService = sectionService;
-        this.authUserFacade = authUserFacade;
+        this.currentUser = currentUser;
     }
 
     @Override
     public void addTasks(Long sectionId, Set<Long> taskIds) {
         checkTaskIds(taskIds);
-        Long userId = authUserFacade.getUserId();
+        Long userId = currentUser.getId();
         List<TodoTask> tasks = taskService.findByIds(taskIds, userId);
         sectionService.addTasks(userId, sectionId, tasks);
     }
@@ -39,7 +41,7 @@ public class TasksFacadeImpl implements TasksFacade {
     @Override
     public void removeTasks(Long sectionId, Set<Long> taskIds) {
         checkTaskIds(taskIds);
-        Long userId = authUserFacade.getUserId();
+        Long userId = currentUser.getId();
         List<TodoTask> tasks = taskService.findByIds(taskIds, userId);
         sectionService.removeTasks(userId, sectionId, tasks);
     }
