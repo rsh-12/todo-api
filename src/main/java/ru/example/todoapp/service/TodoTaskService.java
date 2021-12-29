@@ -70,6 +70,6 @@ public interface TodoTaskService {
      * @param taskRequest the TodoTaskRequest instance
      * @see TodoTask
      */
-    Optional<TodoTask> save(Long taskId, TodoTaskRequest taskRequest);
+    Optional<TodoTask> update(Long taskId, TodoTaskRequest taskRequest);
 
 }
