@@ -6,6 +6,8 @@ package ru.example.todoapp.controller;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import java.net.URI;
+import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -34,8 +36,6 @@ import ru.example.todoapp.service.dto.TodoTaskDto;
 import ru.example.todoapp.service.mapper.TaskMapper;
 import ru.example.todoapp.util.filters.FilterByDate;
 
-import javax.validation.Valid;
-import java.net.URI;
 
 @Api(tags = "Tasks")
 @RestController
@@ -49,7 +49,7 @@ public class TodoTaskController {
 
     @Autowired
     public TodoTaskController(TodoTaskService todoTaskService, TodoTaskModelAssembler assembler,
-                              TaskMapper taskMapper) {
+            TaskMapper taskMapper) {
         this.todoTaskService = todoTaskService;
         this.assembler = assembler;
         this.taskMapper = taskMapper;
@@ -60,7 +60,8 @@ public class TodoTaskController {
     @GetMapping(produces = "application/json")
     public ResponseEntity<?> getTasks(
             @RequestParam(value = "date", required = false, defaultValue = "ALL") FilterByDate date,
-            @PageableDefault(sort = {"createdAt"}) Pageable pageable, PagedResourcesAssembler<TodoTaskDto> pra) {
+            @PageableDefault(sort = {"createdAt"}) Pageable pageable,
+            PagedResourcesAssembler<TodoTaskDto> pra) {
 
         Page<TodoTaskDto> tasks = todoTaskService
                 .findAll(date, pageable)
@@ -102,9 +103,11 @@ public class TodoTaskController {
 
     @ApiOperation(value = "Update task", notes = "It permits to update a task")
     @PatchMapping(value = "/{id}", consumes = "application/json")
-    public ResponseEntity<String> updateTask(@PathVariable("id") Long taskId,
-                                             @Valid @RequestBody TodoTaskRequest taskRequest) {
-        URI location = todoTaskService.save(taskId, taskRequest)
+    public ResponseEntity<String> updateTask(
+            @PathVariable("id") Long taskId,
+            @Valid @RequestBody TodoTaskRequest taskRequest) {
+
+        URI location = todoTaskService.update(taskId, taskRequest)
                 .map(task -> ServletUriComponentsBuilder
                         .fromCurrentRequest()
                         .buildAndExpand(task.getId())
