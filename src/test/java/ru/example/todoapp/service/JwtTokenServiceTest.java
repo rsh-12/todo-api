@@ -106,7 +106,8 @@ public class JwtTokenServiceTest {
     // isTokenValid
     @Test
     public void isTokenValid_ShouldReturnTrue() {
-        String accessToken = jwtTokenService.buildAccessToken(1L, Collections.singleton(Role.USER));
+        String accessToken = jwtTokenService
+                .buildAccessToken(1L, Collections.singleton(Role.USER));
         boolean isAccessTokenValid = jwtTokenService.isTokenValid(accessToken);
         assertTrue(isAccessTokenValid);
     }
@@ -116,7 +117,8 @@ public class JwtTokenServiceTest {
         String accessToken = Jwts.builder()
                 .setClaims(Map.of("id", 1L))
                 .setExpiration(Date.from(Instant.now().minus(1, ChronoUnit.MINUTES)))
-                .signWith(Keys.hmacShaKeyFor(tokenProperties.getSecret().getBytes(StandardCharsets.UTF_8)))
+                .signWith(Keys.hmacShaKeyFor(
+                        tokenProperties.getSecret().getBytes(StandardCharsets.UTF_8)))
                 .compact();
 
         assertThrows(CustomException.class, () -> jwtTokenService.isTokenValid(accessToken));
