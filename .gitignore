@@ -73,3 +73,5 @@ pg_data/
 .env
 helper.json
 local_env.txt
+
+test.sh
