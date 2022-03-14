@@ -4,6 +4,10 @@ package ru.example.todoapp.exception;
  * Time: 10:42 AM
  * */
 
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.springframework.core.convert.ConversionFailedException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -17,18 +21,14 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 @ControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @Override
-    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
-                                                                  HttpHeaders headers, HttpStatus status,
-                                                                  WebRequest request) {
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(
+            MethodArgumentNotValidException ex,
+            HttpHeaders headers, HttpStatus status,
+            WebRequest request) {
         final List<FieldError> fieldErrors = ex.getBindingResult().getFieldErrors();
 
         Map<String, Set<String>> errorsMap = fieldErrors.stream().collect(
@@ -62,7 +62,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(AccessDeniedException.class)
-    public ResponseEntity<CustomErrorResponse> handleAccessDeniedException(AccessDeniedException ex) {
+    public ResponseEntity<CustomErrorResponse> handleAccessDeniedException(
+            AccessDeniedException ex) {
 
         var error = new CustomErrorResponse.Builder()
                 .status(HttpStatus.FORBIDDEN)
@@ -70,6 +71,15 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 .message("Not enough permissions").build();
 
         return new ResponseEntity<>(error, HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<CustomErrorResponse> handleNotFoundException(NotFoundException ex) {
+        var error = new CustomErrorResponse.Builder()
+                .status(ex.getHttpStatus())
+                .message(ex.getMessage()).build();
+
+        return new ResponseEntity<>(error, ex.getHttpStatus());
     }
 
 }
