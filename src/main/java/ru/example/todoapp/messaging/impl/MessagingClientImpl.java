@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import ru.example.todoapp.domain.request.EmailRequest;
 import ru.example.todoapp.domain.request.TokenRequest;
 import ru.example.todoapp.exception.CustomException;
+import ru.example.todoapp.exception.NotFoundException;
 import ru.example.todoapp.messaging.MessagingClient;
 import ru.example.todoapp.service.UserService;
 
@@ -25,7 +26,7 @@ public class MessagingClientImpl implements MessagingClient {
 
     @Autowired
     public MessagingClientImpl(RabbitTemplate rabbitTemplate, DirectExchange emailExchange,
-                               DirectExchange tokenExchange, UserService userService) {
+            DirectExchange tokenExchange, UserService userService) {
         this.rabbitTemplate = rabbitTemplate;
         this.emailExchange = emailExchange;
         this.tokenExchange = tokenExchange;
@@ -35,12 +36,13 @@ public class MessagingClientImpl implements MessagingClient {
     @Override
     public void send(EmailRequest emailRequest) {
         if (!userService.existsByUsername(emailRequest.getEmail())) {
-            throw CustomException.createNotFoundExc("Username not found: email=" + emailRequest);
+            throw new NotFoundException("Username not found: email=" + emailRequest);
         }
 
         Object response = getResponse(emailExchange, emailRequest, "todo.email.replies");
         if (response == null || ((boolean) response == false)) {
-            throw CustomException.createInternalServerErrorExc("An error occurred while generating the token");
+            throw CustomException.createInternalServerErrorExc(
+                    "An error occurred while generating the token");
         }
     }
 
