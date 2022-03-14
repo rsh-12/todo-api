@@ -4,19 +4,6 @@ package ru.example.todoapp.service;
  * Time: 6:12 PM
  * */
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import ru.example.todoapp.entity.User;
-import ru.example.todoapp.exception.CustomException;
-import ru.example.todoapp.repository.UserRepository;
-import ru.example.todoapp.service.impl.UserServiceImpl;
-
-import java.util.Optional;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -28,6 +15,18 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
+
+import java.util.Optional;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+import ru.example.todoapp.entity.User;
+import ru.example.todoapp.exception.NotFoundException;
+import ru.example.todoapp.repository.UserRepository;
+import ru.example.todoapp.service.impl.UserServiceImpl;
 
 @ExtendWith(SpringExtension.class)
 public class UserServiceTest {
@@ -52,7 +51,7 @@ public class UserServiceTest {
     @Test
     public void deleteUserById_ShouldThrowException() {
         given(userRepository.existsById(anyLong())).willReturn(false);
-        assertThrows(CustomException.class, () -> userService.delete(1L));
+        assertThrows(NotFoundException.class, () -> userService.delete(1L));
     }
 
     // findUserById
