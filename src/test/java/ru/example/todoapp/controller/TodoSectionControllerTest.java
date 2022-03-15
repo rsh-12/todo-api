@@ -39,6 +39,7 @@ import org.springframework.security.test.context.support.WithUserDetails;
 import ru.example.todoapp.domain.request.TodoSectionRequest;
 import ru.example.todoapp.entity.TodoSection;
 import ru.example.todoapp.exception.CustomException;
+import ru.example.todoapp.exception.NotFoundException;
 import ru.example.todoapp.facade.TasksFacade;
 import ru.example.todoapp.service.dto.TodoSectionDto;
 import ru.example.todoapp.service.impl.TodoSectionServiceImpl;
@@ -57,29 +58,6 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
     private SectionMapper sectionMapper;
 
     private static final String API_SECTIONS = "/api/sections/";
-
-    // get all sections
-//    @Test
-//    @WithUserDetails(ADMIN)
-//    public void getSections_ShouldReturnListOfSections() throws Exception {
-//        var section1 = new TodoSection(1L, "section1");
-//        var section2 = new TodoSection(2L, "section2");
-//        Page<TodoSection> page = new PageImpl<>(List.of(section1, section2));
-//
-//        var sectionDto1 = new TodoSectionDto(1L, "section1", LocalDateTime.now(), LocalDateTime.now());
-//        var sectionDto2 = new TodoSectionDto(2L, "section2", LocalDateTime.now(), LocalDateTime.now());
-//
-//        given(sectionService.findAll(any())).willReturn(page);
-//        given(sectionMapper.mapToSectionDto(any(TodoSection.class)))
-//                .willReturn(sectionDto1, sectionDto2);
-//
-//        mvc.perform(get(API_SECTIONS)
-//                        .contentType(MediaType.APPLICATION_JSON))
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("_embedded.sections[0].title", is("section1")))
-//                .andExpect(jsonPath("_embedded.sections[1].title", is("section2")))
-//                .andDo(print());
-//    }
 
     @Test
     @WithUserDetails(ADMIN)
@@ -146,7 +124,7 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
     @Test
     @WithUserDetails(USER)
     public void deleteSection_ShouldReturnNotFound() throws Exception {
-        doThrow(CustomException.createNotFoundExc("Section not found"))
+        doThrow(new NotFoundException("Section not found"))
                 .when(sectionService).delete(anyLong());
 
         mvc.perform(delete(API_SECTIONS + 1)
@@ -172,25 +150,6 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
 
         verify(sectionService).delete(anyLong());
     }
-
-    // create new section
-/*
-    @Test
-    @WithUserDetails(ADMIN)
-    public void createSection_ShouldReturnStatusCreated() throws Exception {
-        given(sectionService.create(any(TodoSectionRequest.class)))
-                .willReturn(new TodoSection(1L, "title"));
-
-        String json = objectMapper.writeValueAsString(new TodoSectionRequest("section"));
-        mvc.perform(post(API_SECTIONS)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(json))
-                .andExpect(status().isCreated())
-                .andDo(print());
-
-        verify(sectionService).create(any(TodoSectionRequest.class));
-    }
-*/
 
     @Test
     @WithUserDetails(ADMIN)
