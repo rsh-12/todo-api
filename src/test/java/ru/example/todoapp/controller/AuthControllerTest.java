@@ -4,25 +4,6 @@ package ru.example.todoapp.controller;
  * Time: 6:25 PM
  * */
 
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.boot.test.mock.mockito.SpyBean;
-import org.springframework.http.MediaType;
-import ru.example.todoapp.domain.request.CredentialsRequest;
-import ru.example.todoapp.domain.request.EmailRequest;
-import ru.example.todoapp.domain.request.PasswordRequest;
-import ru.example.todoapp.domain.request.TokenRequest;
-import ru.example.todoapp.entity.User;
-import ru.example.todoapp.exception.CustomException;
-import ru.example.todoapp.facade.PasswordFacade;
-import ru.example.todoapp.messaging.MessagingClient;
-import ru.example.todoapp.service.AuthService;
-
-import java.time.LocalDateTime;
-import java.util.Map;
-import java.util.Optional;
-
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.any;
@@ -37,6 +18,25 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.time.LocalDateTime;
+import java.util.Map;
+import java.util.Optional;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.SpyBean;
+import org.springframework.http.MediaType;
+import ru.example.todoapp.domain.request.CredentialsRequest;
+import ru.example.todoapp.domain.request.EmailRequest;
+import ru.example.todoapp.domain.request.PasswordRequest;
+import ru.example.todoapp.domain.request.TokenRequest;
+import ru.example.todoapp.entity.User;
+import ru.example.todoapp.exception.CustomException;
+import ru.example.todoapp.exception.NotFoundException;
+import ru.example.todoapp.facade.PasswordFacade;
+import ru.example.todoapp.messaging.MessagingClient;
+import ru.example.todoapp.service.AuthService;
 
 public class AuthControllerTest extends AbstractControllerTestClass {
 
@@ -62,8 +62,8 @@ public class AuthControllerTest extends AbstractControllerTestClass {
                 .willReturn(Optional.of(tokens));
 
         mvc.perform(post(API_AUTH + "/login")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestOf(USERNAME, PASSWORD)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestOf(USERNAME, PASSWORD)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("access_token", containsString(accessToken)));
@@ -78,8 +78,8 @@ public class AuthControllerTest extends AbstractControllerTestClass {
                 .willReturn(Optional.empty());
 
         mvc.perform(post(API_AUTH + "/login")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestOf(USERNAME, PASSWORD)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestOf(USERNAME, PASSWORD)))
                 .andDo(print())
                 .andExpect(status().isNotFound());
     }
@@ -91,8 +91,8 @@ public class AuthControllerTest extends AbstractControllerTestClass {
                 .willReturn(Optional.empty());
 
         mvc.perform(post(API_AUTH + "/login")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestOf(USERNAME, PASSWORD)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestOf(USERNAME, PASSWORD)))
                 .andDo(print())
                 .andExpect(status().isNotFound());
     }
@@ -108,8 +108,8 @@ public class AuthControllerTest extends AbstractControllerTestClass {
         given(authService.register(any())).willReturn(user);
 
         mvc.perform(post(API_AUTH + "/register")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestOf(USERNAME, PASSWORD)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestOf(USERNAME, PASSWORD)))
                 .andDo(print())
                 .andExpect(status().isCreated());
     }
@@ -118,8 +118,8 @@ public class AuthControllerTest extends AbstractControllerTestClass {
     @DisplayName("register: returns badRequest")
     public void register_InvalidUsername_ShouldReturnBadRequest() throws Exception {
         mvc.perform(post(API_AUTH + "/register")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestOf("notValidUsername", PASSWORD)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestOf("notValidUsername", PASSWORD)))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("username", containsInAnyOrder("Email validation error")));
@@ -129,8 +129,8 @@ public class AuthControllerTest extends AbstractControllerTestClass {
     @DisplayName("register: returns badRequest")
     public void register_InvalidPwd_ShouldReturnBadRequest() throws Exception {
         mvc.perform(post(API_AUTH + "/register")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestOf(USERNAME, "p")))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestOf(USERNAME, "p")))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("password", containsInAnyOrder("Password is required")));
@@ -143,7 +143,7 @@ public class AuthControllerTest extends AbstractControllerTestClass {
                 .willReturn(Optional.empty());
 
         mvc.perform(post(API_AUTH + "/token")
-                .header("token", "Bearer someAccessToken"))
+                        .header("token", "Bearer someAccessToken"))
                 .andDo(print())
                 .andExpect(status().isNotFound());
     }
@@ -151,12 +151,13 @@ public class AuthControllerTest extends AbstractControllerTestClass {
     @Test
     @DisplayName("getTokens: returns tokens, 200 ok")
     public void getTokens_ShouldReturnNewTokens() throws Exception {
-        Map<String, String> tokens = Map.of("access_token", "access_token", "refresh_token", "refresh_token");
+        Map<String, String> tokens = Map.of("access_token", "access_token", "refresh_token",
+                "refresh_token");
         given(authService.generateNewTokens(anyString(), anyString()))
                 .willReturn(Optional.of(tokens));
 
         mvc.perform(post(API_AUTH + "/token")
-                .header("token", "refreshToken"))
+                        .header("token", "refreshToken"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("access_token", containsString("access_token")))
@@ -170,21 +171,22 @@ public class AuthControllerTest extends AbstractControllerTestClass {
 
         String body = objectMapper.writeValueAsString(new EmailRequest("test@mail.com"));
         mvc.perform(post(API_AUTH + "/password/forgot")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(body))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(body))
                 .andDo(print())
                 .andExpect(status().isOk());
     }
 
     @Test
-    @DisplayName("sendPasswordResetToken: throws CustomException, returns notFound")
-    public void sendPasswordResetToken_ShouldThrowCustomExceptionAndReturnNotFound() throws Exception {
-        doThrow(CustomException.createNotFoundExc("Username not found")).when(messagingService).send(any(EmailRequest.class));
+    @DisplayName("sendPasswordResetToken: throws NotFoundException, returns notFound")
+    public void sendPasswordResetToken_ShouldThrowExceptionAndReturnNotFound() throws Exception {
+        doThrow(new NotFoundException("Username not found")).when(messagingService)
+                .send(any(EmailRequest.class));
 
         String body = objectMapper.writeValueAsString(new EmailRequest("test@mail.com"));
         mvc.perform(post(API_AUTH + "/password/forgot")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(body))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(body))
                 .andDo(print())
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("message", containsString("Username not found")));
@@ -192,14 +194,16 @@ public class AuthControllerTest extends AbstractControllerTestClass {
 
     @Test
     @DisplayName("sendPasswordResetToken: throws CustomException, returns internalServerError")
-    public void sendPasswordResetToken_ShouldThrowCustomExceptionAndReturnInternalServerError() throws Exception {
-        doThrow(CustomException.createInternalServerErrorExc("An error occurred while generating the token"))
+    public void sendPasswordResetToken_ShouldThrowExceptionAndReturnInternalServerError()
+            throws Exception {
+        doThrow(CustomException.createInternalServerErrorExc(
+                "An error occurred while generating the token"))
                 .when(messagingService).send(any(EmailRequest.class));
 
         String body = objectMapper.writeValueAsString(new EmailRequest("test@mail.com"));
         mvc.perform(post(API_AUTH + "/password/forgot")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(body))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(body))
                 .andDo(print())
                 .andExpect(status().isInternalServerError())
                 .andExpect(jsonPath("message",
@@ -213,9 +217,9 @@ public class AuthControllerTest extends AbstractControllerTestClass {
         doNothing().when(passwordFacade).updatePassword(any(TokenRequest.class), anyString());
 
         mvc.perform(post(API_AUTH + "/password/reset")
-                .contentType(MediaType.APPLICATION_JSON)
-                .param("token", "someToken")
-                .content(objectMapper.writeValueAsString(request)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .param("token", "someToken")
+                        .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk());
     }
 
@@ -223,9 +227,9 @@ public class AuthControllerTest extends AbstractControllerTestClass {
     @DisplayName("updatePassword: returns badRequest")
     public void updatePassword_PasswordIsNull_ShouldReturnBadRequest() throws Exception {
         mvc.perform(post(API_AUTH + "/password/reset")
-                .contentType(MediaType.APPLICATION_JSON)
-                .param("token", "someToken")
-                .content(Map.of("something", "wrong").toString()))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .param("token", "someToken")
+                        .content(Map.of("something", "wrong").toString()))
                 .andDo(print())
                 .andExpect(status().isBadRequest());
 
@@ -236,8 +240,8 @@ public class AuthControllerTest extends AbstractControllerTestClass {
     @DisplayName("updatePassword: returns badRequest")
     public void updatePassword_TokenIsNull_ShouldReturnBadRequest() throws Exception {
         mvc.perform(post(API_AUTH + "/password/reset")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(new PasswordRequest("password"))))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(new PasswordRequest("password"))))
                 .andDo(print())
                 .andExpect(status().isBadRequest());
 
