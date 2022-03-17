@@ -75,6 +75,15 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<CustomErrorResponse> handleNotFoundException(NotFoundException ex) {
+        return createResponse(ex);
+    }
+
+    @ExceptionHandler(BadRequestException.class)
+    public ResponseEntity<CustomErrorResponse> handleBadRequestException(BadRequestException ex) {
+        return createResponse(ex);
+    }
+
+    private <T extends ICustomException> ResponseEntity<CustomErrorResponse> createResponse(T ex) {
         var error = new CustomErrorResponse.Builder()
                 .status(ex.getHttpStatus())
                 .message(ex.getMessage()).build();
