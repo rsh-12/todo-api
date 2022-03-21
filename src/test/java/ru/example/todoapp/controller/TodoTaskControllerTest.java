@@ -13,6 +13,7 @@ import org.springframework.security.test.context.support.WithUserDetails;
 import ru.example.todoapp.domain.request.TodoTaskRequest;
 import ru.example.todoapp.entity.TodoTask;
 import ru.example.todoapp.exception.CustomException;
+import ru.example.todoapp.exception.NotFoundException;
 import ru.example.todoapp.service.TodoTaskService;
 import ru.example.todoapp.service.dto.TodoTaskDto;
 import ru.example.todoapp.service.mapper.TaskMapper;
@@ -93,7 +94,7 @@ public class TodoTaskControllerTest extends AbstractControllerTestClass {
     @WithUserDetails(USER)
     public void getTask_ShouldReturnNotFound() throws Exception {
         given(taskService.findOne(anyLong()))
-                .willThrow(CustomException.createNotFoundExc("Task not found"));
+                .willThrow(new NotFoundException("Task not found"));
 
         mvc.perform(get(API_TASKS + "/1"))
                 .andExpect(status().isNotFound())
@@ -114,7 +115,7 @@ public class TodoTaskControllerTest extends AbstractControllerTestClass {
     @Test
     @WithUserDetails(USER)
     public void deleteTask_ShouldReturnNotFound() throws Exception {
-        doThrow(CustomException.createNotFoundExc("Task not found"))
+        doThrow(new NotFoundException("Task not found"))
                 .when(taskService).delete(anyLong());
 
         mvc.perform(delete(API_TASKS + "/1"))
