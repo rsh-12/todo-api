@@ -4,18 +4,6 @@ package ru.example.todoapp.controller;
  * Time: 2:10 PM
  * */
 
-import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithUserDetails;
-import ru.example.todoapp.entity.User;
-import ru.example.todoapp.exception.CustomException;
-import ru.example.todoapp.service.UserService;
-
-import java.util.Map;
-import java.util.Optional;
-
-import static org.hamcrest.Matchers.containsStringIgnoringCase;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.anyLong;
@@ -31,6 +19,16 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.util.Map;
+import java.util.Optional;
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithUserDetails;
+import ru.example.todoapp.entity.User;
+import ru.example.todoapp.exception.NotFoundException;
+import ru.example.todoapp.service.UserService;
 
 public class UserControllerTest extends AbstractControllerTestClass {
 
@@ -85,11 +83,10 @@ public class UserControllerTest extends AbstractControllerTestClass {
     @Test
     @WithUserDetails(ADMIN)
     public void deleteUser_ShouldReturnNotFound() throws Exception {
-        doThrow(CustomException.createNotFoundExc("User Not Found")).when(userService).delete(anyLong());
+        doThrow(new NotFoundException("User Not Found")).when(userService).delete(anyLong());
 
         mvc.perform(delete(API_USERS + "/1"))
                 .andExpect(status().isNotFound())
-                .andExpect(jsonPath("error", containsStringIgnoringCase("not found")))
                 .andDo(print());
     }
 
