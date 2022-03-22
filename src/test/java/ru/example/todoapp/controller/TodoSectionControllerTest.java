@@ -130,7 +130,6 @@ public class TodoSectionControllerTest extends AbstractControllerTestClass {
         mvc.perform(delete(API_SECTIONS + 1)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound())
-                .andExpect(jsonPath("error", containsStringIgnoringCase("not found")))
                 .andDo(print());
 
         verify(sectionService).delete(anyLong());
