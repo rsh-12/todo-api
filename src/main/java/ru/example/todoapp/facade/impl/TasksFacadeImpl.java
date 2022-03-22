@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Set;
 import org.springframework.stereotype.Component;
 import ru.example.todoapp.entity.TodoTask;
-import ru.example.todoapp.exception.CustomException;
+import ru.example.todoapp.exception.BadRequestException;
 import ru.example.todoapp.facade.AuthUserFacade;
 import ru.example.todoapp.facade.TasksFacade;
 import ru.example.todoapp.service.TodoSectionService;
@@ -48,7 +48,7 @@ public class TasksFacadeImpl implements TasksFacade {
 
     private void checkTaskIds(Set<Long> taskIds) {
         if (taskIds == null || taskIds.isEmpty()) {
-            throw CustomException.createBadRequestExc("Tasks IDs are required");
+            throw new BadRequestException("Tasks IDs are required");
         }
     }
 
