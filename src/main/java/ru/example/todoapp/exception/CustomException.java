@@ -17,15 +17,7 @@ public class CustomException extends RuntimeException {
         this.error = httpStatus.getReasonPhrase();
         this.message = message;
         this.httpStatus = httpStatus;
-    }
-
-    public static CustomException createNotFoundExc(String message) {
-        return new CustomException(message, HttpStatus.NOT_FOUND);
-    }
-
-    public static CustomException createBadRequestExc(String message) {
-        return new CustomException(message, HttpStatus.BAD_REQUEST);
-    }
+    }    
 
     public static CustomException createForbiddenExc(String message) {
         return new CustomException(message, HttpStatus.FORBIDDEN);
